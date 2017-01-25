@@ -1,5 +1,19 @@
+//L = left sensor, R = right sensor
+const int lightSensorR = A0;
+const int lightSensorL = A1;
+const int waterTempSensor = A2;
+const int waterTurbSensor = A3;
+const int waterPHSensor = A4;
+
+float lightR = 0.0;
+float lightL = 0.0;
+float waterTemp = 0.0;
+float watherTurb = 0.0;
+float waterPH = 0.0;
+
+
 void setup() {
-  //setup analog connections
+  //setup digital connections
   //setup serial
 }
 
@@ -11,11 +25,16 @@ void loop() {
 
 }
 
+/*these will be raw readings, converting from voltage to 
+ * degrees or light etc should most likly done in a seperate 
+ * function or even in the data logger.
+ */
 void LogData(){
-  //log water temp
-  //log water ph
-  //log water turbidity
-  //log plant light
+  lightR = analogRead(lightSensorR);
+  lightL = analogRead(lightSensorL);
+  waterTemp = analogRead(waterTempSensor);
+  waterTurb = analogRead(waterTurbSensor);
+  waterPH = analogRead(waterPHSensor);
 }
 
 void SendData(){
