@@ -8,14 +8,14 @@ const int waterPHSensor = A4;
 float lightR = 0.0;
 float lightL = 0.0;
 float waterTemp = 0.0;
-float watherTurb = 0.0;
+float waterTurb = 0.0;
 float waterPH = 0.0;
 
 uint16_t lightRBuffer[64];
 uint16_t lightLBuffer[64];
 uint16_t tempBuffer[64];
 uint16_t turbBuffer[64];
-uint16_t pHRBuffer[64];
+uint16_t pHBuffer[64];
 
 uint8_t bufferCounter = 1;
 
@@ -26,7 +26,7 @@ void setup() {
   lightLBuffer[0] = 1792;
   tempBuffer[0] = 1793;
   turbBuffer[0] = 1794;
-  pHRBuffer[0] = 1795;
+  pHBuffer[0] = 1795;
 }
 
 void loop() {
@@ -41,6 +41,7 @@ void loop() {
  * function or even in the data logger.
  */
 void LogData(){
+  if(bufferCounter >= 64) return;
   lightR = analogRead(lightSensorR);
   lightL = analogRead(lightSensorL);
   waterTemp = analogRead(waterTempSensor);
@@ -54,10 +55,23 @@ void LogData(){
   bufferCounter += 1;
 }
 
+//im sure there is a better way, consider a timeout? 
+//we'll need to check for missed or overwritten data 
+//because this might take to long
 void SendData(){
-//  send buffered frame every x seconds
   if(bufferCounter >= 64){
-  
+    SendBuffer(lightRBuffer);
+    SendBuffer(lightLBuffer);
+    SendBuffer(tempBuffer);
+    SendBuffer(turbBuffer);
+    SendBuffer(pHBuffer);
+    bufferCounter = 1;
+  }
+}
+
+void SendBuffer(int buf[]){
+  for(int i = 0; i < 64; i++){
+    Serial.write(buf[i]);
   }
 }
 
