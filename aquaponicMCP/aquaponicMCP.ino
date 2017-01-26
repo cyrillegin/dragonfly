@@ -11,10 +11,22 @@ float waterTemp = 0.0;
 float watherTurb = 0.0;
 float waterPH = 0.0;
 
+uint16_t lightRBuffer[64];
+uint16_t lightLBuffer[64];
+uint16_t tempBuffer[64];
+uint16_t turbBuffer[64];
+uint16_t pHRBuffer[64];
+
+uint8_t bufferCounter = 1;
+
 
 void setup() {
-  //setup digital connections
-  //setup serial
+  Serial.begin(9600);
+  lightRBuffer[0] = 1791;
+  lightLBuffer[0] = 1792;
+  tempBuffer[0] = 1793;
+  turbBuffer[0] = 1794;
+  pHRBuffer[0] = 1795;
 }
 
 void loop() {
@@ -22,7 +34,6 @@ void loop() {
   SendData();
   GetInput();
   SendCommands();
-
 }
 
 /*these will be raw readings, converting from voltage to 
@@ -35,10 +46,19 @@ void LogData(){
   waterTemp = analogRead(waterTempSensor);
   waterTurb = analogRead(waterTurbSensor);
   waterPH = analogRead(waterPHSensor);
+  lightRBuffer[bufferCounter] = lightR;
+  lightLBuffer[bufferCounter] = lightL;
+  tempBuffer[bufferCounter] = waterTemp;
+  turbBuffer[bufferCounter] = waterTurb;
+  pHBuffer[bufferCounter] = waterPH;
+  bufferCounter += 1;
 }
 
 void SendData(){
 //  send buffered frame every x seconds
+  if(bufferCounter >= 64){
+  
+  }
 }
 
 void GetInput(){
