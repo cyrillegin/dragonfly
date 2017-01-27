@@ -1,9 +1,16 @@
 //L = left sensor, R = right sensor
-const int lightSensorR = A0;
-const int lightSensorL = A1;
-const int waterTempSensor = A2;
-const int waterTurbSensor = A3;
-const int waterPHSensor = A4;
+#define lightSensorR A0
+#define lightSensorL A1
+#define waterTempSensor A2
+#define waterTurbSensor A3
+#define waterPHSensor A4
+
+#define minLightL 0
+#define minLightR 0
+#define targetTemperature 0
+#define temperatureVarience 0
+#define targetTurbidity 0
+#define turbidityVarience 0
 
 float lightR = 0.0;
 float lightL = 0.0;
@@ -18,7 +25,6 @@ uint16_t turbBuffer[64];
 uint16_t pHBuffer[64];
 
 uint8_t bufferCounter = 1;
-
 
 void setup() {
   Serial.begin(9600);
@@ -80,7 +86,32 @@ void GetInput(){
 //  Preform actions if necessary
 }
 
+bool leftLightOn = false;
+bool rightLightOn = false;
+bool aquariumLightOn = false;
+
 void SendCommands(){
+//  sensor operation
+//  lighting
+  if(leftLightOn && lightL < minLightL){
+    //light warning
+  }
+  if(rightLightOn && lightR < minLightR){
+    //light warning
+  }
+  
+  //water temperature
+  float tempDifference = targetTemperature > waterTemp ? targetTemperature - waterTemp : waterTemp - targetTemperature;
+  if(tempDifference > temperatureVarience){
+    //temp warning
+  }
+
+  //water turbidity
+  float turbDifference = targetTurbidity > waterTurb ? targetTurbidity - waterTurb : waterTurb - targetTurbidity;
+  if(turbDifference > turbidityVarience){
+    //turb warning
+  }
+
 //  aquarium light scheduling
 //  water temp modifications
 //  plant light scheduling
