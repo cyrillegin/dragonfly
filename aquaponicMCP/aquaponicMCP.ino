@@ -11,6 +11,14 @@
 #define temperatureVarience 0
 #define targetTurbidity 0
 #define turbidityVarience 0
+#define targetPH 0
+#define pHVarience 0
+
+#define lLightLed 13
+#define rLightLed 12
+#define turbLed 11
+#define tempLed 10
+#define phLed 9
 
 float lightR = 0.0;
 float lightL = 0.0;
@@ -26,6 +34,10 @@ uint16_t pHBuffer[64];
 
 uint8_t bufferCounter = 1;
 
+bool leftLightOn = false;
+bool rightLightOn = false;
+bool aquariumLightOn = false;
+
 void setup() {
   Serial.begin(9600);
   lightRBuffer[0] = 1791;
@@ -33,13 +45,17 @@ void setup() {
   tempBuffer[0] = 1793;
   turbBuffer[0] = 1794;
   pHBuffer[0] = 1795;
+  pinMode(lLightLed, OUTPUT);
+  pinMode(rLightLed, OUTPUT);
+  pinMode(turbLed, OUTPUT);
+  pinMode(tempLed, OUTPUT);
 }
 
 void loop() {
   LogData();
-  SendData();
-  GetInput();
-  SendCommands();
+//  SendData();
+//  GetInput();
+//  SendCommands();
 }
 
 /*these will be raw readings, converting from voltage to 
@@ -59,6 +75,16 @@ void LogData(){
   turbBuffer[bufferCounter] = waterTurb;
   pHBuffer[bufferCounter] = waterPH;
   bufferCounter += 1;
+  Serial.print("leftLight: ");
+  Serial.print(lightL);
+  Serial.print(" rightLight: ");
+  Serial.print(lightR);
+  Serial.print(" waterTemp: ");
+  Serial.println(waterTemp);
+  Serial.print(" waterTurb: ");
+  Serial.print(waterTurb);
+  Serial.print(" waterPH: ");
+  Serial.println(waterPH);
 }
 
 //im sure there is a better way, consider a timeout? 
@@ -82,39 +108,42 @@ void SendBuffer(int buf[]){
 }
 
 void GetInput(){
-//  Listen to awaiting commands(should be kept in a buffer server side)
-//  Preform actions if necessary
+  if (Serial.available() > 0) {
+    incomingByte = Serial.read();
+    if(incomingByte == 'a'){
+       
+    }
+  }
 }
-
-bool leftLightOn = false;
-bool rightLightOn = false;
-bool aquariumLightOn = false;
 
 void SendCommands(){
 //  sensor operation
 //  lighting
   if(leftLightOn && lightL < minLightL){
-    //light warning
+    digitalWrite(lLightLed, HIGH);
   }
   if(rightLightOn && lightR < minLightR){
-    //light warning
+    digitalWrite(rLightLed, HIGH);
   }
   
   //water temperature
   float tempDifference = targetTemperature > waterTemp ? targetTemperature - waterTemp : waterTemp - targetTemperature;
   if(tempDifference > temperatureVarience){
-    //temp warning
+    digitalWrite(tempLed, HIGH);
   }
 
   //water turbidity
   float turbDifference = targetTurbidity > waterTurb ? targetTurbidity - waterTurb : waterTurb - targetTurbidity;
   if(turbDifference > turbidityVarience){
-    //turb warning
+    digitalWrite(turbLed, HIGH);
+  }
+  float phDifference = targetPH > waterPH ? targetPH - waterPH : waterPH - targetPH;
+  if(phDifference > pHVarience){
+    digitalWrite(phLed, HIGH);
   }
 
 //  aquarium light scheduling
 //  water temp modifications
 //  plant light scheduling
-//  turn on warnings if needed
 }
 
