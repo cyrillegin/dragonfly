@@ -3,7 +3,6 @@
 #define lightSensorL A1
 #define waterTempSensor A2
 #define waterTurbSensor A3
-#define waterPHSensor A4
 
 #define minLightL 0
 #define minLightR 0
@@ -11,26 +10,21 @@
 #define temperatureVarience 0
 #define targetTurbidity 0
 #define turbidityVarience 0
-#define targetPH 0
-#define pHVarience 0
 
 #define lLightLed 13
 #define rLightLed 12
 #define turbLed 11
 #define tempLed 10
-#define phLed 9
 
 float lightR = 0.0;
 float lightL = 0.0;
 float waterTemp = 0.0;
 float waterTurb = 0.0;
-float waterPH = 0.0;
 
 uint16_t lightRBuffer[64];
 uint16_t lightLBuffer[64];
 uint16_t tempBuffer[64];
 uint16_t turbBuffer[64];
-uint16_t pHBuffer[64];
 
 uint8_t bufferCounter = 1;
 
@@ -44,7 +38,6 @@ void setup() {
   lightLBuffer[0] = 1792;
   tempBuffer[0] = 1793;
   turbBuffer[0] = 1794;
-  pHBuffer[0] = 1795;
   pinMode(lLightLed, OUTPUT);
   pinMode(rLightLed, OUTPUT);
   pinMode(turbLed, OUTPUT);
@@ -73,7 +66,6 @@ void LogData(){
   lightLBuffer[bufferCounter] = lightL;
   tempBuffer[bufferCounter] = waterTemp;
   turbBuffer[bufferCounter] = waterTurb;
-  pHBuffer[bufferCounter] = waterPH;
   bufferCounter += 1;
   Serial.print("leftLight: ");
   Serial.print(lightL);
@@ -83,8 +75,6 @@ void LogData(){
   Serial.println(waterTemp);
   Serial.print(" waterTurb: ");
   Serial.print(waterTurb);
-  Serial.print(" waterPH: ");
-  Serial.println(waterPH);
 }
 
 //im sure there is a better way, consider a timeout? 
@@ -96,7 +86,6 @@ void SendData(){
     SendBuffer(lightLBuffer);
     SendBuffer(tempBuffer);
     SendBuffer(turbBuffer);
-    SendBuffer(pHBuffer);
     bufferCounter = 1;
   }
 }
@@ -136,10 +125,6 @@ void SendCommands(){
   float turbDifference = targetTurbidity > waterTurb ? targetTurbidity - waterTurb : waterTurb - targetTurbidity;
   if(turbDifference > turbidityVarience){
     digitalWrite(turbLed, HIGH);
-  }
-  float phDifference = targetPH > waterPH ? targetPH - waterPH : waterPH - targetPH;
-  if(phDifference > pHVarience){
-    digitalWrite(phLed, HIGH);
   }
 
 //  aquarium light scheduling
