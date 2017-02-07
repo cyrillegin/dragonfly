@@ -1,9 +1,11 @@
 
 #include "OneWire.h"
+
 //analog pins
 #define plantLight A0
 #define aquaLight A1
 #define waterTurbSensor A2
+
 //digital pins
 OneWire  ds(2); //water temp sensor
 #define RELAY1  3
@@ -11,7 +13,9 @@ OneWire  ds(2); //water temp sensor
 #define aquaLed 5
 #define turbLed 6
 #define tempLed 7
+#define lightButton 8
 
+//sensor constraints
 #define minLightPlant 0
 #define minLightAqua 0
 #define targetTemperature 0
@@ -19,11 +23,13 @@ OneWire  ds(2); //water temp sensor
 #define targetTurbidity 0
 #define turbidityVarience 0
 
+//sensor readings
 float aquaLightReading = 0.0;
 float plantLightReading = 0.0;
 float waterTempReading = 0.0;
 float waterTurbReading = 0.0;
 
+//buffers to hold sensor data
 uint16_t plantLightBuffer[64];
 uint16_t aquaLightBuffer[64];
 uint16_t tempBuffer[64];
@@ -31,15 +37,15 @@ uint16_t turbBuffer[64];
 
 uint8_t bufferCounter = 1;
 
-bool plantLightOn = false;
-bool aquaLightOn = false;
-
-unsigned long lightInterval = 12;
-unsigned long lastTime = millis();
 bool powerIsOn = false;
 
 uint8_t incomingByte;
 
+bool onAuto = true;
+#define autoTime 1 //number of hours until auto mode resumes.
+unsigned long autoTimer = 0;
+
+//run once on start
 void setup() {
   Serial.begin(9600);
   plantLightBuffer[0] = 1791;
@@ -50,13 +56,35 @@ void setup() {
   pinMode(aquaLed, OUTPUT);
   pinMode(turbLed, OUTPUT);
   pinMode(tempLed, OUTPUT);
+  pinMode(lightButton, INPUT);
+  digitalWrite(lightButton, HIGH);
 }
 
+//main program loop.
 void loop() {
   LogData();
   SendData();
-  GetInput();
   SendCommands();
+  GetManual();
+  if(onAuto){
+    GetInput();
+  } else {
+    if(millis() > autoTimer + autoTime*3600*1000){
+      onAuto = false;
+    }
+  }
+}
+
+/* Any kind of manual control will go here. Currently a button 
+ * is hooked up and will turn the lights either on or off. 
+ * After an hour has passed, auto mode will turn back on.
+ */
+void GetManual(){
+  if(digitalRead(lightButton)){
+    digitalWrite(RELAY1, powerIsOn);
+    powerIsOn = !powerIsOn;
+    autoTimer = millis();
+  }
 }
 
 /*these will be raw readings, converting from voltage to 
@@ -157,9 +185,10 @@ float ReadTemp(){
   return fahrenheit;
 }
 
-//im sure there is a better way, consider a timeout? 
-//we'll need to check for missed or overwritten data 
-//because this might take to long
+/* Im sure there is a better way, consider a timeout? 
+ * we'll need to check for missed or overwritten data 
+ * because this might take to long
+ */
 void SendData(){
   if(bufferCounter >= 64){
     SendBuffer(plantLightBuffer);
@@ -176,6 +205,7 @@ void SendBuffer(int buf[]){
   }
 }
 
+//read input via serial
 void GetInput(){
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
@@ -184,21 +214,24 @@ void GetInput(){
     //turn lights off
     if(incomingByte == 1){
        digitalWrite(RELAY1,0);
+       powerIsOn = false;
     }
     //turn lights on
     if(incomingByte == 2){
        digitalWrite(RELAY1,1);
+       powerIsOn = true;
     }
   }
 }
 
+//turns on warning leds, should later control temperature.
 void SendCommands(){
 //  sensor operation
 //  lighting
-  if(aquaLightOn && aquaLightReading < minLightAqua){
+  if(powerIsOn && aquaLightReading < minLightAqua){
     digitalWrite(aquaLed, HIGH);
   }
-  if(plantLightOn && plantLightReading < minLightPlant){
+  if(powerIsOn && plantLightReading < minLightPlant){
     digitalWrite(plantLed, HIGH);
   }
   
