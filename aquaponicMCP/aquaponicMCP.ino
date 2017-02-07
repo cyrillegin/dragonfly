@@ -1,9 +1,16 @@
 
-#include <OneWire.h>
+#include "OneWire.h"
+//analog pins
 #define plantLight A0
 #define aquaLight A1
-OneWire  ds(2); //water temp sensor on digital pin 2
-#define waterTurbSensor A3
+#define waterTurbSensor A2
+//digital pins
+OneWire  ds(2); //water temp sensor
+#define RELAY1  3
+#define plantLed 4
+#define aquaLed 5
+#define turbLed 6
+#define tempLed 7
 
 #define minLightPlant 0
 #define minLightAqua 0
@@ -11,11 +18,6 @@ OneWire  ds(2); //water temp sensor on digital pin 2
 #define temperatureVarience 0
 #define targetTurbidity 0
 #define turbidityVarience 0
-
-#define plantLed 13
-#define aquaLed 12
-#define turbLed 11
-#define tempLed 10
 
 float aquaLightReading = 0.0;
 float plantLightReading = 0.0;
@@ -32,6 +34,12 @@ uint8_t bufferCounter = 1;
 bool plantLightOn = false;
 bool aquaLightOn = false;
 
+unsigned long lightInterval = 12;
+unsigned long lastTime = millis();
+bool powerIsOn = false;
+
+uint8_t incomingByte;
+
 void setup() {
   Serial.begin(9600);
   plantLightBuffer[0] = 1791;
@@ -46,9 +54,9 @@ void setup() {
 
 void loop() {
   LogData();
-//  SendData();
-//  GetInput();
-//  SendCommands();
+  SendData();
+  GetInput();
+  SendCommands();
 }
 
 /*these will be raw readings, converting from voltage to 
@@ -59,7 +67,7 @@ void LogData(){
   if(bufferCounter >= 64) return;
   plantLightReading = analogRead(aquaLight);
   aquaLightReading = analogRead(plantLight);
-//  waterTempReading = analogRead(waterTempSensor);
+  waterTempReading = ReadTemp();
   waterTurbReading = analogRead(waterTurbSensor);
   plantLightBuffer[bufferCounter] = plantLightReading;
   aquaLightBuffer[bufferCounter] = aquaLightReading;
@@ -74,6 +82,79 @@ void LogData(){
   Serial.println(waterTempReading);
   Serial.print(" waterTurb: ");
   Serial.print(waterTurbReading);
+}
+
+//Script I found online and modifed using the OneWire, returns the temperature in fahrenheit.
+float ReadTemp(){
+  byte i;
+  byte present = 0;
+  byte type_s;
+  byte data[12];
+  byte addr[8];
+  float celsius, fahrenheit;
+
+  if ( !ds.search(addr)) {
+//    Serial.println("No more addresses.");
+    ds.reset_search();
+    delay(250);
+    return;
+  }
+
+  if (OneWire::crc8(addr, 7) != addr[7]) {
+//      Serial.println("CRC is not valid!");
+      return;
+  }
+
+  // the first ROM byte indicates which chip
+  switch (addr[0]) {
+    case 0x10:
+//      Serial.println("  Chip = DS18S20");  // or old DS1820
+      type_s = 1;
+      break;
+    case 0x28:
+//      Serial.println("  Chip = DS18B20");
+      type_s = 0;
+      break;
+    case 0x22:
+//      Serial.println("  Chip = DS1822");
+      type_s = 0;
+      break;
+    default:
+//      Serial.println("Device is not a DS18x20 family device.");
+      return;
+  } 
+
+  ds.reset();
+  ds.select(addr);
+  ds.write(0x44);        // start conversion, use ds.write(0x44,1) with parasite power on at the end
+
+  delay(1000);     // maybe 750ms is enough, maybe not
+  // we might do a ds.depower() here, but the reset will take care of it.
+
+  present = ds.reset();
+  ds.select(addr);    
+  ds.write(0xBE);         // Read Scratchpad
+
+  for ( i = 0; i < 9; i++) {           // we need 9 bytes
+    data[i] = ds.read();
+  }
+
+  int16_t raw = (data[1] << 8) | data[0];
+  if (type_s) {
+    raw = raw << 3; // 9 bit resolution default
+    if (data[7] == 0x10) {
+      // "count remain" gives full 12 bit resolution
+      raw = (raw & 0xFFF0) + 12 - data[6];
+    }
+  } else {
+    byte cfg = (data[4] & 0x60);
+    if (cfg == 0x00) raw = raw & ~7;  // 9 bit resolution, 93.75 ms
+    else if (cfg == 0x20) raw = raw & ~3; // 10 bit res, 187.5 ms
+    else if (cfg == 0x40) raw = raw & ~1; // 11 bit res, 375 ms
+  }
+  celsius = (float)raw / 16.0;
+  fahrenheit = celsius * 1.8 + 32.0;
+  return fahrenheit;
 }
 
 //im sure there is a better way, consider a timeout? 
@@ -97,10 +178,17 @@ void SendBuffer(int buf[]){
 
 void GetInput(){
   if (Serial.available() > 0) {
-//    incomingByte = Serial.read();
-//    if(incomingByte == 'a'){
-//       
-//    }
+    incomingByte = Serial.read();
+ 
+    //light schduling 
+    //turn lights off
+    if(incomingByte == 1){
+       digitalWrite(RELAY1,0);
+    }
+    //turn lights on
+    if(incomingByte == 2){
+       digitalWrite(RELAY1,1);
+    }
   }
 }
 
@@ -126,8 +214,6 @@ void SendCommands(){
     digitalWrite(turbLed, HIGH);
   }
 
-//  aquarium light scheduling
 //  water temp modifications
-//  plant light scheduling
 }
 
