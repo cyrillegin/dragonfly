@@ -1,7 +1,9 @@
+
+#include <OneWire.h>
 //L = left sensor, R = right sensor
 #define lightSensorR A0
 #define lightSensorL A1
-#define waterTempSensor A2
+OneWire  ds(2); //water temp sensor on digital pin 2
 #define waterTurbSensor A3
 
 #define minLightL 0
@@ -61,7 +63,6 @@ void LogData(){
   lightL = analogRead(lightSensorL);
   waterTemp = analogRead(waterTempSensor);
   waterTurb = analogRead(waterTurbSensor);
-  waterPH = analogRead(waterPHSensor);
   lightRBuffer[bufferCounter] = lightR;
   lightLBuffer[bufferCounter] = lightL;
   tempBuffer[bufferCounter] = waterTemp;
@@ -98,10 +99,10 @@ void SendBuffer(int buf[]){
 
 void GetInput(){
   if (Serial.available() > 0) {
-    incomingByte = Serial.read();
-    if(incomingByte == 'a'){
-       
-    }
+//    incomingByte = Serial.read();
+//    if(incomingByte == 'a'){
+//       
+//    }
   }
 }
 
