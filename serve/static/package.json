@@ -1,0 +1,17 @@
+{
+  "name": "dragonfly",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Arduino poller",
+  "repository": "https://github.com/angular/angular-seed",
+  "license": "MIT",
+  "devDependencies": {
+    "angular-mocks": "^1.4.8",
+    "bower": "^1.4.1",
+    "requirejs": "^2.1.22"
+  },
+  "scripts": {
+    "postinstall": "bower install --config.interactive=false"
+  }
+}
+
