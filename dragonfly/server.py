@@ -1,4 +1,5 @@
 import os
+import sys
 import cherrypy
 
 from tool import SQLAlchemyTool
@@ -7,12 +8,16 @@ import base
 
 # from sqlalchemy.ext.declarative import declarative_base
 from cherrypy.lib.static import serve_file
+from api import ResourceApi
 
-PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+
+PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(PATH)
 STATIC = os.path.join(PATH, 'static')
 
 
 class Root(object):
+    api = ResourceApi()
 
     @property
     def db(self):
@@ -26,11 +31,14 @@ class Root(object):
 def get_cp_config():
     return {
         '/': {
-            # 'tools.db.on': True,
+            'tools.db.on': True,
             'tools.staticdir.on': True,
             'tools.staticdir.dir': STATIC,
             'tools.staticdir.index': 'index.html',
         },
+        '/api': {
+            'request.dispatch': cherrypy.dispatch.MethodDispatcher()
+        }
     }
 
 

@@ -6,3 +6,5 @@ hackadayFiles/
 node_modules/
 bower_components/
 
+#database files
+*.db
