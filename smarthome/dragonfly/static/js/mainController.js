@@ -2,7 +2,7 @@
 
 angular.module('dragonfly.maincontroller', ['googlechart'])
 
-.controller("mainController", function ($scope) {
+.controller("mainController",['$scope', 'apiService', function ($scope, apiService) {
 
     function DrawChart(){
         $scope.myChartObject = {};  
@@ -21,5 +21,16 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
             displayAnnotations: true
         };
     }
+
+    function GetData(){
+      apiService.get('sensors').then(function(response){
+        var info = response.data.results
+        console.log("we got: ");
+        console.log(info);
+      }), function(error){
+        console.log("we erred: " + error)
+      }
+    }
+    GetData();
     DrawChart();
-});
+}]);
