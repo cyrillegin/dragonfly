@@ -8,3 +8,6 @@ bower_components/
 
 #database files
 *.db
+
+#compile files
+*.pyc
