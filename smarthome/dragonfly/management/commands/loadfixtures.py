@@ -7,12 +7,19 @@ class Command(BaseCommand):
     help = 'Load a days worth of data.'
 
     def handle(self, *args, **options):
+        # Create two sensors
         data = {
-            'id': 1,
-            'name': 'testPoster',
-            'coefficents': "beer",
+            'name': 'testSensor1',
+            'coefficents': "(2,63",
             'units': 'oz'
         }
-        sensorUrl = "http://0.0.0.0:8000/dragonfly/sensors/"
-        requests.post(sensorUrl, json.dumps(data))
+        sensorUrl = "http://0.0.0.0:8000/dragonfly/api/sensors/"
+        requests.post(sensorUrl, json.dumps(data, indent=2))
 
+        data = {
+            'name': 'testSensor2',
+            'coefficents': "9/5, 32",
+            'units': 'degrees'
+        }
+        sensorUrl = "http://0.0.0.0:8000/dragonfly/api/sensors/"
+        requests.post(sensorUrl, json.dumps(data, indent=2))

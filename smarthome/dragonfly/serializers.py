@@ -33,9 +33,8 @@ class SensorSerializer(serializers.ModelSerializer):
 
 class ReadingSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
-    value = serializers.FloatField(required=True)
-    time_stamp = serializers.DateTimeField(required=True)
-    # change this to a foreign key...
+    value = serializers.FloatField()
+    time_stamp = serializers.DateTimeField(required=False)
     sensor = serializers.PrimaryKeyRelatedField(queryset=models.Sensor.objects.all())
 
     def create(self, validated_data):
@@ -43,12 +42,13 @@ class ReadingSerializer(serializers.ModelSerializer):
         Create and return a new `Snippet` instance, given the validated data.
         """
         print "\nCreating\n"
-        return models.Sensor.objects.create(**validated_data)
+        return models.Reading.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         """
         Update and return an existing `Snippet` instance, given the validated data.
         """
+        print "there"
         instance.value = validated_data.get('value', instance.value)
         instance.time_stamp = validated_data.get('time_stamp', instance.time_stamp)
         instance.sensor = validated_data.get('sensor', instance.sensor)

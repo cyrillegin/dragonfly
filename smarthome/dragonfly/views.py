@@ -4,7 +4,6 @@ from rest_framework import viewsets
 import serializers
 
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
@@ -26,6 +25,7 @@ class ReadingViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
+    print"here"
     queryset = models.Reading.objects.all()
     serializer_class = serializers.ReadingSerializer
 
@@ -53,6 +53,25 @@ def sensor_list(request):
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = serializers.SensorSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
+
+
+@api_view(['GET', 'POST'])
+def reading_list(request):
+    """
+    List all code snippets, or create a new snippet.
+    """
+    if request.method == 'GET':
+        readings = models.Reading.objects.all()
+        serializer = serializers.SensorSerializer(readings, many=True)
+        return JSONResponse(serializer.data)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = serializers.ReadingSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data, status=201)
