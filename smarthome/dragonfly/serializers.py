@@ -1,9 +1,15 @@
 from rest_framework import serializers
-from dragonfly.models import Sensor
+from dragonfly.models import Sensor, Reading
+
+
+class ReadingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reading
+        fields = ('created', 'value')
 
 
 class SensorSerializer(serializers.HyperlinkedModelSerializer):
-    readings = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    readings = ReadingSerializer(many=True, read_only=True)
 
     class Meta:
         model = Sensor

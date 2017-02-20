@@ -1,13 +1,8 @@
 <div ng-controller="mainController">
-Welcome to Dragonfly
+    Welcome to Dragonfly
 
-
-
-
-<div>
-<div google-chart chart="myChartObject" style="height:600px; width:100%;" />
+    <div ng-repeat="chart in charts">
+        <div google-chart chart=chart style="height:600px; width:100%;" />
+    </div>
 </div>
 
-
-
-</div>

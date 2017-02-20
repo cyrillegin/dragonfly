@@ -4,22 +4,24 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
 .controller("mainController",['$scope', 'apiService', function ($scope, apiService) {
 
-    function DrawChart(){
-        $scope.myChartObject = {};  
+    function DrawChart(data){
+        var myChartObject = {};  
 
-        $scope.myChartObject.type = "LineChart";
+        myChartObject.type = "LineChart";
 
-        $scope.myChartObject.data = [
-          ['Year', 'Sales', 'Expenses'],
-          ['2004',  1000,      400],
-          ['2005',  1170,      460],
-          ['2006',  660,       1120],
-          ['2007',  1030,      540]
+        myChartObject.data = [
+          ['Time', 'Value']
         ]
 
-        $scope.myChartObject.options = {
+        for(var i in data.readings){
+          myChartObject.data.push([new Date(data.readings[i].created), data.readings[i].value])
+        }
+
+        myChartObject.options = {
             displayAnnotations: true
         };
+
+        $scope.charts.push(myChartObject)
     }
 
     function GetData(){
@@ -27,10 +29,15 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         var info = response.data.results
         console.log("we got: ");
         console.log(info);
+        $scope.charts = [];
+        for(var i in info){
+          if(info[i].readings.length < 5) continue;
+          DrawChart(info[i]);
+        }
       }), function(error){
         console.log("we erred: " + error)
       }
     }
     GetData();
-    DrawChart();
+   
 }]);
