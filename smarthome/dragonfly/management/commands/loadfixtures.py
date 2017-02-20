@@ -1,25 +1,18 @@
-from django.core.management.base import BaseCommand, CommandError
-import requests
-import json
+from django.core.management.base import BaseCommand
+
+from dragonfly import models
+import math
 
 
 class Command(BaseCommand):
     help = 'Load a days worth of data.'
 
     def handle(self, *args, **options):
-        # Create two sensors
-        data = {
-            'name': 'testSensor1',
-            'coefficents': "(2,63",
-            'units': 'oz'
-        }
-        sensorUrl = "http://0.0.0.0:8000/dragonfly/api/sensors/"
-        requests.post(sensorUrl, json.dumps(data, indent=2))
+        testSense = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)")
+        testSense.save()
 
-        data = {
-            'name': 'testSensor2',
-            'coefficents': "9/5, 32",
-            'units': 'degrees'
-        }
-        sensorUrl = "http://0.0.0.0:8000/dragonfly/api/sensors/"
-        requests.post(sensorUrl, json.dumps(data, indent=2))
+        for i in range(0, 24 * 60):
+            newVal = 400 * math.sin(0.1*i)
+            print "saving: {}".format(newVal)
+            newReading = models.Reading(sensor=testSense, value=newVal)
+            newReading.save()
