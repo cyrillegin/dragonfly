@@ -4,6 +4,18 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
 .controller("mainController",['$scope', 'apiService', function ($scope, apiService) {
 
+    $scope.showdetails = false;
+
+    $scope.ShowDetails = function(){
+      if($scope.showdetails){
+        $scope.showdetails = false;
+        $('#detailsBtn').text("Show Details");
+      } else {
+        $scope.showdetails = true;
+        $('#detailsBtn').text("Hide Details");
+      }
+    }
+
     function DrawLineChart(data){
         var myChartObject = {};  
 
