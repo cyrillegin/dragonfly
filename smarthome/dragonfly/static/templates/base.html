@@ -1,30 +1,37 @@
 <div ng-controller="mainController">
     <H2>Welcome to Dragonfly</H2>
-    
-   <div ng-repeat="graph in tempCharts">
-        <div google-chart chart=graph width:100%/>
+    <div class="row">
+        <div class="col-md-3">
+           <div ng-repeat="graph in tempCharts">
+                <div google-chart chart=graph width:100%/>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div ng-repeat="graph in cleanCharts">
+            {{graph.title}}
+                <img src="static/images/beaker.jpg" style="width:60px">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div ng-repeat="graph in lightSensorCharts">
+                <div google-chart chart=graph />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div ng-repeat="graph in lightSwitchCharts">
+                <h3>{{ graph.title }}</h3>
+                <input type="checkbox" name="my-checkbox" id={{graph.id}} checked>
+            </div>
+        </div>
     </div>
-
-    <div ng-repeat="graph in cleanCharts">
-    {{graph.title}}
-        <img src="static/images/beaker.jpg" style="width:60px">
-    </div>
-
-    <div ng-repeat="graph in lightSensorCharts">
-        <div google-chart chart=graph />
-    </div>
-
-    <div ng-repeat="graph in lightSwitchCharts">
-        <h3>{{ graph.title }}</h3>
-        <input type="checkbox" name="my-checkbox" id={{graph.id}} checked>
+        <div class="row">
         
-    </div>
-    
-    <button type="button" id="detailsBtn" class="btn btn-info" ng-click="ShowDetails()">Show Details</button>
-   
-    <div ng-if="showdetails">
-        <div ng-repeat="graph in graphs">
-            <div google-chart chart=graph  width:100%;/>
+        <button type="button" id="detailsBtn" class="btn btn-info" ng-click="ShowDetails()">Show Details</button>
+       
+        <div ng-if="showdetails">
+            <div ng-repeat="graph in graphs">
+                <div google-chart chart=graph  width:100%;/>
+            </div>
         </div>
     </div>
 </div>
