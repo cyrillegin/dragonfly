@@ -1,27 +1,30 @@
 <div ng-controller="mainController">
-    Welcome to Dragonfly
-    <button type="button" id="detailsBtn" class="btn btn-info" ng-click="ShowDetails()">Show Details</button>
-   
-   <div ng-repeat="temp in tempCharts">
+    <H2>Welcome to Dragonfly</H2>
+    
+   <div ng-repeat="graph in tempCharts">
+        <div google-chart chart=graph width:100%/>
+    </div>
+
+    <div ng-repeat="graph in cleanCharts">
+    {{graph.title}}
+        <img src="static/images/beaker.jpg" style="width:60px">
+    </div>
+
+    <div ng-repeat="graph in lightSensorCharts">
         <div google-chart chart=graph />
     </div>
 
-    <div ng-repeat="temp in cleanCharts">
-        <div google-chart chart=graph />
-    </div>
-
-    <div ng-repeat="temp in lightSensorCharts">
-        <div google-chart chart=graph />
-    </div>
-
-    <div ng-repeat="temp in lightSwitchCharts">
-        <div google-chart chart=graph />
+    <div ng-repeat="graph in lightSwitchCharts">
+        <h3>{{ graph.title }}</h3>
+        <input type="checkbox" name="my-checkbox" id={{graph.id}} checked>
+        
     </div>
     
+    <button type="button" id="detailsBtn" class="btn btn-info" ng-click="ShowDetails()">Show Details</button>
+   
     <div ng-if="showdetails">
         <div ng-repeat="graph in graphs">
             <div google-chart chart=graph  width:100%;/>
         </div>
     </div>
 </div>
-

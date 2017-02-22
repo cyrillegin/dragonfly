@@ -2,7 +2,7 @@
 
 angular.module('dragonfly.maincontroller', ['googlechart'])
 
-.controller("mainController",['$scope', 'apiService', function ($scope, apiService) {
+.controller("mainController",['$scope', '$timeout', 'apiService', function ($scope, $timeout, apiService) {
 
     $scope.showdetails = false;
 
@@ -27,9 +27,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         var info = response.data.results
         console.log(info);
         for(var i in info){
-          if(info[i].readings.length < 3) continue;
-          DrawLineChart(info[i]);
-          
           switch(info[i].sensor_type){
             case "temperature": 
               DrawTempChart(info[i]);
@@ -41,10 +38,17 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
               DrawLightSenseChart(info[i]);
               break;
             case "lightswitch":
-              DrawLightSwitchChart();
+              DrawLightSwitch(info[i]);
               break;
           }
+          if(info[i].readings.length < 3) continue;
+          DrawLineChart(info[i]);
         }
+      }).then(function(){
+        $timeout(function(){
+          console.log("here")
+          $('#switch-47').bootstrapSwitch();
+        }, 500);
       }), function(error){
         console.log("we erred: " + error)
       }
@@ -52,18 +56,29 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     
 
     function DrawCleanChart(data){
-
+      console.log("draw clean")
+      var cleanObj = {
+        "title": data.name,
+        "id": "clean-" + data.id
+      }
+      $scope.cleanCharts.push(cleanObj);
     }
 
     function DrawLightSenseChart(data){
-
+      console.log("draw light sense")
     }
 
-    function DrawLightSwitchChart(info){
-
+    function DrawLightSwitch(data){
+      console.log("draw light switch")
+      var switchObj = {
+        "title": data.name,
+        "id": "switch-"+data.id
+      }
+      $scope.lightSwitchCharts.push(switchObj);
     }
 
     function DrawTempChart(data){
+      console.log("Draw temp")
       var myChartObject = {}; 
       myChartObject.type = "Gauge"
       myChartObject.data = [
@@ -83,6 +98,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     }
    
    function DrawLineChart(data){
+    console.log("draw line")
         var myChartObject = {};  
 
         myChartObject.type = "LineChart";
