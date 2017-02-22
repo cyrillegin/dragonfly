@@ -4,7 +4,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
 .controller("mainController",['$scope', 'apiService', function ($scope, apiService) {
 
-    $scope.showdetails = false;
+    $scope.showdetails = true;
 
     $scope.ShowDetails = function(){
       if($scope.showdetails){
@@ -16,7 +16,70 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
       }
     }
 
-    function DrawLineChart(data){
+    function GetData(){
+      apiService.get('sensors').then(function(response){
+        var info = response.data.results
+        console.log("we got: ");
+        console.log(info);
+        $scope.graphs = [];
+        for(var i in info){
+          if(info[i].readings.length < 3) continue;
+          DrawLineChart(info[i]);
+          
+          switch(info[i].sensor_type){
+            case "temperature": 
+              DrawTempChart(info[i]);
+              break;
+            case "cleanliness":
+              DrawCleanChart(info[i]);
+              break;
+            case "lightsensor":
+              DrawLightSenseChart(info[i]);
+              break;
+            case "lightswitch":
+              DrawLightSwitchChart();
+              break;
+          }
+        }
+      }), function(error){
+        console.log("we erred: " + error)
+      }
+    }
+    GetData();
+
+    function DrawCleanChart(data){
+
+    }
+
+    function DrawLightSenseChart(data){
+
+    }
+
+    function DrawLightSwitchChart(info){
+
+    }
+
+    function DrawTempChart(data){
+      var myChartObject = {}; 
+      myChartObject.type = "Gauge"
+      myChartObject.data = [
+          ['Label', 'Value'],
+          [data.name, data.readings[data.readings.length-1].value]
+      ];
+
+      myChartObject.options = {
+          width: 400, height: 120,
+          yellowFrom: 0, yellowTo: 55, yellowColor: '#4286f4',
+          greenFrom: 55, greenTo: 80, greenColor: '#0cff2d',
+          redFrom: 80, redTo: 120, redColor: '#ff0c0c',
+          minorTicks: 5
+      };
+
+      $scope.charts.push(myChartObject)
+    }
+   
+   function DrawLineChart(data){
+    console.log("here")
         var myChartObject = {};  
 
         myChartObject.type = "LineChart";
@@ -41,48 +104,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
             'title': data.name
         };
 
-        $scope.charts.push(myChartObject)
+        $scope.graphs.push(myChartObject)
     }
-
-    function DrawTempChart(data){
-      var myChartObject = {}; 
-      myChartObject.type = "Gauge"
-      myChartObject.data = [
-          ['Label', 'Value'],
-          [data.name, data.readings[data.readings.length-1].value]
-        ];
-
-        myChartObject.options = {
-          width: 400, height: 120,
-          yellowFrom: 0, yellowTo: 55, yellowColor: '#4286f4',
-          greenFrom: 55, greenTo: 80, greenColor: '#0cff2d',
-          redFrom: 80, redTo: 120, redColor: '#ff0c0c',
-          minorTicks: 5
-        };
-
-
-        $scope.charts.push(myChartObject)
-    }
-
-    function GetData(){
-      apiService.get('sensors').then(function(response){
-        var info = response.data.results
-        console.log("we got: ");
-        console.log(info);
-        $scope.charts = [];
-        for(var i in info){
-          if(info[i].readings.length < 3) continue;
-          // if(info[i].type === "temp"){
-            DrawTempChart(info[i]);
-          // }
-          // if(info[i].type === "line"){
-            DrawLineChart(info[i]);
-          // }
-        }
-      }), function(error){
-        console.log("we erred: " + error)
-      }
-    }
-    GetData();
-   
 }]);
