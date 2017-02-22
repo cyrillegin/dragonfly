@@ -4,7 +4,13 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
 .controller("mainController",['$scope', 'apiService', function ($scope, apiService) {
 
-    $scope.showdetails = true;
+    $scope.showdetails = false;
+
+    $scope.graphs = [];
+    $scope.tempCharts = [];
+    $scope.cleanCharts = [];
+    $scope.lightSensorCharts = [];
+    $scope.lightSwitchCharts = [];
 
     $scope.ShowDetails = function(){
       if($scope.showdetails){
@@ -19,9 +25,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     function GetData(){
       apiService.get('sensors').then(function(response){
         var info = response.data.results
-        console.log("we got: ");
         console.log(info);
-        $scope.graphs = [];
         for(var i in info){
           if(info[i].readings.length < 3) continue;
           DrawLineChart(info[i]);
@@ -45,7 +49,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         console.log("we erred: " + error)
       }
     }
-    GetData();
+    
 
     function DrawCleanChart(data){
 
@@ -75,11 +79,10 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
           minorTicks: 5
       };
 
-      $scope.charts.push(myChartObject)
+      $scope.tempCharts.push(myChartObject)
     }
    
    function DrawLineChart(data){
-    console.log("here")
         var myChartObject = {};  
 
         myChartObject.type = "LineChart";
@@ -106,4 +109,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
         $scope.graphs.push(myChartObject)
     }
+
+    GetData();
+
 }]);

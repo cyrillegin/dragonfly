@@ -1,9 +1,26 @@
 <div ng-controller="mainController">
     Welcome to Dragonfly
     <button type="button" id="detailsBtn" class="btn btn-info" ng-click="ShowDetails()">Show Details</button>
+   
+   <div ng-repeat="temp in tempCharts">
+        <div google-chart chart=graph />
+    </div>
+
+    <div ng-repeat="temp in cleanCharts">
+        <div google-chart chart=graph />
+    </div>
+
+    <div ng-repeat="temp in lightSensorCharts">
+        <div google-chart chart=graph />
+    </div>
+
+    <div ng-repeat="temp in lightSwitchCharts">
+        <div google-chart chart=graph />
+    </div>
+    
     <div ng-if="showdetails">
         <div ng-repeat="graph in graphs">
-            <div google-chart chart=graph  width:100%;" />
+            <div google-chart chart=graph  width:100%;/>
         </div>
     </div>
 </div>
