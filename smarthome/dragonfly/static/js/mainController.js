@@ -4,7 +4,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
 .controller("mainController",['$scope', 'apiService', function ($scope, apiService) {
 
-    function DrawChart(data){
+    function DrawLineChart(data){
         var myChartObject = {};  
 
         myChartObject.type = "LineChart";
@@ -14,12 +14,40 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         ]
 
         for(var i in data.readings){
-          myChartObject.data.push([new Date(data.readings[i].created), data.readings[i].value])
+          
+          var vals = data.coefficients.split(",")
+          var coef = {
+            'x': parseInt(vals[0][1]),
+            'y': parseInt(vals[1][0])
+          }
+          var value = data.readings[i].value * coef.x + coef.y; 
+          myChartObject.data.push([new Date(data.readings[i].created), value])
         }
 
         myChartObject.options = {
-            displayAnnotations: true
+            displayAnnotations: true,
+            'title': data.name
         };
+
+        $scope.charts.push(myChartObject)
+    }
+
+    function DrawTempChart(data){
+      var myChartObject = {}; 
+      myChartObject.type = "Gauge"
+      myChartObject.data = [
+          ['Label', 'Value'],
+          [data.name, data.readings[data.readings.length-1].value]
+        ];
+
+        myChartObject.options = {
+          width: 400, height: 120,
+          yellowFrom: 0, yellowTo: 55, yellowColor: '#4286f4',
+          greenFrom: 55, greenTo: 80, greenColor: '#0cff2d',
+          redFrom: 80, redTo: 120, redColor: '#ff0c0c',
+          minorTicks: 5
+        };
+
 
         $scope.charts.push(myChartObject)
     }
@@ -31,8 +59,13 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         console.log(info);
         $scope.charts = [];
         for(var i in info){
-          if(info[i].readings.length < 5) continue;
-          DrawChart(info[i]);
+          if(info[i].readings.length < 3) continue;
+          // if(info[i].type === "temp"){
+            DrawTempChart(info[i]);
+          // }
+          // if(info[i].type === "line"){
+            DrawLineChart(info[i]);
+          // }
         }
       }), function(error){
         console.log("we erred: " + error)
