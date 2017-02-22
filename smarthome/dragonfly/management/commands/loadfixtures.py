@@ -8,14 +8,19 @@ class Command(BaseCommand):
     help = 'Load a days worth of data.'
 
     def handle(self, *args, **options):
-        testTemp = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)", sensor_type="temperature")
-        testTemp.save()
+        testTemp1 = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)", sensor_type="temperature")
+        testTemp1.save()
+
+        testTemp2 = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)", sensor_type="temperature")
+        testTemp2.save()
 
         for i in range(0, 24 * 60):
             newVal = 60 + 30 * math.sin(0.1 * i)
             print "saving: {}".format(newVal)
-            newReading = models.Reading(sensor=testTemp, value=newVal)
-            newReading.save()
+            newReading1 = models.Reading(sensor=testTemp1, value=newVal)
+            newReading1.save()
+            newReading2 = models.Reading(sensor=testTemp2, value=newVal)
+            newReading2.save()
 
         testCleanliness = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)", sensor_type="cleanliness")
         testCleanliness.save()
@@ -26,14 +31,22 @@ class Command(BaseCommand):
             newReading = models.Reading(sensor=testCleanliness, value=newVal)
             newReading.save()
 
-        testlightSensor = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)", sensor_type="lightsensor")
-        testlightSensor.save()
+        testlightSensor1 = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)", sensor_type="lightsensor")
+        testlightSensor1.save()
+
+        testlightSensor2 = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)", sensor_type="lightsensor")
+        testlightSensor2.save()
 
         for i in range(0, 24 * 60):
             newVal = 500 + 500 * math.sin(0.1 * i)
             print "saving: {}".format(newVal)
-            newReading = models.Reading(sensor=testlightSensor, value=newVal)
-            newReading.save()
+            newReading1 = models.Reading(sensor=testlightSensor1, value=newVal)
+            newReading1.save()
+            newReading2 = models.Reading(sensor=testlightSensor2, value=newVal)
+            newReading2.save()
+
+        testlightSwitch = models.Sensor(name="test1", description="A test sensor", coefficients="(1,0)", sensor_type="lightswitch")
+        testlightSwitch.save()
 
         for i in range(0, 24 * 60):
             newVal = int(math.sin(0.1 * i) + 0.5)
