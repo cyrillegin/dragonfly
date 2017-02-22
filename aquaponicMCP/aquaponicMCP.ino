@@ -2,13 +2,14 @@
 #include "OneWire.h"
 
 //analog pins
-#define plantLight A0
+#define plantLight A1
 #define aquaLight A1
-#define waterTurbSensor A2
+#define waterTurbSensor A0
+#define ovenTemp A0
 
 //digital pins
 OneWire  ds(2); //water temp sensor
-#define RELAY1  3
+#define RELAY1  5
 #define plantLed 4
 #define aquaLed 5
 #define turbLed 6
@@ -28,16 +29,11 @@ float aquaLightReading = 0.0;
 float plantLightReading = 0.0;
 float waterTempReading = 0.0;
 float waterTurbReading = 0.0;
-
-//buffers to hold sensor data
-uint16_t plantLightBuffer[64];
-uint16_t aquaLightBuffer[64];
-uint16_t tempBuffer[64];
-uint16_t turbBuffer[64];
+float ovenTempReading = 0.0;
 
 uint8_t bufferCounter = 1;
 
-bool powerIsOn = false;
+bool powerIsOn = true;
 
 uint8_t incomingByte;
 
@@ -48,21 +44,19 @@ unsigned long autoTimer = 0;
 //run once on start
 void setup() {
   Serial.begin(9600);
-  plantLightBuffer[0] = 1791;
-  aquaLightBuffer[0] = 1792;
-  tempBuffer[0] = 1793;
-  turbBuffer[0] = 1794;
+  Serial.println("hi");
   pinMode(plantLed, OUTPUT);
   pinMode(aquaLed, OUTPUT);
   pinMode(turbLed, OUTPUT);
   pinMode(tempLed, OUTPUT);
   pinMode(lightButton, INPUT);
   digitalWrite(lightButton, HIGH);
+  pinMode(RELAY1, OUTPUT);
+  digitalWrite(RELAY1, HIGH);
 }
 
 //main program loop.
 void loop() {
-  LogData();
   SendData();
   SendCommands();
   GetManual();
@@ -80,37 +74,32 @@ void loop() {
  * After an hour has passed, auto mode will turn back on.
  */
 void GetManual(){
-  if(digitalRead(lightButton)){
-    digitalWrite(RELAY1, powerIsOn);
-    powerIsOn = !powerIsOn;
-    autoTimer = millis();
-  }
+//  if(digitalRead(lightButton)){
+////    digitalWrite(RELAY1, powerIsOn);
+//    powerIsOn = !powerIsOn;
+//    autoTimer = millis();
+//  }
 }
 
 /*these will be raw readings, converting from voltage to 
  * degrees or light etc should most likly done in a seperate 
  * function or even in the data logger.
  */
-void LogData(){
-  if(bufferCounter >= 64) return;
-  plantLightReading = analogRead(aquaLight);
-  aquaLightReading = analogRead(plantLight);
-  waterTempReading = ReadTemp();
-  waterTurbReading = analogRead(waterTurbSensor);
-  plantLightBuffer[bufferCounter] = plantLightReading;
-  aquaLightBuffer[bufferCounter] = aquaLightReading;
-  tempBuffer[bufferCounter] = waterTempReading;
-  turbBuffer[bufferCounter] = waterTurbReading;
-  bufferCounter += 1;
-  Serial.print("aquaLight: ");
-  Serial.print(aquaLightReading);
-  Serial.print(" rightLight: ");
-  Serial.print(plantLightReading);
-  Serial.print(" waterTemp: ");
-  Serial.println(waterTempReading);
-  Serial.print(" waterTurb: ");
-  Serial.print(waterTurbReading);
+void SendData(){
+  String mystr = "['data', {'station': 'aquaponicStation', 'sensors': [{'sensor': 'aquaLight', 'value': ";
+  mystr += analogRead(aquaLight) ;
+  mystr += "},{'sensor':'plantLight','value':";
+  mystr += analogRead(plantLight);
+  mystr += "},{'sensor':'waterTurb','value':";
+  mystr += analogRead(waterTurbSensor);
+//  mystr += "},{'sensor':'waterTemp','value':";
+//  mystr += ReadTemp();
+  mystr += "},{'sensor':'OvenTemp','value':";
+  mystr += analogRead(ovenTemp);
+  mystr += "}]}]";
+  Serial.println(mystr);
 }
+
 
 //Script I found online and modifed using the OneWire, returns the temperature in fahrenheit.
 float ReadTemp(){
@@ -185,26 +174,6 @@ float ReadTemp(){
   return fahrenheit;
 }
 
-/* Im sure there is a better way, consider a timeout? 
- * we'll need to check for missed or overwritten data 
- * because this might take to long
- */
-void SendData(){
-  if(bufferCounter >= 64){
-    SendBuffer(plantLightBuffer);
-    SendBuffer(aquaLightBuffer);
-    SendBuffer(tempBuffer);
-    SendBuffer(turbBuffer);
-    bufferCounter = 1;
-  }
-}
-
-void SendBuffer(int buf[]){
-  for(int i = 0; i < 64; i++){
-    Serial.write(buf[i]);
-  }
-}
-
 //read input via serial
 void GetInput(){
   if (Serial.available() > 0) {
@@ -213,12 +182,12 @@ void GetInput(){
     //light schduling 
     //turn lights off
     if(incomingByte == 1){
-       digitalWrite(RELAY1,0);
+//       digitalWrite(RELAY1,0);
        powerIsOn = false;
     }
     //turn lights on
     if(incomingByte == 2){
-       digitalWrite(RELAY1,1);
+//       digitalWrite(RELAY1,1);
        powerIsOn = true;
     }
   }
