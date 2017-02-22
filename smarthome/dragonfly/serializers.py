@@ -14,4 +14,4 @@ class SensorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Sensor
         fields = ('url', 'id',
-                  'created', 'name', 'description', 'coefficients', 'readings')
+                  'created', 'name', 'description', 'coefficients', 'readings', 'sensor_type')
