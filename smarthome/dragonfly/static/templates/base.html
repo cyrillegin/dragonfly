@@ -8,13 +8,19 @@
         </div>
         <div class="col-md-3">
             <div ng-repeat="graph in cleanCharts">
-            {{graph.title}}
-                <img src="static/images/beaker.jpg" style="width:60px">
+                {{graph.title}}
+                <br>
+                <canvas id={{graph.id}} style="position: absolute;"></canvas>
+                <img src="static/images/beaker.jpg" style="width:100px">
+                {{graph.reading}}
             </div>
         </div>
         <div class="col-md-3">
             <div ng-repeat="graph in lightSensorCharts">
-                <div google-chart chart=graph />
+                {{graph.title}}
+                <br>
+                <img src="static/images/lightbulb.png" style="width:100px">
+                {{graph.reading}}
             </div>
         </div>
         <div class="col-md-3">
@@ -35,3 +41,4 @@
         </div>
     </div>
 </div>
+

@@ -12,6 +12,8 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     $scope.lightSensorCharts = [];
     $scope.lightSwitchCharts = [];
 
+    var switchids = [];
+
     $scope.ShowDetails = function(){
       if($scope.showdetails){
         $scope.showdetails = false;
@@ -47,25 +49,60 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
       }).then(function(){
         $timeout(function(){
           console.log("here")
-          $('#switch-47').bootstrapSwitch();
+          for(var i in switchids){
+            PostLoad();
+            
+          }
         }, 500);
       }), function(error){
         console.log("we erred: " + error)
       }
     }
-    
 
+    function PostLoad(){
+      //bootstrap switches
+      $('#'+switchids).bootstrapSwitch();
+
+      //clean chart drawings
+      for(var i in $scope.cleanCharts){
+        var cx = document.querySelector("#"+$scope.cleanCharts[i].id).getContext("2d");
+        cx.beginPath();
+        cx.moveTo(35, 0);
+        cx.lineTo(35, 50);
+
+        cx.lineTo(0, 100);
+        cx.lineTo(5, 110);
+        cx.lineTo(95, 110);
+        cx.lineTo(100,100);
+
+        cx.lineTo(65, 50);
+        cx.lineTo(65, 0);
+        
+        // cx.fillStyle = "rgb(68, 191, 255)" //use this to change the color
+        cx.fill();
+
+      }
+    }
+    
     function DrawCleanChart(data){
       console.log("draw clean")
       var cleanObj = {
         "title": data.name,
-        "id": "clean-" + data.id
+        "id": "clean-" + data.id,
+        "reading": data.readings[data.readings.length-1].value.toFixed(3)
       }
       $scope.cleanCharts.push(cleanObj);
+
     }
 
     function DrawLightSenseChart(data){
       console.log("draw light sense")
+      var myObj = {
+        "title": data.name,
+        "id": "light-"+data.id,
+        "reading": data.readings[data.readings.length-1].value.toFixed(3)
+      }
+      $scope.lightSensorCharts.push(myObj);
     }
 
     function DrawLightSwitch(data){
@@ -75,6 +112,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         "id": "switch-"+data.id
       }
       $scope.lightSwitchCharts.push(switchObj);
+      switchids.push("switch-"+data.id);
     }
 
     function DrawTempChart(data){
@@ -124,6 +162,10 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         };
 
         $scope.graphs.push(myChartObject)
+    }
+
+    function svgDraw(){
+      
     }
 
     GetData();
