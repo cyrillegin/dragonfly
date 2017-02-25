@@ -2,14 +2,14 @@
 #include "OneWire.h"
 
 //analog pins
-#define plantLight A1
+#define plantLight A2
 #define aquaLight A1
 #define waterTurbSensor A0
 #define ovenTemp A0
 
-//digital pins
+//digital pins  
 OneWire  ds(2); //water temp sensor
-#define RELAY1  5
+#define RELAY1 3
 #define plantLed 4
 #define aquaLed 5
 #define turbLed 6
@@ -44,7 +44,6 @@ unsigned long autoTimer = 0;
 //run once on start
 void setup() {
   Serial.begin(9600);
-  Serial.println("hi");
   pinMode(plantLed, OUTPUT);
   pinMode(aquaLed, OUTPUT);
   pinMode(turbLed, OUTPUT);
@@ -53,6 +52,7 @@ void setup() {
   digitalWrite(lightButton, HIGH);
   pinMode(RELAY1, OUTPUT);
   digitalWrite(RELAY1, HIGH);
+  Serial.print("hi");
 }
 
 //main program loop.
@@ -92,8 +92,8 @@ void SendData(){
   mystr += analogRead(plantLight);
   mystr += "},{'sensor':'waterTurb','value':";
   mystr += analogRead(waterTurbSensor);
-//  mystr += "},{'sensor':'waterTemp','value':";
-//  mystr += ReadTemp();
+  mystr += "},{'sensor':'waterTemp','value':";
+  mystr += ReadTemp();
   mystr += "},{'sensor':'OvenTemp','value':";
   mystr += analogRead(ovenTemp);
   mystr += "}]}]";
@@ -111,33 +111,27 @@ float ReadTemp(){
   float celsius, fahrenheit;
 
   if ( !ds.search(addr)) {
-//    Serial.println("No more addresses.");
     ds.reset_search();
     delay(250);
     return;
   }
 
   if (OneWire::crc8(addr, 7) != addr[7]) {
-//      Serial.println("CRC is not valid!");
       return;
   }
 
   // the first ROM byte indicates which chip
   switch (addr[0]) {
     case 0x10:
-//      Serial.println("  Chip = DS18S20");  // or old DS1820
       type_s = 1;
       break;
     case 0x28:
-//      Serial.println("  Chip = DS18B20");
       type_s = 0;
       break;
     case 0x22:
-//      Serial.println("  Chip = DS1822");
       type_s = 0;
       break;
     default:
-//      Serial.println("Device is not a DS18x20 family device.");
       return;
   } 
 
@@ -178,16 +172,15 @@ float ReadTemp(){
 void GetInput(){
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
- 
     //light schduling 
     //turn lights off
-    if(incomingByte == 1){
-//       digitalWrite(RELAY1,0);
+    if(incomingByte == 48){     //being sent 1
+       digitalWrite(RELAY1,0);
        powerIsOn = false;
     }
     //turn lights on
-    if(incomingByte == 2){
-//       digitalWrite(RELAY1,1);
+    if(incomingByte == 49){     //being sent 0
+       digitalWrite(RELAY1,1);
        powerIsOn = true;
     }
   }

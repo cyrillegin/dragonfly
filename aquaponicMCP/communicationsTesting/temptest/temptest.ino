@@ -11,6 +11,7 @@ OneWire  ds(2);  // on pin 2 (a 4.7K resistor is necessary)
 
 void setup(void) {
   Serial.begin(9600);
+  Serial.print("hi");
 }
 
 void loop(void) {
@@ -22,41 +23,32 @@ void loop(void) {
   float celsius, fahrenheit;
 
   if ( !ds.search(addr)) {
-    Serial.println("No more addresses.");
-    Serial.println();
+  Serial.print("no");
     ds.reset_search();
     delay(250);
     return;
   }
 
-  Serial.print("ROM =");
   for( i = 0; i < 8; i++) {
-    Serial.write(' ');
-    Serial.print(addr[i], HEX);
+
   }
 
   if (OneWire::crc8(addr, 7) != addr[7]) {
-      Serial.println("CRC is not valid!");
       return;
   }
-  Serial.println();
 
   // the first ROM byte indicates which chip
   switch (addr[0]) {
     case 0x10:
-      Serial.println("  Chip = DS18S20");  // or old DS1820
       type_s = 1;
       break;
     case 0x28:
-      Serial.println("  Chip = DS18B20");
       type_s = 0;
       break;
     case 0x22:
-      Serial.println("  Chip = DS1822");
       type_s = 0;
       break;
     default:
-      Serial.println("Device is not a DS18x20 family device.");
       return;
   } 
 
