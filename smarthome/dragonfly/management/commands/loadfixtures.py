@@ -51,5 +51,5 @@ class Command(BaseCommand):
         for i in range(0, 24 * 60):
             newVal = int(math.sin(0.1 * i) + 0.5)
             print "saving: {}".format(newVal)
-            newReading = models.Reading(sensor=testlightSensor, value=newVal)
+            newReading = models.Reading(sensor=testlightSwitch, value=newVal)
             newReading.save()
