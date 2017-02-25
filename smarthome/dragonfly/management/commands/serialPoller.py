@@ -61,7 +61,7 @@ class Command(BaseCommand):
                     f.extend(filenames)
                 devices = []
                 for i in f:
-                    if i.startswith('tty.') and i.startswith('tty.Blue') is False:
+                    if i.startswith('ttyUSB'):
                         devices.append(i)
                 print"Devices found:"
                 print devices
