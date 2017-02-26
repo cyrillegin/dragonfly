@@ -12,6 +12,9 @@ import json
 from multiprocessing import Process
 
 
+CommandsQueue = []
+
+
 def getInfo(device):
     time.sleep(1)
     print "starting device"
@@ -35,15 +38,14 @@ def getInfo(device):
                         except Exception, e:
                             print "Creating new sensor"
                             print e
-                            sensor = models.Sensor(name=j['sensor'], description='mydesc', coefficients="(1,0)")
+                            sensor = models.Sensor(name=j['sensor'], description='mydesc', coefficients="(1,0)", type=j['type'])
                             sensor.save()
 
                         newReading = models.Reading(sensor=sensor, value=j['value'])
                         newReading.save()
-
-                        print i
-
-                # print json.loads(data).json()
+        if len(CommandsQueue) > 0:
+            ser.write(CommandsQueue[0])
+            CommandsQueue.remove(0)
 
 
 class Command(BaseCommand):
