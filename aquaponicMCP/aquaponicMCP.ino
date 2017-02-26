@@ -86,16 +86,19 @@ void GetManual(){
  * function or even in the data logger.
  */
 void SendData(){
-  String mystr = "['data', {'station': 'aquaponicStation', 'sensors': [{'sensor': 'aquaLight', 'value': ";
+  String mystr = "['data', {'station': 'aquaponicStation', 'sensors': [";
+  mystr += "{'sensor': 'aquaLight', 'type': 'lightsensor', 'value': ";
   mystr += analogRead(aquaLight) ;
-  mystr += "},{'sensor':'plantLight','value':";
+  mystr += "},{'sensor':'plantLight', 'type': 'lightsensor', 'value':";
   mystr += analogRead(plantLight);
-  mystr += "},{'sensor':'waterTurb','value':";
+  mystr += "},{'sensor':'waterTurb', 'type': 'cleanliness', 'value':";
   mystr += analogRead(waterTurbSensor);
-  mystr += "},{'sensor':'waterTemp','value':";
+  mystr += "},{'sensor':'waterTemp', 'type': 'temperature', 'value':";
   mystr += ReadTemp();
-  mystr += "},{'sensor':'OvenTemp','value':";
-  mystr += analogRead(ovenTemp);
+  mystr += "},{'sensor':'lightSwitch', 'type': 'lightswitch', 'value':";
+  mystr += powerIsOn;
+  
+  
   mystr += "}]}]";
   Serial.println(mystr);
 }
