@@ -2,10 +2,10 @@
 #include "OneWire.h"
 
 //analog pins
-#define plantLight A2
-#define aquaLight A1
-#define waterTurbSensor A0
-#define ovenTemp A0
+#define plantLight A0
+#define aquaLight A2
+#define waterTurbSensor A1
+#define ovenTempSensor A3
 
 //digital pins  
 OneWire  ds(2); //water temp sensor
@@ -14,7 +14,7 @@ OneWire  ds(2); //water temp sensor
 #define aquaLed 5
 #define turbLed 6
 #define tempLed 7
-#define lightButton 8
+#define lightButton 6
 
 //sensor constraints
 #define minLightPlant 0
@@ -74,11 +74,12 @@ void loop() {
  * After an hour has passed, auto mode will turn back on.
  */
 void GetManual(){
-//  if(digitalRead(lightButton)){
-////    digitalWrite(RELAY1, powerIsOn);
-//    powerIsOn = !powerIsOn;
-//    autoTimer = millis();
-//  }
+  if(digitalRead(lightButton)){
+    digitalWrite(RELAY1, powerIsOn);
+    powerIsOn = !powerIsOn;
+    autoTimer = millis();
+    onAuto = false;
+  }
 }
 
 /*these will be raw readings, converting from voltage to 
@@ -89,10 +90,13 @@ void SendData(){
   String mystr = "['data', {'station': 'aquaponicStation', 'sensors': [";
   mystr += "{'sensor': 'aquaLight', 'type': 'lightsensor', 'value': ";
   mystr += analogRead(aquaLight) ;
+  mystr += "},{'sensor':'ovenTemp', 'type': 'temperature', 'value':";
+  mystr += analogRead(ovenTempSensor);  
   mystr += "},{'sensor':'plantLight', 'type': 'lightsensor', 'value':";
   mystr += analogRead(plantLight);
   mystr += "},{'sensor':'waterTurb', 'type': 'cleanliness', 'value':";
   mystr += analogRead(waterTurbSensor);
+  
   mystr += "},{'sensor':'waterTemp', 'type': 'temperature', 'value':";
   mystr += ReadTemp();
   mystr += "},{'sensor':'lightSwitch', 'type': 'lightswitch', 'value':";
