@@ -28,17 +28,26 @@ def getInfo(device):
             data = data.replace("'", '"')
             if data.startswith('["data'):
                 start = time.time()
-                serData = json.loads(data)
+                try:
+                    serData = json.loads(data)
+                except Exception:
+                    print "error reading data"
+                print "saving data"
                 for i in serData:
                     if "station" not in i:
+                        print"here"
                         continue
+                    print" there"
                     for j in i['sensors']:
                         try:
                             sensor = models.Sensor.objects.get(name=j['sensor'])
                         except Exception, e:
                             print "Creating new sensor"
                             print e
-                            sensor = models.Sensor(name=j['sensor'], description='mydesc', coefficients="(1,0)", type=j['type'])
+                            try:
+                                sensor = models.Sensor(name=j['sensor'], description='mydesc', coefficients="(1,0)", sensor_type=j['type'])
+                            except:
+                                print "an error saving/loading sensor data"
                             sensor.save()
 
                         newReading = models.Reading(sensor=sensor, value=j['value'])
@@ -63,7 +72,7 @@ class Command(BaseCommand):
                     f.extend(filenames)
                 devices = []
                 for i in f:
-                    if i.startswith('ttyUSB'):
+                    if i.startswith('tty.usb'):
                         devices.append(i)
                 print"Devices found:"
                 print devices
