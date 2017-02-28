@@ -26,12 +26,18 @@
 
         <link  rel="stylesheet" href="{% static "css/style.css" %}">
 
+
+
     </head>
 
     <script>
 
     var STATIC_URL = '{{ STATIC_URL|escapejs }}';
+    var crsf = '{{ csrf_token }}'
 
+    function cs(){
+        return crsf;
+    }
     function static(path){
         return STATIC_URL + path;
     }
@@ -45,5 +51,6 @@
                 
             </div>
         </div>
+
     </body>
 </html>

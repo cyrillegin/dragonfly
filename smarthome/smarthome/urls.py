@@ -20,5 +20,5 @@ from dragonfly import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^dragonfly/', include('dragonfly.urls')),
-    url(r'^$', views.index, name='index')
+    url(r'^$', views.index.as_view(), name='index'),
 ]

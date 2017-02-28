@@ -2,7 +2,7 @@
 
 angular.module('dragonfly.maincontroller', ['googlechart'])
 
-.controller("mainController",['$scope', '$timeout', 'apiService', function ($scope, $timeout, apiService) {
+.controller("mainController",['$scope', '$timeout', '$http', 'apiService', function ($scope, $timeout, $http, apiService) {
 
     $scope.showdetails = false;
 
@@ -12,7 +12,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     $scope.lightSensorCharts = [];
     $scope.lightSwitchCharts = [];
 
-    var switchids = [];
+    var switchids = []
 
     $scope.ShowDetails = function(){
       if($scope.showdetails){
@@ -23,6 +23,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         $('#detailsBtn').text("Hide Details");
       }
     }
+    $scope.ShowDetails();
 
     function GetData(){
       apiService.get('sensors').then(function(response){
@@ -34,10 +35,12 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
               DrawTempChart(info[i]);
               break;
             case "cleanliness":
-              DrawCleanChart(info[i]);
+            DrawTempChart(info[i]);
+              // DrawCleanChart(info[i]);
               break;
             case "lightsensor":
-              DrawLightSenseChart(info[i]);
+              // DrawLightSenseChart(info[i]);
+              DrawTempChart(info[i]);
               break;
             case "lightswitch":
               DrawLightSwitch(info[i]);
@@ -48,7 +51,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         }
       }).then(function(){
         $timeout(function(){
-          console.log("here")
           for(var i in switchids){
             PostLoad();
             
@@ -61,7 +63,34 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
     function PostLoad(){
       //bootstrap switches
-      $('#'+switchids).bootstrapSwitch();
+      for(var i in switchids){
+        $('#'+switchids[i]).bootstrapSwitch();
+        $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
+
+          cs()
+          var req = {
+            method: 'POST',
+            url: "dragonfly/sendData",
+            csrf_token: cs(),
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+
+            },
+            params: {
+                "lightswitch": event.target.id.split('-')[1],
+                "value": state
+            }
+        };
+
+        $http(req).then(function successCallback(response){
+        //   console.log("we got a good response!");
+        //   console.log(response);
+        }), function errorCallback(response){
+        //    console.log("An error has occured.", response.data);
+        };
+      });
+      }
+
 
       //clean chart drawings
       for(var i in $scope.cleanCharts){
@@ -85,7 +114,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     }
     
     function DrawCleanChart(data){
-      console.log("draw clean")
       var cleanObj = {
         "title": data.name,
         "id": "clean-" + data.id,
@@ -96,7 +124,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     }
 
     function DrawLightSenseChart(data){
-      console.log("draw light sense")
       var myObj = {
         "title": data.name,
         "id": "light-"+data.id,
@@ -106,7 +133,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     }
 
     function DrawLightSwitch(data){
-      console.log("draw light switch")
       var switchObj = {
         "title": data.name,
         "id": "switch-"+data.id
@@ -116,7 +142,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     }
 
     function DrawTempChart(data){
-      console.log("Draw temp")
+      if(data.readings[data.readings.length-1] === undefined) return;
       var myChartObject = {}; 
       myChartObject.type = "Gauge"
       myChartObject.data = [
@@ -136,7 +162,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     }
    
    function DrawLineChart(data){
-    console.log("draw line")
         var myChartObject = {};  
 
         myChartObject.type = "LineChart";

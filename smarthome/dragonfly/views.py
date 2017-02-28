@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import viewsets, permissions
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import View
 
 from dragonfly.permission import IsOwnerOrReadOnly
 from dragonfly.models import Sensor
@@ -27,5 +29,20 @@ def api_root(request, format=None):
     })
 
 
-def index(request):
-    return render(request, 'index.html', {})
+class index(View):
+    def get(self, request):
+        return render(request, 'index.html', {})
+
+    def post(self, request):
+        print "\nwe were given some info!\n"
+        print request
+
+
+class sendData(View):
+    def get(self, request):
+        return render(request, 'index.html', {})
+
+    @csrf_exempt
+    def post(self, request):
+        print "\nwe were given some info!\n"
+        print request
