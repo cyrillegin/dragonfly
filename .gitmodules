@@ -1,3 +1,6 @@
 [submodule "teleceptor"]
 	path = teleceptor
 	url = https://github.com/cyrillegin/teleceptor.git
+[submodule "smarthome/django-chucho"]
+	path = smarthome/django-chucho
+	url = https://github.com/visgence/django-chucho.git
