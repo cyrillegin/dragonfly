@@ -10,10 +10,9 @@
 //digital pins  
 OneWire  ds(2); //water temp sensor
 #define RELAY1 3
-#define plantLed 4
-#define aquaLed 5
-#define turbLed 6
-#define tempLed 7
+#define LED1 5
+#define LED2 6
+#define LED3 7
 #define lightButton 6
 
 //sensor constraints
@@ -36,6 +35,9 @@ uint8_t bufferCounter = 1;
 bool powerIsOn = true;
 
 uint8_t incomingByte;
+
+uint8_t warningLights[] = {0, 0, 0};
+uint8_t warningIndex = 0;
 
 bool onAuto = true;
 #define autoTime 1 //number of hours until auto mode resumes.
@@ -107,8 +109,60 @@ void SendData(){
   Serial.println(mystr);
 }
 
+//read input via serial
+void GetInput(){
+  if (Serial.available() > 0) {
+    incomingByte = Serial.read();
+    //light schduling 
+    //turn lights off
+    if(incomingByte == 48){     //being sent 1
+       digitalWrite(RELAY1,0);
+       powerIsOn = false;
+    }
+    //turn lights on
+    if(incomingByte == 49){     //being sent 0
+       digitalWrite(RELAY1,1);
+       powerIsOn = true;
+    }
+  }
+}
 
-//Script I found online and modifed using the OneWire, returns the temperature in fahrenheit.
+uint8_t warnings[] = {0, 0, 0, 0,
+//turns on warning leds, should later control temperature.
+void SendCommands(){
+//  sensor operation
+//  lighting
+  if(powerIsOn && aquaLightReading < minLightAqua){
+    digitalWrite(warningLights[warningIndex, HIGH);
+    warningIndex++;
+  } else if(warnings[0] = 1;
+    digitalWrite(warningLights[warningIndex], LOW);
+    warningIndex++;
+  }
+  if(powerIsOn && plantLightReading < minLightPlant){
+    digitalWrite(warningLights[warningIndex, HIGH);
+    warningIndex++;
+  } else if(warnings[1] = 1;
+    digitalWrite(warningLights[warningIndex], LOW);
+    warningIndex++;
+  }
+  
+  //water temperature
+  float tempDifference = targetTemperature > waterTempReading ? targetTemperature - waterTempReading : waterTempReading - targetTemperature;
+  if(tempDifference > temperatureVarience){
+    digitalWrite(tempLed, HIGH);
+  }
+
+  //water turbidity
+  float turbDifference = targetTurbidity > waterTurbReading ? targetTurbidity - waterTurbReading : waterTurbReading - targetTurbidity;
+  if(turbDifference > turbidityVarience){
+    digitalWrite(turbLed, HIGH);
+  }
+
+//  water temp modifications
+}
+
+//Script I found online and modifed using the OneWire library, returns the temperature in fahrenheit.
 float ReadTemp(){
   byte i;
   byte present = 0;
@@ -175,47 +229,4 @@ float ReadTemp(){
   return fahrenheit;
 }
 
-//read input via serial
-void GetInput(){
-  if (Serial.available() > 0) {
-    incomingByte = Serial.read();
-    //light schduling 
-    //turn lights off
-    if(incomingByte == 48){     //being sent 1
-       digitalWrite(RELAY1,0);
-       powerIsOn = false;
-    }
-    //turn lights on
-    if(incomingByte == 49){     //being sent 0
-       digitalWrite(RELAY1,1);
-       powerIsOn = true;
-    }
-  }
-}
-
-//turns on warning leds, should later control temperature.
-void SendCommands(){
-//  sensor operation
-//  lighting
-  if(powerIsOn && aquaLightReading < minLightAqua){
-    digitalWrite(aquaLed, HIGH);
-  }
-  if(powerIsOn && plantLightReading < minLightPlant){
-    digitalWrite(plantLed, HIGH);
-  }
-  
-  //water temperature
-  float tempDifference = targetTemperature > waterTempReading ? targetTemperature - waterTempReading : waterTempReading - targetTemperature;
-  if(tempDifference > temperatureVarience){
-    digitalWrite(tempLed, HIGH);
-  }
-
-  //water turbidity
-  float turbDifference = targetTurbidity > waterTurbReading ? targetTurbidity - waterTurbReading : waterTurbReading - targetTurbidity;
-  if(turbDifference > turbidityVarience){
-    digitalWrite(turbLed, HIGH);
-  }
-
-//  water temp modifications
-}
 
