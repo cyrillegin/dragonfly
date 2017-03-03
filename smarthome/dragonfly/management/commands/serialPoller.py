@@ -24,7 +24,6 @@ def getInfo(device):
                 data = ser.readline()
             except:
                 print "error reading data."
-                Alive = False
                 continue
             data = data.replace("'", '"')
             if data.startswith('["data'):
@@ -33,7 +32,6 @@ def getInfo(device):
                     serData = json.loads(data)
                 except Exception:
                     print "error loading data"
-                    Alive = False
                     continue
                 print "saving data"
                 for i in serData:
@@ -45,33 +43,37 @@ def getInfo(device):
                         except Exception, e:
                             print "Creating new sensor"
                             print e
-                            Alive = False
                             try:
                                 sensor = models.Sensor(name=j['sensor'], description='mydesc', coefficients="(1,0)", sensor_type=j['type'])
                             except:
                                 print "an error saving/loading sensor data"
-                                Alive = False
                                 continue
                             sensor.save()
 
                         newReading = models.Reading(sensor=sensor, value=j['value'])
                         newReading.save()
             FoundData = False
-            with open('commandQueue.json') as data_file:
-                data = json.load(data_file)
-                if(len(data.keys()) > 0):
-                    print "got new command!"
-                    print data
-                    if(data['value'] is True):
-                        ser.write('1')
-                    else:
-                        ser.write('0')
-                    FoundData = True
+            try:
+                with open('commandQueue.json') as data_file:
+                    data = json.load(data_file)
+                    if(len(data.keys()) > 0):
+                        print "got new command!"
+                        print data
+                        if(data['value'] is True):
+                            ser.write('1')
+                        else:
+                            ser.write('0')
+                        FoundData = True
+            except:
+                print "err here"
             if(FoundData):
-                with open('commandQueue.json', 'w') as outfile:
-                    print "command complete"
-                    json.dump({}, outfile)
-                    FoundData = False
+                try:
+                    with open('commandQueue.json', 'w') as outfile:
+                        print "command complete"
+                        json.dump({}, outfile)
+                        FoundData = False
+                except:
+                    print "err there"
 
 
 class Command(BaseCommand):
