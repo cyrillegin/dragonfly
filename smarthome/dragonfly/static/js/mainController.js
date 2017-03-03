@@ -80,14 +80,16 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
                 "lightswitch": event.target.id.split('-')[1],
                 "value": state
             }
-        };
+          };
 
-        $http(req).then(function successCallback(response){
-        //   console.log("we got a good response!");
-        //   console.log(response);
-        }), function errorCallback(response){
-        //    console.log("An error has occured.", response.data);
-        };
+          console.log(req);
+
+          $http(req).then(function successCallback(response){
+            console.log("we got a good response!");
+            console.log(response);
+          }), function errorCallback(response){
+             console.log("An error has occured.", response.data);
+          };
       });
       }
 

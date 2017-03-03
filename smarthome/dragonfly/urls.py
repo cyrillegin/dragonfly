@@ -1,6 +1,7 @@
 from django.conf.urls import url, include
 import views
 from rest_framework.routers import DefaultRouter
+from django.views.decorators.csrf import csrf_exempt
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
@@ -11,5 +12,5 @@ router.register(r'sensors', views.SensorViewSet)
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^sendData', views.sendData.as_view(), name='send')
+    url(r'^sendData', csrf_exempt(views.sendData.as_view()), name='send')
 ]

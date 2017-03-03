@@ -42,7 +42,6 @@ class sendData(View):
     def get(self, request):
         return render(request, 'index.html', {})
 
-    @csrf_exempt
     def post(self, request):
         print "\nwe were given some info!\n"
         print request
