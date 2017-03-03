@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand
 
 from dragonfly import models
 
-import requests
 import time
 
 import serial
@@ -10,9 +9,6 @@ from os import walk
 import json
 
 from multiprocessing import Process
-
-
-CommandsQueue = []
 
 
 def getInfo(device):
@@ -24,37 +20,58 @@ def getInfo(device):
     start = time.time() - pollRate
     while(Alive):
         if time.time() > start + pollRate:
-            data = ser.readline()
+            try:
+                data = ser.readline()
+            except:
+                print "error reading data."
+                Alive = False
+                continue
             data = data.replace("'", '"')
             if data.startswith('["data'):
                 start = time.time()
                 try:
                     serData = json.loads(data)
                 except Exception:
-                    print "error reading data"
+                    print "error loading data"
+                    Alive = False
+                    continue
                 print "saving data"
                 for i in serData:
                     if "station" not in i:
-                        print"here"
                         continue
-                    print" there"
                     for j in i['sensors']:
                         try:
                             sensor = models.Sensor.objects.get(name=j['sensor'])
                         except Exception, e:
                             print "Creating new sensor"
                             print e
+                            Alive = False
                             try:
                                 sensor = models.Sensor(name=j['sensor'], description='mydesc', coefficients="(1,0)", sensor_type=j['type'])
                             except:
                                 print "an error saving/loading sensor data"
+                                Alive = False
+                                continue
                             sensor.save()
 
                         newReading = models.Reading(sensor=sensor, value=j['value'])
                         newReading.save()
-        if len(CommandsQueue) > 0:
-            ser.write(CommandsQueue[0])
-            CommandsQueue.remove(0)
+            FoundData = False
+            with open('commandQueue.json') as data_file:
+                data = json.load(data_file)
+                if(len(data.keys()) > 0):
+                    print "got new command!"
+                    print data
+                    if(data['value'] is True):
+                        ser.write('1')
+                    else:
+                        ser.write('0')
+                    FoundData = True
+            if(FoundData):
+                with open('commandQueue.json', 'w') as outfile:
+                    print "command complete"
+                    json.dump({}, outfile)
+                    FoundData = False
 
 
 class Command(BaseCommand):

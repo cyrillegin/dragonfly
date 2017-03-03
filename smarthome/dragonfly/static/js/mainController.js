@@ -66,17 +66,10 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
       for(var i in switchids){
         $('#'+switchids[i]).bootstrapSwitch();
         $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
-
-          cs()
           var req = {
             method: 'POST',
             url: "dragonfly/sendData",
-            csrf_token: cs(),
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-
-            },
-            params: {
+            data: {
                 "lightswitch": event.target.id.split('-')[1],
                 "value": state
             }

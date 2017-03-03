@@ -4,8 +4,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import viewsets, permissions
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+
+import json
 
 from dragonfly.permission import IsOwnerOrReadOnly
 from dragonfly.models import Sensor
@@ -39,9 +40,9 @@ class index(View):
 
 
 class sendData(View):
-    def get(self, request):
-        return render(request, 'index.html', {})
-
     def post(self, request):
-        print "\nwe were given some info!\n"
-        print request
+        data = json.loads(request.body)
+        print data
+        with open('commandQueue.json', 'w') as outfile:
+            json.dump(data, outfile)
+        return render(request, 'index.html', {})
