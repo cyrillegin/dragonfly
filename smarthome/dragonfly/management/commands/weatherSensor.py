@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 from dragonfly import models
-import requests
 import time
+import urllib2
+from bs4 import BeautifulSoup as bs
 
 
 class Command(BaseCommand):
@@ -19,16 +20,15 @@ class Command(BaseCommand):
             print "Creating new Sensor"
             sensor = models.Sensor(name="weatherstation", description="Polls weather data from openweathermap.org", coefficients="(1,0)", sensor_type='temperature')
             sensor.save()
-        url = "http://api.openweathermap.org/data/2.5/forecast/city?id=5475352&APPID=f782c6debe8a02e649cb61cd1415f606"
+        url = "http://www.lascruces-weather.com/"
         queryRate = 60 * 5
         while(True):
             print "Getting a new reading."
-            data = requests.get(url)
-            if 'list' not in data.json():
-                time.sleep(queryRate)
-                continue
+            page = urllib2.urlopen(url)
+            soup = bs(page, 'lxml')
+            for idx, val in enumerate(soup.find_all('div', class_='headerTemp')):
+                temperature = val.contents[1].contents[1].contents[0][:-6]
 
-            temperature = data.json()['list'][0]['main']['temp'] * (9.0 / 5.0) - 469.67
             print "The temperature is currently: {}".format(temperature)
             newReading = models.Reading(sensor=sensor, value=temperature)
             newReading.save()
