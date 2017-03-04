@@ -49,9 +49,12 @@ def getInfo(device):
                                 print "an error saving/loading sensor data"
                                 continue
                             sensor.save()
-
-                        newReading = models.Reading(sensor=sensor, value=j['value'])
-                        newReading.save()
+                        try:
+                            newReading = models.Reading(sensor=sensor, value=j['value'])
+                            newReading.save()
+                            continue
+                        except:
+                            print "error saving new readings"
             FoundData = False
             try:
                 with open('commandQueue.json') as data_file:
