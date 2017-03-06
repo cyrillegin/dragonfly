@@ -106,7 +106,7 @@ class Command(BaseCommand):
                 f.extend(filenames)
             devices = []
             for i in f:
-                if i.startswith('tty.usb'):
+                if i.startswith('ttyUSB'):
                     devices.append(i)
             print"Devices found: {}".format(devices)
             for j in devices:
