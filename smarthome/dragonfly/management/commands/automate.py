@@ -34,6 +34,7 @@ class Command(BaseCommand):
                 # light is on
                 switch = models.Sensor.objects.get(name="lightSwitch")
                 if switch.toDict().isOn is False:
+                    print "Turing on lights, the current time is {}".format(datetime.now())
                     with open('commandQueue.json', 'w') as outfile:
                         json.dump({'value': 1}, outfile)
 
@@ -41,6 +42,7 @@ class Command(BaseCommand):
                 # light is off
                 switch = models.Sensor.objects.get(name="lightSwitch")
                 if switch.toDict().isOn is True:
+                    print "Turning off lights, the current time is {}".format(datetime.now())
                     with open('commandQueue.json', 'w') as outfile:
                         json.dump({'value': 0}, outfile)
             time.sleep(CheckRate / 2)
