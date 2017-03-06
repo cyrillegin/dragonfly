@@ -3,85 +3,29 @@
 
 //analog pins
 #define plantLight A0
-#define aquaLight A2
+#define aquaLight A3
 #define waterTurbSensor A1
-#define ovenTempSensor A3
+#define ovenTempSensor A4
 
 //digital pins  
 OneWire  ds(2); //water temp sensor
 #define RELAY1 3
-#define LED1 5
-#define LED2 6
-#define LED3 7
-#define lightButton 6
-
-//sensor constraints
-#define minLightPlant 0
-#define minLightAqua 0
-#define targetTemperature 0
-#define temperatureVarience 0
-#define targetTurbidity 0
-#define turbidityVarience 0
-
-//sensor readings
-float aquaLightReading = 0.0;
-float plantLightReading = 0.0;
-float waterTempReading = 0.0;
-float waterTurbReading = 0.0;
-float ovenTempReading = 0.0;
-
-uint8_t bufferCounter = 1;
 
 bool powerIsOn = true;
 
 uint8_t incomingByte;
 
-uint8_t warningLights[] = {0, 0, 0};
-uint8_t warningIndex = 0;
-
-bool onAuto = true;
-#define autoTime 1 //number of hours until auto mode resumes.
-unsigned long autoTimer = 0;
-
 //run once on start
 void setup() {
   Serial.begin(9600);
-  pinMode(plantLed, OUTPUT);
-  pinMode(aquaLed, OUTPUT);
-  pinMode(turbLed, OUTPUT);
-  pinMode(tempLed, OUTPUT);
-  pinMode(lightButton, INPUT);
-  digitalWrite(lightButton, HIGH);
   pinMode(RELAY1, OUTPUT);
   digitalWrite(RELAY1, HIGH);
-  Serial.print("hi");
 }
 
 //main program loop.
 void loop() {
   SendData();
-  SendCommands();
-  GetManual();
-  if(onAuto){
-    GetInput();
-  } else {
-    if(millis() > autoTimer + autoTime*3600*1000){
-      onAuto = false;
-    }
-  }
-}
-
-/* Any kind of manual control will go here. Currently a button 
- * is hooked up and will turn the lights either on or off. 
- * After an hour has passed, auto mode will turn back on.
- */
-void GetManual(){
-  if(digitalRead(lightButton)){
-    digitalWrite(RELAY1, powerIsOn);
-    powerIsOn = !powerIsOn;
-    autoTimer = millis();
-    onAuto = false;
-  }
+  GetInput();
 }
 
 /*these will be raw readings, converting from voltage to 
@@ -104,7 +48,6 @@ void SendData(){
   mystr += "},{'sensor':'lightSwitch', 'type': 'lightswitch', 'value':";
   mystr += powerIsOn;
   
-  
   mystr += "}]}]";
   Serial.println(mystr);
 }
@@ -115,6 +58,7 @@ void GetInput(){
     incomingByte = Serial.read();
     //light schduling 
     //turn lights off
+    Serial.println(incomingByte);
     if(incomingByte == 48){     //being sent 1
        digitalWrite(RELAY1,0);
        powerIsOn = false;
@@ -125,41 +69,6 @@ void GetInput(){
        powerIsOn = true;
     }
   }
-}
-
-uint8_t warnings[] = {0, 0, 0, 0,
-//turns on warning leds, should later control temperature.
-void SendCommands(){
-//  sensor operation
-//  lighting
-  if(powerIsOn && aquaLightReading < minLightAqua){
-    digitalWrite(warningLights[warningIndex, HIGH);
-    warningIndex++;
-  } else if(warnings[0] = 1;
-    digitalWrite(warningLights[warningIndex], LOW);
-    warningIndex++;
-  }
-  if(powerIsOn && plantLightReading < minLightPlant){
-    digitalWrite(warningLights[warningIndex, HIGH);
-    warningIndex++;
-  } else if(warnings[1] = 1;
-    digitalWrite(warningLights[warningIndex], LOW);
-    warningIndex++;
-  }
-  
-  //water temperature
-  float tempDifference = targetTemperature > waterTempReading ? targetTemperature - waterTempReading : waterTempReading - targetTemperature;
-  if(tempDifference > temperatureVarience){
-    digitalWrite(tempLed, HIGH);
-  }
-
-  //water turbidity
-  float turbDifference = targetTurbidity > waterTurbReading ? targetTurbidity - waterTurbReading : waterTurbReading - targetTurbidity;
-  if(turbDifference > turbidityVarience){
-    digitalWrite(turbLed, HIGH);
-  }
-
-//  water temp modifications
 }
 
 //Script I found online and modifed using the OneWire library, returns the temperature in fahrenheit.
