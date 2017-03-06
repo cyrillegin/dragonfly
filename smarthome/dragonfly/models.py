@@ -17,6 +17,15 @@ class Sensor(models.Model):
     class Meta:
         ordering = ('created',)
 
+    def toDict(self):
+        return {
+            "created": self.created,
+            "name": self.name,
+            "description": self.description,
+            "coefficients": self.coefficients,
+            "self_type": self.sensor_type
+        }
+
 
 class Reading(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -29,3 +38,10 @@ class Reading(models.Model):
 
     def __unicode__(self):
         return '%d: %s' % (self.order, self.title)
+
+    def toDict(self):
+        return {
+            "created": self.created,
+            "sensor": self.sensor.toDict(),
+            "value": self.toDict()
+        }
