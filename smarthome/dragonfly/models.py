@@ -43,5 +43,5 @@ class Reading(models.Model):
         return {
             "created": self.created,
             "sensor": self.sensor.toDict(),
-            "value": self.toDict()
+            "value": self.value
         }
