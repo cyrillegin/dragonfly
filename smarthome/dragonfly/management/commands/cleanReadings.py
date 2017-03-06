@@ -24,7 +24,7 @@ class Command(BaseCommand):
                 else:
                     print "I didn't understand, quiting"
                     break
-        print "Done checking sensors, begin readings check.(This may take a while"
+        print "Done checking sensors, begin readings check.(This may take a while)"
         readings = models.Reading.objects.all()
         count = 0
         for i in readings:
@@ -45,3 +45,33 @@ class Command(BaseCommand):
                 else:
                     print "I didn't understand, quiting"
                     break
+            # weatherStation
+            if reading['sensor']['name'] == 'weatherstation':
+                if reading['value'] > 120 or reading['value'] < -20:
+                    print 'weather station value seems to be out of range, the value is: {}'.format(reading['value'])
+                    print 'would you like to delete it? (y/n)'
+                    ans = raw_input('--> ')
+                    if ans == "y":
+                        print "deleting {} reading".format(i['sensor']['name'])
+                        i.delete()
+                    elif ans == "n":
+                        print "skipping"
+                    else:
+                        print "I didn't understand, quiting"
+                        break
+            # light switch
+            if reading['sensor']['name'] == 'lightSwitch':
+                if reading['value'] == 1.0 or reading['value'] == 0.0:
+                    continue
+                else:
+                    print 'light switch value seems to be out of range, the value is: {}'.format(reading['value'])
+                    print 'would you like to delete it? (y/n)'
+                    ans = raw_input('--> ')
+                    if ans == "y":
+                        print "deleting {} reading".format(reading['sensor']['name'])
+                        i.delete()
+                    elif ans == "n":
+                        print "skipping"
+                    else:
+                        print "I didn't understand, quiting"
+                        break
