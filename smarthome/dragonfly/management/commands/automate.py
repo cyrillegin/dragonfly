@@ -33,7 +33,7 @@ class Command(BaseCommand):
             if currentHour > TurnOnTime and currentHour < TurnOffTime:
                 # light is on
                 switch = models.Sensor.objects.get(name="lightSwitch")
-                if switch.toDict().isOn is False:
+                if switch.toDict().value is False:
                     print "Turing on lights, the current time is {}".format(datetime.now())
                     with open('commandQueue.json', 'w') as outfile:
                         json.dump({'value': 1}, outfile)
@@ -41,7 +41,7 @@ class Command(BaseCommand):
             else:
                 # light is off
                 switch = models.Sensor.objects.get(name="lightSwitch")
-                if switch.toDict().isOn is True:
+                if switch.toDict().value is True:
                     print "Turning off lights, the current time is {}".format(datetime.now())
                     with open('commandQueue.json', 'w') as outfile:
                         json.dump({'value': 0}, outfile)
