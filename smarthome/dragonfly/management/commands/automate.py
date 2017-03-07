@@ -29,20 +29,20 @@ class Command(BaseCommand):
                     json.dump({'value': 1}, outfile)
                 IsOn = True
             time.sleep(CheckRate / 2)
-            currentHour = datetime.now().hour
-            if currentHour > TurnOnTime and currentHour < TurnOffTime:
-                # light is on
-                switch = models.Sensor.objects.get(name="lightSwitch")
-                if switch.toDict().value is False:
-                    print "Turing on lights, the current time is {}".format(datetime.now())
-                    with open('commandQueue.json', 'w') as outfile:
-                        json.dump({'value': 1}, outfile)
+            # currentHour = datetime.now().hour
+            # if currentHour > TurnOnTime and currentHour < TurnOffTime:
+            #     # light is on
+            #     switch = models.Reading.objects.get(name="lightSwitch")
+            #     if switch.toDict().value is False:
+            #         print "Turing on lights, the current time is {}".format(datetime.now())
+            #         with open('commandQueue.json', 'w') as outfile:
+            #             json.dump({'value': 1}, outfile)
 
-            else:
-                # light is off
-                switch = models.Sensor.objects.get(name="lightSwitch")
-                if switch.toDict().value is True:
-                    print "Turning off lights, the current time is {}".format(datetime.now())
-                    with open('commandQueue.json', 'w') as outfile:
-                        json.dump({'value': 0}, outfile)
+            # else:
+            #     # light is off
+            #     switch = models.Sensor.objects.get(name="lightSwitch")
+            #     if switch.toDict().value is True:
+            #         print "Turning off lights, the current time is {}".format(datetime.now())
+            #         with open('commandQueue.json', 'w') as outfile:
+            #             json.dump({'value': 0}, outfile)
             time.sleep(CheckRate / 2)
