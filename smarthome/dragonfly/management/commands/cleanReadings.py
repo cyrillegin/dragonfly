@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from dragonfly import models
+import json
 
 whitelist = ['weatherstation', 'aquaLight', 'ovenTemp', 'lightSwitch', 'waterTurb', 'plantLight', 'waterTemp', ]
 
@@ -65,6 +66,20 @@ class Command(BaseCommand):
                     continue
                 else:
                     print 'light switch value seems to be out of range, the value is: {}'.format(reading['value'])
+                    print 'would you like to delete it? (y/n)'
+                    ans = raw_input('--> ')
+                    if ans == "y":
+                        print "deleting {} reading".format(reading['sensor']['name'])
+                        i.delete()
+                    elif ans == "n":
+                        print "skipping"
+                    else:
+                        print "I didn't understand, quiting"
+                        break
+            #  temperature
+            if reading['sensor']['name'] == 'waterTemp':
+                if reading['value'] < 60 or reading['value'] > 90:
+                    print 'temp value seems to be out of range, the value is: {}'.format(reading['value'])
                     print 'would you like to delete it? (y/n)'
                     ans = raw_input('--> ')
                     if ans == "y":
