@@ -13,6 +13,7 @@ class Sensor(models.Model):
     description = models.TextField(blank=True, default='')
     coefficients = models.TextField(blank=True, default='')
     sensor_type = models.TextField(blank=False, null=False, default='')
+    units = models.TextField(blank=True, default='')
 
     class Meta:
         ordering = ('created',)
@@ -23,7 +24,8 @@ class Sensor(models.Model):
             "name": self.name,
             "description": self.description,
             "coefficients": self.coefficients,
-            "self_type": self.sensor_type
+            "self_type": self.sensor_type,
+            "units": self.units
         }
 
 
