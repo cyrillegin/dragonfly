@@ -127,13 +127,13 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
       var params = {
           "value": $scope.newReadingValue,
           "date": $scope.newReadingDate,
-          "sensor": $scope.selectedSensor
+          "sensor": $scope.selectedSensor.name
       }
       if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
         console.log("warning");
         return;
       }
-      SendData('dragonfly/addSensor', params) 
+      SendData('dragonfly/addReading', params) 
     }
 
 //Utility
@@ -209,13 +209,14 @@ function SendData(newurl, params){
           ['Time', 'Value']
         ]
 
+        var vals = data.coefficients.split(",")
+        var coef = {'x':1, 'y':0}
+        // var coef = {
+        //   'x': parseInt(vals[0][1]),
+        //   'y': parseInt(vals[1][0])
+        // }
+
         for(var i in data.readings){
-          
-          var vals = data.coefficients.split(",")
-          var coef = {
-            'x': parseInt(vals[0][1]),
-            'y': parseInt(vals[1][0])
-          }
           var value = data.readings[i].value * coef.x + coef.y; 
           myChartObject.data.push([new Date(data.readings[i].created), value])
         }

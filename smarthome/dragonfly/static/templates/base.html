@@ -65,6 +65,7 @@
                     <tbody>
                         <tr>
                             <td>Date:</td>
+                            (yyyy-mm-ddThh:mm:ss.000000Z)
                             <td> <input type="text" ng-model='newReadingDate'></td>
                         </tr>
                         <tr>
@@ -83,11 +84,9 @@
     <br>
     <hr>
     <br>
-    <div ng-if="showdetails">
-        <div ng-repeat="graph in graphs">
-            <div class="row">
-                <div google-chart chart=graph  width:100%;/>
-            </div>
+    <div ng-repeat="graph in graphs">
+        <div class="row">
+            <div google-chart chart=graph  width:100%;/>
         </div>
     </div>
 </div>
