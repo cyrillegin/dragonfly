@@ -14,37 +14,16 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
     var switchids = []
 
-    $scope.ShowDetails = function(){
-      if($scope.showdetails){
-        $scope.showdetails = false;
-        $('#detailsBtn').text("Show Details");
-      } else {
-        $scope.showdetails = true;
-        $('#detailsBtn').text("Hide Details");
-      }
-    }
-    $scope.ShowDetails();
-
     function GetData(){
       apiService.get('sensors').then(function(response){
         var info = response.data.results
         console.log(info);
+        $scope.sensors = info;
         for(var i in info){
-          switch(info[i].sensor_type){
-            case "temperature": 
+          if(info[i].sensor_type === "lightswitch"){
+            DrawLightSwitch(info[i]);
+          } else {
               DrawTempChart(info[i]);
-              break;
-            case "cleanliness":
-            DrawTempChart(info[i]);
-              // DrawCleanChart(info[i]);
-              break;
-            case "lightsensor":
-              // DrawLightSenseChart(info[i]);
-              DrawTempChart(info[i]);
-              break;
-            case "lightswitch":
-              DrawLightSwitch(info[i]);
-              break;
           }
           if(info[i].readings.length < 3) continue;
           DrawLineChart(info[i]);
@@ -75,17 +54,14 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
             }
           };
 
-          console.log(req);
-
           $http(req).then(function successCallback(response){
             console.log("we got a good response!");
             console.log(response);
           }), function errorCallback(response){
              console.log("An error has occured.", response.data);
           };
-      });
+        });
       }
-
 
       //clean chart drawings
       for(var i in $scope.cleanCharts){
@@ -104,10 +80,79 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         
         // cx.fillStyle = "rgb(68, 191, 255)" //use this to change the color
         cx.fill();
-
       }
     }
-    
+
+    $scope.ReadingEntry = false;
+    $scope.SensorEntry = false;
+
+//Buttons
+    $scope.AddSensor = function(){
+      console.log("adding a sensor")
+      $scope.ReadingEntry = false;
+      $scope.SensorEntry = true;
+    };
+
+    $scope.SelectSensor = function(id){
+      console.log(id);
+      $scope.ReadingEntry = true;
+      $scope.SensorEntry = false;
+      for(var i in $scope.sensors){
+        if($scope.sensors[i].name === id[0]){
+          console.log("sensor found")
+          $scope.selectedSensor = $scope.sensors[i];
+        }
+      }
+    };
+
+    $scope.SubmitSensor = function(){
+      console.log("submitting sensor");
+      var params = {
+          "name": $scope.newSensorName,
+          "description": $scope.newSensorDesc,
+          "coefficients": $scope.newSensorType,
+          "sensor_type": $scope.newSensorUnits,
+          "units": $scope.newSensorCoef
+      }
+      if(params.name === "" || params.name === undefined){
+        console.log("warning");
+        return;
+      }
+      SendData('dragonfly/addSensor', params)  
+
+    };
+
+    $scope.SubmitReading = function(){
+      console.log("submitting reading");
+      var params = {
+          "value": $scope.newReadingValue,
+          "date": $scope.newReadingDate,
+          "sensor": $scope.selectedSensor.name
+      }
+      if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
+        console.log("warning");
+        return;
+      }
+      SendData('dragonfly/addReading', params) 
+    }
+
+//Utility
+
+function SendData(newurl, params){
+  var req = {
+    method: 'POST',
+    url: newurl,
+    data: params
+  };
+
+  $http(req).then(function successCallback(response){
+    console.log("we got a good response!");
+    console.log(response);
+  }), function errorCallback(response){
+     console.log("An error has occured.", response.data);
+  };
+}
+//Chart drawing
     function DrawCleanChart(data){
       var cleanObj = {
         "title": data.name,
@@ -115,7 +160,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         "reading": data.readings[data.readings.length-1].value.toFixed(3)
       }
       $scope.cleanCharts.push(cleanObj);
-
     }
 
     function DrawLightSenseChart(data){
@@ -165,13 +209,14 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
           ['Time', 'Value']
         ]
 
+        var vals = data.coefficients.split(",")
+        var coef = {'x':1, 'y':0}
+        // var coef = {
+        //   'x': parseInt(vals[0][1]),
+        //   'y': parseInt(vals[1][0])
+        // }
+
         for(var i in data.readings){
-          
-          var vals = data.coefficients.split(",")
-          var coef = {
-            'x': parseInt(vals[0][1]),
-            'y': parseInt(vals[1][0])
-          }
           var value = data.readings[i].value * coef.x + coef.y; 
           myChartObject.data.push([new Date(data.readings[i].created), value])
         }
