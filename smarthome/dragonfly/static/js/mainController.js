@@ -97,16 +97,61 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
       console.log(id);
       $scope.ReadingEntry = true;
       $scope.SensorEntry = false;
+      for(var i in $scope.sensors){
+        if($scope.sensors[i].name === id[0]){
+          console.log("sensor found")
+          $scope.selectedSensor = $scope.sensors[i];
+        }
+      }
     };
 
     $scope.SubmitSensor = function(){
-      console.log("submitting");
+      console.log("submitting sensor");
+      var params = {
+          "name": $scope.newSensorName,
+          "description": $scope.newSensorDesc,
+          "coefficients": $scope.newSensorType,
+          "sensor_type": $scope.newSensorUnits,
+          "units": $scope.newSensorCoef
+      }
+      if(params.name === "" || params.name === undefined){
+        console.log("warning");
+        return;
+      }
+      SendData('dragonfly/addSensor', params)  
+
     };
 
     $scope.SubmitReading = function(){
-      console.log("submitting")
+      console.log("submitting reading");
+      var params = {
+          "value": $scope.newReadingValue,
+          "date": $scope.newReadingDate,
+          "sensor": $scope.selectedSensor
+      }
+      if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
+        console.log("warning");
+        return;
+      }
+      SendData('dragonfly/addSensor', params) 
     }
 
+//Utility
+
+function SendData(newurl, params){
+  var req = {
+    method: 'POST',
+    url: newurl,
+    data: params
+  };
+
+  $http(req).then(function successCallback(response){
+    console.log("we got a good response!");
+    console.log(response);
+  }), function errorCallback(response){
+     console.log("An error has occured.", response.data);
+  };
+}
 //Chart drawing
     function DrawCleanChart(data){
       var cleanObj = {

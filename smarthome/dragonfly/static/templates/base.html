@@ -38,18 +38,21 @@
                     <tbody>
                         <tr>
                             <td>Name:</td>  
-                            <td><input type="text"></td>
+                            <td><input type="text" ng-model='newSensorName'></td>
                         </tr>
                         <tr>
                             <td>Description:</td>
-                            <td><input type="text"></td>
+                            <td><input type="text" ng-model='newSensorDesc'></td>
                         </tr>
                         <tr>
+                            <td>Sensor type:</td>
+                            <td><input type="text" ng-model='newSensorType'>
+                        <tr>
                             <td>Units:</td> 
-                            <td><input type="text"></td></tr>
+                            <td><input type="text" ng-model='newSensorUnits'></td></tr>
                         <tr>
                             <td>Coefficents:</td> 
-                            <td><input type="text"></td>
+                            <td><input type="text" ng-model='newSensorCoef'></td>
                         </tr>
                     </tbody>
                 </table>
@@ -62,11 +65,11 @@
                     <tbody>
                         <tr>
                             <td>Date:</td>
-                            <td> <input type="text"></td>
+                            <td> <input type="text" ng-model='newReadingDate'></td>
                         </tr>
                         <tr>
                             <td>Value:</td>
-                            <td> <input type="text"></td>
+                            <td> <input type="text" ng-model='newReadingValue'></td>
                         </tr>
                     </tbody>
                 </table>

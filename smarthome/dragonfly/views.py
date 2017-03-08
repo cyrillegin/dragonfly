@@ -42,7 +42,23 @@ class index(View):
 class sendData(View):
     def post(self, request):
         data = json.loads(request.body)
-        print data
+        # print data
         with open('commandQueue.json', 'w') as outfile:
             json.dump(data, outfile)
+        return render(request, 'index.html', {})
+
+
+class addReading(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        print data
+
+        return render(request, 'index.html', {})
+
+
+class addSensor(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        print data
+
         return render(request, 'index.html', {})
