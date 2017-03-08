@@ -8,11 +8,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <hr>
-    <br>
-    <div class="row">
         <div class="col-md-2">
             <div ng-repeat="graph in lightSwitchCharts">
                 <h3>{{ graph.title }}</h3>
@@ -26,27 +21,61 @@
     <div class="row">
         <div class="col-md-4">
             <!-- sensor select -->
-            Sensors:
-            <div style="width:100%;">
+            <h3>Sensors:</h3>
+            
             <select size="10" ng-model="sensorSelect" ng-change="SelectSensor(sensorSelect)" name="ngvalueselect"  multiple>
                  <option ng-repeat="sensor in sensors" ng-value="sensor.index">{{sensor.name}}</option>
             </select>
-            </div>
+            <br>
             <!-- add sensor button, remember we need to do something about the whitelist in cleanReadings -->
             <Button ng-click="AddSensor()">New Sensor</Button>
         </div>
         <div class="col-md-3">
             <!-- sensor edit (coefficents, units, etc) -->
+            <div ng-show="SensorEntry">
+                <h3>Add Sensor:</h3>
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td>Name:</td>  
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Description:</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Units:</td> 
+                            <td><input type="text"></td></tr>
+                        <tr>
+                            <td>Coefficents:</td> 
+                            <td><input type="text"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button ng-click="SubmitSensor()">Submit</button>
+            </div>
+            <div ng-show="ReadingEntry">
+                <h3>Add Entry:</h3>
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td>Date:</td>
+                            <td> <input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Value:</td>
+                            <td> <input type="text"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button ng-click="SubmitReading()">Submit</button>
+            </div>
         </div>
         <div class="col-md-3">
             <!-- add readingt -->
         </div>
-    </div>
-    <br>
-    <hr>
-    <br>
-    <div class="row">
-        <button type="button" id="detailsBtn" class="btn btn-info" ng-click="ShowDetails()">Show Details</button>
     </div>
     <br>
     <hr>

@@ -1,4 +1,8 @@
-table.chucho-grid, table.chucho-grid thead th, table.chucho-grid tbody td {
-    font-size: 9px !important;
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
 }
-

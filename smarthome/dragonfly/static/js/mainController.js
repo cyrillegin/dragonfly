@@ -14,17 +14,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
     var switchids = []
 
-    $scope.ShowDetails = function(){
-      if($scope.showdetails){
-        $scope.showdetails = false;
-        $('#detailsBtn').text("Show Details");
-      } else {
-        $scope.showdetails = true;
-        $('#detailsBtn').text("Hide Details");
-      }
-    }
-    $scope.ShowDetails();
-
     function GetData(){
       apiService.get('sensors').then(function(response){
         var info = response.data.results
@@ -94,14 +83,29 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
       }
     }
 
+    $scope.ReadingEntry = false;
+    $scope.SensorEntry = false;
+
 //Buttons
     $scope.AddSensor = function(){
       console.log("adding a sensor")
+      $scope.ReadingEntry = false;
+      $scope.SensorEntry = true;
     };
 
     $scope.SelectSensor = function(id){
       console.log(id);
+      $scope.ReadingEntry = true;
+      $scope.SensorEntry = false;
     };
+
+    $scope.SubmitSensor = function(){
+      console.log("submitting");
+    };
+
+    $scope.SubmitReading = function(){
+      console.log("submitting")
+    }
 
 //Chart drawing
     function DrawCleanChart(data){
