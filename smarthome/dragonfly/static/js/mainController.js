@@ -4,21 +4,15 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
 .controller("mainController",['$scope', '$timeout', '$http', 'apiService', function ($scope, $timeout, $http, apiService) {
 
-    $scope.showdetails = false;
-
-    $scope.graphs = [];
-    $scope.tempCharts = [];
-    $scope.cleanCharts = [];
-    $scope.lightSensorCharts = [];
-    $scope.lightSwitchCharts = [];
-
     var switchids = []
 
     function GetData(){
       apiService.get('sensors').then(function(response){
         var info = response.data.results
-        console.log(info);
         $scope.sensors = info;
+        $scope.lightSwitchCharts = [];
+        $scope.tempCharts = [];
+        $scope.graphs = [];
         for(var i in info){
           if(info[i].sensor_type === "lightswitch"){
             DrawLightSwitch(info[i]);
@@ -88,13 +82,11 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 
 //Buttons
     $scope.AddSensor = function(){
-      console.log("adding a sensor")
       $scope.ReadingEntry = false;
       $scope.SensorEntry = true;
     };
 
     $scope.SelectSensor = function(id){
-      console.log(id);
       $scope.ReadingEntry = true;
       $scope.SensorEntry = false;
       for(var i in $scope.sensors){
@@ -106,7 +98,6 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     };
 
     $scope.SubmitSensor = function(){
-      console.log("submitting sensor");
       var params = {
           "name": $scope.newSensorName,
           "description": $scope.newSensorDesc,
@@ -118,12 +109,11 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         console.log("warning");
         return;
       }
-      SendData('dragonfly/addSensor', params)  
+      SendData('dragonfly/addSensor', params, GetData)
 
     };
 
     $scope.SubmitReading = function(){
-      console.log("submitting reading");
       var params = {
           "value": $scope.newReadingValue,
           "date": $scope.newReadingDate,
@@ -133,12 +123,12 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         console.log("warning");
         return;
       }
-      SendData('dragonfly/addReading', params) 
+      SendData('dragonfly/addReading', params, GetData) 
     }
 
 //Utility
 
-function SendData(newurl, params){
+function SendData(newurl, params, callback){
   var req = {
     method: 'POST',
     url: newurl,
@@ -148,6 +138,7 @@ function SendData(newurl, params){
   $http(req).then(function successCallback(response){
     console.log("we got a good response!");
     console.log(response);
+    callback();
   }), function errorCallback(response){
      console.log("An error has occured.", response.data);
   };
