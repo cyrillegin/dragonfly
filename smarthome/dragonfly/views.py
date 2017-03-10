@@ -9,13 +9,23 @@ from django.views.generic import View
 import json
 
 from dragonfly.permission import IsOwnerOrReadOnly
-from dragonfly.models import Sensor
-from dragonfly.serializers import SensorSerializer
+from dragonfly import models
+from dragonfly.serializers import SensorSerializer, LogSerializer
 
 
 class SensorViewSet(viewsets.ModelViewSet):
-    queryset = Sensor.objects.all()
+    queryset = models.Sensor.objects.all()
     serializer_class = SensorSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class LogViewSet(viewsets.ModelViewSet):
+    queryset = models.Log.objects.all()
+    serializer_class = LogSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
 
@@ -42,7 +52,35 @@ class index(View):
 class sendData(View):
     def post(self, request):
         data = json.loads(request.body)
-        print data
+        # print data
         with open('commandQueue.json', 'w') as outfile:
             json.dump(data, outfile)
+        return render(request, 'index.html', {})
+
+
+class addReading(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        print data
+        print "were here"
+        try:
+            print "name is: {}".format(data['sensor'])
+            sensor = models.Sensor.objects.get(name=data['sensor'])
+            print "we found the sensor:"
+            # print json.dumps(sensor.toDict(), indent=2)
+        except:
+            return render(request, 'index.html', {'error': 'sensor not found'})
+        newReading = models.Reading(sensor=sensor, value=data['value'], created=data['date'])
+        newReading.save()
+        print "were done"
+        return render(request, 'index.html', {})
+
+
+class addSensor(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        print data
+        print "were here!!"
+        newSensor = models.Sensor(name=data['name'], description=data['description'], coefficients=data['coefficients'], sensor_type=data['sensor_type'], units=data['units'])
+        newSensor.save()
         return render(request, 'index.html', {})
