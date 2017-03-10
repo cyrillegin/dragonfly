@@ -20,7 +20,9 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         $scope.tempCharts = [];
         $scope.graphs = [];
         for(var i in info){
-          if(info[i].sensor_type === "lightswitch"){
+          console.log(info[i])
+          if(info[i].self_type === "lightswitch"){
+            console.log("here")
             DrawLightSwitch(info[i]);
           } else {
               DrawTempChart(info[i]);
