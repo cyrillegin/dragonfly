@@ -104,7 +104,7 @@ class getReadings(View):
         sensors = models.Sensor.objects.all()
         for i in sensors:
             sensor = i.toDict()
-            readings = models.Reading.objects.filter(sensor=i).filter(created__range=[startDate, endDate])
+            readings = models.Reading.objects.filter(sensor=i, created__range=[startDate, endDate])
             data[sensor['name']] = sensor
             data[sensor['name']]['readings'] = []
             for i in readings:
