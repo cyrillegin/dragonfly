@@ -7,8 +7,14 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
     var switchids = []
 
     function GetData(){
-      apiService.get('sensors').then(function(response){
-        var info = response.data.results
+      var req = {
+        method: 'GET',
+        url: 'dragonfly/getReadings',
+        data: {}
+      };
+      $http(req).then(function successCallback(response){
+        console.log(response)
+        var info = response.data
         $scope.sensors = info;
         $scope.lightSwitchCharts = [];
         $scope.tempCharts = [];
@@ -22,16 +28,15 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
           if(info[i].readings.length < 3) continue;
           DrawLineChart(info[i]);
         }
+      }, function errorCallback(response){
+        console.log("An error has occured.", response.data);
       }).then(function(){
         $timeout(function(){
           for(var i in switchids){
             PostLoad();
-            
           }
         }, 500);
-      }), function(error){
-        console.log("we erred: " + error)
-      }
+      });
     }
 
     function PostLoad(){

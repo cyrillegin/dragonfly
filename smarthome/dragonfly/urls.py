@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^sendData', csrf_exempt(views.sendData.as_view()), name='sendData'),
     url(r'^addReading', csrf_exempt(views.addReading.as_view()), name='sendReading'),
     url(r'^addSensor', csrf_exempt(views.addSensor.as_view()), name='sendSensor'),
+    url(r'^getReadings', csrf_exempt(views.getReadings.as_view()), name='getReadings'),
 
 ]
