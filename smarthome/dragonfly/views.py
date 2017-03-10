@@ -5,8 +5,10 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import viewsets, permissions
 from django.views.generic import View
+from django.http import JsonResponse
 
 import json
+from datetime import datetime, timedelta
 
 from dragonfly.permission import IsOwnerOrReadOnly
 from dragonfly import models
@@ -84,3 +86,36 @@ class addSensor(View):
         newSensor = models.Sensor(name=data['name'], description=data['description'], coefficients=data['coefficients'], sensor_type=data['sensor_type'], units=data['units'])
         newSensor.save()
         return render(request, 'index.html', {})
+
+
+class getReadings(View):
+    def get(self, request):
+        startDate = datetime.today() - timedelta(days=1)
+        endDate = datetime.today()
+        if 'start-date' in self.kwargs:
+            startDate = self.kwargs['start-date']
+        if 'end-date' in self.kwargs:
+            endDate = self.kwargs['end-date']
+        print startDate
+        print endDate
+
+        data = {}
+
+        sensors = models.Sensor.objects.all()
+        for i in sensors:
+            sensor = i.toDict()
+            readings = models.Reading.objects.filter(sensor=i).filter(created__range=[startDate, endDate])
+            data[sensor['name']] = sensor
+            data[sensor['name']]['readings'] = []
+            for i in readings:
+                data[sensor['name']]['readings'].append(i.toDict())
+        print data
+
+        return JsonResponse(data)
+
+
+
+
+
+
+
