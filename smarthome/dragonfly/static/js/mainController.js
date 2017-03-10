@@ -5,6 +5,7 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
 .controller("mainController",['$scope', '$timeout', '$http', 'apiService', function ($scope, $timeout, $http, apiService) {
 
     var switchids = []
+    $scope.graphIndex = 0;
 
     function GetData(){
       var req = {
@@ -84,23 +85,18 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
       }
     }
 
-    $scope.ReadingEntry = false;
-    $scope.SensorEntry = false;
-
 //Buttons
-    $scope.AddSensor = function(){
-      $scope.ReadingEntry = false;
-      $scope.SensorEntry = true;
-    };
-
     $scope.SelectSensor = function(id){
-      $scope.ReadingEntry = true;
-      $scope.SensorEntry = false;
+      var j = 0;
       for(var i in $scope.sensors){
+
         if($scope.sensors[i].name === id[0]){
           console.log("sensor found")
+          console.log(j)
+          $scope.graphIndex = j;
           $scope.selectedSensor = $scope.sensors[i];
         }
+        j++;
       }
     };
 
@@ -225,10 +221,6 @@ function SendData(newurl, params, callback){
         };
 
         $scope.graphs.push(myChartObject)
-    }
-
-    function svgDraw(){
-      
     }
 
     GetData();
