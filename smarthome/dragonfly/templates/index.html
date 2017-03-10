@@ -7,9 +7,25 @@
 
         <title>Dragonfly</title>
 
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+          integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+          crossorigin="anonymous"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-route.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-chart/0.1.0/ng-google-chart.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.min.css">
+
         {% load static %}
 
-        <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+        <!-- If using a server that is a little more robust, the following can be 
+        uncommented and then npm installed in the static folder.-->
+
+        <!-- <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
         <script src="{% static "bower_components/angular/angular.min.js" %}"></script>
         <script src="{% static "bower_components/angular-route/angular-route.js" %}"></script>
         <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
@@ -18,15 +34,13 @@
         <script src="{% static "bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js" %}"></script>
 
         <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
-        <link rel="stylesheet" href="{% static "bower_components/bootstrap-switch/dist/css/bootstrap-switch.min.css" %}">
+        <link rel="stylesheet" href="{% static "bower_components/bootstrap-switch/dist/css/bootstrap-switch.min.css" %}"> -->
 
         <script src="{% static "js/app.js" %}"></script>
         <script src="{% static "js/mainController.js" %}"></script>
         <script src="{% static "js/services.js" %}"></script>
 
         <link  rel="stylesheet" href="{% static "css/style.css" %}">
-
-
 
     </head>
 

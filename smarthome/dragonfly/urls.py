@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'sensors', views.SensorViewSet)
+router.register(r'logs', views.LogViewSet)
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.

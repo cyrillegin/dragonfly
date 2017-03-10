@@ -10,12 +10,22 @@ import json
 
 from dragonfly.permission import IsOwnerOrReadOnly
 from dragonfly import models
-from dragonfly.serializers import SensorSerializer
+from dragonfly.serializers import SensorSerializer, LogSerializer
 
 
 class SensorViewSet(viewsets.ModelViewSet):
     queryset = models.Sensor.objects.all()
     serializer_class = SensorSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class LogViewSet(viewsets.ModelViewSet):
+    queryset = models.Log.objects.all()
+    serializer_class = LogSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
 
