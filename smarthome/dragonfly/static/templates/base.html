@@ -15,14 +15,7 @@
             <div class="row">
 <!-- Start node chart -->
                 <div class="col-md-12">
-                    <h3>Sensors:</h3>
-                    <select size="10" ng-model="sensorSelect" ng-change="SelectSensor(sensorSelect)" name="ngvalueselect"  multiple>
-                         <option ng-repeat="sensor in sensors" ng-value="sensor.index">{{sensor.name}}</option>
-                    </select>
-                    
-                    <!-- add sensor button, remember we need to do something about the whitelist in cleanReadings -->
-                    <Button ng-click="AddSensor()">New Sensor</Button>
-                    <br><br><br>
+                    <div id="sensor-tree"></div>
                 </div>
 
 <!-- End node chart -->

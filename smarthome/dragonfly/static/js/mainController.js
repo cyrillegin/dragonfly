@@ -243,7 +243,7 @@ function SendData(newurl, params, callback){
       var d3 = $window.d3;
       var margin = {top: 20, right: 120, bottom: 20, left: 120},
       width = 960 - margin.right - margin.left,
-      height = 800 - margin.top - margin.bottom;
+      height = 400 - margin.top - margin.bottom;
 
       var i = 0,
           duration = 750,
@@ -255,7 +255,7 @@ function SendData(newurl, params, callback){
       var diagonal = d3.svg.diagonal()
           .projection(function(d) { return [d.y, d.x]; });
 
-      var svg = d3.select("body").append("svg")
+      var svg = d3.select("#sensor-tree").append("svg")
           .attr("width", width + margin.right + margin.left)
           .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -278,7 +278,7 @@ function SendData(newurl, params, callback){
         update(root);
       
 
-      d3.select(self.frameElement).style("height", "800px");
+      d3.select(self.frameElement).style("height", "400px");
 
       function update(source) {
 
@@ -365,18 +365,23 @@ function SendData(newurl, params, callback){
           d.x0 = d.x;
           d.y0 = d.y;
         });
+        console.log($scope)
       }
 
       // Toggle children on click.
       function click(d) {
-        if (d.children) {
-          d._children = d.children;
-          d.children = null;
-        } else {
-          d.children = d._children;
-          d._children = null;
+        var j = 0;
+        for(var i in $scope.sensors){
+          if($scope.sensors[i].name === d['name']){
+            console.log("sensor found")
+            console.log(j)
+            $scope.graphIndex = j;
+            $scope.selectedSensor = $scope.sensors[i];
+          }
+          j++;
         }
-        update(d);
+        $scope.$apply()
+
       }
     }
 
