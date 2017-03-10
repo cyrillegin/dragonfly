@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from dragonfly.models import Sensor, Reading
+from dragonfly.models import Sensor, Reading, Log
 
 
 class ReadingSerializer(serializers.ModelSerializer):
@@ -15,3 +15,9 @@ class SensorSerializer(serializers.HyperlinkedModelSerializer):
         model = Sensor
         fields = ('url', 'id',
                   'created', 'name', 'description', 'coefficients', 'readings', 'sensor_type', 'units')
+
+
+class LogSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Log
+        fields = ('created', 'title', 'description')

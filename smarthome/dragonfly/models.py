@@ -34,8 +34,7 @@ class Reading(models.Model):
     sensor = models.ForeignKey(Sensor, related_name='readings', on_delete=models.CASCADE)
     value = models.FloatField(null=False, blank=False)
 
-    class meta:
-        unique_together = ('album', 'order')
+    class Meta:
         ordering = ('created',)
 
     def __unicode__(self):
@@ -46,4 +45,20 @@ class Reading(models.Model):
             "created": self.created,
             "sensor": self.sensor.toDict(),
             "value": self.value
+        }
+
+
+class Log(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    title = models.TextField(blank=False, null=False)
+    description = models.TextField(blank=False, null=False)
+
+    class Meta:
+        ordering = ('created', )
+
+    def toDict(self):
+        return {
+            'created': self.created,
+            'title': self.title,
+            'description': self.description
         }
