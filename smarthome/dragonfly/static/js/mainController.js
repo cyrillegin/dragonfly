@@ -253,7 +253,7 @@ function SendData(newurl, params, callback){
           .size([height, width]);
 
       var diagonal = d3.svg.diagonal()
-          .projection(function(d) { return [d.y, d.x]; });
+          .projection(function(d) { return [d.x, d.y]; });
 
       var svg = d3.select("#sensor-tree").append("svg")
           .attr("width", width + margin.right + margin.left)
@@ -296,7 +296,7 @@ function SendData(newurl, params, callback){
         // Enter any new nodes at the parent's previous position.
         var nodeEnter = node.enter().append("g")
             .attr("class", "node")
-            .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+            .attr("transform", function(d) { return "translate(" + source.x0 + "," + source.y0 + ")"; })
             .on("click", click);
 
         nodeEnter.append("circle")
@@ -313,7 +313,7 @@ function SendData(newurl, params, callback){
         // Transition nodes to their new position.
         var nodeUpdate = node.transition()
             .duration(duration)
-            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
         nodeUpdate.select("circle")
             .attr("r", 4.5)
@@ -325,7 +325,7 @@ function SendData(newurl, params, callback){
         // Transition exiting nodes to the parent's new position.
         var nodeExit = node.exit().transition()
             .duration(duration)
-            .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+            .attr("transform", function(d) { return "translate(" + source.x + "," + source.y + ")"; })
             .remove();
 
         nodeExit.select("circle")
