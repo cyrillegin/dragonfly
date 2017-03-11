@@ -17,7 +17,7 @@
         <script src="{% static "bower_components/angular-route/angular-route.js" %}"></script>
         <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
         <script src="{% static "bower_components/bootstrap-treeview/dist/bootstrap-treeview.min.js" %}"></script>
-        <script src="{% static "bower_components/angular-google-charts/ng-google-chart.min.js" %}"></script>
+        <!-- <script src="{% static "bower_components/angular-google-charts/ng-google-chart.min.js" %}"></script> -->
         <script src="{% static "bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js" %}"></script>
         <script src="{% static "bower_components/d3/d3.min.js" %}"></script>
 
@@ -27,26 +27,27 @@
 
         <script src="{% static "js/app.js" %}"></script>
         <script src="{% static "js/mainController.js" %}"></script>
+        <script src="{% static "js/gaugeWidget.js" %}"></script>
+        <script src="{% static "js/treeWidget.js" %}"></script>
+        <script src="{% static "js/graphWidget.js" %}"></script>
         <script src="{% static "js/services.js" %}"></script>
+
 
         <link  rel="stylesheet" href="{% static "css/style.css" %}">
 
     </head>
 
     <script>
+        var STATIC_URL = '{{ STATIC_URL|escapejs }}';
+        var crsf = '{{ csrf_token }}'
 
-    var STATIC_URL = '{{ STATIC_URL|escapejs }}';
-    var crsf = '{{ csrf_token }}'
-
-    function cs(){
-        return crsf;
-    }
-    function static(path){
-        return STATIC_URL + path;
-    }
-
-</script>
-
+        function cs(){
+            return crsf;
+        }
+        function static(path){
+            return STATIC_URL + path;
+        }
+    </script>
 
     <body ng-app="dragonfly">
         <div class = "container-fluid">
@@ -54,6 +55,5 @@
                 
             </div>
         </div>
-
     </body>
 </html>
