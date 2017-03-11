@@ -1,93 +1,101 @@
 <div ng-controller="mainController">
-    <H2>Welcome to Dragonfly</H2>
-    <button ng-click="getReadings()">test</button>
     <div class="row">
-        <div class="col-md-8">
-           <div ng-repeat="graph in tempCharts">
-                <div class="col-md-2">
+        <div class="col-md-3">
+            <H2>Welcome to Dragonfly</H2>
+        </div>
+<!-- Start node chart -->
+        <div class="col-md-6">
+            <div id="sensor-tree"></div>
+        </div>
+    </div>
+<!-- End node chart -->
+    <div class="row">
+        <div class="col-md-2">
+<!-- Start temp graphs -->
+            <div ng-repeat="graph in tempCharts">
+                <div class="clearfix" ng-if="$index % 2 == 0"></div>
+                <div class="col-lg-6">
                     <div google-chart chart=graph width:100%/>
+                </div>
+            </div>
+<!-- End temp graphs -->
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+<!-- Start main graph -->
+                <div google-chart chart=graphs[graphIndex]  width:100%;/>
+<!-- End main graph -->
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+<!-- Start Add Reading -->
+                        <h3>Add Entry:</h3>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>Date:</td>
+                                    (yyyy-mm-ddThh:mm:ss.000000Z)
+                                    <td> <input type="text" ng-model='newReadingDate'></td>
+                                </tr>
+                                <tr>
+                                    <td>Value:</td>
+                                    <td> <input type="text" ng-model='newReadingValue'></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button ng-click="SubmitReading()">Submit</button>
+<!-- End Add Reading -->
+                    </div>
+                     <div class="col-md-2"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+<!-- Start Add Sensor1 -->
+                        <div class="row">
+                            <h3>Add Sensor:</h3>
+                        </div>
+                        <div class="row">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <td>Name:</td>  
+                                        <td><input type="text" ng-model='newSensorName'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description:</td>
+                                        <td><input type="text" ng-model='newSensorDesc'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sensor type:</td>
+                                        <td><input type="text" ng-model='newSensorType'>
+                                    <tr>
+                                        <td>Units:</td> 
+                                        <td><input type="text" ng-model='newSensorUnits'></td></tr>
+                                    <tr>
+                                        <td>Coefficents:</td> 
+                                        <td><input type="text" ng-model='newSensorCoef'></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <button ng-click="SubmitSensor()">Submit</button>
+                        </div>
+<!-- End Add Sensor2 -->
+                    </div>
+                     <div class="col-md-2"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-2">
+<!-- Start control widgets -->
             <div ng-repeat="graph in lightSwitchCharts">
                 <h3>{{ graph.title }}</h3>
                 <input type="checkbox" name="my-checkbox" id={{graph.id}} checked>
             </div>
-        </div>
-    </div>
-    <br>
-    <hr>
-    <br>
-    <div class="row">
-        <div class="col-md-4">
-            <!-- sensor select -->
-            <h3>Sensors:</h3>
-            
-            <select size="10" ng-model="sensorSelect" ng-change="SelectSensor(sensorSelect)" name="ngvalueselect"  multiple>
-                 <option ng-repeat="sensor in sensors" ng-value="sensor.index">{{sensor.name}}</option>
-            </select>
-            <br>
-            <!-- add sensor button, remember we need to do something about the whitelist in cleanReadings -->
-            <Button ng-click="AddSensor()">New Sensor</Button>
-        </div>
-        <div class="col-md-3">
-            <!-- sensor edit (coefficents, units, etc) -->
-            <div ng-show="SensorEntry">
-                <h3>Add Sensor:</h3>
-                <table class="table table-borderless">
-                    <tbody>
-                        <tr>
-                            <td>Name:</td>  
-                            <td><input type="text" ng-model='newSensorName'></td>
-                        </tr>
-                        <tr>
-                            <td>Description:</td>
-                            <td><input type="text" ng-model='newSensorDesc'></td>
-                        </tr>
-                        <tr>
-                            <td>Sensor type:</td>
-                            <td><input type="text" ng-model='newSensorType'>
-                        <tr>
-                            <td>Units:</td> 
-                            <td><input type="text" ng-model='newSensorUnits'></td></tr>
-                        <tr>
-                            <td>Coefficents:</td> 
-                            <td><input type="text" ng-model='newSensorCoef'></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <button ng-click="SubmitSensor()">Submit</button>
-            </div>
-            <div ng-show="ReadingEntry">
-                <h3>Add Entry:</h3>
-                <table class="table table-borderless">
-                    <tbody>
-                        <tr>
-                            <td>Date:</td>
-                            (yyyy-mm-ddThh:mm:ss.000000Z)
-                            <td> <input type="text" ng-model='newReadingDate'></td>
-                        </tr>
-                        <tr>
-                            <td>Value:</td>
-                            <td> <input type="text" ng-model='newReadingValue'></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button ng-click="SubmitReading()">Submit</button>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <!-- add readingt -->
-        </div>
-    </div>
-    <br>
-    <hr>
-    <br>
-    <div ng-repeat="graph in graphs">
-        <div class="row">
-            <div google-chart chart=graph  width:100%;/>
+<!-- End control widgets -->
         </div>
     </div>
 </div>
