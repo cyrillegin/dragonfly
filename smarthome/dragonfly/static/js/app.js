@@ -5,6 +5,9 @@
 var app = angular.module('dragonfly', [
   'ngRoute',
   'dragonfly.maincontroller',
+  'dragonfly.gaugecontroller',
+  'dragonfly.treecontroller',
+  'dragonfly.graphcontroller',
   'dragonfly.services'
 ])
 

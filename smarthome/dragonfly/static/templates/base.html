@@ -5,25 +5,21 @@
         </div>
 <!-- Start node chart -->
         <div class="col-md-6">
-            <div id="sensor-tree"></div>
+            <div ng-include="'static/templates/treeWidget.html'"></div>
         </div>
     </div>
 <!-- End node chart -->
     <div class="row">
         <div class="col-md-2">
 <!-- Start temp graphs -->
-            <div ng-repeat="graph in tempCharts">
-                <div class="clearfix" ng-if="$index % 2 == 0"></div>
-                <div class="col-lg-6">
-                    <div google-chart chart=graph width:100%/>
-                </div>
-            </div>
+            <div ng-include="'static/templates/gaugeWidget.html'"></div>
 <!-- End temp graphs -->
         </div>
         <div class="col-md-8">
             <div class="row">
 <!-- Start main graph -->
-                <div google-chart chart=graphs[graphIndex]  width:100%;/>
+                <div ng-include="'static/templates/graphWidget.html'"></div>
+                
 <!-- End main graph -->
             </div>
             <div class="row">
