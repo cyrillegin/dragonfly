@@ -2,11 +2,18 @@
 
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope' , function ($scope) {
-  $scope.$watch('sensors', function(v){
-    if(v !== undefined){
-      DrawGraph($scope.data[$scope.graphIndex]);
-    }
+.controller("graphController",['$scope', 'dataService', function ($scope, dataService) {
+  $scope.$watch(function(){
+    return dataService.selection();
+  }, function(v){
+    if(v === undefined) return;
+    // if($scope.data === undefined) return;
+
+      console.log(v)
+      // console.log($scope.data)
+      // console.log($scope.graphName)
+      // DrawGraph($scope.data[$scope.graphName]);
+    
   });
 
   function DrawGraph(data){

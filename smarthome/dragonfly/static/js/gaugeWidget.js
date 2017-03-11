@@ -7,9 +7,7 @@ angular.module('dragonfly.gaugecontroller', [])
   $scope.tempCharts = [];
   $scope.$watch('data', function(v){
       if(v !== undefined){
-          console.log($scope.data)
           for(var i in $scope.data){
-              console.log("here")
               DrawTempChart($scope.data[i]);
           }
       }

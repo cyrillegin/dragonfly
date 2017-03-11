@@ -2,20 +2,23 @@
 
 angular.module('dragonfly.treecontroller', [])
 
-.controller("treeController",['$scope', '$window', function ($scope, $window) {
-  $scope.$watch('data', function(v){
-    if(v !== undefined){
-      var sensorNodes = {
-        "name": "Sensors",
-        "children": []
-      }
-      for(var i in $scope.data){
-        sensorNodes.children.push({
-          "name": i
-        })
-      }
-      buildTree(sensorNodes);
+.controller("treeController",['$scope', '$window', 'dataService', function ($scope, $window, dataService) {
+
+  $scope.$watch(function(){
+      return dataService.data();
+    }, function(v){
+    if(v === undefined) return;
+    if(Object.keys(v).length <= 1) return;
+    var sensorNodes = {
+      "name": "Sensors",
+      "children": []
     }
+    for(var i in v){
+      sensorNodes.children.push({
+        "name": i
+      })
+    }
+    buildTree(sensorNodes);
   });
 
   function buildTree(root){
@@ -53,6 +56,10 @@ angular.module('dragonfly.treecontroller', [])
 
     root.children.forEach(collapse);
     update(root);
+    for(var z in root.children){
+      dataService.select(root.children[z].name);
+      break;
+    }
     
     function update(source) {
 
@@ -150,15 +157,9 @@ angular.module('dragonfly.treecontroller', [])
         d._children = null;
       }
       update(d);
-      var j = 0;
-      for(var i in $scope.sensors){
-        if($scope.sensors[i].name === d['name']){
-          $scope.graphIndex = j;
-          $scope.selectedSensor = $scope.sensors[i];
-        }
-        j++;
-      }
-      $scope.$apply()
+       
+      dataService.select(d.name)
+      // $scope.$apply()
     }
   }
 }]);

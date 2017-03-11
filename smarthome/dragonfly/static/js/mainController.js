@@ -2,7 +2,7 @@
 
 angular.module('dragonfly.maincontroller', [])
 
-.controller("mainController",['$scope', '$timeout', '$http', 'apiService', function ($scope, $timeout, $http, apiService) {
+.controller("mainController",['$scope', '$timeout', '$http', 'apiService', 'dataService', function ($scope, $timeout, $http, apiService, dataService) {
 
   var switchids = []
   $scope.graphIndex = 0;
@@ -15,7 +15,7 @@ angular.module('dragonfly.maincontroller', [])
     };
     $http(req).then(function successCallback(response){
       $scope.lightSwitchCharts = [];
-      $scope.data = response.data;
+      dataService.set(response.data);
       for(var i in response.data){
         if(response.data[i].self_type === "lightswitch"){
           DrawLightSwitch(response.data[i]);
@@ -41,17 +41,6 @@ angular.module('dragonfly.maincontroller', [])
     });
   }
 
-  $scope.SelectSensor = function(id){
-    var j = 0;
-    for(var i in $scope.sensors){
-      if($scope.sensors[i].name === id[0]){
-        $scope.graphIndex = j;
-        $scope.selectedSensor = $scope.sensors[i];
-      }
-      j++;
-    }
-  };
-
   $scope.SubmitSensor = function(){
     var params = {
       "name": $scope.newSensorName,
@@ -71,7 +60,7 @@ angular.module('dragonfly.maincontroller', [])
     var params = {
       "value": $scope.newReadingValue,
       "date": $scope.newReadingDate,
-      "sensor": $scope.selectedSensor.name
+      "sensor": dataService.change().selection
     }
     if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
       console.log("warning");
