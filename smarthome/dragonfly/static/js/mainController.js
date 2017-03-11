@@ -287,7 +287,7 @@ function SendData(newurl, params, callback){
             links = tree.links(nodes);
 
         // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * 180; });
+        nodes.forEach(function(d) { d.y = d.depth * 100; });
 
         // Update the nodes…
         var node = svg.selectAll("g.node")
@@ -304,8 +304,9 @@ function SendData(newurl, params, callback){
             .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
         nodeEnter.append("text")
-            .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-            .attr("dy", ".35em")
+            .attr("x", -20)
+            .attr("y", function(d) { return d.children || d._children ? -15 : 15; })
+            // .attr("dx", ".35em")
             .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
             .text(function(d) { return d.name; })
             .style("fill-opacity", 1e-6);
