@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('dragonfly.gaugecontroller', ['googlechart'])
+angular.module('dragonfly.gaugecontroller', [])
 
-.controller("gaugeController",['$scope', '$timeout', '$http', '$window', 'apiService', function ($scope, $timeout, $http, $window, apiService) {
+.controller("gaugeController",['$scope', function ($scope) {
     $scope.$watch('data', function(v){
         if(v !== undefined){
             console.log($scope.data)
@@ -10,10 +10,8 @@ angular.module('dragonfly.gaugecontroller', ['googlechart'])
                 console.log("here")
                 DrawTempChart($scope.data[i]);
             }
-            console.log($scope.tempCharts)
         }
     });
-    console.log("there")
 
     function DrawTempChart(data){
       if(data.readings[data.readings.length-1] === undefined) return;
