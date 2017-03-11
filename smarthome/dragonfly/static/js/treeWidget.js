@@ -3,13 +3,13 @@
 angular.module('dragonfly.treecontroller', [])
 
 .controller("treeController",['$scope', '$window', function ($scope, $window) {
-  $scope.$watch('sensors', function(v){
+  $scope.$watch('data', function(v){
     if(v !== undefined){
       var sensorNodes = {
         "name": "Sensors",
         "children": []
       }
-      for(var i in $scope.sensors){
+      for(var i in $scope.data){
         sensorNodes.children.push({
           "name": i
         })
