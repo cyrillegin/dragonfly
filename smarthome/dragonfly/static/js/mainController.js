@@ -14,11 +14,7 @@ angular.module('dragonfly.maincontroller', [])
       data: {}
     };
     $http(req).then(function successCallback(response){
-      var info = response.data
-      $scope.sensors = info;
       $scope.lightSwitchCharts = [];
-      $scope.tempCharts = [];
-      $scope.graphs = [];
       $scope.data = response.data;
       for(var i in info){
         if(info[i].self_type === "lightswitch"){
@@ -29,9 +25,7 @@ angular.module('dragonfly.maincontroller', [])
       console.log("An error has occured.", response.data);
     }).then(function(){
       $timeout(function(){
-        for(var i in switchids){
-          PostLoad();
-        }
+        PostLoad();
       }, 500);
     });
   }
