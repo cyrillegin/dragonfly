@@ -14,16 +14,13 @@ angular.module('dragonfly.maincontroller', ['googlechart'])
         data: {}
       };
       $http(req).then(function successCallback(response){
-        console.log(response)
         var info = response.data
         $scope.sensors = info;
         $scope.lightSwitchCharts = [];
         $scope.tempCharts = [];
         $scope.graphs = [];
         for(var i in info){
-          console.log(info[i])
           if(info[i].self_type === "lightswitch"){
-            console.log("here")
             DrawLightSwitch(info[i]);
           } else {
               DrawTempChart(info[i]);
@@ -239,18 +236,19 @@ function SendData(newurl, params, callback){
 
 
 
-    function buildTree(flare){
+    function buildTree(root){
+      console.log($('#sensor-tree')[0].clientWidth)
       var d3 = $window.d3;
-      var margin = {top: 20, right: 120, bottom: 20, left: 120},
-      width = 960 - margin.right - margin.left,
-      height = 400 - margin.top - margin.bottom;
+      var margin = {top: 20, right: 20, bottom: 20, left: 20},
+      width = $('#sensor-tree')[0].clientWidth - margin.right - margin.left,
+      height = 100 - margin.top - margin.bottom;
 
       var i = 0,
           duration = 750,
           root;
 
       var tree = d3.layout.tree()
-          .size([height, width]);
+         .nodeSize([100, 40]);
 
       var diagonal = d3.svg.diagonal()
           .projection(function(d) { return [d.x, d.y]; });
@@ -258,12 +256,10 @@ function SendData(newurl, params, callback){
       var svg = d3.select("#sensor-tree").append("svg")
           .attr("width", width + margin.right + margin.left)
           .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          .append("g")
+          .attr("transform", "translate(" + width/2 + "," + margin.top + ")");
 
-
-        root = flare;
-        root.x0 = height / 2;
+        root.x0 = 0;
         root.y0 = 0;
 
         function collapse(d) {
@@ -277,9 +273,6 @@ function SendData(newurl, params, callback){
         root.children.forEach(collapse);
         update(root);
       
-
-      d3.select(self.frameElement).style("height", "400px");
-
       function update(source) {
 
         // Compute the new tree layout.
@@ -287,7 +280,7 @@ function SendData(newurl, params, callback){
             links = tree.links(nodes);
 
         // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * 100; });
+        nodes.forEach(function(d) { d.y = d.depth * 50; });
 
         // Update the nodes…
         var node = svg.selectAll("g.node")
@@ -304,10 +297,8 @@ function SendData(newurl, params, callback){
             .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
         nodeEnter.append("text")
-            .attr("x", -20)
-            .attr("y", function(d) { return d.children || d._children ? -15 : 15; })
-            // .attr("dx", ".35em")
-            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+            .attr("y", function(d) { return d.children || d._children ? -8 : 20; })
+            .attr("text-anchor", 'middle')
             .text(function(d) { return d.name; })
             .style("fill-opacity", 1e-6);
 
@@ -371,6 +362,14 @@ function SendData(newurl, params, callback){
 
       // Toggle children on click.
       function click(d) {
+        if (d.children) {
+            d._children = d.children;
+            d.children = null;
+        } else {
+            d.children = d._children;
+            d._children = null;
+        }
+        update(d);
         var j = 0;
         for(var i in $scope.sensors){
           if($scope.sensors[i].name === d['name']){

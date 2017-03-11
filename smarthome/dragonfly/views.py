@@ -96,8 +96,6 @@ class getReadings(View):
             startDate = self.kwargs['start-date']
         if 'end-date' in self.kwargs:
             endDate = self.kwargs['end-date']
-        print startDate
-        print endDate
 
         data = {}
 
@@ -109,7 +107,6 @@ class getReadings(View):
             data[sensor['name']]['readings'] = []
             for i in readings:
                 data[sensor['name']]['readings'].append(i.toDict())
-        print data
 
         return JsonResponse(data)
 
