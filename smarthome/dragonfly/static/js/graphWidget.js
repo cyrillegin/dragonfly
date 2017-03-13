@@ -2,37 +2,31 @@
 
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope', 'dataService', function ($scope, dataService) {
+.controller("graphController",['$scope', 'dataService', '$window', function ($scope, dataService, $window) {
   $scope.$watch(function(){
     return dataService.selection();
   }, function(v){
     if(v === undefined) return;
-    // if($scope.data === undefined) return;
-
-      console.log(v)
-      // console.log($scope.data)
-      // console.log($scope.graphName)
-      // DrawGraph($scope.data[$scope.graphName]);
-    
+    if(dataService.data === undefined) return;
+      DrawGraph(dataService.data()[dataService.selection()]);
   });
 
   function DrawGraph(data){
     console.log(data);
-    return
-    scope.graphName = streamInfo.name;
-    parent.innerHTML = "";
-    var width = elem[0].clientWidth;
-    var height = elem[0].clientHeight;
-    var additionalMargin = 0;
-    var messages = "";
+    var d3 = $window.d3;
+    var container = $('#graph-container')
 
-    var margin = {top: 20, right: 10, bottom: 20, left: 40+additionalMargin};
+    container.innerHTML = "";
+    var width = container[0].clientWidth;
+    var height = container[0].clientHeight;
+
+    var margin = {top: 20, right: 10, bottom: 20, left: 40};
     width = width - margin.left - margin.right; height = height - margin.top - margin.bottom;
 
-    var newChart = d3.select(parent)
+    var newChart = d3.select('#graph-container')
         .append("svg")
         .attr("class", "Chart-Container")
-        .attr("id", streamInfo.name)
+        .attr("id", data.name)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -47,36 +41,15 @@ angular.module('dragonfly.graphcontroller', [])
             .attr("y", height/2);
         return;
     }
-
-    var start = timeService.getValues().start;
-    var end = timeService.getValues().end;
-    if(elem[0].clientHeight < 100){
-        start = Date.now() - 84000000;
-        end = Date.now();
-    }
-
-    var min = streamInfo.min_value;
-    var max = streamInfo.max_value;
-    var realMin = data.readings[0][1];
-    var realMax = data.readings[0][1];
+   
+    var start = data.readings[0].created;
+    var end = data.readings[data.readings.length-1].created;
+    var min = data.readings[0].value;
+    var max = data.readings[0].value;
     for(var j = 0; j < data.readings.length; j++){
-        if(realMin > data.readings[j][1]) realMin = data.readings[j][1];
-        if(realMax < data.readings[j][1]) realMax = data.readings[j][1];
+        if(min > data.readings[j].value) min = data.readings[j].value;
+        if(max < data.readings[j].value) max = data.readings[j].value;
     }
-
-    if(min === null){
-        min = realMin;
-    } else if(min > realMin){
-        messages = "Due to min/max values set, some points may not be seen.";
-    }
-    if(max === null){
-      max = realMax;
-    } else if(max < realMax){
-        messages = "Due to min/max values set, some points may not be seen.";
-    }
-
-    scope.newGraph = {};
-    scope.newGraph.warning = "";
 
      var xScale = d3.scaleTime()
         .domain([new Date(start), new Date(end)])
@@ -90,15 +63,14 @@ angular.module('dragonfly.graphcontroller', [])
     var yAxis = d3.axisLeft(yScale)
         .tickSizeInner(-width)
         .tickSizeOuter(-10)
-        .tickValues(getTic())
-        .tickFormat(function(d){
-            var whatToReturn = getFormattedText(d);
-            return getFormattedText(d);
-        });
+        // .tickValues(getTic())
+        // .tickFormat(function(d){
+        //     var whatToReturn = getFormattedText(d);
+        //     return getFormattedText(d);
+        // });
     newChart.append("g")
         .attr("class", "ChartAxis-Shape")
         .call(yAxis);
-
 
     //X Axis
     var xAxis = d3.axisBottom(xScale)
@@ -129,14 +101,15 @@ angular.module('dragonfly.graphcontroller', [])
         .attr("transform", "translate("+width+", 0)")
         .call(yAxisRight);
 
-    function getTic(){
-        var Ticks = [];
-        var ratio  = (max-min) / 6;
-        for(var i = 0; i < 7; i++){
-            Ticks.push(min+(ratio*i));
-        }
-        return Ticks;
-    }
+    // function getTic(){
+    //     var Ticks = [];
+    //     var ratio  = (max-min) / 6;
+    //     for(var i = 0; i < 7; i++){
+    //         Ticks.push(min+(ratio*i));
+    //     }
+    //     return Ticks;
+    // }
+    return
 
     var lastPos =[];
     var lastWidth = [];
