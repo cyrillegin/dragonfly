@@ -1,8 +1,8 @@
 <div ng-controller="gaugeController">
-    <div ng-repeat="graph in tempCharts">
+    <div ng-repeat="gauge in gauges">
         <div class="clearfix" ng-if="$index % 2 == 0"></div>
         <div class="col-lg-6">
-            <!-- <div google-chart chart=graph width:100%/> -->
+            <div id={{gauge.id}}/>
         </div>
     </div>
 </div>

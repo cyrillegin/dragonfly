@@ -4,7 +4,6 @@ angular.module('dragonfly.graphcontroller', [])
 
 .controller("graphController",['$scope', 'dataService', '$window', '$http', function ($scope, dataService, $window, $http) {
   $scope.$watch(function(){
-    var i = dataService.selection();
     return dataService.selection();
   }, function(v){
     if(v === undefined) return;
