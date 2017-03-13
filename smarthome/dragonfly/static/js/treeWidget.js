@@ -47,7 +47,7 @@ var treemap = d3.tree().size([width, height]);
 
 // Assigns parent, children, height, depth
 root = d3.hierarchy(treeData, function(d) { return d.children; });
-root.x0 = height / 2;
+root.x0 = width/2;
 root.y0 = 0;
 
 // Collapse after the second level
@@ -83,6 +83,7 @@ function update(source) {
       .data(nodes, function(d) {return d.id || (d.id = ++i); });
 
   // Enter any new modes at the parent's previous position.
+  console.log(source)
   var nodeEnter = node.enter().append('g')
       .attr('class', 'node')
       .attr("transform", function(d) {
@@ -102,9 +103,6 @@ function update(source) {
   nodeEnter.append('text')
       .attr("y", function(d) { return d.children || d._children ? -8 : 20; })
       .attr("text-anchor", 'middle')
-      .attr("text-anchor", function(d) {
-          return d.children || d._children ? "end" : "start";
-      })
       .text(function(d) { return d.data.name; });
 
   // UPDATE
