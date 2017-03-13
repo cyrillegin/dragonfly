@@ -50,13 +50,11 @@ angular.module('dragonfly.gaugecontroller', [])
     
     config.transitionDuration = 500;
   
-    console.log("#gaugeChart-"+id)
     var svg = d3.select("#gaugeChart-"+id)
               .append("svg:svg")
               .attr("class", "gauge")
               .attr("width", config.size)
               .attr("height", config.size);
-    console.log(svg)
     
     svg.append("svg:circle")
           .attr("cx", config.cx)
