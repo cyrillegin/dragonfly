@@ -90,7 +90,7 @@ class addSensor(View):
 
 class getReadings(View):
     def get(self, request):
-        startDate = datetime.today() - timedelta(days=1)
+        startDate = datetime.today() - timedelta(days=5)
         endDate = datetime.today()
         if 'start-date' in self.kwargs:
             startDate = self.kwargs['start-date']

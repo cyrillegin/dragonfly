@@ -4,11 +4,12 @@ angular.module('dragonfly.graphcontroller', [])
 
 .controller("graphController",['$scope', 'dataService', '$window', function ($scope, dataService, $window) {
   $scope.$watch(function(){
+    var i = dataService.selection();
     return dataService.selection();
   }, function(v){
     if(v === undefined) return;
     if(dataService.data === undefined) return;
-      DrawGraph(dataService.data()[dataService.selection()]);
+    DrawGraph(dataService.data()[dataService.selection()]);
   });
 
   function DrawGraph(data){
@@ -18,7 +19,7 @@ angular.module('dragonfly.graphcontroller', [])
 
     container.innerHTML = "";
     var width = container[0].clientWidth;
-    var height = container[0].clientHeight;
+    var height = container[0].clientHeight+600;
 
     var margin = {top: 20, right: 10, bottom: 20, left: 40};
     width = width - margin.left - margin.right; height = height - margin.top - margin.bottom;

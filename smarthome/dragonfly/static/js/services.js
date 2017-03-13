@@ -15,7 +15,7 @@ angular.module('dragonfly.services', [])
             data = info
         },
         select: function(name){
-            console.log("selecting")
+            console.log("selecting " + name)
             selection = name;
         }
     };

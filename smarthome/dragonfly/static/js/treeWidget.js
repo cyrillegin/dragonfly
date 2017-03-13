@@ -83,7 +83,6 @@ function update(source) {
       .data(nodes, function(d) {return d.id || (d.id = ++i); });
 
   // Enter any new modes at the parent's previous position.
-  console.log(source)
   var nodeEnter = node.enter().append('g')
       .attr('class', 'node')
       .attr("transform", function(d) {
@@ -199,7 +198,8 @@ function update(source) {
         d._children = null;
       }
     update(d);
-    dataService.select(d.name)
+    dataService.select(d.data.name)
+    $scope.$apply();
   }
 }
 }
