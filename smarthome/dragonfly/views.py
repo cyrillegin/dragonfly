@@ -81,34 +81,42 @@ class addReading(View):
 class addSensor(View):
     def post(self, request):
         data = json.loads(request.body)
-        print data
-        print "were here!!"
         newSensor = models.Sensor(name=data['name'], description=data['description'], coefficients=data['coefficients'], sensor_type=data['sensor_type'], units=data['units'])
         newSensor.save()
         return render(request, 'index.html', {})
 
 
-class getReadings(View):
+class getSensors(View):
     def get(self, request):
-        startDate = datetime.today() - timedelta(days=1)
-        endDate = datetime.today()
-        if 'start-date' in self.kwargs:
-            startDate = self.kwargs['start-date']
-        if 'end-date' in self.kwargs:
-            endDate = self.kwargs['end-date']
-
-        data = {}
-
         sensors = models.Sensor.objects.all()
+        data = {'sensors': []}
         for i in sensors:
-            sensor = i.toDict()
-            readings = models.Reading.objects.filter(sensor=i, created__range=[startDate, endDate])
-            data[sensor['name']] = sensor
-            data[sensor['name']]['readings'] = []
-            for i in readings:
-                data[sensor['name']]['readings'].append(i.toDict())
-
+            data['sensors'].append(i.toDict())
         return JsonResponse(data)
+
+
+class getReadings(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        startDate = datetime.today() - timedelta(days=5)
+        endDate = datetime.today()
+        if 'start-date' in data:
+            startDate = data['start-date']
+        if 'end-date' in data:
+            endDate = data['end-date']
+
+        print data
+        sensorObj = models.Sensor.objects.filter(name=data['sensor'])[0]
+        print sensorObj
+        readings = models.Reading.objects.filter(sensor=sensorObj, created__range=[startDate, endDate])
+        toReturn = {
+            'sensor': sensorObj.toDict(),
+            'readings': []
+        }
+        for i in readings:
+            toReturn['readings'].append(i.toDict())
+
+        return JsonResponse(toReturn)
 
 
 

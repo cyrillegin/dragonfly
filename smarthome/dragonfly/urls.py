@@ -17,5 +17,6 @@ urlpatterns = [
     url(r'^addReading', csrf_exempt(views.addReading.as_view()), name='sendReading'),
     url(r'^addSensor', csrf_exempt(views.addSensor.as_view()), name='sendSensor'),
     url(r'^getReadings', csrf_exempt(views.getReadings.as_view()), name='getReadings'),
+    url(r'^getSensors', csrf_exempt(views.getSensors.as_view()), name='getSensors'),
 
 ]

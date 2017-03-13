@@ -2,7 +2,7 @@
 
 angular.module('dragonfly.maincontroller', [])
 
-.controller("mainController",['$scope', '$timeout', '$http', 'apiService', function ($scope, $timeout, $http, apiService) {
+.controller("mainController",['$scope', '$timeout', '$http', 'apiService', 'dataService', function ($scope, $timeout, $http, apiService, dataService) {
 
   var switchids = []
   $scope.graphIndex = 0;
@@ -10,69 +10,37 @@ angular.module('dragonfly.maincontroller', [])
   function GetData(){
     var req = {
       method: 'GET',
-      url: 'dragonfly/getReadings',
+      url: 'dragonfly/getSensors',
       data: {}
     };
     $http(req).then(function successCallback(response){
-      var info = response.data
-      $scope.sensors = info;
+      console.log(response)
       $scope.lightSwitchCharts = [];
-      $scope.tempCharts = [];
-      $scope.graphs = [];
-      $scope.data = response.data;
-      for(var i in info){
-        if(info[i].self_type === "lightswitch"){
-          DrawLightSwitch(info[i]);
+      dataService.set(response.data.sensors);
+      for(var i in response.data.sensors){
+        if(response.data.sensors[i].self_type === "lightswitch"){
+          DrawLightSwitch(response.data.sensors[i]);
         }
       }
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     }).then(function(){
+      //initialize bootstrap switches
       $timeout(function(){
         for(var i in switchids){
-          PostLoad();
+          $('#'+switchids[i]).bootstrapSwitch();
+          $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event){
+            SendData(
+              'dragonfly/sendData', {
+                "lightswitch": event.target.id.split('-')[1],
+                'value': state
+              }
+            )
+          });
         }
       }, 500);
     });
   }
-
-  function PostLoad(){
-    //bootstrap switches
-    for(var i in switchids){
-      $('#'+switchids[i]).bootstrapSwitch();
-      $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
-        var req = {
-          method: 'POST',
-          url: "dragonfly/sendData",
-          data: {
-            "lightswitch": event.target.id.split('-')[1],
-            "value": state
-          }
-        };
-
-        $http(req).then(function successCallback(response){
-          console.log("we got a good response!");
-          console.log(response);
-        }), function errorCallback(response){
-           console.log("An error has occured.", response.data);
-        };
-      });
-    }
-  }
-  
-  //Buttons
-  $scope.SelectSensor = function(id){
-    var j = 0;
-    for(var i in $scope.sensors){
-      if($scope.sensors[i].name === id[0]){
-        console.log("sensor found")
-        console.log(j)
-        $scope.graphIndex = j;
-        $scope.selectedSensor = $scope.sensors[i];
-      }
-      j++;
-    }
-  };
 
   $scope.SubmitSensor = function(){
     var params = {
@@ -93,7 +61,7 @@ angular.module('dragonfly.maincontroller', [])
     var params = {
       "value": $scope.newReadingValue,
       "date": $scope.newReadingDate,
-      "sensor": $scope.selectedSensor.name
+      "sensor": dataService.change().selection
     }
     if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
       console.log("warning");
