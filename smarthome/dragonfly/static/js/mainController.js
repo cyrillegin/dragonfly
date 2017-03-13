@@ -10,15 +10,16 @@ angular.module('dragonfly.maincontroller', [])
   function GetData(){
     var req = {
       method: 'GET',
-      url: 'dragonfly/getReadings',
+      url: 'dragonfly/getSensors',
       data: {}
     };
     $http(req).then(function successCallback(response){
+      console.log(response)
       $scope.lightSwitchCharts = [];
-      dataService.set(response.data);
-      for(var i in response.data){
-        if(response.data[i].self_type === "lightswitch"){
-          DrawLightSwitch(response.data[i]);
+      dataService.set(response.data.sensors);
+      for(var i in response.data.sensors){
+        if(response.data.sensors[i].self_type === "lightswitch"){
+          DrawLightSwitch(response.data.sensors[i]);
         }
       }
     }, function errorCallback(response){

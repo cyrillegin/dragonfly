@@ -2,14 +2,29 @@
 
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope', 'dataService', '$window', function ($scope, dataService, $window) {
+.controller("graphController",['$scope', 'dataService', '$window', '$http', function ($scope, dataService, $window, $http) {
   $scope.$watch(function(){
     var i = dataService.selection();
     return dataService.selection();
   }, function(v){
     if(v === undefined) return;
     if(dataService.data === undefined) return;
-    DrawGraph(dataService.data()[dataService.selection()]);
+
+    var params = {
+      "sensor": dataService.selection()
+    }
+    var req = {
+      method: 'POST',
+      url: 'dragonfly/getReadings',
+      data: params
+    };
+    $http(req).then(function successCallback(response){
+      DrawGraph(response.data);
+    }, function errorCallback(response){
+      console.log("An error has occured.", response.data);
+    });
+
+    
   });
 
   function DrawGraph(data){
@@ -19,7 +34,7 @@ angular.module('dragonfly.graphcontroller', [])
 
     container.innerHTML = "";
     var width = container[0].clientWidth;
-    var height = container[0].clientHeight+600;
+    var height = container[0].clientHeight+400;
 
     var margin = {top: 20, right: 10, bottom: 20, left: 40};
     width = width - margin.left - margin.right; height = height - margin.top - margin.bottom;
@@ -52,6 +67,7 @@ angular.module('dragonfly.graphcontroller', [])
         if(max < data.readings[j].value) max = data.readings[j].value;
     }
 
+    console.log(new Date(start), new Date(end))
      var xScale = d3.scaleTime()
         .domain([new Date(start), new Date(end)])
         .rangeRound([0, width]);
@@ -64,11 +80,11 @@ angular.module('dragonfly.graphcontroller', [])
     var yAxis = d3.axisLeft(yScale)
         .tickSizeInner(-width)
         .tickSizeOuter(-10)
-        // .tickValues(getTic())
-        // .tickFormat(function(d){
-        //     var whatToReturn = getFormattedText(d);
-        //     return getFormattedText(d);
-        // });
+        .tickValues(getTic())
+        .tickFormat(function(d){
+            var whatToReturn = getFormattedText(d, data.sensor);
+            return getFormattedText(d, data.sensor);
+        });
     newChart.append("g")
         .attr("class", "ChartAxis-Shape")
         .call(yAxis);
@@ -102,27 +118,27 @@ angular.module('dragonfly.graphcontroller', [])
         .attr("transform", "translate("+width+", 0)")
         .call(yAxisRight);
 
-    // function getTic(){
-    //     var Ticks = [];
-    //     var ratio  = (max-min) / 6;
-    //     for(var i = 0; i < 7; i++){
-    //         Ticks.push(min+(ratio*i));
-    //     }
-    //     return Ticks;
-    // }
-    return
+    function getTic(){
+        var Ticks = [];
+        var ratio  = (max-min) / 6;
+        for(var i = 0; i < 7; i++){
+            Ticks.push(min+(ratio*i));
+        }
+        return Ticks;
+    }
+    
 
     var lastPos =[];
     var lastWidth = [];
 
-    newChart.append("text")
-        .attr("x", width)
-        .attr("y", margin.bottom-5)
-        .attr("text-anchor", "end")
-        .text(messages)
-        .attr("width", 100)
-        .attr("height", 100*0.4)
-        .attr("fill", "black");
+    // newChart.append("text")
+    //     .attr("x", width)
+    //     .attr("y", margin.bottom-5)
+    //     .attr("text-anchor", "end")
+    //     .text(messages)
+    //     .attr("width", 100)
+    //     .attr("height", 100*0.4)
+    //     .attr("fill", "black");
 
     /* Graph lines
     * First gets a preliminary date, then itterates through the data keeping track of the last date.
@@ -130,39 +146,42 @@ angular.module('dragonfly.graphcontroller', [])
     * If it isn't, create a break in the line and reset all of the values until a new date is found.
     */
 
-    var meanTimes = [];
-    var lastPoint =(data.readings[0][0]);
+    // var meanTimes = [];
+    // var lastPoint =(data.readings[0].created);
 
-    for(var j = 0; j < data.readings.length; j++){
-        meanTimes.push((data.readings[j][0] - lastPoint) * 0.0001);
-        lastPoint = data.readings[j][0];
-    }
-    meanTimes.sort();
-    var meanTime = meanTimes[parseInt(meanTimes.length/2)];
-    var last = 0;
+    // for(var j = 0; j < data.readings.length; j++){
+    //     meanTimes.push((data.readings[j].created - lastPoint));
+    //     lastPoint = data.readings[j].created;
+    // }
+    // meanTimes.sort();
+    // var meanTime = meanTimes[parseInt(meanTimes.length/2)];
+    // var last = 0;
+
 
     var lineFunction = d3.line()
-        .defined(function(d) {
-            d[0] = parseInt(d[0]);
-            if(d[0] < start/1000 || d[0] > end/1000) return false;
-            if(d[1] > max || d[1] < min){
-                scope.newGraph.warning = "Warning: Some data points are not shown in graph and may be causing line breaks.";
-                return false;
-            }
+        // .defined(function(d) {
+            // d.created = parseInt(d.created);
+            // if(d.created < start || d.created > end) return false;
+            // if(d.value > max || d.value < min){
+            //     scope.newGraph.warning = "Warning: Some data points are not shown in graph and may be causing line breaks.";
+            //     return false;
+            // }
 
-            var val = (d[0] - last) *0.0001;
-            if(val > meanTime*1.5 ||val < meanTime*0.5){
-                last = d[0];
-                return false;
-            }
-            last = d[0];
-            return true;
-        })
+            // var val = (d.created - last);
+            // if(val > meanTime*1.5 ||val < meanTime*0.5){
+            //     last = d.created;
+            //     return false;
+            // }
+            // last = d.created;
+            // console.log("here")
+            // return true;
+        // })
         .x(function(d) {
-            return isNaN(xScale(d[0]*1000)) ? 0 : xScale(d[0]*1000);
+            var toReturn =  isNaN(xScale(new Date(d.created))) ? 0 : xScale(new Date(d.created));
+            return toReturn
           })
         .y(function(d) {
-            return yScale(d[1]);
+            return yScale(d.value);
         });
     var lineGraph = newChart.append("path")
         .attr("d", lineFunction(data.readings))
@@ -170,6 +189,7 @@ angular.module('dragonfly.graphcontroller', [])
         .attr("stroke-width", 2)
         .attr("fill", "none");
 
+    
     //TOOL-TIPS
     //Tooltip container
     var tooltip = newChart.append("g")
@@ -235,12 +255,12 @@ angular.module('dragonfly.graphcontroller', [])
                 d0 = data.readings[i - 1],
                 d1 = data.readings[i];
             if(d1 === undefined) return;
-            var d = x0 - d0[0]*1000 > d1[0]*1000 - x0 ? d1 : d0;
-            if(xScale(d[0]*1000) > dragStartPos){
-                selectionBox.attr("width", (xScale(d[0]*1000) - dragStartPos));
+            var d = x0 - new Date(d0.created) > new Date(d1.created) - x0 ? d1 : d0;
+            if(xScale(new Date(d.created)) > dragStartPos){
+                selectionBox.attr("width", (xScale(new Date(d.created)) - dragStartPos));
             } else {
-                selectionBox.attr("width", ( dragStartPos - xScale(d[0]*1000)));
-                selectionBox.attr("transform", "translate(" + xScale(d[0]*1000) + ",0)" );
+                selectionBox.attr("width", ( dragStartPos - xScale(new Date(d.created))));
+                selectionBox.attr("transform", "translate(" + xScale(new Date(d.created)) + ",0)" );
             }
         })
         .on("end", function(d,i){
@@ -256,15 +276,15 @@ angular.module('dragonfly.graphcontroller', [])
                 end = x0.getTime();
             }
 
-            scope.$apply(function(){
-                $location.search('startTime', start);
-                $location.search('endTime', end);
-                $location.search('time', 'custom');
-            });
-            angular.element("#hourBtn").removeClass('active');
-            angular.element("#dayBtn").removeClass('active');
-            angular.element("#weekBtn").removeClass('active');
-            angular.element("#customBtn").addClass('active');
+            // scope.$apply(function(){
+            //     $location.search('startTime', start);
+            //     $location.search('endTime', end);
+            //     $location.search('time', 'custom');
+            // });
+            // angular.element("#hourBtn").removeClass('active');
+            // angular.element("#dayBtn").removeClass('active');
+            // angular.element("#weekBtn").removeClass('active');
+            // angular.element("#customBtn").addClass('active');
         });
     //Hit area for selection box
     var circleHit = newChart.append("rect")
@@ -289,14 +309,14 @@ angular.module('dragonfly.graphcontroller', [])
             d1 = data.readings[i];
         if(d1 === undefined) return;
         var d = x0 - d0[0]*1000 > d1[0]*1000 - x0 ? d1 : d0;
-            selectionBox.attr("transform", "translate(" + xScale(d[0]*1000) + ",0)" );
-            dragStartPos = xScale(d[0]*1000);
+            selectionBox.attr("transform", "translate(" + xScale(new Date(d.created)) + ",0)" );
+            dragStartPos = xScale(new Date(d.created));
         })
         .call(drag);
 
     //Tooltip helper
     var bisectDate = d3.bisector(function(d) {
-        return d.date;
+        return new Date(d.created);
     }).left;
 
     function mousemove() {
@@ -304,6 +324,7 @@ angular.module('dragonfly.graphcontroller', [])
             i = d3.bisect(myData, x0),
             d0 = data.readings[i - 1],
             d1 = data.readings[i];
+          console.log(x0)
         var d;
         if(d0 === undefined && d1 === undefined) return;
         if(d0 === undefined){
@@ -311,29 +332,28 @@ angular.module('dragonfly.graphcontroller', [])
         } else if(d1 === undefined){
             d = d0;
         } else {
-            if(x0 -d0[0]*1000 > d1[0]*1000 -x0){
+            if(x0 -d0.created > d1.created -x0){
                 d = d1;
             } else {
                 d = d0;
             }
         }
-        if(d[1] < min || d[1] > max) return;
-        circleElements[0].attr("transform", "translate(" + xScale(d[0]*1000) + "," + yScale(d[1]) + ")");
-        yLine.attr("transform", "translate(" + xScale(d[0]*1000) + "," + 0 + ")");
-        timeText.text(new Date(d[0]*1000) + " | " + getFormattedText(d[1]));
+        if(d.value < min || d.value > max) return;
+        circleElements[0].attr("transform", "translate(" + xScale(new Date(d.created)) + "," + yScale(d.value) + ")");
+        yLine.attr("transform", "translate(" + xScale(new Date(d.created)) + "," + 0 + ")");
+        timeText.text(new Date(d.created) + " | " + getFormattedText(d.value, data.sensor));
 
         textElements[0]
-            .text(getFormattedText(d[1]))
-            .attr("transform", "translate(" + (xScale(d[0]*1000)+10) + "," + (yScale(d[1])-10) + ")");
+            .text(getFormattedText(d.value, data.sensor))
+            .attr("transform", "translate(" + (xScale(new Date(d.created))+10) + "," + (yScale(d.value)-10) + ")");
 
     }
 
      //Formats text
-    function getFormattedText(d){
+    function getFormattedText(d, info){
         var f = d3.format(".1f");
         var count = Math.round(d).toString().length;
         f = d3.format(".2f");
-        var info = infoService.getSensorInfo();
         if(info.units === null) return f(d);
         if(info.units == "$") return info.units + f(d);
         return f(d) + info.units;

@@ -15,7 +15,7 @@ angular.module('dragonfly.treecontroller', [])
     }
     for(var i in v){
       sensorNodes.children.push({
-        "name": i
+        "name": v[i].name
       })
     }
     buildTree(sensorNodes);
