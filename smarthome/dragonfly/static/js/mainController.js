@@ -29,7 +29,7 @@ angular.module('dragonfly.maincontroller', [])
       $timeout(function(){
         for(var i in switchids){
           $('#'+switchids[i]).bootstrapSwitch();
-          $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event){
+          $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
             SendData(
               'dragonfly/sendData', {
                 "lightswitch": event.target.id.split('-')[1],
@@ -80,7 +80,9 @@ angular.module('dragonfly.maincontroller', [])
     $http(req).then(function successCallback(response){
       console.log("we got a good response!");
       console.log(response);
-      callback();
+      if(callback){
+        callback();
+      }
     }), function errorCallback(response){
        console.log("An error has occured.", response.data);
     };
