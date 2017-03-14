@@ -1,5 +1,26 @@
 angular.module('dragonfly.services', [])
 
+.factory('dataService', function(){
+    var data = {}
+    var selection;
+    return {
+        selection: function(){
+            return selection
+        },
+        data: function(){
+            return data
+        },
+        set: function(info){
+            console.log("setting")
+            data = info
+        },
+        select: function(name){
+            console.log("selecting " + name)
+            selection = name;
+        }
+    };
+})
+
 
 .factory('apiService', ['$http', function($http){
     var urlBase = '/dragonfly/';
@@ -16,7 +37,6 @@ angular.module('dragonfly.services', [])
     apiService.post = function(Str, params){
         return $http.post(urlBase+Str, params);
     };
-
     return apiService;
 }]);
 
