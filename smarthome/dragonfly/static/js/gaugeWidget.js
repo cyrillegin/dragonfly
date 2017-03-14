@@ -25,7 +25,7 @@ angular.module('dragonfly.gaugecontroller', [])
   function DrawTempChart(data, id){
     // if(data.lastReading === 0) return;
     var config = {
-      size: 120,
+      size: 90,
       label: data.name,
       min: data.min !== undefined ? data.min : 0,
       max: data.max !== undefined ? data.max : 100,
@@ -180,16 +180,18 @@ angular.module('dragonfly.gaugecontroller', [])
                   .style("font-size", fontSize + "px")
                   .style("fill", "#000")
                   .style("stroke-width", "0px");
-    
-    redraw(config.min, 0);
-  
+
+    //Put the value here, make sure to subtract 50(for now)
+    var val = 0;
+    redraw(svg, val-50);
   
   function buildPointerPath(value){
     var delta = config.range / 13;
-    
-    var head = valueToPoint(value, 0.85);
+
+    var head = valueToPoint(value - majorDelta, 0.85);
     var head1 = valueToPoint(value - delta, 0.12);
     var head2 = valueToPoint(value + delta, 0.12);
+
     
     var tailValue = value - (config.range * (1/(270/360)) / 2);
     var tail = valueToPoint(tailValue, 0.28);
@@ -199,9 +201,9 @@ angular.module('dragonfly.gaugecontroller', [])
     return [head, head1, tail2, tail, tail1, head2, head];
     
     function valueToPoint(value, factor){
-      // var point = valueToPoint(value, factor);
-      point.x -= config.cx;
-      point.y -= config.cy;
+      var point = {'x': 0, 'y':0}  
+      point.x += value*factor;
+      point.y += value*factor;
       return point;
     }
   }
@@ -219,19 +221,17 @@ angular.module('dragonfly.gaugecontroller', [])
           .attr("transform", function() { return "translate(" + config.cx + ", " + config.cy + ") rotate(270)" });
   }
   
-  function redraw(value, transitionDuration){
+  function redraw(svg, value, transitionDuration){
     var pointerContainer = svg.select(".pointerContainer");
     
     pointerContainer.selectAll("text").text(Math.round(value));
     
     var pointer = pointerContainer.selectAll("path");
     pointer.transition()
-          .duration(undefined != transitionDuration ? transitionDuration : config.transitionDuration)
-          //.delay(0)
-          //.ease("linear")
-          //.attr("transform", function(d) 
+          .duration(undefined != transitionDuration ? transitionDuration : config.transitionDuration) 
           .attrTween("transform", function(){
             var pointerValue = value;
+            
             if (value > config.max) pointerValue = config.max + 0.02*config.range;
             else if (value < config.min) pointerValue = config.min - 0.02*config.range;
             var targetRotation = (valueToDegrees(pointerValue) - 90);
