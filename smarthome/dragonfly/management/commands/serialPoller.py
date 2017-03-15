@@ -70,16 +70,17 @@ def SendData(ser):
     while(True):
         FoundData = False
         try:
-            with open('commandQueue.json') as data_file:
-                data = json.load(data_file)
-                if(len(data.keys()) > 0):
-                    print "got new command!"
-                    print data
-                    if(data['value'] is True):
-                        ser.write('1')
-                    else:
-                        ser.write('0')
-                    FoundData = True
+            pass
+            # with open('commandQueue.json') as data_file:
+            #     data = json.load(data_file)
+            #     if(len(data.keys()) > 0):
+            #         print "got new command!"
+            #         print data
+            #         if(data['value'] is True):
+            #             ser.write('1')
+            #         else:
+            #             ser.write('0')
+            #         FoundData = True
         except:
             print "error opening json file."
         if(FoundData):
