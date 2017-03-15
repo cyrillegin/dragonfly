@@ -63,18 +63,12 @@ class sendData(View):
 class addReading(View):
     def post(self, request):
         data = json.loads(request.body)
-        print data
-        print "were here"
         try:
-            print "name is: {}".format(data['sensor'])
             sensor = models.Sensor.objects.get(name=data['sensor'])
-            print "we found the sensor:"
-            # print json.dumps(sensor.toDict(), indent=2)
         except:
             return render(request, 'index.html', {'error': 'sensor not found'})
         newReading = models.Reading(sensor=sensor, value=data['value'], created=data['date'])
         newReading.save()
-        print "were done"
         return render(request, 'index.html', {})
 
 
@@ -105,9 +99,7 @@ class getReadings(View):
         if 'end-date' in data:
             endDate = data['end-date']
 
-        print data
         sensorObj = models.Sensor.objects.filter(name=data['sensor'])[0]
-        print sensorObj
         readings = models.Reading.objects.filter(sensor=sensorObj, created__range=[startDate, endDate])
         toReturn = {
             'sensor': sensorObj.toDict(),
