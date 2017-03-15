@@ -27,6 +27,7 @@ def CollectData(ser):
     pollRate = 60
     while(Alive):
         try:
+            pass
             # data = ser.readline()
         except:
             print "error reading data."
