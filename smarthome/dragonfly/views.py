@@ -80,6 +80,14 @@ class addSensor(View):
         return render(request, 'index.html', {})
 
 
+class addLog(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        newLog = models.Log(title=data['title'], description=data['description'])
+        newLog.save()
+        return render(request, 'index.html', {})
+
+
 class getSensors(View):
     def get(self, request):
         sensors = models.Sensor.objects.all()
@@ -105,12 +113,21 @@ class getReadings(View):
             'sensor': sensorObj.toDict(),
             'readings': []
         }
+        readings = SlimReadings(readings)
         for i in readings:
             toReturn['readings'].append(i.toDict())
 
         return JsonResponse(toReturn)
 
 
+def SlimReadings(data):
+    toReturn = []
+    count = 0
+    for i in data:
+        count += 1
+        if count % 2 == 0:
+            toReturn.append(i)
+    return toReturn
 
 
 

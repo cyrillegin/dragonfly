@@ -30,6 +30,7 @@ angular.module('dragonfly.graphcontroller', [])
 // Initialization.
     var d3 = $window.d3;
     var container = $('#graph-container')
+    container.html( "")
     
     var width = container[0].clientWidth, height = 400
     var margin = {top: 20, right: 10, bottom: 30, left: 40};
@@ -40,7 +41,7 @@ angular.module('dragonfly.graphcontroller', [])
     var coef = {"x": 1, "y": 0};
 
     for(i = 0; i < data.readings.length; i++){
-        data.readings[i].created = new Date(data.readings[i].created).getTime()*1000;
+        data.readings[i].created = new Date(data.readings[i].created).getTime();
         data.readings[i].value = data.readings[i].value*coef.x + coef.y;
     }
     
