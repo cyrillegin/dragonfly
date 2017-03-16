@@ -182,8 +182,9 @@ angular.module('dragonfly.gaugecontroller', [])
                   .style("stroke-width", "0px");
 
     //Put the value here, make sure to subtract 50(for now)
-    var val = 0;
-    redraw(svg, val-50);
+
+    var val = data.lastReading;
+    redraw(svg, val);
   
   function buildPointerPath(value){
     var delta = config.range / 13;
@@ -240,7 +241,8 @@ angular.module('dragonfly.gaugecontroller', [])
             
             return function(step) {
               var rotation = currentRotation + (targetRotation-currentRotation)*step;
-              return "translate(" + config.cx + ", " + config.cy + ") rotate(" + rotation + ")"; 
+              console.log(rotation)
+              return "translate(" + config.cx + ", " + config.cy + ") rotate(" + (225+rotation) + ")"; 
             }
           });
   }
