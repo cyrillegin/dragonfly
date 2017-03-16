@@ -92,7 +92,7 @@ class getSensors(View):
 class getReadings(View):
     def post(self, request):
         data = json.loads(request.body)
-        startDate = datetime.today() - timedelta(days=6)
+        startDate = datetime.today() - timedelta(days=9)
         endDate = datetime.today() + timedelta(days=1)
         if 'start-date' in data:
             startDate = data['start-date']
@@ -106,7 +106,6 @@ class getReadings(View):
             'readings': []
         }
         for i in readings:
-            print "got reading: {}".format(i.toDict())
             toReturn['readings'].append(i.toDict())
 
         return JsonResponse(toReturn)
