@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from dragonfly import models
 import math
+import datetime
 
 
 class Command(BaseCommand):
@@ -13,10 +14,9 @@ class Command(BaseCommand):
 
         testTemp2 = models.Sensor(name="waterTurb", description="A test sensor", coefficients="(1,0)", sensor_type="temperature")
         testTemp2.save()
-
+        print "Creating readings for temp and turb"
         for i in range(0, 24 * 60):
             newVal = 60 + 30 * math.sin(0.1 * i)
-            print "saving: {}".format(newVal)
             newReading1 = models.Reading(sensor=testTemp1, value=newVal)
             newReading1.save()
             newReading2 = models.Reading(sensor=testTemp2, value=newVal)
@@ -25,9 +25,9 @@ class Command(BaseCommand):
         testCleanliness = models.Sensor(name="aquaLight", description="A test sensor", coefficients="(1,0)", sensor_type="cleanliness")
         testCleanliness.save()
 
+        print "Creating readings for aqua light"
         for i in range(0, 24 * 60):
             newVal = 50 + 50 * math.sin(0.1 * i)
-            print "saving: {}".format(newVal)
             newReading = models.Reading(sensor=testCleanliness, value=newVal)
             newReading.save()
 
@@ -37,9 +37,9 @@ class Command(BaseCommand):
         testlightSensor2 = models.Sensor(name="weatherstation", description="A test sensor", coefficients="(1,0)", sensor_type="lightsensor")
         testlightSensor2.save()
 
+        print "Creating readings for light and weather"
         for i in range(0, 24 * 60):
             newVal = 500 + 500 * math.sin(0.1 * i)
-            print "saving: {}".format(newVal)
             newReading1 = models.Reading(sensor=testlightSensor1, value=newVal)
             newReading1.save()
             newReading2 = models.Reading(sensor=testlightSensor2, value=newVal)
@@ -48,8 +48,8 @@ class Command(BaseCommand):
         testlightSwitch = models.Sensor(name="lightSwitch", description="A test sensor", coefficients="(1,0)", sensor_type="lightswitch")
         testlightSwitch.save()
 
+        print "Creating readings for switch"
         for i in range(0, 24 * 60):
             newVal = int(math.sin(0.1 * i) + 0.5)
-            print "saving: {}".format(newVal)
             newReading = models.Reading(sensor=testlightSwitch, value=newVal)
             newReading.save()
