@@ -105,12 +105,21 @@ class getReadings(View):
             'sensor': sensorObj.toDict(),
             'readings': []
         }
+        readings = SlimReadings(readings)
         for i in readings:
             toReturn['readings'].append(i.toDict())
 
         return JsonResponse(toReturn)
 
 
+def SlimReadings(data):
+    toReturn = []
+    count = 0
+    for i in data:
+        count += 1
+        if count % 2 == 0:
+            toReturn.append(i)
+    return toReturn
 
 
 
