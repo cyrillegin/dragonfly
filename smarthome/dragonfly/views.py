@@ -80,6 +80,14 @@ class addSensor(View):
         return render(request, 'index.html', {})
 
 
+class addLog(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        newLog = models.Log(title=data['title'], description=data['description'])
+        newLog.save()
+        return render(request, 'index.html', {})
+
+
 class getSensors(View):
     def get(self, request):
         sensors = models.Sensor.objects.all()
