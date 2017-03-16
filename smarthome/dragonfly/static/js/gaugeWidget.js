@@ -2,7 +2,7 @@
 
 angular.module('dragonfly.gaugecontroller', [])
 
-.controller("gaugeController",['$scope', 'dataService', '$timeout', function ($scope, dataService, $timeout) {
+.controller("gaugeController",['$scope', 'dataService', '$timeout', '$interval', '$http', function ($scope, dataService, $timeout, $interval, $http) {
 
   $scope.gauges = [];
 
@@ -20,6 +20,23 @@ angular.module('dragonfly.gaugecontroller', [])
       }
     }, 500)
   });
+
+  var req = {
+      method: 'GET',
+      url: 'dragonfly/getSensors',
+      data: {}
+    };
+  var myInter = $interval(function(){
+    $http(req).then(function successCallback(response){
+      console.log(response)
+        for(var i in $scope.gauges){
+          redraw(i, response.data.sensors[i].lastReading, 100, $scope.gauges[i].config);
+           
+        }
+    }, function errorCallback(response){
+      console.log("An error has occured.", response.data);
+    });
+  },1000*10)
 
   function DrawTempChart(data, id){
     var config = {
@@ -100,8 +117,8 @@ angular.module('dragonfly.gaugecontroller', [])
     for (var major = config.min; major <= config.max; major += majorDelta){
       var minorDelta = majorDelta / config.minorTicks;
       for (var minor = major + minorDelta; minor < Math.min(major + majorDelta, config.max); minor += minorDelta){
-        var point1 = valueToPoint(minor, 0.75);
-        var point2 = valueToPoint(minor, 0.85);
+        var point1 = valueToPoint(minor, 0.75, config);
+        var point2 = valueToPoint(minor, 0.85, config);
         
         svg.append("svg:line")
             .attr("x1", point1.x)
@@ -112,8 +129,8 @@ angular.module('dragonfly.gaugecontroller', [])
             .style("stroke-width", "1px");
       }
       
-      var point1 = valueToPoint(major, 0.7);
-      var point2 = valueToPoint(major, 0.85);  
+      var point1 = valueToPoint(major, 0.7, config);
+      var point2 = valueToPoint(major, 0.85, config);  
       
       svg.append("svg:line")
           .attr("x1", point1.x)
@@ -124,7 +141,7 @@ angular.module('dragonfly.gaugecontroller', [])
           .style("stroke-width", "2px");
       
       if (major == config.min || major == config.max){
-        var point = valueToPoint(major, 0.63);
+        var point = valueToPoint(major, 0.63, config);
         
         svg.append("svg:text")
             .attr("x", point.x)
@@ -180,20 +197,20 @@ angular.module('dragonfly.gaugecontroller', [])
             .style("stroke-width", "0px");
 
     var val = data.lastReading;
-    redraw(svg, val);
+    redraw(id, val, 10, config);
   
     function buildPointerPath(value){
       var delta = config.range / 13;
 
-      var head = valueToPoint(value - majorDelta, 0.85);
-      var head1 = valueToPoint(value - delta, 0.12);
-      var head2 = valueToPoint(value + delta, 0.12);
+      var head = valueToPoint(value - majorDelta, 0.85, config);
+      var head1 = valueToPoint(value - delta, 0.12, config);
+      var head2 = valueToPoint(value + delta, 0.12, config);
 
       
       var tailValue = value - (config.range * (1/(270/360)) / 2);
-      var tail = valueToPoint(tailValue, 0.28);
-      var tail1 = valueToPoint(tailValue - delta, 0.12);
-      var tail2 = valueToPoint(tailValue + delta, 0.12);
+      var tail = valueToPoint(tailValue, 0.28, config);
+      var tail1 = valueToPoint(tailValue - delta, 0.12, config);
+      var tail2 = valueToPoint(tailValue + delta, 0.12, config);
       
       return [head, head1, tail2, tail, tail1, head2, head];
       
@@ -211,14 +228,21 @@ angular.module('dragonfly.gaugecontroller', [])
       svg.append("svg:path")
         .style("fill", color)
         .attr("d", d3.arc()
-          .startAngle(valueToRadians(start))
-          .endAngle(valueToRadians(end))
+          .startAngle(valueToRadians(start, config))
+          .endAngle(valueToRadians(end, config))
           .innerRadius(0.65 * config.raduis)
           .outerRadius(0.85 * config.raduis))
           .attr("transform", function() { return "translate(" + config.cx + ", " + config.cy + ") rotate(270)" });
     }
-  
-    function redraw(svg, value, transitionDuration){
+
+    $scope.gauges[id].config = config;
+  }
+  function redraw(id, value, transitionDuration, config){
+
+    var svg = d3.select("#gaugeChart-"+id);
+
+
+    console.log(config)
       var pointerContainer = svg.select(".pointerContainer");
       
       pointerContainer.selectAll("text").text(Math.round(value));
@@ -231,7 +255,7 @@ angular.module('dragonfly.gaugecontroller', [])
               
               if (value > config.max) pointerValue = config.max + 0.02*config.range;
               else if (value < config.min) pointerValue = config.min - 0.02*config.range;
-              var targetRotation = (valueToDegrees(pointerValue) - 90);
+              var targetRotation = (valueToDegrees(pointerValue, config) - 90);
               var currentRotation = self._currentRotation || targetRotation;
               self._currentRotation = targetRotation;
               
@@ -241,18 +265,17 @@ angular.module('dragonfly.gaugecontroller', [])
               }
           });
     }
-  
-    function valueToDegrees(value){
+
+    function valueToDegrees(value, config){
       return value / config.range * 270 - (config.min / config.range * 270 + 45);
     }
     
-    function valueToRadians(value){
-      return valueToDegrees(value) * Math.PI / 180;
+    function valueToRadians(value, config){
+      return valueToDegrees(value, config) * Math.PI / 180;
     }
     
-    function valueToPoint(value, factor){
-      return {  x: config.cx - config.raduis * factor * Math.cos(valueToRadians(value)),
-            y: config.cy - config.raduis * factor * Math.sin(valueToRadians(value))    };
+    function valueToPoint(value, factor, config){
+      return {  x: config.cx - config.raduis * factor * Math.cos(valueToRadians(value, config)),
+            y: config.cy - config.raduis * factor * Math.sin(valueToRadians(value, config))    };
     }
-  }
 }]);
