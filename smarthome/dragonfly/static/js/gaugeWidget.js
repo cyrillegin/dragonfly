@@ -28,7 +28,6 @@ angular.module('dragonfly.gaugecontroller', [])
     };
   var myInter = $interval(function(){
     $http(req).then(function successCallback(response){
-      console.log(response)
         for(var i in $scope.gauges){
           redraw(i, response.data.sensors[i].lastReading, 100, $scope.gauges[i].config);
            
@@ -36,7 +35,7 @@ angular.module('dragonfly.gaugecontroller', [])
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });
-  },1000*10)
+  },1000*60)
 
   function DrawTempChart(data, id){
     var config = {
@@ -241,29 +240,27 @@ angular.module('dragonfly.gaugecontroller', [])
 
     var svg = d3.select("#gaugeChart-"+id);
 
-
-    console.log(config)
-      var pointerContainer = svg.select(".pointerContainer");
-      
-      pointerContainer.selectAll("text").text(Math.round(value));
-      
-      var pointer = pointerContainer.selectAll("path");
-      pointer.transition()
-          .duration(undefined != transitionDuration ? transitionDuration : config.transitionDuration) 
-          .attrTween("transform", function(){
-              var pointerValue = value;
-              
-              if (value > config.max) pointerValue = config.max + 0.02*config.range;
-              else if (value < config.min) pointerValue = config.min - 0.02*config.range;
-              var targetRotation = (valueToDegrees(pointerValue, config) - 90);
-              var currentRotation = self._currentRotation || targetRotation;
-              self._currentRotation = targetRotation;
-              
-              return function(step) {
-                  var rotation = currentRotation + (targetRotation-currentRotation)*step;
-                  return "translate(" + config.cx + ", " + config.cy + ") rotate(" + (225+rotation) + ")"; 
-              }
-          });
+    var pointerContainer = svg.select(".pointerContainer");
+    
+    pointerContainer.selectAll("text").text(Math.round(value));
+    
+    var pointer = pointerContainer.selectAll("path");
+    pointer.transition()
+        .duration(undefined != transitionDuration ? transitionDuration : config.transitionDuration) 
+        .attrTween("transform", function(){
+            var pointerValue = value;
+            
+            if (value > config.max) pointerValue = config.max + 0.02*config.range;
+            else if (value < config.min) pointerValue = config.min - 0.02*config.range;
+            var targetRotation = (valueToDegrees(pointerValue, config) - 90);
+            var currentRotation = self._currentRotation || targetRotation;
+            self._currentRotation = targetRotation;
+            
+            return function(step) {
+                var rotation = currentRotation + (targetRotation-currentRotation)*step;
+                return "translate(" + config.cx + ", " + config.cy + ") rotate(" + (225+rotation) + ")"; 
+            }
+        });
     }
 
     function valueToDegrees(value, config){
