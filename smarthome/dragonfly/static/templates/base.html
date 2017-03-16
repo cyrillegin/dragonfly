@@ -16,10 +16,11 @@
                 <div ng-include="'static/templates/graphWidget.html'"></div>
             </div>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
 <!-- Start Add Reading -->
+                <div class="col-md-4">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+
                         <h3>Add Entry:</h3>
                         <table class="table table-borderless">
                             <tbody>
@@ -35,14 +36,15 @@
                             </tbody>
                         </table>
                         <button ng-click="SubmitReading()">Submit</button>
-<!-- End Add Reading -->
                     </div>
-                     <div class="col-md-2"></div>
+                     <div class="col-md-1"></div>
                 </div>
-                <div class="col-md-6">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-<!-- Start Add Sensor1 -->
+<!-- End Add Reading -->
+<!-- Start Add Sensor -->
+                <div class="col-md-4">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+
                         <div class="row">
                             <h3>Add Sensor:</h3>
                         </div>
@@ -72,10 +74,38 @@
 
                             <button ng-click="SubmitSensor()">Submit</button>
                         </div>
-<!-- End Add Sensor2 -->
+
                     </div>
-                     <div class="col-md-2"></div>
                 </div>
+<!-- End Add Sensor -->
+<!-- Start Add Log -->
+                <div class="col-md-4">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+
+                        <div class="row">
+                            <h3>Add Log:</h3>
+                        </div>
+                        <div class="row">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <td>Title:</td>  
+                                        <td><input type="text" ng-model='newLogTitle'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description:</td>
+                                        <td><input type="text" ng-model='newLogDesc'></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <button ng-click="SubmitLog()">Submit</button>
+                        </div>
+
+                    </div>
+                </div>
+<!-- End Add Sensor -->
             </div>
         </div>
         <div class="col-md-2">
