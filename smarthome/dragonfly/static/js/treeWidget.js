@@ -190,7 +190,6 @@ angular.module('dragonfly.treecontroller', [])
 
       // Toggle children on click.
       function click(d) {
-        console.log(d)
         if (d.children) {
             d._children = d.children;
             d.children = null;
