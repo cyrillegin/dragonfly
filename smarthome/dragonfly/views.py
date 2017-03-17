@@ -63,18 +63,12 @@ class sendData(View):
 class addReading(View):
     def post(self, request):
         data = json.loads(request.body)
-        print data
-        print "were here"
         try:
-            print "name is: {}".format(data['sensor'])
             sensor = models.Sensor.objects.get(name=data['sensor'])
-            print "we found the sensor:"
-            # print json.dumps(sensor.toDict(), indent=2)
         except:
             return render(request, 'index.html', {'error': 'sensor not found'})
         newReading = models.Reading(sensor=sensor, value=data['value'], created=data['date'])
         newReading.save()
-        print "were done"
         return render(request, 'index.html', {})
 
 
@@ -83,6 +77,14 @@ class addSensor(View):
         data = json.loads(request.body)
         newSensor = models.Sensor(name=data['name'], description=data['description'], coefficients=data['coefficients'], sensor_type=data['sensor_type'], units=data['units'])
         newSensor.save()
+        return render(request, 'index.html', {})
+
+
+class addLog(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        newLog = models.Log(title=data['title'], description=data['description'])
+        newLog.save()
         return render(request, 'index.html', {})
 
 
@@ -98,27 +100,34 @@ class getSensors(View):
 class getReadings(View):
     def post(self, request):
         data = json.loads(request.body)
-        startDate = datetime.today() - timedelta(days=5)
-        endDate = datetime.today()
+        startDate = datetime.today() - timedelta(days=9)
+        endDate = datetime.today() + timedelta(days=1)
         if 'start-date' in data:
             startDate = data['start-date']
         if 'end-date' in data:
             endDate = data['end-date']
 
-        print data
         sensorObj = models.Sensor.objects.filter(name=data['sensor'])[0]
-        print sensorObj
         readings = models.Reading.objects.filter(sensor=sensorObj, created__range=[startDate, endDate])
         toReturn = {
             'sensor': sensorObj.toDict(),
             'readings': []
         }
+        readings = SlimReadings(readings)
         for i in readings:
             toReturn['readings'].append(i.toDict())
 
         return JsonResponse(toReturn)
 
 
+def SlimReadings(data):
+    toReturn = []
+    count = 0
+    for i in data:
+        count += 1
+        if count % 2 == 0:
+            toReturn.append(i)
+    return toReturn
 
 
 

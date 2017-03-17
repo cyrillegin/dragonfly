@@ -55,3 +55,16 @@
 .ChartAxis-Shape line{
   stroke-opacity:0.2;
 }
+
+.button{
+  display: inline-block;
+  border-radius: 4px;
+  display: inline;
+  position: relative;
+  padding: 4px
+  line-height: 1.42857143;
+  color: #337ab7;
+  text-decoration: none;
+  background-color: #FFF;
+  border: 1px solid #ddd;
+}

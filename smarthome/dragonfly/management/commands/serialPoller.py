@@ -2,13 +2,11 @@ from django.core.management.base import BaseCommand
 
 from dragonfly import models
 
-import time
-
-import serial
-from os import walk
-import json
-
 from multiprocessing import Process
+from os import walk
+import time
+import serial
+import json
 
 
 def MCP(device):
@@ -36,12 +34,14 @@ def CollectData(ser):
         if data.startswith('["data'):
             try:
                 serData = json.loads(data)
-            except Exception:
+            except Exception, e:
                 print "error loading data"
+                print e
                 continue
             print "saving data"
             for i in serData:
                 if "station" not in i:
+                    print 'discarding'
                     continue
                 for j in i['sensors']:
                     try:
@@ -55,12 +55,17 @@ def CollectData(ser):
                             print "an error saving/loading sensor data"
                             continue
                         sensor.save()
+                    sensor.lastReading = j['value']
+                    sensor.save()
                     try:
                         newReading = models.Reading(sensor=sensor, value=j['value'])
                         newReading.save()
+                        print "saving: "
                         continue
                     except:
                         print "error saving new readings"
+        else:
+            print "data not formatted correctly, sleeping."
         time.sleep(pollRate)
 
 
@@ -106,7 +111,7 @@ class Command(BaseCommand):
                 f.extend(filenames)
             devices = []
             for i in f:
-                if i.startswith('ttyUSB'):
+                if i.startswith('tty.us'):
                     devices.append(i)
             print"Devices found: {}".format(devices)
             for j in devices:

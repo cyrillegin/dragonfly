@@ -29,7 +29,9 @@ angular.module('dragonfly.maincontroller', [])
       $timeout(function(){
         for(var i in switchids){
           $('#'+switchids[i]).bootstrapSwitch();
-          $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event){
+          console.log($scope.lightSwitchCharts[i])
+          $('#'+switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
+          $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
             SendData(
               'dragonfly/sendData', {
                 "lightswitch": event.target.id.split('-')[1],
@@ -70,6 +72,18 @@ angular.module('dragonfly.maincontroller', [])
     SendData('dragonfly/addReading', params, GetData) 
   }
 
+  $scope.SubmitLog = function(){
+    var params = {
+      "title": $scope.newLogTitle,
+      "description": $scope.newLogDesc
+    }
+    if(params.title === "" || params.title === undefined || params.description === "" || params.description === undefined){
+      console.log("warning");
+      return;
+    }
+    SendData('dragonfly/addLog', params, GetData) 
+  }
+
   function SendData(newurl, params, callback){
     var req = {
       method: 'POST',
@@ -78,18 +92,20 @@ angular.module('dragonfly.maincontroller', [])
     };
 
     $http(req).then(function successCallback(response){
-      console.log("we got a good response!");
-      console.log(response);
-      callback();
+      if(callback){
+        callback();
+      }
     }), function errorCallback(response){
        console.log("An error has occured.", response.data);
     };
   }
   
   function DrawLightSwitch(data){
+    console.log(data);
     var switchObj = {
       "title": data.name,
-      "id": "switch-"+data.id
+      "id": "switch-"+data.id,
+      'val': data.lastReading
     }
     $scope.lightSwitchCharts.push(switchObj);
     switchids.push("switch-"+data.id);
