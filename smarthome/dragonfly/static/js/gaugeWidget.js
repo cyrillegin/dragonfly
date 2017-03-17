@@ -41,13 +41,15 @@ angular.module('dragonfly.gaugecontroller', [])
     var config = {
       size: 90,
       label: data.name,
-      min: data.min !== undefined ? data.min : 0,
-      max: data.max !== undefined ? data.max : 100,
+      min: data.min_value-data.min_value*0.2,
+      max: data.max_value+data.min_value*0.2,
     }
     
+    console.log(data)
     var range = config.max - config.min;
-    config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
-    config.redZones = [{ from: config.min + range*0.9, to: config.max }];
+    config.yellowZones = [{ from: config.min , to: data.min_value }];
+    config.redZones = [{ from: data.max_value , to: config.max }];
+    config.greenZones = [{ from: data.min_value , to: data.max_value }];
      
     config.raduis = config.size * 0.97 / 2;
     config.cx = config.size / 2;
@@ -210,8 +212,12 @@ angular.module('dragonfly.gaugecontroller', [])
       var tail = valueToPoint(tailValue, 0.28, config);
       var tail1 = valueToPoint(tailValue - delta, 0.12, config);
       var tail2 = valueToPoint(tailValue + delta, 0.12, config);
+
+      head = {'x': 0, 'y':0}
+      tail = {'x': 30, 'y':30}
+
       
-      return [head, head1, tail2, tail, tail1, head2, head];
+      return [head, tail];
       
       function valueToPoint(value, factor){
         var point = {'x': 0, 'y':0}  
