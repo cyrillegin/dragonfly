@@ -54,8 +54,8 @@ def CollectData(ser):
                         except:
                             print "an error saving/loading sensor data"
                             continue
-                        sensor.save()
                     sensor.lastReading = j['value']
+                    print "saving last reading for sensor: {}".format(j['value'])
                     sensor.save()
                     try:
                         newReading = models.Reading(sensor=sensor, value=j['value'])
