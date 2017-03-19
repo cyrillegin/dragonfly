@@ -24,9 +24,9 @@ angular.module('dragonfly.treecontroller', [])
 
   function buildTree(treeData){
   // Set the dimensions and margins of the diagram
-    var margin = {top: 20, right: 20, bottom: 30, left: 20},
+    var margin = {top: 30, right: 20, bottom: 20, left: 20},
         width = $('#sensor-tree')[0].clientWidth - margin.right - margin.left,
-        height = 100 - margin.top - margin.bottom;
+        height = 110 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -100,7 +100,7 @@ angular.module('dragonfly.treecontroller', [])
 
       // Add labels for the nodes
       nodeEnter.append('text')
-          .attr("y", function(d) { return d.children || d._children ? -8 : 20; })
+          .attr("y", function(d) { return d.children || d._children ? -14 : 20; })
           .attr("text-anchor", 'middle')
           .text(function(d) { return d.data.name; });
 
@@ -190,7 +190,6 @@ angular.module('dragonfly.treecontroller', [])
 
       // Toggle children on click.
       function click(d) {
-        console.log(d)
         if (d.children) {
             d._children = d.children;
             d.children = null;
