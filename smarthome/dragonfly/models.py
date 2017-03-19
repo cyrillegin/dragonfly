@@ -15,6 +15,8 @@ class Sensor(models.Model):
     sensor_type = models.TextField(blank=False, null=False, default='')
     units = models.TextField(blank=True, default='')
     last_reading = models.FloatField(blank=True, default=0)
+    min_value = models.FloatField(blank=False, null=False, default=0)
+    max_value = models.FloatField(blank=False, null=False, default=1024)
 
     class Meta:
         ordering = ('created',)
@@ -27,7 +29,9 @@ class Sensor(models.Model):
             "coefficients": self.coefficients,
             "self_type": self.sensor_type,
             "units": self.units,
-            "lastReading": self.last_reading
+            "lastReading": self.last_reading,
+            "min_value": self.min_value,
+            "max_value": self.max_value
         }
 
 
