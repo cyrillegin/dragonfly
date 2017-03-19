@@ -14,7 +14,7 @@ class Sensor(models.Model):
     coefficients = models.TextField(blank=True, default='')
     sensor_type = models.TextField(blank=False, null=False, default='')
     units = models.TextField(blank=True, default='')
-    last_reading = models.FloatField(blank=True, default=0)
+    last_reading = models.FloatField(blank=False, null=False, default=0)
     min_value = models.FloatField(blank=False, null=False, default=0)
     max_value = models.FloatField(blank=False, null=False, default=1024)
 
