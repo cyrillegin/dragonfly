@@ -54,8 +54,8 @@ def CollectData(ser):
                         except:
                             print "an error saving/loading sensor data"
                             continue
-                        sensor.save()
                     sensor.lastReading = j['value']
+                    print "saving last reading for sensor: {}".format(j['value'])
                     sensor.save()
                     try:
                         newReading = models.Reading(sensor=sensor, value=j['value'])
@@ -111,7 +111,7 @@ class Command(BaseCommand):
                 f.extend(filenames)
             devices = []
             for i in f:
-                if i.startswith('tty.us'):
+                if i.startswith('ttyUSB'):
                     devices.append(i)
             print"Devices found: {}".format(devices)
             for j in devices:
