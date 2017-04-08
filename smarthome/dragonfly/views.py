@@ -69,6 +69,8 @@ class addReading(View):
             return render(request, 'index.html', {'error': 'sensor not found'})
         newReading = models.Reading(sensor=sensor, value=data['value'], created=data['date'])
         newReading.save()
+        sensor.lastReading = data['value']
+        sensor.save()
         return render(request, 'index.html', {})
 
 
