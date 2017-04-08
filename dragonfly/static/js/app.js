@@ -12,9 +12,9 @@ var app = angular.module('dragonfly', [
 ])
 
 .config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider){
-    $routeProvider.otherwise({redirectTo: '/'});
+    // $routeProvider.otherwise({redirectTo: '/'});
     $routeProvider.when('/', {
-        templateUrl: '/static/templates/base.html',
+        templateUrl: '/templates/base.html',
         reloadOnSearch: false
     });
 }]);
