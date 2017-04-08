@@ -2,13 +2,16 @@
 import cherrypy
 import os
 import sys
-
+import jinja2
 from sqlalchemy import create_engine
+
 import models
+from api import ResourceApi
 
 PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 STATIC = os.path.join(PATH, 'static')
 sys.path.append(PATH)
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=STATIC))
 
 
 def get_cp_config():
@@ -16,14 +19,22 @@ def get_cp_config():
         '/': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': STATIC,
-            'tools.staticdir.index': os.path.join(STATIC, 'index.html')
+            'tools.sessions.on': True
+        },
+        '/api': {
+            'request.dispatch': cherrypy.dispatch.MethodDispatcher()
         }
     }
     return config
 
 
 class Root(object):
-    pass
+    api = ResourceApi()
+
+    def index(self):
+        t = env.get_template("index.html")
+        return t.render({})
+    index.exposed = True
 
 
 def RunServer():

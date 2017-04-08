@@ -13,7 +13,7 @@ class Sensor(Base):
     __tablename__ = "sensor"
 
     created = Column(BigInteger, index=True)
-    name = Column(Text, primary_key=True, unique=True, nullable=False)
+    name = Column(Text, primary_key=True)
     description = Column(Text)
     coefficients = Column(Text)
     sensor_type = Column(Text)
@@ -47,7 +47,7 @@ class Reading(Base):
     def toDict(self):
         return {
             "created": self.created,
-            "sensor": self.sensor.toDict(),
+            "sensor": self.sensor,
             "value": self.value
         }
 
