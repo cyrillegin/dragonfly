@@ -14,12 +14,11 @@ angular.module('dragonfly.maincontroller', [])
       data: {}
     };
     $http(req).then(function successCallback(response){
-      console.log(response)
       $scope.lightSwitchCharts = [];
       dataService.set(response.data.sensor_list);
-      for(var i in response.data.sensors){
-        if(response.data.sensors[i].self_type === "lightswitch"){
-          DrawLightSwitch(response.data.sensors[i]);
+      for(var i in response.data.sensor_list){
+        if(response.data.sensor_list[i].self_type === "lightswitch"){
+          DrawLightSwitch(response.data.sensor_list[i]);
         }
       }
     }, function errorCallback(response){
@@ -32,7 +31,7 @@ angular.module('dragonfly.maincontroller', [])
           $('#'+switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
           $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
             SendData(
-              'dragonfly/sendData', {
+              '/api/command', {
                 "lightswitch": event.target.id.split('-')[1],
                 'value': state
               }
@@ -100,7 +99,6 @@ angular.module('dragonfly.maincontroller', [])
   }
   
   function DrawLightSwitch(data){
-    console.log(data);
     var switchObj = {
       "title": data.name,
       "id": "switch-"+data.id,
