@@ -72,6 +72,7 @@ if __name__ == "__main__":
             Command.SerialPoller()
         elif args[1] == "weatherSensor":
             print "getting weather data"
+            Command.WeatherSensor()
         elif args[1] == "cleanReadings":
             print "cleaning readings"
         elif args[1] == "automate":
