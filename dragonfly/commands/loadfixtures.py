@@ -1,4 +1,3 @@
-from django.core.management.base import BaseCommand
 
 import models
 import math
@@ -10,7 +9,7 @@ def loadfixtures():
     sensorUrl = "http://localhost:8000/api/sensor"
     readingUrl = "http://localhost:8000/api/reading"
 
-    testTemp1 = {
+    testTemp = {
         'name': "waterTemp",
         'description': "A test sensor",
         'coefficients': "(1,0)",
@@ -19,11 +18,28 @@ def loadfixtures():
         'min_value': 65,
         'max_value': 85
     }
-    requests.post(sensorUrl, json.dumps(testTemp1))
+    requests.post(sensorUrl, json.dumps(testTemp))
     for i in range(0, 24 * 60):
         newReading = {
             "sensor_name": "waterTemp",
             "value": 60 + 7 * math.sin(0.1 * i)
+        }
+        requests.post(readingUrl, json.dumps(newReading))
+
+    testTurb = {
+        'name': "waterTurb",
+        'description': "A test sensor",
+        'coefficients': "(1,0)",
+        'sensor_type': "temperature",
+        'units': "F",
+        'min_value': 300,
+        'max_value': 900
+    }
+    requests.post(sensorUrl, json.dumps(testTurb))
+    for i in range(0, 24 * 60):
+        newReading = {
+            "sensor_name": "waterTurb",
+            "value": 600 + 200 * math.sin(0.1 * i)
         }
         requests.post(readingUrl, json.dumps(newReading))
     return

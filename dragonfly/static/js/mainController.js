@@ -10,13 +10,13 @@ angular.module('dragonfly.maincontroller', [])
   function GetData(){
     var req = {
       method: 'GET',
-      url: 'dragonfly/getSensors',
+      url: '/api/sensor',
       data: {}
     };
     $http(req).then(function successCallback(response){
       console.log(response)
       $scope.lightSwitchCharts = [];
-      dataService.set(response.data.sensors);
+      dataService.set(response.data.sensor_list);
       for(var i in response.data.sensors){
         if(response.data.sensors[i].self_type === "lightswitch"){
           DrawLightSwitch(response.data.sensors[i]);
@@ -29,7 +29,6 @@ angular.module('dragonfly.maincontroller', [])
       $timeout(function(){
         for(var i in switchids){
           $('#'+switchids[i]).bootstrapSwitch();
-          console.log($scope.lightSwitchCharts[i])
           $('#'+switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
           $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
             SendData(

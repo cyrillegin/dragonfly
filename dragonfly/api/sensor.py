@@ -44,7 +44,7 @@ class Sensors:
                 CreateSensor(data, session)
 
 
-ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'self_type', 'units', 'lastReading', 'min_value', 'max_value']
+ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'sensor_type', 'units', 'lastReading', 'min_value', 'max_value']
 DEFAULTS = [time.time(), None, "", '1,0', None, None, 0, 0, 1024]
 
 
@@ -65,7 +65,6 @@ def UpdateSensor(sensor, data, session):
         if ATTRIBUTES[i] == 'name':
             continue
         if ATTRIBUTES[i] in data:
-            print "setting: {}".format(data[ATTRIBUTES[i]])
             setattr(sensor, ATTRIBUTES[i], data[ATTRIBUTES[i]])
         session.add(sensor)
         session.commit()

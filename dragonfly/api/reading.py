@@ -4,6 +4,7 @@ import time
 
 from sessionManager import sessionScope
 from models import Reading, Sensor
+import sensor
 
 
 class Readings:
@@ -15,8 +16,12 @@ class Readings:
             data = {"error": "Must provide a sensor name."}
             return json.dumps(data)
         with sessionScope() as session:
+            sensor = session.query(Sensor).filter_by(name=sensor_name).one()
             readings = session.query(Reading).filter_by(sensor=sensor_name)
-            data = {"readings": []}
+            data = {
+                "readings": [],
+                "sensor": sensor.toDict()
+            }
             for i in readings:
                 data['readings'].append(i.toDict())
             return json.dumps(data)
@@ -34,19 +39,20 @@ class Readings:
             return json.dumps({"Error": "Must provide a value to add."})
         with sessionScope() as session:
             try:
-                sensor = session.query(Sensor).filter_by(name=data['sensor_name']).one()
-                AddReading(sensor, data, session)
+                cursensor = session.query(Sensor).filter_by(name=data['sensor_name']).one()
+                AddReading(data, session)
             except Exception, e:
                 print e
-                print "Sensor not found."
-                return json.dumps({"Error": "Sensor not found."})
+                print "Sensor not found. Sending to sensor api"
+                sensor.CreateSensor({"name": data['sensor_name']}, session)
+                AddReading(data, session)
 
 
 ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'self_type', 'units', 'lastReading', 'min_value', 'max_value']
 DEFAULTS = [time.time(), None, "", '1,0', None, None, 0, 0, 1024]
 
 
-def AddReading(sensor, data, session):
+def AddReading(data, session):
     newReading = Reading(created=time.time(), sensor=data['sensor_name'], value=data['value'])
     session.add(newReading)
     session.commit()

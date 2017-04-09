@@ -67,8 +67,9 @@ if __name__ == "__main__":
         if(args[1] == "loadFixtures"):
             print "loading fixtures"
             Command.LoadFixtures()
-        elif(args[1] == "getReadings"):
+        elif(args[1] == "serialPoller"):
             print "starting poller"
+            Command.SerialPoller()
         elif args[1] == "weatherSensor":
             print "getting weather data"
         elif args[1] == "cleanReadings":

@@ -7,8 +7,8 @@ angular.module('dragonfly.treecontroller', [])
   $scope.$watch(function(){
       return dataService.data();
     }, function(v){
-    if(v === undefined) return;
-    if(Object.keys(v).length <= 1) return;
+      if(v === undefined) return;
+      if(Object.keys(v).length <= 1) return;
     var sensorNodes = {
       "name": "Sensors",
       "children": []

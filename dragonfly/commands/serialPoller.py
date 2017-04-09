@@ -1,12 +1,13 @@
-from django.core.management.base import BaseCommand
-
-from dragonfly import models
 
 from multiprocessing import Process
 from os import walk
 import time
 import serial
 import json
+import requests
+
+SENSORURL = "http://localhost:8000/api/sensor"
+READINGURL = "http://localhost:8000/api/reading"
 
 
 def MCP(device):
@@ -22,7 +23,7 @@ def MCP(device):
 def CollectData(ser):
     print "collect process starting"
     Alive = True
-    pollRate = 60
+    pollRate = 20
     while(Alive):
         try:
             data = ser.readline()
@@ -44,26 +45,14 @@ def CollectData(ser):
                     print 'discarding'
                     continue
                 for j in i['sensors']:
-                    try:
-                        sensor = models.Sensor.objects.get(name=j['sensor'])
-                    except Exception, e:
-                        print "Creating new sensor"
-                        print e
-                        try:
-                            sensor = models.Sensor(name=j['sensor'], description='mydesc', coefficients="(1,0)", sensor_type=j['type'])
-                        except:
-                            print "an error saving/loading sensor data"
-                            continue
-                    sensor.lastReading = j['value']
-                    print "saving last reading for sensor: {}".format(j['value'])
-                    sensor.save()
-                    try:
-                        newReading = models.Reading(sensor=sensor, value=j['value'])
-                        newReading.save()
-                        print "saving: "
-                        continue
-                    except:
-                        print "error saving new readings"
+                    newReading = {
+                        'sensor_name': j['sensor'],
+                        'value': j['value']
+                    }
+                    print "saving:"
+                    print newReading
+                    response = requests.post(READINGURL, json.dumps(newReading))
+                    print "response was: {}".format(response)
         else:
             print "data not formatted correctly, sleeping."
         time.sleep(pollRate)
@@ -98,10 +87,7 @@ def SendData(ser):
         time.sleep(CheckRate)
 
 
-class Command(BaseCommand):
-    help = 'Load a days worth of data.'
-
-    def handle(self, *args, **options):
+def serialPoller():
         # poll every 1 minute
         pollRate = 60
         currentDevices = {}
@@ -111,7 +97,7 @@ class Command(BaseCommand):
                 f.extend(filenames)
             devices = []
             for i in f:
-                if i.startswith('ttyUSB'):
+                if i.startswith('tty.usb'):
                     devices.append(i)
             print"Devices found: {}".format(devices)
             for j in devices:

@@ -9,16 +9,12 @@ angular.module('dragonfly.graphcontroller', [])
     if(v === undefined) return;
     if(dataService.data === undefined) return;
 
-    var params = {
-      "sensor": dataService.selection()
-    }
     var req = {
-      method: 'POST',
-      url: 'dragonfly/getReadings',
-      data: params
+      method: 'GET',
+      url: '/api/reading/' + dataService.selection()
     };
     $http(req).then(function successCallback(response){
-      DrawGraph(response.data);
+        DrawGraph(response.data);
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });
@@ -27,6 +23,7 @@ angular.module('dragonfly.graphcontroller', [])
   });
 
   function DrawGraph(data){
+    console.log(data)
 // Initialization.
     var d3 = $window.d3;
     var container = $('#graph-container')
@@ -41,7 +38,7 @@ angular.module('dragonfly.graphcontroller', [])
     var coef = {"x": 1, "y": 0};
 
     for(i = 0; i < data.readings.length; i++){
-        data.readings[i].created = new Date(data.readings[i].created).getTime();
+        data.readings[i].created = new Date(data.readings[i].created*1000).getTime();
         data.readings[i].value = data.readings[i].value*coef.x + coef.y;
     }
     

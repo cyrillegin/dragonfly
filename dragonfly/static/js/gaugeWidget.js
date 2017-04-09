@@ -23,8 +23,7 @@ angular.module('dragonfly.gaugecontroller', [])
 
   var req = {
       method: 'GET',
-      url: 'dragonfly/getSensors',
-      data: {}
+      url: '/api/sensor'
     };
   var myInter = $interval(function(){
     $http(req).then(function successCallback(response){
