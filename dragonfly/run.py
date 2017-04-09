@@ -7,10 +7,12 @@ from sqlalchemy import create_engine
 
 import models
 from api import ResourceApi
+from commands import Command
 
 PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 STATIC = os.path.join(PATH, 'static')
 sys.path.append(PATH)
+
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=STATIC))
 
 
@@ -56,7 +58,6 @@ def RunServer():
 
 
 if __name__ == "__main__":
-
     args = sys.argv
     print args
     if len(args) == 1:
@@ -65,6 +66,7 @@ if __name__ == "__main__":
     else:
         if(args[1] == "loadFixtures"):
             print "loading fixtures"
+            Command.LoadFixtures()
         elif(args[1] == "getReadings"):
             print "starting poller"
         elif args[1] == "weatherSensor":

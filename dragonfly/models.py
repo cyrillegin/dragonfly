@@ -41,7 +41,7 @@ class Reading(Base):
     __tablename__ = "reading"
 
     created = Column(BigInteger, primary_key=True)
-    sensor = Column(Text, ForeignKey('sensor.name'), unique=True, index=True)
+    sensor = Column(Text, ForeignKey('sensor.name'), index=True)
     value = Column(Integer)
 
     def toDict(self):

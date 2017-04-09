@@ -22,7 +22,6 @@ class Readings:
             return json.dumps(data)
 
     def POST(self):
-        print "POST request to reading."
         cherrypy.response.headers['Content-Type'] = 'application/json'
         try:
             data = json.loads(cherrypy.request.body.read())
@@ -36,12 +35,11 @@ class Readings:
         with sessionScope() as session:
             try:
                 sensor = session.query(Sensor).filter_by(name=data['sensor_name']).one()
-                print "Sensor found. Adding reading"
                 AddReading(sensor, data, session)
-            except Exception:
+            except Exception, e:
+                print e
                 print "Sensor not found."
                 return json.dumps({"Error": "Sensor not found."})
-        print "done"
 
 
 ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'self_type', 'units', 'lastReading', 'min_value', 'max_value']
@@ -49,7 +47,6 @@ DEFAULTS = [time.time(), None, "", '1,0', None, None, 0, 0, 1024]
 
 
 def AddReading(sensor, data, session):
-    newReading = Reading(created=time.time(), sensor=sensor.toDict()['name'], value=data['value'])
+    newReading = Reading(created=time.time(), sensor=data['sensor_name'], value=data['value'])
     session.add(newReading)
     session.commit()
-    print "Reading added."
