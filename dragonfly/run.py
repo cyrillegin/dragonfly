@@ -79,4 +79,3 @@ if __name__ == "__main__":
             print "automating"
         else:
             print "Could not understand arguements, please try again."
-

@@ -1,5 +1,3 @@
-
-import models
 import math
 import requests
 import json
@@ -18,6 +16,7 @@ def loadfixtures():
         'min_value': 65,
         'max_value': 85
     }
+    print "saving waterTemp"
     requests.post(sensorUrl, json.dumps(testTemp))
     for i in range(0, 24 * 60):
         newReading = {
@@ -35,6 +34,7 @@ def loadfixtures():
         'min_value': 300,
         'max_value': 900
     }
+    print "saving waterTurb"
     requests.post(sensorUrl, json.dumps(testTurb))
     for i in range(0, 24 * 60):
         newReading = {
@@ -42,62 +42,18 @@ def loadfixtures():
             "value": 600 + 200 * math.sin(0.1 * i)
         }
         requests.post(readingUrl, json.dumps(newReading))
-    return
 
-
-
-
-
-
-
-
-
-
-
-
-
-    setattr(testTemp1, "lastReading", newVal)
-    testTemp2.lastReading = newVal
-    print "newVal = {}".format(newVal)
-    testTemp1.save()
-    testTemp2.save()
-
-    testCleanliness = models.Sensor(name="aquaLight", description="A test sensor", coefficients="(1,0)", sensor_type="cleanliness")
-    testCleanliness.save()
-
-    print "Creating readings for aqua light"
+    testSwitch = {
+        'name': "lightSwitch",
+        'description': "A test switch",
+        'sensor_type': "lightswitch",
+    }
+    print "saving lightSwitch"
+    requests.post(sensorUrl, json.dumps(testSwitch))
     for i in range(0, 24 * 60):
-        newVal = 50 + 50 * math.sin(0.1 * i)
-        newReading = models.Reading(sensor=testCleanliness, value=newVal)
-        newReading.save()
-    testCleanliness.lastReading = newVal
-    testCleanliness.save()
-
-    testlightSensor1 = models.Sensor(name="plantLight", description="A test sensor", coefficients="(1,0)", sensor_type="lightsensor")
-    testlightSensor1.save()
-
-    testlightSensor2 = models.Sensor(name="weatherstation", description="A test sensor", coefficients="(1,0)", sensor_type="lightsensor")
-    testlightSensor2.save()
-
-    print "Creating readings for light and weather"
-    for i in range(0, 24 * 60):
-        newVal = 500 + 500 * math.sin(0.1 * i)
-        newReading1 = models.Reading(sensor=testlightSensor1, value=newVal)
-        newReading1.save()
-        newReading2 = models.Reading(sensor=testlightSensor2, value=newVal)
-        newReading2.save()
-    testlightSensor1.lastReading = newVal
-    testlightSensor2.lastReading = newVal
-    testlightSensor1.save()
-    testlightSensor2.save()
-
-    testlightSwitch = models.Sensor(name="lightSwitch", description="A test sensor", coefficients="(1,0)", sensor_type="lightswitch")
-    testlightSwitch.save()
-
-    print "Creating readings for switch"
-    for i in range(0, 24 * 60):
-        newVal = int(math.sin(0.1 * i) + 0.5)
-        newReading = models.Reading(sensor=testlightSwitch, value=newVal)
-        newReading.save()
-    testlightSwitch.lastReading = newVal
-    testlightSwitch.save()
+        newReading = {
+            "sensor_name": "lightSwitch",
+            "value": int(0.5 + math.sin(0.1 * i))
+        }
+        print newReading['value']
+        requests.post(readingUrl, json.dumps(newReading))
