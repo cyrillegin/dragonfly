@@ -55,5 +55,4 @@ def loadfixtures():
             "sensor_name": "lightSwitch",
             "value": int(0.5 + math.sin(0.1 * i))
         }
-        print newReading['value']
         requests.post(readingUrl, json.dumps(newReading))
