@@ -2,7 +2,7 @@
 
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope', 'dataService', '$window', '$http', function ($scope, dataService, $window, $http) {
+.controller("graphController",['$scope', 'dataService', '$window', '$http', '$timeout', function ($scope, dataService, $window, $http, $timeout) {
   $scope.$watch(function(){
     return dataService.selection();
   }, function(v){
@@ -336,6 +336,15 @@ angular.module('dragonfly.graphcontroller', [])
 
 }///End D3
 
+$timeout(function(){
+     $('#start_date').datetimepicker();
+     $('#end_date').datetimepicker();
+});
+
+$scope.SubmitDate = function(){
+    console.log("submitting")
+}
+
 function UpdateModal(data){
     console.log(data);
     $('#modal_description').val(data.description)
@@ -368,7 +377,7 @@ $scope.SaveSensor = function(){
     };
 
     $http(req).then(function successCallback(response){
-
+        $scope.$apply()
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });
