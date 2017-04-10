@@ -15,13 +15,13 @@ angular.module('dragonfly.graphcontroller', [])
     };
     $http(req).then(function successCallback(response){
         DrawGraph(response.data);
+        UpdateModal(response.data.sensor);
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });
   });
 
   function DrawGraph(data){
-    console.log(data.sensor.lastReading)
 // Initialization.
     var d3 = $window.d3;
     var container = $('#graph-container')
@@ -335,6 +335,16 @@ angular.module('dragonfly.graphcontroller', [])
      }
 
 }///End D3
+
+function UpdateModal(data){
+    console.log(data);
+    $('#modal_description').val(data.description)
+    $('#modal_coefficients').val(data.coefficients)
+    $('#modal_sensorType')[0].value = data.self_type
+    $('#modal_units').val(data.units)
+    $('#modal_minValue').val(data.min_value)
+    $('#modal_maxValue').val(data.max_value)
+}
 
 $scope.OpenModal = function(){
     $("#sensorEditModal").modal('toggle');
