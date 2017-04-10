@@ -79,3 +79,7 @@ input{
 .ChartAxis-Shape line{
   stroke-opacity:0.2;
 }
+
+input{
+  width: 100%;
+}

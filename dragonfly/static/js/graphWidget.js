@@ -18,12 +18,9 @@ angular.module('dragonfly.graphcontroller', [])
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });
-
-    
   });
 
   function DrawGraph(data){
-    console.log(data)
 // Initialization.
     var d3 = $window.d3;
     var container = $('#graph-container')
@@ -338,7 +335,33 @@ angular.module('dragonfly.graphcontroller', [])
 
 }///End D3
 
+$scope.OpenModal = function(){
+    $("#sensorEditModal").modal('toggle');
+}
 
+$scope.SaveSensor = function(){ 
+    var newSensor = {
+        "name": dataService.selection(),
+        "description": $('#modal_description').val(),
+        "coefficients": $('#modal_coefficients').val(),
+        "sensor_type": $('#modal_sensorType')[0].value,
+        "units": $('#modal_units').val(),
+        "min_value": $('#modal_minValue').val(),
+        "max_value": $('#modal_maxValue').val()
+    }
+
+    var req = {
+      method: 'POST',
+      url: '/api/sensor',
+      data: newSensor
+    };
+
+    $http(req).then(function successCallback(response){
+
+    }, function errorCallback(response){
+      console.log("An error has occured.", response.data);
+    });
+}
 
 
   

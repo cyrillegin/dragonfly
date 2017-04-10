@@ -28,7 +28,7 @@ angular.module('dragonfly.gaugecontroller', [])
   var myInter = $interval(function(){
     $http(req).then(function successCallback(response){
         for(var i in $scope.gauges){
-          redraw(i, response.data.sensors[i].lastReading, 100, $scope.gauges[i].config);
+          redraw(i, response.data.sensor_list[i].lastReading, 100, $scope.gauges[i].config);
            
         }
     }, function errorCallback(response){
@@ -44,7 +44,6 @@ angular.module('dragonfly.gaugecontroller', [])
       max: data.max_value+data.min_value*0.2,
     }
     
-    console.log(data)
     var range = config.max - config.min;
     config.yellowZones = [{ from: config.min , to: data.min_value }];
     config.redZones = [{ from: data.max_value , to: config.max }];
