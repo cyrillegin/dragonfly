@@ -1,0 +1,90 @@
+<div ng-controller="graphController">
+    <div id="graph-container"></div>
+    <button class="button" ng-click="OpenModal()">Edit Sensor</button>
+
+    <div class="modal fade" id="sensorEditModal" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-title">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <!-- Description -->
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    Description:
+                </div>
+                <div class="col-md-6">
+                    <textarea type="text" rows=3 id="modal_description" value="Sample Description"/>
+                </div>
+            </div>
+
+            <!-- Coefficients -->
+            <div class="row">
+                <div class="col-md-6">
+                    Coefficients:
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="modal_coefficients" value="1,0">
+                </div>
+            </div>
+
+            <!-- Sensor Type -->
+            <div class="row">
+                <div class="col-md-6">
+                    Sensor Type:
+                </div>
+                <div class="col-md-6">
+                    <select class="form-control" id="modal_sensorType">
+                        <option value="temperature">Temperature</option>
+                        <option value="cleanliness">Cleanliness</option>
+                        <option value="lightsensor">Light Sensor</option>
+                        <option value="lightswitch">Light Switch</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Units -->
+            <div class="row">
+                <div class="col-md-6">
+                    Units:
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="modal_units" value="F">
+                </div>
+            </div>
+
+            <!-- Min Value -->
+            <div class="row">
+                <div class="col-md-6">
+                    Min Value:
+                </div>
+                <div class="col-md-6">
+                    <input type="number" id="modal_minValue" value=0>
+                </div>
+            </div>
+
+            <!-- Max Value -->
+            <div class="row">
+                <div class="col-md-6">
+                    Max Value:
+                </div>
+                <div class="col-md-6">
+                    <input type="number" id="modal_maxValue" value="1024">
+                </div>
+            </div>
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" ng-click=SaveSensor()>Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

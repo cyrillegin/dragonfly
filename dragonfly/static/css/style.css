@@ -1,0 +1,85 @@
+/*Main*/
+body{
+  /*background-color: #2b2b2b*/
+}
+
+input{
+  /*background-color: #2b2b2b*/
+}
+
+.button{
+  display: inline-block;
+  border-radius: 4px;
+  display: inline;
+  position: relative;
+  padding: 4px
+  line-height: 1.42857143;
+  color: #337ab7;
+  text-decoration: none;
+  background-color: #FFF;
+  border: 1px solid #ddd;
+}
+
+/*Table overriders*/
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
+}
+
+/*d3 node tree*/
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+/*d3 graph*/
+.ChartAxis-Shape{
+  stroke-width: 1px;
+  stroke: black;
+  fill: none;
+  shape-rendering: crispEdges;
+}
+
+.ChartTitle-Text{
+  font-size: 160%;
+  fill: #777;
+  text-align: left;
+}
+
+.tick{
+  stroke: lightgrey;
+  opacity: 0.7
+}
+
+.tick text{
+  fill: black;
+  stroke: none;
+  shape-rendering: crispEdges;
+}
+
+.ChartAxis-Shape line{
+  stroke-opacity:0.2;
+}
+
+input{
+  width: 100%;
+}
