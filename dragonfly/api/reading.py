@@ -40,19 +40,20 @@ class Readings:
         with sessionScope() as session:
             try:
                 cursensor = session.query(Sensor).filter_by(name=data['sensor_name']).one()
-                AddReading(data, session)
             except Exception, e:
                 print e
                 print "Sensor not found. Sending to sensor api"
-                sensor.CreateSensor({"name": data['sensor_name']}, session)
-                AddReading(data, session)
+                cursensor = sensor.CreateSensor({"name": data['sensor_name']}, session)
+            AddReading(data, cursensor, session)
 
 
 ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'self_type', 'units', 'lastReading', 'min_value', 'max_value']
 DEFAULTS = [time.time(), None, "", '1,0', None, None, 0, 0, 1024]
 
 
-def AddReading(data, session):
+def AddReading(data, cursensor, session):
     newReading = Reading(created=time.time(), sensor=data['sensor_name'], value=data['value'])
+    setattr(cursensor, 'last_reading', data['value'])
+    session.add(cursensor)
     session.add(newReading)
     session.commit()

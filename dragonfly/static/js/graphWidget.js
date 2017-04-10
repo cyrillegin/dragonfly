@@ -21,6 +21,7 @@ angular.module('dragonfly.graphcontroller', [])
   });
 
   function DrawGraph(data){
+    console.log(data.sensor.lastReading)
 // Initialization.
     var d3 = $window.d3;
     var container = $('#graph-container')
