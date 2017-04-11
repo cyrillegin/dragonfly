@@ -2,16 +2,25 @@
 
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope', 'dataService', '$window', '$http', function ($scope, dataService, $window, $http) {
+.controller("graphController",['$scope', 'dataService', '$window', '$http', '$timeout', '$location', function ($scope, dataService, $window, $http, $timeout, $location) {
   $scope.$watch(function(){
     return dataService.selection();
   }, function(v){
     if(v === undefined) return;
     if(dataService.data === undefined) return;
+    GetGraph();
+  });
 
+  function GetGraph(){
+    var args = $location.search();
+    var d = new Date()
+    var start = d.getTime() - 1000*60*60*24;
+    var end = d.getTime();
+    if(args.start_date !== undefined) start = args.start_date;
+    if(args.end_date !== undefined) end = args.end_date;
     var req = {
       method: 'GET',
-      url: '/api/reading/' + dataService.selection()
+      url: '/api/reading/?sensor=' + dataService.selection() + '&start=' + start + '&end=' + end
     };
     $http(req).then(function successCallback(response){
         DrawGraph(response.data);
@@ -19,7 +28,8 @@ angular.module('dragonfly.graphcontroller', [])
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });
-  });
+  }
+  
 
   function DrawGraph(data){
 // Initialization.
@@ -52,7 +62,10 @@ angular.module('dragonfly.graphcontroller', [])
         if(start > data.readings[i].created) start = data.readings[i].created;
         if(end < data.readings[i].created) end = data.readings[i].created;
     }
-
+    console.log(start, end);
+    if($location.search().start_date !== undefined) start = $location.search().start_date*1000;
+    if($location.search().end_date !== undefined) end = $location.search().end_date*1000;
+    console.log(start, end);
 // Create the svg.
     var newChart = d3.select('#graph-container')
         .append("svg")
@@ -336,8 +349,26 @@ angular.module('dragonfly.graphcontroller', [])
 
 }///End D3
 
+$timeout(function(){
+    $('#start_date').datetimepicker();
+    $('#end_date').datetimepicker();
+});
+
+$scope.SubmitDate = function(){
+    var newDates = {
+        'start': $('#start_date').data("DateTimePicker").date(),
+        'end': $('#end_date').data("DateTimePicker").date()
+    }
+    $timeout(function(){
+        $scope.$apply(function(){
+            $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix())
+            $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix())
+            GetGraph()
+        });
+    });
+}
+
 function UpdateModal(data){
-    console.log(data);
     $('#modal_description').val(data.description)
     $('#modal_coefficients').val(data.coefficients)
     $('#modal_sensorType')[0].value = data.self_type
@@ -368,7 +399,7 @@ $scope.SaveSensor = function(){
     };
 
     $http(req).then(function successCallback(response){
-
+        $scope.$apply()
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });

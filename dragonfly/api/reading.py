@@ -10,14 +10,16 @@ import sensor
 class Readings:
     exposed = True
 
-    def GET(self, sensor_name):
+    def GET(self, **kwargs):
         cherrypy.response.headers['Content-Type'] = 'application/json'
-        if sensor_name is None:
+        if kwargs['sensor'] is None:
             data = {"error": "Must provide a sensor name."}
             return json.dumps(data)
+        print int(kwargs['start'])
+        print int(kwargs['end'])
         with sessionScope() as session:
-            sensor = session.query(Sensor).filter_by(name=sensor_name).one()
-            readings = session.query(Reading).filter_by(sensor=sensor_name)
+            sensor = session.query(Sensor).filter_by(name=kwargs['sensor']).one()
+            readings = session.query(Reading).filter_by(sensor=kwargs['sensor']).filter(Reading.created >= int(kwargs['start']), Reading.created <= int(kwargs['end']))
             data = {
                 "readings": [],
                 "sensor": sensor.toDict()
