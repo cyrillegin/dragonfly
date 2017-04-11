@@ -12,6 +12,8 @@
   },
   "scripts": {
     "postinstall": "bower install --config.interactive=false"
+  },
+  "dependencies": {
+    
   }
 }
-
