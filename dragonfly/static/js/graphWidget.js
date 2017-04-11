@@ -14,8 +14,8 @@ angular.module('dragonfly.graphcontroller', [])
   function GetGraph(){
     var args = $location.search();
     var d = new Date()
-    var start = (d.getTime() - 1000*60*60*24) / 1000;
-    var end = d.getTime() / 1000;
+    var start = Math.round((d.getTime() - 1000*60*60*24) / 1000);
+    var end = Math.round(d.getTime() / 1000);
     if(args.start_date !== undefined) start = args.start_date;
     if(args.end_date !== undefined) end = args.end_date;
     var req = {
