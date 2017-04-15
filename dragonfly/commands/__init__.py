@@ -2,6 +2,7 @@
 import loadfixtures
 import serialPoller
 import weatherSensor
+import automate
 
 
 class Command:
@@ -16,3 +17,7 @@ class Command:
     @staticmethod
     def WeatherSensor():
         weatherSensor.weatherSensor()
+
+    @staticmethod
+    def Automate():
+        automate.automate()
