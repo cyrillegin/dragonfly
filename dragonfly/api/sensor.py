@@ -1,3 +1,24 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+sensor.py
+API endpoint for sensors.
+
+GET
+/api/sensor
+returns an array of all of the sensors in database.
+
+POST
+preconditions: 'name' of sensor.
+optional arguments: 'created', 'description', 'coefficients', 'sensor_type'
+    'units', 'lastReading', 'min_value', 'max_value'
+Queries database for sensor with 'name'
+If sensor doesn't exist, a new one is created.
+If sensor does exist, will update sensor with any of the optional arguments.
+
+'''
 import json
 import cherrypy
 import time

@@ -1,3 +1,13 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+loadfixtures.py
+
+Sends test data to api.
+
+'''
 import math
 import requests
 import json

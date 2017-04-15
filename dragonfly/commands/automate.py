@@ -1,48 +1,37 @@
-from django.core.management.base import BaseCommand
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+automate.py
+
+Sends on/off command to api for the lightswitch.
+
+'''
+
 from datetime import datetime
 import json
 import time
+import requests
 
-from dragonfly import models
+URL = 'http://localhost:8000/api/command'
+TurnOnTime = 9
+TurnOffTime = 8
 
 
-class Command(BaseCommand):
-    help = 'Load a days worth of data.'
-
-    def handle(self, *args, **options):
-        TurnOnTime = 8
-        TurnOffTime = 20
-        IsOn = True
-        # 60 seconds * 30 minutes = check every half hour
-        CheckRate = 60 * 30
-        print "Starting automation control"
-        while(True):
-            currentHour = datetime.now().hour
-            if IsOn is True and TurnOffTime is currentHour:
-                print "Turning off lights, the current time is {}".format(datetime.now())
-                with open('commandQueue.json', 'w') as outfile:
-                    json.dump({'value': 0}, outfile)
-                IsOn = False
-            if IsOn is False and TurnOnTime is currentHour:
-                print "Turing on lights, the current time is {}".format(datetime.now())
-                with open('commandQueue.json', 'w') as outfile:
-                    json.dump({'value': 1}, outfile)
-                IsOn = True
-            time.sleep(CheckRate / 2)
-            # currentHour = datetime.now().hour
-            # if currentHour > TurnOnTime and currentHour < TurnOffTime:
-            #     # light is on
-            #     switch = models.Reading.objects.get(name="lightSwitch")
-            #     if switch.toDict().value is False:
-            #         print "Turing on lights, the current time is {}".format(datetime.now())
-            #         with open('commandQueue.json', 'w') as outfile:
-            #             json.dump({'value': 1}, outfile)
-
-            # else:
-            #     # light is off
-            #     switch = models.Sensor.objects.get(name="lightSwitch")
-            #     if switch.toDict().value is True:
-            #         print "Turning off lights, the current time is {}".format(datetime.now())
-            #         with open('commandQueue.json', 'w') as outfile:
-            #             json.dump({'value': 0}, outfile)
-            time.sleep(CheckRate / 2)
+def automate():
+    IsOn = True
+    # 60 seconds * 30 minutes = check every half hour
+    CheckRate = 60 * 30
+    print "Starting automation control"
+    while(True):
+        currentHour = datetime.now().hour
+        if IsOn is True and TurnOffTime is currentHour:
+            response = requests.post(URL, json.dumps({'lightswitch': 'lightswitch', 'value': False}))
+            print "Turned off lights at {}, got response: {}".format(datetime.now(), response)
+            IsOn = False
+        if IsOn is False and TurnOnTime is currentHour:
+            response = requests.post(URL, json.dumps({'lightswitch': 'lightswitch', 'value': True}))
+            print "Turned on lights at {}, got response: {}".format(datetime.now(), response)
+            IsOn = True
+        time.sleep(CheckRate / 2)

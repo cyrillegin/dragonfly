@@ -1,4 +1,13 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
 
+__init__.py
+
+Setup for api
+
+'''
 from reading import Readings
 from sensor import Sensors
 from log import Logs

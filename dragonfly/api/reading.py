@@ -1,3 +1,21 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+reading.py
+API endpoint for readings
+
+GET
+preconditions: sensor name, start, end
+Returns all readings for 'sensor' between 'start' and 'end' times.
+
+POST
+preconditions: sensor name, value
+Inserts a new reading for 'sensor_name' with 'value'
+
+
+'''
 import json
 import cherrypy
 import time
@@ -47,10 +65,6 @@ class Readings:
                 print "Sensor not found. Sending to sensor api"
                 cursensor = sensor.CreateSensor({"name": data['sensor_name']}, session)
             AddReading(data, cursensor, session)
-
-
-ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'self_type', 'units', 'lastReading', 'min_value', 'max_value']
-DEFAULTS = [time.time(), None, "", '1,0', None, None, 0, 0, 1024]
 
 
 def AddReading(data, cursensor, session):
