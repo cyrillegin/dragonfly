@@ -1,3 +1,19 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+log.py
+API endpoint for logs
+
+GET
+Returns an object with array of logs
+
+POST
+Adds a new log.
+Params: A json object with keys 'title' and 'description'.
+
+'''
 import json
 import cherrypy
 import time
@@ -31,7 +47,7 @@ class Logs:
         if "description" not in data:
             return json.dumps({"Error": "Must provide a description."})
         with sessionScope() as session:
-            newLog = Reading(created=time.time(), title=data['title'], description=data['description'])
+            newLog = Log(created=time.time(), title=data['title'], description=data['description'])
             session.add(newLog)
             session.commit()
             print "Log added."
