@@ -77,5 +77,6 @@ if __name__ == "__main__":
             print "cleaning readings"
         elif args[1] == "automate":
             print "automating"
+            Command.Automate()
         else:
             print "Could not understand arguements, please try again."
