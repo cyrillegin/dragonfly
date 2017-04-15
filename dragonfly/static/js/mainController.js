@@ -54,7 +54,7 @@ angular.module('dragonfly.maincontroller', [])
       console.log("warning");
       return;
     }
-    SendData('dragonfly/addSensor', params, GetData)
+    SendData('api/sensor', params, GetData)
   };
 
   $scope.SubmitReading = function(){
@@ -67,7 +67,7 @@ angular.module('dragonfly.maincontroller', [])
       console.log("warning");
       return;
     }
-    SendData('dragonfly/addReading', params, GetData) 
+    SendData('api/reading', params, GetData) 
   }
 
   $scope.SubmitLog = function(){
@@ -79,7 +79,7 @@ angular.module('dragonfly.maincontroller', [])
       console.log("warning");
       return;
     }
-    SendData('dragonfly/addLog', params, GetData) 
+    SendData('api/log', params, GetData) 
   }
 
   function SendData(newurl, params, callback){
