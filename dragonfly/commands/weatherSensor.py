@@ -1,3 +1,12 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+weatherSensor.py
+Polls lascruces-weather.com and scraps for current temperature.
+
+'''
 import time
 import urllib2
 import requests

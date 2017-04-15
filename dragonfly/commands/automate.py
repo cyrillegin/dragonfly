@@ -1,3 +1,13 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+automate.py
+
+Sends on/off command to api for the lightswitch.
+
+'''
 from django.core.management.base import BaseCommand
 from datetime import datetime
 import json
