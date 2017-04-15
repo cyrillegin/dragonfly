@@ -7,15 +7,16 @@ sensors. It comes with a server and front end to view gathered
 data as well as a sample .ino file.
 
 # Getting Started 
-git clone into your preferred directory.
-upload sample arudino code. 
-cd into dragonfly/static
-npm install
-cd into dradonfly
-python run.py
-In another terminal window
-python run.py serialPoller
-Navigate to http://localhost:8000
+1. git clone into your preferred directory.
+2. upload sample arudino code. 
+3. cd into dragonfly/static
+4. npm install
+5. cd into dradonfly
+6. python run.py
+7. In another terminal window
+8. python run.py serialPoller
+9. Navigate to http://localhost:8000
+
 You should see at least the basis of dragonfly. As the poller
 collects more data, the site will fill itself out.
 Enjoy!
