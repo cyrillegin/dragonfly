@@ -13,7 +13,7 @@ cherrypy
 pySerial
 
 # Getting Started 
-1. git clone into your preferred directory.
+1. git clone https://github.com/cyrillegin/Aquaponics.git into your preferred directory.
 2. upload sample arudino code. 
 3. cd into dragonfly/static
 4. npm install
