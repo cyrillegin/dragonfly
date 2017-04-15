@@ -1,17 +1,18 @@
+/*jslint node: true */
 angular.module('dragonfly.services', [])
 
 .factory('dataService', function(){
-    var data = {}
+    var data = {};
     var selection;
     return {
         selection: function(){
-            return selection
+            return selection;
         },
         data: function(){
-            return data
+            return data;
         },
         set: function(info){
-            data = info
+            data = info;
         },
         select: function(name){
             selection = name;

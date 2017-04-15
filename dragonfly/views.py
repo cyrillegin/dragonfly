@@ -77,7 +77,13 @@ class addReading(View):
 class addSensor(View):
     def post(self, request):
         data = json.loads(request.body)
-        newSensor = models.Sensor(name=data['name'], description=data['description'], coefficients=data['coefficients'], sensor_type=data['sensor_type'], units=data['units'])
+        newSensor = models.Sensor(
+            name=data['name'],
+            description=data['description'],
+            coefficients=data['coefficients'],
+            sensor_type=data['sensor_type'],
+            units=data['units']
+        )
         newSensor.save()
         return render(request, 'index.html', {})
 
@@ -130,8 +136,3 @@ def SlimReadings(data):
         if count % 2 == 0:
             toReturn.append(i)
     return toReturn
-
-
-
-
-

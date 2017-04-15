@@ -1,23 +1,13 @@
-/*Main*/
-body{
-  /*background-color: #2b2b2b*/
-}
-
-input{
-  /*background-color: #2b2b2b*/
-}
-
 .button{
-  display: inline-block;
-  border-radius: 4px;
-  display: inline;
-  position: relative;
-  padding: 4px
-  line-height: 1.42857143;
-  color: #337ab7;
-  text-decoration: none;
   background-color: #FFF;
   border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #337ab7;
+  display: inline;
+  line-height: 1.42857143;
+  padding: 4px;
+  position: relative;
+  text-decoration: none;
 }
 
 /*Table overriders*/
@@ -53,27 +43,27 @@ input{
 
 /*d3 graph*/
 .ChartAxis-Shape{
-  stroke-width: 1px;
-  stroke: black;
   fill: none;
   shape-rendering: crispEdges;
+  stroke: black;
+  stroke-width: 1px;
 }
 
 .ChartTitle-Text{
-  font-size: 160%;
   fill: #777;
+  font-size: 160%;
   text-align: left;
 }
 
 .tick{
+  opacity: 0.7;
   stroke: lightgrey;
-  opacity: 0.7
 }
 
 .tick text{
   fill: black;
-  stroke: none;
   shape-rendering: crispEdges;
+  stroke: none;
 }
 
 .ChartAxis-Shape line{

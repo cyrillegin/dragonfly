@@ -1,10 +1,11 @@
+/*jslint node: true */
 'use strict';
-
+var angular, $;
 angular.module('dragonfly.maincontroller', [])
 
 .controller("mainController",['$scope', '$timeout', '$http', 'apiService', 'dataService', function ($scope, $timeout, $http, apiService, dataService) {
 
-  var switchids = []
+  var switchids = [];
   $scope.graphIndex = 0;
 
   function GetData(){
@@ -35,7 +36,7 @@ angular.module('dragonfly.maincontroller', [])
                 "lightswitch": event.target.id.split('-')[1],
                 'value': state
               }
-            )
+            );
           });
         }
       }, 500);
@@ -49,12 +50,12 @@ angular.module('dragonfly.maincontroller', [])
       "coefficients": $scope.newSensorType,
       "sensor_type": $scope.newSensorUnits,
       "units": $scope.newSensorCoef
-    }
+    };
     if(params.name === "" || params.name === undefined){
       console.log("warning");
       return;
     }
-    SendData('api/sensor', params, GetData)
+    SendData('api/sensor', params, GetData);
   };
 
   $scope.SubmitReading = function(){
@@ -62,25 +63,25 @@ angular.module('dragonfly.maincontroller', [])
       "value": $scope.newReadingValue,
       "date": $scope.newReadingDate,
       "sensor": dataService.change().selection
-    }
+    };
     if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
       console.log("warning");
       return;
     }
-    SendData('api/reading', params, GetData) 
-  }
+    SendData('api/reading', params, GetData);
+  };
 
   $scope.SubmitLog = function(){
     var params = {
       "title": $scope.newLogTitle,
       "description": $scope.newLogDesc
-    }
+    };
     if(params.title === "" || params.title === undefined || params.description === "" || params.description === undefined){
       console.log("warning");
       return;
     }
-    SendData('api/log', params, GetData) 
-  }
+    SendData('api/log', params, GetData);
+  };
 
   function SendData(newurl, params, callback){
     var req = {
@@ -93,9 +94,9 @@ angular.module('dragonfly.maincontroller', [])
       if(callback){
         callback();
       }
-    }), function errorCallback(response){
+    }, function errorCallback(response){
        console.log("An error has occured.", response.data);
-    };
+    });
   }
   
   function DrawLightSwitch(data){
@@ -103,7 +104,7 @@ angular.module('dragonfly.maincontroller', [])
       "title": data.name,
       "id": "switch-"+data.id,
       'val': data.lastReading
-    }
+    };
     $scope.lightSwitchCharts.push(switchObj);
     switchids.push("switch-"+data.id);
   }

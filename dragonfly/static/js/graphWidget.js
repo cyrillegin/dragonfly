@@ -1,5 +1,6 @@
-'use strict';
+/*jslint node: true */
 
+var angular, $;
 angular.module('dragonfly.graphcontroller', [])
 
 .controller("graphController",['$scope', 'dataService', '$window', '$http', '$timeout', '$location', function ($scope, dataService, $window, $http, $timeout, $location) {
@@ -13,7 +14,7 @@ angular.module('dragonfly.graphcontroller', [])
 
   function GetGraph(){
     var args = $location.search();
-    var d = new Date()
+    var d = new Date();
     var start = Math.round((d.getTime() - 1000*60*60*24) / 1000);
     var end = Math.round(d.getTime() / 1000);
     if(args.start_date !== undefined) start = args.start_date;
@@ -34,10 +35,10 @@ angular.module('dragonfly.graphcontroller', [])
   function DrawGraph(data){
 // Initialization.
     var d3 = $window.d3;
-    var container = $('#graph-container')
-    container.html( "")
+    var container = $('#graph-container');
+    container.html("");
     
-    var width = container[0].clientWidth, height = 400
+    var width = container[0].clientWidth, height = 400;
     var margin = {top: 20, right: 10, bottom: 30, left: 40};
     width = width - margin.left - margin.right; height = height - margin.top - margin.bottom;
     var i, j, newText;
@@ -50,7 +51,7 @@ angular.module('dragonfly.graphcontroller', [])
         data.readings[i].value = data.readings[i].value*coef.x + coef.y;
     }
     
-    var start = data.readings[0].created
+    var start = data.readings[0].created;
     var end = data.readings[0].created;
     var min = data.readings[0].value;
     var max = data.readings[0].value;
@@ -305,7 +306,7 @@ angular.module('dragonfly.graphcontroller', [])
                 d = x0 - d0.created > d1.created - x0 ? d1 : d0;
             selectionBox.attr("transform", "translate(" + xScale(d.created) + ",0)" );
             // dragStartPos = xScale(d.created);
-        })
+        });
         // .call(drag);
 
 // Tooltip helper
@@ -358,28 +359,28 @@ $scope.SubmitDate = function(){
     var newDates = {
         'start': $('#start_date').data("DateTimePicker").date(),
         'end': $('#end_date').data("DateTimePicker").date()
-    }
+    };
     $timeout(function(){
         $scope.$apply(function(){
-            $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix())
-            $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix())
-            GetGraph()
+            $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
+            $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
+            GetGraph();
         });
     });
-}
+};
 
 function UpdateModal(data){
-    $('#modal_description').val(data.description)
-    $('#modal_coefficients').val(data.coefficients)
-    $('#modal_sensorType')[0].value = data.self_type
-    $('#modal_units').val(data.units)
-    $('#modal_minValue').val(data.min_value)
-    $('#modal_maxValue').val(data.max_value)
+    $('#modal_description').val(data.description);
+    $('#modal_coefficients').val(data.coefficients);
+    $('#modal_sensorType')[0].value = data.self_type;
+    $('#modal_units').val(data.units);
+    $('#modal_minValue').val(data.min_value);
+    $('#modal_maxValue').val(data.max_value);
 }
 
 $scope.OpenModal = function(){
     $("#sensorEditModal").modal('toggle');
-}
+};
 
 $scope.SaveSensor = function(){ 
     var newSensor = {
@@ -390,7 +391,7 @@ $scope.SaveSensor = function(){
         "units": $('#modal_units').val(),
         "min_value": $('#modal_minValue').val(),
         "max_value": $('#modal_maxValue').val()
-    }
+    };
 
     var req = {
       method: 'POST',
@@ -399,11 +400,11 @@ $scope.SaveSensor = function(){
     };
 
     $http(req).then(function successCallback(response){
-        $scope.$apply()
+        $scope.$apply();
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });
-}
+};
 
 
   
