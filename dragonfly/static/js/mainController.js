@@ -3,18 +3,13 @@
 var angular, $;
 angular.module('dragonfly.maincontroller', [])
 
-.controller("mainController",['$scope', '$timeout', '$http', 'apiService', 'dataService', function ($scope, $timeout, $http, apiService, dataService) {
+.controller("mainController",['$scope', '$timeout', 'apiService', 'dataService', function ($scope, $timeout, apiService, dataService) {
 
   var switchids = [];
   $scope.graphIndex = 0;
 
   function GetData(){
-    var req = {
-      method: 'GET',
-      url: '/api/sensor',
-      data: {}
-    };
-    $http(req).then(function successCallback(response){
+    apiService.get('sensor').then(function successCallback(response){
       $scope.lightSwitchCharts = [];
       dataService.set(response.data.sensor_list);
       for(var i in response.data.sensor_list){

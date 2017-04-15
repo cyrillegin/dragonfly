@@ -3,7 +3,7 @@
 var angular, $;
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope', 'dataService', '$window', '$http', '$timeout', '$location', function ($scope, dataService, $window, $http, $timeout, $location) {
+.controller("graphController",['$scope', 'dataService', '$window', 'apiService', '$timeout', '$location', function ($scope, dataService, $window, apiService, $timeout, $location) {
   $scope.$watch(function(){
     return dataService.selection();
   }, function(v){
@@ -19,18 +19,15 @@ angular.module('dragonfly.graphcontroller', [])
     var end = Math.round(d.getTime() / 1000);
     if(args.start_date !== undefined) start = args.start_date;
     if(args.end_date !== undefined) end = args.end_date;
-    var req = {
-      method: 'GET',
-      url: '/api/reading/?sensor=' + dataService.selection() + '&start=' + start + '&end=' + end
-    };
-    $http(req).then(function successCallback(response){
-        DrawGraph(response.data);
-        UpdateModal(response.data.sensor);
-    }, function errorCallback(response){
-      console.log("An error has occured.", response.data);
-    });
+
+    apiService.get('reading/?sensor=' + dataService.selection() + "&start="+start+"&end="+end)
+        .then(function successCallback(response){
+            DrawGraph(response.data);
+            UpdateModal(response.data.sensor);
+        }, function errorCallback(response){
+          console.log("An error has occured.", response.data);
+        });
   }
-  
 
   function DrawGraph(data){
 // Initialization.
@@ -68,7 +65,6 @@ angular.module('dragonfly.graphcontroller', [])
     }
     if($location.search().start_date !== undefined) start = $location.search().start_date*1000;
     if($location.search().end_date !== undefined) end = $location.search().end_date*1000;
-    console.log(start, end);
 // Create the svg.
     var newChart = d3.select('#graph-container')
         .append("svg")
@@ -395,13 +391,7 @@ $scope.SaveSensor = function(){
         "max_value": $('#modal_maxValue').val()
     };
 
-    var req = {
-      method: 'POST',
-      url: '/api/sensor',
-      data: newSensor
-    };
-
-    $http(req).then(function successCallback(response){
+    apiService.post('/sensor', newSensor).then(function successCallback(response){
         $scope.$apply();
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
