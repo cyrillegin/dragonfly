@@ -1,4 +1,15 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
 
+serialPoller.py
+
+Walks dev directory searching for usb devices.
+Once found, starts new process to collect and send data.
+
+
+'''
 from multiprocessing import Process
 from os import walk
 import time
@@ -8,6 +19,12 @@ import requests
 
 SENSORURL = "http://localhost:8000/api/sensor"
 READINGURL = "http://localhost:8000/api/reading"
+
+# For use on rasberry pi
+# USBPREFIX = 'ttyUSB'
+
+# Foruse on OSX
+USBPREFIX = 'tty.usb'
 
 
 def MCP(device):
@@ -23,7 +40,7 @@ def MCP(device):
 def CollectData(ser):
     print "collect process starting"
     Alive = True
-    pollRate = 20
+    pollRate = 60 * 5
     while(Alive):
         try:
             data = ser.readline()
@@ -97,7 +114,7 @@ def serialPoller():
                 f.extend(filenames)
             devices = []
             for i in f:
-                if i.startswith('tty.usb'):
+                if i.startswith(USBPREFIX):
                     devices.append(i)
             print"Devices found: {}".format(devices)
             for j in devices:

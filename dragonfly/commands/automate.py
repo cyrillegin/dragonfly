@@ -1,3 +1,14 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+automate.py
+
+Sends on/off command to api for the lightswitch.
+
+'''
+
 from datetime import datetime
 import json
 import time

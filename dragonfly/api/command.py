@@ -1,7 +1,24 @@
+'''
+Dragonfly
+Cyrille Gindreau
+2017
+
+command.py
+
+POST
+Writes input to a json file that will be sent to the microcontroller.
+Input: {
+    Key, Value
+}
+Example:
+Turns on a light.
+{
+    lightswitch: true
+}
+
+'''
 import json
 import cherrypy
-
-from sessionManager import sessionScope
 
 
 class Command:
