@@ -50,7 +50,10 @@ angular.module('dragonfly.maincontroller', [])
       console.log("warning");
       return;
     }
-    SendData('api/sensor', params, GetData);
+    apiService.post('sensor', params)
+      .then(function(){
+        GetData();
+      })
   };
 
   $scope.SubmitReading = function(){
@@ -63,7 +66,10 @@ angular.module('dragonfly.maincontroller', [])
       console.log("warning");
       return;
     }
-    SendData('api/reading', params, GetData);
+    apiService.post('reading', params)
+      .then(function(){
+        GetData()
+      });
   };
 
   $scope.SubmitLog = function(){
@@ -75,24 +81,11 @@ angular.module('dragonfly.maincontroller', [])
       console.log("warning");
       return;
     }
-    SendData('api/log', params, GetData);
+    apiService.post('log', params)
+      .then(function(){
+        GetData();
+      }) 
   };
-
-  function SendData(newurl, params, callback){
-    var req = {
-      method: 'POST',
-      url: newurl,
-      data: params
-    };
-
-    $http(req).then(function successCallback(response){
-      if(callback){
-        callback();
-      }
-    }, function errorCallback(response){
-       console.log("An error has occured.", response.data);
-    });
-  }
   
   function DrawLightSwitch(data){
     var switchObj = {
