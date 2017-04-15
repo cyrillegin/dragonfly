@@ -1,5 +1,6 @@
+/*jslint node: true */
 'use strict';
-
+var angular, $, d3;
 angular.module('dragonfly.gaugecontroller', [])
 
 .controller("gaugeController",['$scope', 'dataService', '$timeout', '$interval', '$http', function ($scope, dataService, $timeout, $interval, $http) {
@@ -11,14 +12,14 @@ angular.module('dragonfly.gaugecontroller', [])
   }, function(v){
     if(v === undefined) return;
     for( var i in v){
-      $scope.gauges.push({'id': 'gaugeChart-'+i})
+      $scope.gauges.push({'id': 'gaugeChart-'+i});
     }
 
     $timeout(function(){
       for( var i in v){
-         DrawTempChart(v[i], i)
+         DrawTempChart(v[i], i);
       }
-    }, 500)
+    }, 500);
   });
 
   var req = {
@@ -34,7 +35,7 @@ angular.module('dragonfly.gaugecontroller', [])
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
     });
-  },1000*60)
+  },1000*60);
 
   function DrawTempChart(data, id){
     var config = {
@@ -42,7 +43,7 @@ angular.module('dragonfly.gaugecontroller', [])
       label: data.name,
       min: data.min_value-data.min_value*0.2,
       max: data.max_value+data.min_value*0.2,
-    }
+    };
     
     var range = config.max - config.min;
     config.yellowZones = [{ from: config.min , to: data.min_value }];
@@ -86,20 +87,21 @@ angular.module('dragonfly.gaugecontroller', [])
         .style("stroke", "#e0e0e0")
         .style("stroke-width", "2px");
           
-    for (var index in config.greenZones){
+    var index;
+    for (index in config.greenZones){
       drawBand(config.greenZones[index].from, config.greenZones[index].to, config.greenColor);
     }
     
-    for (var index in config.yellowZones){
+    for (index in config.yellowZones){
       drawBand(config.yellowZones[index].from, config.yellowZones[index].to, config.yellowColor);
     }
     
-    for (var index in config.redZones){
+    for (index in config.redZones){
       drawBand(config.redZones[index].from, config.redZones[index].to, config.redColor);
     }
-    
-    if (undefined != config.label){
-      var fontSize = Math.round(config.size / 9);
+    var fontSize;
+    if (undefined !== config.label){
+      fontSize = Math.round(config.size / 9);
       svg.append("svg:text")
           .attr("x", config.cx)
           .attr("y", config.cy / 2 + fontSize / 2)
@@ -111,13 +113,14 @@ angular.module('dragonfly.gaugecontroller', [])
           .style("stroke-width", "0px");
     }
     
-    var fontSize = Math.round(config.size / 16);
+    fontSize = Math.round(config.size / 16);
     var majorDelta = config.range / (config.majorTicks - 1);
     for (var major = config.min; major <= config.max; major += majorDelta){
       var minorDelta = majorDelta / config.minorTicks;
+      var point1, point2;
       for (var minor = major + minorDelta; minor < Math.min(major + majorDelta, config.max); minor += minorDelta){
-        var point1 = valueToPoint(minor, 0.75, config);
-        var point2 = valueToPoint(minor, 0.85, config);
+        point1 = valueToPoint(minor, 0.75, config);
+        point2 = valueToPoint(minor, 0.85, config);
         
         svg.append("svg:line")
             .attr("x1", point1.x)
@@ -128,8 +131,8 @@ angular.module('dragonfly.gaugecontroller', [])
             .style("stroke-width", "1px");
       }
       
-      var point1 = valueToPoint(major, 0.7, config);
-      var point2 = valueToPoint(major, 0.85, config);  
+      point1 = valueToPoint(major, 0.7, config);
+      point2 = valueToPoint(major, 0.85, config);  
       
       svg.append("svg:line")
           .attr("x1", point1.x)
@@ -161,8 +164,8 @@ angular.module('dragonfly.gaugecontroller', [])
     var pointerPath = buildPointerPath(midValue);
     
     var pointerLine = d3.line()
-        .x(function(d) { return d.x })
-        .y(function(d) { return d.y })
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; })
         .curve(d3.curveBasis);
     
     pointerContainer.selectAll("path")
@@ -172,7 +175,7 @@ angular.module('dragonfly.gaugecontroller', [])
             .attr("d", pointerLine)
             .style("fill", "#dc3912")
             .style("stroke", "#c63310")
-            .style("fill-opacity", 0.7)
+            .style("fill-opacity", 0.7);
           
     pointerContainer.append("svg:circle")
         .attr("cx", config.cx)
@@ -182,7 +185,7 @@ angular.module('dragonfly.gaugecontroller', [])
         .style("stroke", "#666")
         .style("opacity", 1);
     
-    var fontSize = Math.round(config.size / 10);
+    fontSize = Math.round(config.size / 10);
     pointerContainer.selectAll("text")
         .data([midValue])
         .enter()
@@ -211,14 +214,14 @@ angular.module('dragonfly.gaugecontroller', [])
       var tail1 = valueToPoint(tailValue - delta, 0.12, config);
       var tail2 = valueToPoint(tailValue + delta, 0.12, config);
 
-      head = {'x': 0, 'y':0}
-      tail = {'x': 30, 'y':30}
+      head = {'x': 0, 'y':0};
+      tail = {'x': 30, 'y':30};
 
       
       return [head, tail];
       
       function valueToPoint(value, factor){
-        var point = {'x': 0, 'y':0}  
+        var point = {'x': 0, 'y':0}; 
         point.x += value*factor;
         point.y += value*factor;
         return point;
@@ -235,7 +238,7 @@ angular.module('dragonfly.gaugecontroller', [])
           .endAngle(valueToRadians(end, config))
           .innerRadius(0.65 * config.raduis)
           .outerRadius(0.85 * config.raduis))
-          .attr("transform", function() { return "translate(" + config.cx + ", " + config.cy + ") rotate(270)" });
+          .attr("transform", function() { return "translate(" + config.cx + ", " + config.cy + ") rotate(270)";});
     }
 
     $scope.gauges[id].config = config;
@@ -250,20 +253,20 @@ angular.module('dragonfly.gaugecontroller', [])
     
     var pointer = pointerContainer.selectAll("path");
     pointer.transition()
-        .duration(undefined != transitionDuration ? transitionDuration : config.transitionDuration) 
+        .duration(undefined !== transitionDuration ? transitionDuration : config.transitionDuration) 
         .attrTween("transform", function(){
             var pointerValue = value;
             
             if (value > config.max) pointerValue = config.max + 0.02*config.range;
             else if (value < config.min) pointerValue = config.min - 0.02*config.range;
             var targetRotation = (valueToDegrees(pointerValue, config) - 90);
-            var currentRotation = self._currentRotation || targetRotation;
-            self._currentRotation = targetRotation;
+            var currentRotation = this._currentRotation || targetRotation;
+            this._currentRotation = targetRotation;
             
             return function(step) {
                 var rotation = currentRotation + (targetRotation-currentRotation)*step;
                 return "translate(" + config.cx + ", " + config.cy + ") rotate(" + (225+rotation) + ")"; 
-            }
+            };
         });
     }
 

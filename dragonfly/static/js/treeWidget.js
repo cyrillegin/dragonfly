@@ -1,5 +1,6 @@
+/*jslint node: true */
 'use strict';
-
+var angular, d3, $;
 angular.module('dragonfly.treecontroller', [])
 
 .controller("treeController",['$scope', '$window', 'dataService', function ($scope, $window, dataService) {
@@ -12,11 +13,11 @@ angular.module('dragonfly.treecontroller', [])
     var sensorNodes = {
       "name": "Sensors",
       "children": []
-    }
+    };
     for(var i in v){
       sensorNodes.children.push({
         "name": v[i].name
-      })
+      });
     }
     buildTree(sensorNodes);
   });
@@ -35,8 +36,7 @@ angular.module('dragonfly.treecontroller', [])
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
-        .attr("transform", "translate("
-              + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var i = 0,
         duration = 750,
@@ -58,9 +58,9 @@ angular.module('dragonfly.treecontroller', [])
     // Collapse the node and all it's children
     function collapse(d) {
       if(d.children) {
-        d._children = d.children
-        d._children.forEach(collapse)
-        d.children = null
+        d._children = d.children;
+        d._children.forEach(collapse);
+        d.children = null;
       }
     }
 
@@ -74,7 +74,7 @@ angular.module('dragonfly.treecontroller', [])
           links = treeData.descendants().slice(1);
 
       // Normalize for fixed-depth.
-      nodes.forEach(function(d){ d.y = d.depth * 50});
+      nodes.forEach(function(d){ d.y = d.depth * 50;});
 
       // ****************** Nodes section ***************************
 
@@ -149,8 +149,8 @@ angular.module('dragonfly.treecontroller', [])
       var linkEnter = link.enter().insert('path', "g")
           .attr("class", "link")
           .attr('d', function(d){
-            var o = {x: source.x0, y: source.y0}
-            return diagonal(o, o)
+            var o = {x: source.x0, y: source.y0};
+            return diagonal(o, o);
           });
 
       // UPDATE
@@ -159,14 +159,14 @@ angular.module('dragonfly.treecontroller', [])
       // Transition back to the parent element position
       linkUpdate.transition()
           .duration(duration)
-          .attr('d', function(d){ return diagonal(d, d.parent) });
+          .attr('d', function(d){ return diagonal(d, d.parent); });
 
       // Remove any exiting links
       var linkExit = link.exit().transition()
           .duration(duration)
           .attr('d', function(d) {
-            var o = {x: source.x, y: source.y}
-            return diagonal(o, o)
+            var o = {x: source.x, y: source.y};
+            return diagonal(o, o);
           })
           .remove();
 
@@ -181,11 +181,8 @@ angular.module('dragonfly.treecontroller', [])
         var d = {
           'source': source,
           'target':target
-        }
-        return "M" + d.source.x + "," + d.source.y
-          + "C" + d.source.x +  "," + (d.source.y + d.target.y) / 2
-          + " " + d.target.x + "," + (d.source.y + d.target.y) / 2
-          + " " + d.target.x + "," + d.target.y;
+        };
+        return "M" + d.source.x + "," + d.source.y + "C" + d.source.x +  "," + (d.source.y + d.target.y) / 2 + " " + d.target.x + "," + (d.source.y + d.target.y) / 2 + " " + d.target.x + "," + d.target.y;
       }
 
       // Toggle children on click.
@@ -198,12 +195,12 @@ angular.module('dragonfly.treecontroller', [])
             d._children = null;
           }
         update(d);
-        dataService.select(d.data.name)
+        dataService.select(d.data.name);
         $scope.$apply();
       }
     }
   }
-  dataService.select('waterTemp')
+  dataService.select('waterTemp');
 }]);
 
 
