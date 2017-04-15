@@ -50,7 +50,10 @@ angular.module('dragonfly.graphcontroller', [])
         data.readings[i].created = new Date(data.readings[i].created*1000).getTime();
         data.readings[i].value = data.readings[i].value*coef.x + coef.y;
     }
-    
+    if(data.readings.length === 0){
+        $('#graph-container')[0].innerHTML = "There arn't enough readings for this sensor to display anything.";
+        return;
+    }
     var start = data.readings[0].created;
     var end = data.readings[0].created;
     var min = data.readings[0].value;
@@ -63,7 +66,6 @@ angular.module('dragonfly.graphcontroller', [])
         if(start > data.readings[i].created) start = data.readings[i].created;
         if(end < data.readings[i].created) end = data.readings[i].created;
     }
-    console.log(start, end);
     if($location.search().start_date !== undefined) start = $location.search().start_date*1000;
     if($location.search().end_date !== undefined) end = $location.search().end_date*1000;
     console.log(start, end);
