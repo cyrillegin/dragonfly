@@ -368,6 +368,7 @@ $scope.SubmitDate = function(){
 };
 
 function UpdateModal(data){
+    return
     $('#modal_description').val(data.description);
     $('#modal_coefficients').val(data.coefficients);
     $('#modal_sensorType')[0].value = data.self_type;
@@ -376,8 +377,20 @@ function UpdateModal(data){
     $('#modal_maxValue').val(data.max_value);
 }
 
-$scope.OpenModal = function(){
+$scope.modalAttributes = [{
+    'name': "description",
+    'type': 'text',
+    'value': 'this is a description'
+}, {
+    'name': "sensortype",
+    "type": "multiple",
+    'value': [{'name': 'one'},{'name': 'two'},{'name': 'three'}]
+}]
+
+
+$scope.OpenModal = function(type){
     $("#sensorEditModal").modal('toggle');
+
 };
 
 $scope.SaveSensor = function(){ 

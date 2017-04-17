@@ -12,7 +12,9 @@
             <button class="button" ng-click="SubmitDate()">Submit</button>
         </div>
         <div class="col-md-5">
-            <button class="button" ng-click="OpenModal()" style="float: right">Edit Sensor</button>
+            <button class="button" ng-click="OpenModal('log')" style="float: right">Add Log</button>
+            <button class="button" ng-click="OpenModal('reading')" style="float: right">Add Reading</button>
+            <button class="button" ng-click="OpenModal('sensor')" style="float: right">Edit Sensor</button>
         </div>
     </div>
 
@@ -29,67 +31,19 @@
 
           <!-- Description -->
           <div class="modal-body">
-            <div class="row">
-                <div class="col-md-6">
-                    Description:
-                </div>
-                <div class="col-md-6">
-                    <textarea type="text" rows="3" id="modal_description" value="Sample Description"/>
-                </div>
-            </div>
-
-            <!-- Coefficients -->
-            <div class="row">
-                <div class="col-md-6">
-                    Coefficients:
-                </div>
-                <div class="col-md-6">
-                    <input type="text" id="modal_coefficients" value="1,0">
-                </div>
-            </div>
-
-            <!-- Sensor Type -->
-            <div class="row">
-                <div class="col-md-6">
-                    Sensor Type:
-                </div>
-                <div class="col-md-6">
-                    <select class="form-control" id="modal_sensorType">
-                        <option value="temperature">Temperature</option>
-                        <option value="cleanliness">Cleanliness</option>
-                        <option value="lightsensor">Light Sensor</option>
-                        <option value="lightswitch">Light Switch</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Units -->
-            <div class="row">
-                <div class="col-md-6">
-                    Units:
-                </div>
-                <div class="col-md-6">
-                    <input type="text" id="modal_units" value="F">
-                </div>
-            </div>
-
-            <!-- Min Value -->
-            <div class="row">
-                <div class="col-md-6">
-                    Min Value:
-                </div>
-                <div class="col-md-6">
-                    <input type="number" id="modal_minValue" value="0">
-                </div>
-            </div>
-
-            <!-- Max Value -->
-            <div class="row">
-                <div class="col-md-6">
-                    Max Value:
-                </div>
-                <div class="col-md-6">
-                    <input type="number" id="modal_maxValue" value="1024">
+            <div ng-repeat="input in modalAttributes">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{input.name}}
+                    </div>
+                    <div class="col-md-6">
+                        <div ng-if=input.type=='text'>
+                            <input type="text" rows="3" value="{{input.value}}"/>
+                        </div>
+                        <div ng-if=input.type=='multiple'>
+                            <select class="form-control" ng-model="myVal" ng-options="val.name for val in input.value"></select>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -3,13 +3,13 @@
 var angular, $;
 angular.module('dragonfly.maincontroller', [])
 
-.controller("mainController",['$scope', '$timeout', 'apiService', 'dataService', function ($scope, $timeout, apiService, dataService) {
+.controller("mainController",['$scope', '$timeout', 'apiService', 'dataService', '$window', function ($scope, $timeout, apiService, dataService, $window) {
 
   var switchids = [];
   $scope.graphIndex = 0;
 
   function GetData(){
-    apiService.get('sensor').then(function successCallback(response){
+    apiService.get('sensor').then(function successCallback(response){ 
       $scope.lightSwitchCharts = [];
       dataService.set(response.data.sensor_list);
       for(var i in response.data.sensor_list){
@@ -23,6 +23,7 @@ angular.module('dragonfly.maincontroller', [])
       //initialize bootstrap switches
       $timeout(function(){
         for(var i in switchids){
+          if($scope.lightSwitchCharts[i] === undefined) continue;
           $('#'+switchids[i]).bootstrapSwitch();
           $('#'+switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
           $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
@@ -52,7 +53,7 @@ angular.module('dragonfly.maincontroller', [])
     }
     apiService.post('sensor', params)
       .then(function(){
-        GetData();
+        $window.location.reload();
       })
   };
 
@@ -60,7 +61,7 @@ angular.module('dragonfly.maincontroller', [])
     var params = {
       "value": $scope.newReadingValue,
       "date": $scope.newReadingDate,
-      "sensor": dataService.change().selection
+      "sensor": dataService.selection()
     };
     if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
       console.log("warning");
@@ -68,7 +69,7 @@ angular.module('dragonfly.maincontroller', [])
     }
     apiService.post('reading', params)
       .then(function(){
-        GetData()
+        $window.location.reload();
       });
   };
 
@@ -83,18 +84,19 @@ angular.module('dragonfly.maincontroller', [])
     }
     apiService.post('log', params)
       .then(function(){
-        GetData();
+        $window.location.reload();
       }) 
-  };
+  };  
   
   function DrawLightSwitch(data){
+    console.log(data)
     var switchObj = {
       "title": data.name,
-      "id": "switch-"+data.id,
+      "id": "switch-"+data.name,
       'val': data.lastReading
     };
     $scope.lightSwitchCharts.push(switchObj);
-    switchids.push("switch-"+data.id);
+    switchids.push(switchObj.id);
   }
   GetData();
 }]);
