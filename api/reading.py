@@ -57,18 +57,19 @@ class Readings:
         except ValueError:
             data = {}
 
-        if "sensor_name" not in data:
+        if "sensor" not in data:
             return json.dumps({"Error": "Must provide a sesnor name."})
-        if "value" not in data:
-            return json.dumps({"Error": "Must provide a value to add."})
+        if "readings" not in data:
+            return json.dumps({"Error": "Must provide (a) value(s) to add."})
         with sessionScope() as session:
             try:
-                cursensor = session.query(Sensor).filter_by(name=data['sensor_name']).one()
+                cursensor = session.query(Sensor).filter_by(name=data['sensor']['name']).one()
             except Exception, e:
                 print e
                 print "Sensor not found. Sending to sensor api"
-                cursensor = sensor.CreateSensor({"name": data['sensor_name']}, session)
-            AddReading(data, cursensor, session)
+                cursensor = sensor.CreateSensor(data['sensor'], session)
+            for i in data['values']:
+                AddReading(i, cursensor, session)
 
 
 def AddReading(data, cursensor, session):
@@ -76,7 +77,7 @@ def AddReading(data, cursensor, session):
         curtime = data['timestamp']
     else:
         curtime = time.time()
-    newReading = Reading(created=curtime, sensor=data['sensor_name'], value=data['value'])
+    newReading = Reading(created=curtime, sensor=cursensor.toDict()['name'], value=data['value'])
     setattr(cursensor, 'last_reading', data['value'])
     session.add(cursensor)
     session.add(newReading)
