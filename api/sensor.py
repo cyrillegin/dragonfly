@@ -34,7 +34,9 @@ class Sensors:
         cherrypy.response.headers['Content-Type'] = 'application/json'
         with sessionScope() as session:
             if sensor_name is None:
-                data = {"sensor_list": []}
+                data = {
+                    "sensor_list": []
+                }
                 objs = session.query(Sensor)
                 for i in objs:
                     data['sensor_list'].append(i.toDict())
@@ -47,7 +49,7 @@ class Sensors:
                         "error": e,
                         "note": "No sensors currently exist in data base."
                     }
-                return json.dumps(data)
+            return json.dumps(data)
 
     def POST(self):
         print "POST request to sensor."
