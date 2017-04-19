@@ -377,33 +377,124 @@ function UpdateModal(data){
     $('#modal_maxValue').val(data.max_value);
 }
 
-$scope.modalAttributes = [{
-    'name': "description",
+var sensorAttrs = [{
+    'name': "name",
     'type': 'text',
-    'value': 'this is a description'
+    'value': 'default name',
+    'id': 'modal_name'
 }, {
-    'name': "sensortype",
-    "type": "multiple",
-    'value': [{'name': 'one'},{'name': 'two'},{'name': 'three'}]
+    'name': "description",
+    "type": "text",
+    'value': "default description",
+    'id': 'modal_description'
+}, {
+    'name': "coefficients",
+    "type": "text",
+    'value': "1,0",
+    'id': 'modal_coefficients'
+}, {
+    'name': "self_type",
+    'type': 'multiple',
+    'value': [{
+        'name': 'temperature'
+    }, {
+        'name': 'cleanliness'
+    }, {
+        'name': 'lightsensor'
+    }, {
+        'name': 'lightswitch'
+    }],
+    'id': 'modal_type'
+}, {
+    'name': "units",
+    "type": "text",
+    'value': "default unit",
+    'id': 'modal_unit'
+}, {
+    'name': "Min Value",
+    "type": "text",
+    'value': 0,
+    'id': 'modal_min'
+}, {
+    'name': 'Max Value',
+    'type': 'text',
+    'value': 1024,
+    'id': 'modal_max'
+}]
+
+var readingAttrs = [{
+    'name': "value",
+    "type": "text",
+    'value': "default value",
+    'id': 'modal_value'
+}, {
+    'name': "date",
+    "type": "date",
+    'value': 1000000,
+    'id': 'modal_date'
+}]
+
+var logAttrs = [{
+    'name': "title",
+    'type': 'text',
+    'value': 'default log title',
+    'id': 'modal_title'
+}, {
+    'name': "description",
+    "type": "text",
+    'value': "default description",
+    'id': 'modal_description'
+}, {
+    'name': "date",
+    "type": "date",
+    'value': 1000000,
+    'id': 'modal_date'
 }]
 
 
 $scope.OpenModal = function(type){
+    var attrs;
+    $scope.isSensorModal = false;
+    $scope.saveText = "Save " + type;
+    $scope.modalTitle = type
+    switch(type){
+        case "sensor":
+            attrs = sensorAttrs;
+            $scope.isSensorModal = true;
+            break;
+        case "reading":
+            attrs = readingAttrs;
+            break;
+        case "log":
+            attrs = logAttrs;
+            break;
+    }
+    $scope.modalAttributes = attrs;
     $("#sensorEditModal").modal('toggle');
-
+    $timeout(function(){
+        $('#modal_date').datetimepicker();    
+    });
 };
 
 $scope.SaveSensor = function(){ 
-    var newSensor = {
+    var newData = {
         "name": dataService.selection(),
         "description": $('#modal_description').val(),
         "coefficients": $('#modal_coefficients').val(),
-        "sensor_type": $('#modal_sensorType')[0].value,
-        "units": $('#modal_units').val(),
-        "min_value": $('#modal_minValue').val(),
-        "max_value": $('#modal_maxValue').val()
+        "units": $('#modal_unit').val(),
+        "min_value": $('#modal_min').val(),
+        "max_value": $('#modal_max').val()
     };
-
+    if($scope.isSensorModal){
+        console.log($('#modal_type'))
+        var sel = $('#modal_type');
+        for(var i in sel)
+        newData.sensor_type = $('#modal_type')[0].value
+    } else {
+        newData.date = $('#modal_date').data("DateTimePicker").date()
+    }
+    console.log(newData)
+    return;
     apiService.post('/sensor', newSensor).then(function successCallback(response){
         $scope.$apply();
     }, function errorCallback(response){

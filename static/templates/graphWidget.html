@@ -23,7 +23,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modal-title">Modal title</h5>
+            <h5 class="modal-title" id="modal-title">{{modalTitle}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -38,10 +38,13 @@
                     </div>
                     <div class="col-md-6">
                         <div ng-if=input.type=='text'>
-                            <input type="text" rows="3" value="{{input.value}}"/>
+                            <input type="text" id={{input.id}} rows="3" value="{{input.value}}"/>
                         </div>
                         <div ng-if=input.type=='multiple'>
-                            <select class="form-control" ng-model="myVal" ng-options="val.name for val in input.value"></select>
+                            <select class="form-control" id={{input.id}}  ng-model="myVal" ng-options="val.name for val in input.value"></select>
+                        </div>
+                        <div ng-if=input.type=='date'>
+                            <input type="text" id={{input.id}} />
                         </div>
                     </div>
                 </div>
@@ -50,8 +53,14 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" ng-click="SaveSensor()">Save changes</button>
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                <div ng-if=isSensorModal>
+                        <button type="button" class="btn btn-primary" ng-click="SaveNewSensor()">Save new sensor</button>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="SaveSensor()">{{saveText}}</button>
+
           </div>
         </div>
       </div>
