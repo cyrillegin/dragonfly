@@ -68,7 +68,7 @@ class Readings:
                 print e
                 print "Sensor not found. Sending to sensor api"
                 cursensor = sensor.CreateSensor(data['sensor'], session)
-            for i in data['values']:
+            for i in data['readings']:
                 AddReading(i, cursensor, session)
 
 
