@@ -11,6 +11,7 @@ Sends test data to api.
 import math
 import requests
 import json
+import time
 
 
 def loadfixtures():
@@ -31,7 +32,8 @@ def loadfixtures():
     for i in range(0, 24 * 60):
         newReading = {
             "sensor_name": "waterTemp",
-            "value": 60 + 7 * math.sin(0.1 * i)
+            "value": 60 + 7 * math.sin(0.1 * i),
+            "timestamp": time.time() - i * 1000
         }
         requests.post(readingUrl, json.dumps(newReading))
 
@@ -49,7 +51,8 @@ def loadfixtures():
     for i in range(0, 24 * 60):
         newReading = {
             "sensor_name": "waterTurb",
-            "value": 600 + 200 * math.sin(0.1 * i)
+            "value": 600 + 200 * math.sin(0.1 * i),
+            "timestamp": time.time() - i * 1000
         }
         requests.post(readingUrl, json.dumps(newReading))
 
@@ -63,6 +66,7 @@ def loadfixtures():
     for i in range(0, 24 * 60):
         newReading = {
             "sensor_name": "lightSwitch",
-            "value": int(0.5 + math.sin(0.1 * i))
+            "value": int(0.5 + math.sin(0.1 * i)),
+            "timestamp": time.time() - i * 1000
         }
         requests.post(readingUrl, json.dumps(newReading))

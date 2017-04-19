@@ -1,0 +1,4 @@
+cherrypy==7.1.0
+pyserial==2.7.0
+sqlalchemy=1.0.13
+jinja2=2.8

@@ -68,7 +68,11 @@ class Readings:
 
 
 def AddReading(data, cursensor, session):
-    newReading = Reading(created=time.time(), sensor=data['sensor_name'], value=data['value'])
+    if "timestamp" in data:
+        curtime = data['timestamp']
+    else:
+        curtime = time.time()
+    newReading = Reading(created=curtime, sensor=data['sensor_name'], value=data['value'])
     setattr(cursensor, 'last_reading', data['value'])
     session.add(cursensor)
     session.add(newReading)
