@@ -52,7 +52,7 @@ def RunServer():
 
     cherrypy.tree.mount(Root(), '/', config=get_cp_config())
     cherrypy.server.socket_host = "0.0.0.0"
-    cherrypy.server.socket_port = 8000
+    cherrypy.server.socket_port = int(os.environ.get('PORT', 5000))
     cherrypy.engine.start()
     cherrypy.engine.block()
 
