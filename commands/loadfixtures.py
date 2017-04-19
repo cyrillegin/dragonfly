@@ -15,9 +15,9 @@ import time
 
 
 def loadfixtures():
-    sensorUrl = "https://dragonf1y.herokuapp.com/api/sensor"
     readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
 
+    # Create test sensor
     testTemp = {
         'name': "waterTemp",
         'description': "A test sensor",
@@ -27,16 +27,22 @@ def loadfixtures():
         'min_value': 65,
         'max_value': 85
     }
-    print "saving waterTemp"
-    requests.post(sensorUrl, json.dumps(testTemp))
+    # Create data structure to send to api
+    newReadings = {
+        "sensor": testTemp,
+        'readings': []
+    }
+    # Populate readings
     for i in range(0, 24 * 60):
         newReading = {
-            "sensor_name": "waterTemp",
             "value": 60 + 7 * math.sin(0.1 * i),
             "timestamp": time.time() - i * 1000
         }
-        requests.post(readingUrl, json.dumps(newReading))
+        newReadings['readings'].append(newReading)
+    # Make post
+    requests.post(readingUrl, json.dumps(newReadings))
 
+    # Create test sensor
     testTurb = {
         'name': "waterTurb",
         'description': "A test sensor",
@@ -46,27 +52,41 @@ def loadfixtures():
         'min_value': 300,
         'max_value': 900
     }
-    print "saving waterTurb"
-    requests.post(sensorUrl, json.dumps(testTurb))
+
+    # Create data structure to send to api
+    newReadings = {
+        "sensor": testTurb,
+        'readings': []
+    }
+
+    # Populate readings
     for i in range(0, 24 * 60):
         newReading = {
-            "sensor_name": "waterTurb",
             "value": 600 + 200 * math.sin(0.1 * i),
             "timestamp": time.time() - i * 1000
         }
-        requests.post(readingUrl, json.dumps(newReading))
+        newReadings['readings'].append(newReading)
+    # Make post
+    requests.post(readingUrl, json.dumps(newReadings))
 
+    # Create test sensor
     testSwitch = {
         'name': "lightSwitch",
         'description': "A test switch",
         'sensor_type': "lightswitch",
     }
-    print "saving lightSwitch"
-    requests.post(sensorUrl, json.dumps(testSwitch))
+
+    # Create data structure to send to api
+    newReadings = {
+        "sensor": testSwitch,
+        'readings': []
+    }
+
+    # Populate readings
     for i in range(0, 24 * 60):
         newReading = {
-            "sensor_name": "lightSwitch",
             "value": int(0.5 + math.sin(0.1 * i)),
             "timestamp": time.time() - i * 1000
         }
-        requests.post(readingUrl, json.dumps(newReading))
+        newReadings['readings'].append(newReading)
+    requests.post(readingUrl, json.dumps(newReadings))
