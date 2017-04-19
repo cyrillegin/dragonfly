@@ -1,8 +1,13 @@
 {
   "name": "dragonfly",
-  "version": "1.3.15",
-  "main": "./app.js",
-  "ignore": [],
+  "private": true,
+  "version": "0.0.0",
+  "description": "Arduino poller",
+  "repository": "https://github.com/cyrillegin/Aquaponics.git",
+  "license": "MIT",
+  "scripts": {
+    
+  },
   "dependencies": {
     "jquery": "~2.1.4",
     "angular": "^1.5.1",
@@ -12,13 +17,16 @@
     "angular-mocks": "~1.4.0",
     "bootstrap": "^3.3.6",
     "bootstrap-treeview": "^1.2.0",
-    "angular-google-charts": "^0.1.0",
-    "bootstrap-switch": "^4.0.0",
+    "bootstrap-switch": "^3.3.4",
     "d3": "^4.0.0",
     "moment": "^2.18.1",
     "eonasdan-bootstrap-datetimepicker": "^4.17.47"
   },
-  "resolutions": {
-    "angular": ">=1.3.0"
+  "devDependencies": {
+    "angular-mocks": "^1.4.8",
+    "requirejs": "^2.1.22",
+    "csslint": "^1.0.1",
+    "htmlhint": "^0.9.13",
+    "jshint": "^2.9.4"
   }
 }

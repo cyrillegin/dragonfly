@@ -11,6 +11,7 @@ from commands import Command
 
 PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 STATIC = os.path.join(PATH, 'static')
+NODE = os.path.join(PATH, 'node_modules')
 sys.path.append(PATH)
 
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=STATIC))
@@ -25,6 +26,10 @@ def get_cp_config():
         },
         '/api': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher()
+        },
+        '/vendor': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': NODE
         }
     }
     return config
