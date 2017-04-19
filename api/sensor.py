@@ -34,15 +34,19 @@ class Sensors:
         cherrypy.response.headers['Content-Type'] = 'application/json'
         with sessionScope() as session:
             if sensor_name is None:
-                print 'returning everything'
                 data = {"sensor_list": []}
                 objs = session.query(Sensor)
                 for i in objs:
                     data['sensor_list'].append(i.toDict())
-                return json.dumps(data)
             else:
-                sensor = session.query(Sensor).filter_by(name=sensor_name).one()
-                data = sensor.toDict()
+                try:
+                    sensor = session.query(Sensor).filter_by(name=sensor_name).one()
+                    data = sensor.toDict()
+                except Exception, e:
+                    data = {
+                        "error": e,
+                        "note": "No sensors currently exist in data base."
+                    }
                 return json.dumps(data)
 
     def POST(self):
@@ -51,18 +55,24 @@ class Sensors:
         try:
             data = json.loads(cherrypy.request.body.read())
         except ValueError:
-            data = {}
+            data = {
+                "error": "Data could not be read."
+            }
 
         if "name" not in data:
-            return json.dumps({"Error": "You must provide a sensor name."})
-        with sessionScope() as session:
-            try:
-                sensor = session.query(Sensor).filter_by(name=data['name']).one()
-                print "Sensor found. Checking for updates."
-                UpdateSensor(sensor, data, session)
-            except Exception:
-                print "Sensor not found. Creating new one."
-                CreateSensor(data, session)
+            data = {
+                "error": "You must provide a sensor name."
+            }
+        else:
+            with sessionScope() as session:
+                try:
+                    sensor = session.query(Sensor).filter_by(name=data['name']).one()
+                    print "Sensor found. Checking for updates."
+                    data = UpdateSensor(sensor, data, session).toDict()
+                except Exception:
+                    print "Sensor not found. Creating new one."
+                    data = CreateSensor(data, session).toDict()
+        return data
 
 
 ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'sensor_type', 'units', 'lastReading', 'min_value', 'max_value']
@@ -79,6 +89,7 @@ def CreateSensor(data, session):
     session.add(sensor)
     session.commit()
     print "Sensor created."
+    return sensor
 
 
 def UpdateSensor(sensor, data, session):
@@ -90,3 +101,4 @@ def UpdateSensor(sensor, data, session):
         session.add(sensor)
         session.commit()
     print "Sensor updated"
+    return sensor
