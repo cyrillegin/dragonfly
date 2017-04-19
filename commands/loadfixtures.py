@@ -15,8 +15,8 @@ import time
 
 
 def loadfixtures():
-    sensorUrl = "http://localhost:8000/api/sensor"
-    readingUrl = "http://localhost:8000/api/reading"
+    sensorUrl = "https://dragonf1y.herokuapp.com/api/sensor"
+    readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
 
     testTemp = {
         'name': "waterTemp",
