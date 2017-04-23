@@ -17,14 +17,14 @@ import serial
 import json
 import requests
 
-SENSORURL = "http://localhost:8000/api/sensor"
-READINGURL = "http://localhost:8000/api/reading"
+SENSORURL = "https://dragonf1y.herokuapp.com/api/sensor"
+READINGURL = "https://dragonf1y.herokuapp.com/api/reading"
 
 # For use on rasberry pi
-# USBPREFIX = 'ttyUSB'
+USBPREFIX = 'ttyUSB'
 
 # Foruse on OSX
-USBPREFIX = 'tty.usb'
+# USBPREFIX = 'tty.usb'
 
 
 def MCP(device):
@@ -40,7 +40,7 @@ def MCP(device):
 def CollectData(ser):
     print "collect process starting"
     Alive = True
-    pollRate = 60 * 5
+    pollRate = 60*5
     while(Alive):
         try:
             data = ser.readline()
@@ -63,8 +63,13 @@ def CollectData(ser):
                     continue
                 for j in i['sensors']:
                     newReading = {
-                        'sensor_name': j['sensor'],
-                        'value': j['value']
+                        'sensor': {
+                            'name': j['sensor']
+                        },
+                        'readings': [{
+                            'timestamp': time.time(),
+                            'value': j['value']
+                        }]
                     }
                     print "saving:"
                     print newReading

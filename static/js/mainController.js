@@ -3,18 +3,13 @@
 var angular, $;
 angular.module('dragonfly.maincontroller', [])
 
-.controller("mainController",['$scope', '$timeout', '$http', 'apiService', 'dataService', function ($scope, $timeout, $http, apiService, dataService) {
+.controller("mainController",['$scope', '$timeout', 'apiService', 'dataService', '$window', function ($scope, $timeout, apiService, dataService, $window) {
 
   var switchids = [];
   $scope.graphIndex = 0;
 
   function GetData(){
-    var req = {
-      method: 'GET',
-      url: '/api/sensor',
-      data: {}
-    };
-    $http(req).then(function successCallback(response){
+    apiService.get('sensor').then(function successCallback(response){ 
       $scope.lightSwitchCharts = [];
       dataService.set(response.data.sensor_list);
       for(var i in response.data.sensor_list){
@@ -28,6 +23,7 @@ angular.module('dragonfly.maincontroller', [])
       //initialize bootstrap switches
       $timeout(function(){
         for(var i in switchids){
+          if($scope.lightSwitchCharts[i] === undefined) continue;
           $('#'+switchids[i]).bootstrapSwitch();
           $('#'+switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
           $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
@@ -55,20 +51,26 @@ angular.module('dragonfly.maincontroller', [])
       console.log("warning");
       return;
     }
-    SendData('api/sensor', params, GetData);
+    apiService.post('sensor', params)
+      .then(function(){
+        $window.location.reload();
+      })
   };
 
   $scope.SubmitReading = function(){
     var params = {
       "value": $scope.newReadingValue,
       "date": $scope.newReadingDate,
-      "sensor": dataService.change().selection
+      "sensor": dataService.selection()
     };
     if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
       console.log("warning");
       return;
     }
-    SendData('api/reading', params, GetData);
+    apiService.post('reading', params)
+      .then(function(){
+        $window.location.reload();
+      });
   };
 
   $scope.SubmitLog = function(){
@@ -80,33 +82,21 @@ angular.module('dragonfly.maincontroller', [])
       console.log("warning");
       return;
     }
-    SendData('api/log', params, GetData);
-  };
-
-  function SendData(newurl, params, callback){
-    var req = {
-      method: 'POST',
-      url: newurl,
-      data: params
-    };
-
-    $http(req).then(function successCallback(response){
-      if(callback){
-        callback();
-      }
-    }, function errorCallback(response){
-       console.log("An error has occured.", response.data);
-    });
-  }
+    apiService.post('log', params)
+      .then(function(){
+        $window.location.reload();
+      }) 
+  };  
   
   function DrawLightSwitch(data){
+    console.log(data)
     var switchObj = {
       "title": data.name,
-      "id": "switch-"+data.id,
+      "id": "switch-"+data.name,
       'val': data.lastReading
     };
     $scope.lightSwitchCharts.push(switchObj);
-    switchids.push("switch-"+data.id);
+    switchids.push(switchObj.id);
   }
   GetData();
 }]);

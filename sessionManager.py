@@ -9,8 +9,10 @@ engine = "sqlite:///dragonDB.db"
 
 
 @contextmanager
-def sessionScope():
-    db = create_engine(engine)
+def sessionScope(file=None):
+    if file is None:
+        file = engine
+    db = create_engine(file)
     Session = sessionmaker(bind=db)
     session = Session()
 
@@ -24,8 +26,10 @@ def sessionScope():
         session.close()
 
 
-def createSession():
-    db = create_engine(engine)
+def createSession(file=None):
+    if file is None:
+        file = engine
+    db = create_engine(file)
     Session = sessionmaker(bind=db)
     session = Session()
     return session

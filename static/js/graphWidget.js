@@ -3,7 +3,7 @@
 var angular, $;
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope', 'dataService', '$window', '$http', '$timeout', '$location', function ($scope, dataService, $window, $http, $timeout, $location) {
+.controller("graphController",['$scope', 'dataService', '$window', 'apiService', '$timeout', '$location', function ($scope, dataService, $window, apiService, $timeout, $location) {
   $scope.$watch(function(){
     return dataService.selection();
   }, function(v){
@@ -19,18 +19,15 @@ angular.module('dragonfly.graphcontroller', [])
     var end = Math.round(d.getTime() / 1000);
     if(args.start_date !== undefined) start = args.start_date;
     if(args.end_date !== undefined) end = args.end_date;
-    var req = {
-      method: 'GET',
-      url: '/api/reading/?sensor=' + dataService.selection() + '&start=' + start + '&end=' + end
-    };
-    $http(req).then(function successCallback(response){
-        DrawGraph(response.data);
-        UpdateModal(response.data.sensor);
-    }, function errorCallback(response){
-      console.log("An error has occured.", response.data);
-    });
+
+    apiService.get('reading/?sensor=' + dataService.selection() + "&start="+start+"&end="+end)
+        .then(function successCallback(response){
+            DrawGraph(response.data);
+            UpdateModal(response.data.sensor);
+        }, function errorCallback(response){
+          console.log("An error has occured.", response.data);
+        });
   }
-  
 
   function DrawGraph(data){
 // Initialization.
@@ -50,7 +47,10 @@ angular.module('dragonfly.graphcontroller', [])
         data.readings[i].created = new Date(data.readings[i].created*1000).getTime();
         data.readings[i].value = data.readings[i].value*coef.x + coef.y;
     }
-    
+    if(data.readings.length === 0){
+        $('#graph-container')[0].innerHTML = "There arn't enough readings for this sensor to display anything.";
+        return;
+    }
     var start = data.readings[0].created;
     var end = data.readings[0].created;
     var min = data.readings[0].value;
@@ -63,10 +63,8 @@ angular.module('dragonfly.graphcontroller', [])
         if(start > data.readings[i].created) start = data.readings[i].created;
         if(end < data.readings[i].created) end = data.readings[i].created;
     }
-    console.log(start, end);
     if($location.search().start_date !== undefined) start = $location.search().start_date*1000;
     if($location.search().end_date !== undefined) end = $location.search().end_date*1000;
-    console.log(start, end);
 // Create the svg.
     var newChart = d3.select('#graph-container')
         .append("svg")
@@ -370,6 +368,7 @@ $scope.SubmitDate = function(){
 };
 
 function UpdateModal(data){
+    return
     $('#modal_description').val(data.description);
     $('#modal_coefficients').val(data.coefficients);
     $('#modal_sensorType')[0].value = data.self_type;
@@ -378,28 +377,125 @@ function UpdateModal(data){
     $('#modal_maxValue').val(data.max_value);
 }
 
-$scope.OpenModal = function(){
+var sensorAttrs = [{
+    'name': "name",
+    'type': 'text',
+    'value': 'default name',
+    'id': 'modal_name'
+}, {
+    'name': "description",
+    "type": "text",
+    'value': "default description",
+    'id': 'modal_description'
+}, {
+    'name': "coefficients",
+    "type": "text",
+    'value': "1,0",
+    'id': 'modal_coefficients'
+}, {
+    'name': "self_type",
+    'type': 'multiple',
+    'value': [{
+        'name': 'temperature'
+    }, {
+        'name': 'cleanliness'
+    }, {
+        'name': 'lightsensor'
+    }, {
+        'name': 'lightswitch'
+    }],
+    'id': 'modal_type'
+}, {
+    'name': "units",
+    "type": "text",
+    'value': "default unit",
+    'id': 'modal_unit'
+}, {
+    'name': "Min Value",
+    "type": "text",
+    'value': 0,
+    'id': 'modal_min'
+}, {
+    'name': 'Max Value',
+    'type': 'text',
+    'value': 1024,
+    'id': 'modal_max'
+}]
+
+var readingAttrs = [{
+    'name': "value",
+    "type": "text",
+    'value': "default value",
+    'id': 'modal_value'
+}, {
+    'name': "date",
+    "type": "date",
+    'value': 1000000,
+    'id': 'modal_date'
+}]
+
+var logAttrs = [{
+    'name': "title",
+    'type': 'text',
+    'value': 'default log title',
+    'id': 'modal_title'
+}, {
+    'name': "description",
+    "type": "text",
+    'value': "default description",
+    'id': 'modal_description'
+}, {
+    'name': "date",
+    "type": "date",
+    'value': 1000000,
+    'id': 'modal_date'
+}]
+
+
+$scope.OpenModal = function(type){
+    var attrs;
+    $scope.isSensorModal = false;
+    $scope.saveText = "Save " + type;
+    $scope.modalTitle = type
+    switch(type){
+        case "sensor":
+            attrs = sensorAttrs;
+            $scope.isSensorModal = true;
+            break;
+        case "reading":
+            attrs = readingAttrs;
+            break;
+        case "log":
+            attrs = logAttrs;
+            break;
+    }
+    $scope.modalAttributes = attrs;
     $("#sensorEditModal").modal('toggle');
+    $timeout(function(){
+        $('#modal_date').datetimepicker();    
+    });
 };
 
 $scope.SaveSensor = function(){ 
-    var newSensor = {
+    var newData = {
         "name": dataService.selection(),
         "description": $('#modal_description').val(),
         "coefficients": $('#modal_coefficients').val(),
-        "sensor_type": $('#modal_sensorType')[0].value,
-        "units": $('#modal_units').val(),
-        "min_value": $('#modal_minValue').val(),
-        "max_value": $('#modal_maxValue').val()
+        "units": $('#modal_unit').val(),
+        "min_value": $('#modal_min').val(),
+        "max_value": $('#modal_max').val()
     };
-
-    var req = {
-      method: 'POST',
-      url: '/api/sensor',
-      data: newSensor
-    };
-
-    $http(req).then(function successCallback(response){
+    if($scope.isSensorModal){
+        console.log($('#modal_type'))
+        var sel = $('#modal_type');
+        for(var i in sel)
+        newData.sensor_type = $('#modal_type')[0].value
+    } else {
+        newData.date = $('#modal_date').data("DateTimePicker").date()
+    }
+    console.log(newData)
+    return;
+    apiService.post('/sensor', newSensor).then(function successCallback(response){
         $scope.$apply();
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);

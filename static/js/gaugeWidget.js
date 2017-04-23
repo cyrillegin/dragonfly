@@ -3,7 +3,7 @@
 var angular, $, d3;
 angular.module('dragonfly.gaugecontroller', [])
 
-.controller("gaugeController",['$scope', 'dataService', '$timeout', '$interval', '$http', function ($scope, dataService, $timeout, $interval, $http) {
+.controller("gaugeController",['$scope', 'dataService', '$timeout', '$interval', 'apiService', function ($scope, dataService, $timeout, $interval, apiService) {
 
   $scope.gauges = [];
 
@@ -22,12 +22,8 @@ angular.module('dragonfly.gaugecontroller', [])
     }, 500);
   });
 
-  var req = {
-      method: 'GET',
-      url: '/api/sensor'
-    };
   var myInter = $interval(function(){
-    $http(req).then(function successCallback(response){
+    apiService.get('sensor').then(function successCallback(response){
         for(var i in $scope.gauges){
           redraw(i, response.data.sensor_list[i].lastReading, 100, $scope.gauges[i].config);
            

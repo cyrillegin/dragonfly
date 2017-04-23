@@ -11,6 +11,7 @@ from commands import Command
 
 PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 STATIC = os.path.join(PATH, 'static')
+NODE = os.path.join(PATH, 'node_modules')
 sys.path.append(PATH)
 
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=STATIC))
@@ -25,6 +26,10 @@ def get_cp_config():
         },
         '/api': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher()
+        },
+        '/vendor': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': NODE
         }
     }
     return config
@@ -52,7 +57,7 @@ def RunServer():
 
     cherrypy.tree.mount(Root(), '/', config=get_cp_config())
     cherrypy.server.socket_host = "0.0.0.0"
-    cherrypy.server.socket_port = 8000
+    cherrypy.server.socket_port = int(os.environ.get('PORT', 5000))
     cherrypy.engine.start()
     cherrypy.engine.block()
 
@@ -78,5 +83,11 @@ if __name__ == "__main__":
         elif args[1] == "automate":
             print "automating"
             Command.Automate()
+        elif args[1] == "backupDatabase":
+            print "backing up database"
+            Command.Backup()
+        elif args[1] == "refreshDatabase":
+            print "Refreshing database"
+            Command.Refresh()
         else:
             print "Could not understand arguements, please try again."

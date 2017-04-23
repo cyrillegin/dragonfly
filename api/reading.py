@@ -33,17 +33,21 @@ class Readings:
         if kwargs['sensor'] is None:
             data = {"error": "Must provide a sensor name."}
             return json.dumps(data)
-        print int(kwargs['start'])
-        print int(kwargs['end'])
         with sessionScope() as session:
-            sensor = session.query(Sensor).filter_by(name=kwargs['sensor']).one()
-            readings = session.query(Reading).filter_by(sensor=kwargs['sensor']).filter(Reading.created >= int(kwargs['start']), Reading.created <= int(kwargs['end']))
-            data = {
-                "readings": [],
-                "sensor": sensor.toDict()
-            }
-            for i in readings:
-                data['readings'].append(i.toDict())
+            try:
+                sensor = session.query(Sensor).filter_by(name=kwargs['sensor']).one()
+                readings = session.query(Reading).filter_by(sensor=kwargs['sensor']).filter(Reading.created >= int(kwargs['start']), Reading.created <= int(kwargs['end']))
+                data = {
+                    "readings": [],
+                    "sensor": sensor.toDict()
+                }
+                for i in readings:
+                    data['readings'].append(i.toDict())
+            except Exception, e:
+                data = {
+                    "error": e
+                }
+
             return json.dumps(data)
 
     def POST(self):
@@ -53,22 +57,27 @@ class Readings:
         except ValueError:
             data = {}
 
-        if "sensor_name" not in data:
+        if "sensor" not in data:
             return json.dumps({"Error": "Must provide a sesnor name."})
-        if "value" not in data:
-            return json.dumps({"Error": "Must provide a value to add."})
+        if "readings" not in data:
+            return json.dumps({"Error": "Must provide (a) value(s) to add."})
         with sessionScope() as session:
             try:
-                cursensor = session.query(Sensor).filter_by(name=data['sensor_name']).one()
+                cursensor = session.query(Sensor).filter_by(name=data['sensor']['name']).one()
             except Exception, e:
                 print e
                 print "Sensor not found. Sending to sensor api"
-                cursensor = sensor.CreateSensor({"name": data['sensor_name']}, session)
-            AddReading(data, cursensor, session)
+                cursensor = sensor.CreateSensor(data['sensor'], session)
+            for i in data['readings']:
+                AddReading(i, cursensor, session)
 
 
 def AddReading(data, cursensor, session):
-    newReading = Reading(created=time.time(), sensor=data['sensor_name'], value=data['value'])
+    if "timestamp" in data:
+        curtime = data['timestamp']
+    else:
+        curtime = time.time()
+    newReading = Reading(created=curtime, sensor=cursensor.toDict()['name'], value=data['value'])
     setattr(cursensor, 'last_reading', data['value'])
     session.add(cursensor)
     session.add(newReading)
