@@ -63,7 +63,9 @@ def CollectData(ser):
                     continue
                 for j in i['sensors']:
                     newReading = {
-                        'sensor': j['sensor'],
+                        'sensor': {
+                            'name': j['sensor']
+                        },
                         'readings': [j['value']]
                     }
                     print "saving:"
