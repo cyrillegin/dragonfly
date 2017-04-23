@@ -12,6 +12,7 @@ import loadfixtures
 import serialPoller
 import weatherSensor
 import automate
+import databaseCommands
 
 
 class Command:
@@ -30,3 +31,11 @@ class Command:
     @staticmethod
     def Automate():
         automate.automate()
+
+    @staticmethod
+    def Backup():
+        databaseCommands.BackupDatabase()
+
+    @staticmethod
+    def Refresh():
+        databaseCommands.RefreshDatabase()

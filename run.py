@@ -83,5 +83,11 @@ if __name__ == "__main__":
         elif args[1] == "automate":
             print "automating"
             Command.Automate()
+        elif args[1] == "backupDatabase":
+            print "backing up database"
+            Command.Backup()
+        elif args[1] == "refreshDatabase":
+            print "Refreshing database"
+            Command.Refresh()
         else:
             print "Could not understand arguements, please try again."
