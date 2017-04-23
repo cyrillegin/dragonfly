@@ -45,7 +45,6 @@ dragonfly_database_backup.DD-MM-YY
 
 def BackupDatabase():
     backups = []
-    
     lastBackup = None
     lastDate = [0, 0, 0]
     currentDate = str(date.today()).split('-')
@@ -108,7 +107,7 @@ def BackupDatabase():
                 for j in i:
                     if j == 'name':
                         pass
-                    elif j== 'created':
+                    elif j == 'created':
                         setattr(newSensor, j, int(i[j]))
                     else:
                         setattr(newSensor, j, i[j])
@@ -120,7 +119,7 @@ def BackupDatabase():
             print url
             newReadings = requests.get(url)
             for j in newReadings.json()['readings']:
-                if j['created'] > int(startTime)+1:
+                if j['created'] > int(startTime) + 1:
                     newReading = Reading(created=j['created'], sensor=newSensor.toDict()['name'], value=j['value'])
                     session.add(newReading)
                     print 'adding'
@@ -129,11 +128,60 @@ def BackupDatabase():
         print 'all done!'
 
 
-
-def MakeRequest(session, url):
-    pass
-
-
-
 def RefreshDatabase():
-    pass
+    print "Restoring all data."
+    backups = []
+    lastBackup = None
+    lastDate = [0, 0, 0]
+    currentDate = str(date.today()).split('-')
+    for dirpath, dirnames, filenames in os.walk('backups/'):
+        backups = filenames
+    for i in backups:
+        if i.startswith('.'):
+            continue
+        dates = i.split('.')[1].split('-')
+        if int(dates[2]) > int(lastDate[2]):
+            lastDate = dates
+            lastBackup = i
+        elif int(dates[2]) == int(lastDate[2]):
+            if int(dates[1]) > int(lastDate[1]):
+                lastDate = dates
+                lastBackup = i
+            elif int(dates[1]) == int(lastDate[1]):
+                if int(dates[0]) > int(lastDate[0]):
+                    lastDate = dates
+                    lastBackup = i
+    print lastBackup
+    dbURL = "sqlite:///{}".format(os.path.join('backups', lastBackup))
+    with sessionScope(dbURL) as session:
+        sensors = session.query(Sensor).all()
+        for i in sensors:
+
+            print 'adding readings'
+            readings = session.query(Reading).filter_by(sensor=i.toDict()['name'])
+            reads = {
+                'sensor': i.toDict(),
+                'readings': []
+            }
+            for i in readings:
+                reads['readings'].append({
+                    "value": i.toDict()['value'],
+                    "timestamp": i.toDict()['created']
+                    })
+            print "making post"
+            response = requests.post(READINGURL, json.dumps(reads))
+            print response
+
+
+
+
+
+
+
+
+
+
+
+
+
+

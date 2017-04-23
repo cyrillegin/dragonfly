@@ -88,6 +88,6 @@ if __name__ == "__main__":
             Command.Backup()
         elif args[1] == "refreshDatabase":
             print "Refreshing database"
-            Command.Backup()
+            Command.Refresh()
         else:
             print "Could not understand arguements, please try again."
