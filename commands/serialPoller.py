@@ -66,10 +66,10 @@ def CollectData(ser):
                         'sensor': {
                             'name': j['sensor']
                         },
-                        'readings': {
+                        'readings': [{
                             'timestamp': time.time(),
-                            'value': [j['value']]
-                        }
+                            'value': j['value']
+                        }]
                     }
                     print "saving:"
                     print newReading

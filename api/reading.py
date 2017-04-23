@@ -73,6 +73,7 @@ class Readings:
 
 
 def AddReading(data, cursensor, session):
+    print data
     if "timestamp" in data:
         curtime = data['timestamp']
     else:
