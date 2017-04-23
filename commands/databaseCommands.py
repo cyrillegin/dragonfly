@@ -51,10 +51,14 @@ def BackupDatabase():
     currentDate = str(date.today()).split('-')
     for dirpath, dirnames, filenames in os.walk('backups/'):
         backups = filenames
-    if len(backups) == 0:
+    if len(backups) <= 1:
         print "No previous databases found, starting from the begining of time."
         currentBackup = "backups/dragonfly_database_backup.{}-{}-{}.db".format(currentDate[2], currentDate[1], currentDate[0])
-        lastDate = currentDate.reverse()
+
+        dbURL = "sqlite:///{}".format(currentBackup)
+        print 'initializing new database.'
+        db = create_engine(dbURL)
+        models.Base.metadata.create_all(db)
     else:
         print backups
         for i in backups:
@@ -98,27 +102,32 @@ def BackupDatabase():
                 newSensor = session.query(Sensor).filter_by(name=i['name']).one()
                 print "sensor already exists: {}".format(i['name'])
             except:
-                print "Sensor doesn't yet exist, adding: {}".format(i['name'])
+                print "Sensor doesn't yet exist, adding: "
+                print i
                 newSensor = Sensor(name=i['name'])
                 for j in i:
-                    if j != 'name':
+                    if j == 'name':
+                        pass
+                    elif j== 'created':
+                        setattr(newSensor, j, int(i[j]))
+                    else:
                         setattr(newSensor, j, i[j])
                 session.add(newSensor)
+                session.commit()
 
             print "Getting readings for {}".format(i['name'])
             url = "{}?sensor={}&start={}&end={}".format(READINGURL, i['name'], int(startTime), int(time.time()))
             print url
             newReadings = requests.get(url)
             for j in newReadings.json()['readings']:
-                newReading = Reading(created=j['created'], sensor=newSensor.toDict()['name'], value=j['value'])
-                session.add(newReading)
+                if j['created'] > int(startTime)+1:
+                    newReading = Reading(created=j['created'], sensor=newSensor.toDict()['name'], value=j['value'])
+                    session.add(newReading)
+                    print 'adding'
         print "committing"
         session.commit()
         print 'all done!'
 
-
-
-    # p = Process(target=MakeRequest, args=(j, ))
 
 
 def MakeRequest(session, url):
