@@ -40,7 +40,7 @@ def MCP(device):
 def CollectData(ser):
     print "collect process starting"
     Alive = True
-    pollRate = 20
+    pollRate = 60*5
     while(Alive):
         try:
             data = ser.readline()
