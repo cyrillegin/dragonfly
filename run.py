@@ -64,12 +64,11 @@ def RunServer():
 
 if __name__ == "__main__":
     args = sys.argv
-    print args
-    if len(args) == 1:
-        print "starting server!"
-        RunServer()
-    else:
-        if(args[1] == "loadFixtures"):
+    if len(args) > 1:
+        if(args[1] == "run"):
+            print "starting server!"
+            RunServer()
+        elif(args[1] == "loadFixtures"):
             print "loading fixtures"
             Command.LoadFixtures()
         elif(args[1] == "serialPoller"):
@@ -101,5 +100,21 @@ if __name__ == "__main__":
         elif args[1] == "deleteUser":
             print "Deleting user."
             Command.DeleteUser()
-        else:
-            print "Could not understand arguements, please try again."
+    else:
+        print "Could not understand arguements, use one from the following list:"
+        print "\n\nServer:"
+        print "run - Starts the server."
+        print "\nData:"
+        print "loadFixtures - Loads some sample data into the database via the api."
+        print "serialPoller - Start polling for USB devices to get data from."
+        print "weatherSensor - requests data from lascruce-weather.org to get temperature."
+        print "\nDatabase management:"
+        print "backupDatabase - Creates a backup database from previous databases and new heroku data."
+        print "refreshDatabase - Sends all readings and sensors from backup database and sends it to heroku."
+        print "\nUser management:"
+        print "createUser - Creates a new user."
+        print "resetPassword - Resets the password of a user."
+        print "getUsers - Returns a list of users."
+        print "deleteUser - Deletes a user."
+        print "\nMisc:"
+        print "automate - currently under development."
