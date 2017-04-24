@@ -95,5 +95,11 @@ if __name__ == "__main__":
         elif args[1] == "resetPassword":
             print "Resetting password"
             Command.ChangePassword()
+        elif args[1] == "getUsers":
+            print "Getting users."
+            Command.GetUsers()
+        elif args[1] == "deleteUser":
+            print "Deleting user."
+            Command.DeleteUser()
         else:
             print "Could not understand arguements, please try again."

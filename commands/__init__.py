@@ -48,3 +48,11 @@ class Command:
     @staticmethod
     def ChangePassword():
         createUser.ChangePassword()
+
+    @staticmethod
+    def GetUsers():
+        createUser.GetUserList()
+
+    @staticmethod
+    def DeleteUser():
+        createUser.DeleteUser()

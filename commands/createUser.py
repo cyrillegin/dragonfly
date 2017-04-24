@@ -39,3 +39,39 @@ def ChangePassword():
         except Exception, e:
             print "An error occured:"
             print e
+
+
+def GetUserList():
+    userName = raw_input("User name: ")
+    password = getpass.getpass(prompt='Password: ')
+    with sessionScope() as session:
+        try:
+            user = session.query(User).filter_by(name=userName, password=password).one()
+            users = session.query(User).all()
+            print 'Hello, {}\n'.format(user.toDict()['name'])
+            for i in users:
+                print i.toDict()
+        except Exception, e:
+            print "Error:"
+            print e
+
+
+def DeleteUser():
+    userName = raw_input("User name: ")
+    password = getpass.getpass(prompt='Password: ')
+    with sessionScope() as session:
+        try:
+            user = session.query(User).filter_by(name=userName, password=password).one()
+            print 'Hello, {}\n'.format(user.toDict()['name'])
+        except Exception, e:
+            print "Error:"
+            print e
+
+        userName = raw_input("Enter user name you'd like deleted: ")
+        try:
+            user = session.query(User).filter_by(name=userName).one()
+            session.delete(user)
+        except Exception, e:
+            print "Error:"
+            print e
+
