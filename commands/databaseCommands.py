@@ -133,7 +133,6 @@ def RefreshDatabase():
     backups = []
     lastBackup = None
     lastDate = [0, 0, 0]
-    currentDate = str(date.today()).split('-')
     for dirpath, dirnames, filenames in os.walk('backups/'):
         backups = filenames
     for i in backups:
@@ -155,21 +154,34 @@ def RefreshDatabase():
     dbURL = "sqlite:///{}".format(os.path.join('backups', lastBackup))
     with sessionScope(dbURL) as session:
         sensors = session.query(Sensor).all()
+        errors = []
         for i in sensors:
 
-            print 'adding readings'
+            print 'adding readings for {}'.format(i.toDict()['name'])
             readings = session.query(Reading).filter_by(sensor=i.toDict()['name'])
             reads = {
                 'sensor': i.toDict(),
                 'readings': []
             }
             for i in readings:
+                if len(reads['readings']) > 1000:
+                    response = requests.post(READINGURL, json.dumps(reads))
+                    print response
+                    if response.status_code != 200:
+                        errors.append(reads)
+                    reads['readings'] = []
                 reads['readings'].append({
                     "value": i.toDict()['value'],
                     "timestamp": i.toDict()['created']
-                    })
+                })
+
             print "making post"
+            print len(reads['readings'])
             response = requests.post(READINGURL, json.dumps(reads))
+            print response
+        for i in errors:
+            print 'err'
+            response = requests.post(READINGURL, json.dumps(i))
             print response
 
 
