@@ -7,40 +7,13 @@ from datetime import date
 from sqlalchemy import create_engine
 # import Aquaponics
 from sessionManager import sessionScope
-from models import Sensor, Reading, Log
+from models import Sensor, Reading, Log, User
 import models
 from shutil import copyfile
 
 SENSORURL = "https://dragonf1y.herokuapp.com/api/sensor"
 READINGURL = "https://dragonf1y.herokuapp.com/api/reading"
-
-
-"""
-TO START:
-download database
-
-create fresh data base
-pull all data from 0 to current date for a model.
-on completetion, start a new process to save the data
-pull all data from next model and repeate
-
-recreate database
-
-pull all data for a model in database
-on completion, start new process and upload data
-pull data from next model
-
-FUTURE:
-download database
-pull all database from last backup
-get last time of entry
-
-
-
-database naming scheme:
-
-dragonfly_database_backup.DD-MM-YY
-"""
+USERURL = "https://dragonf1y.herokuapp.com/api/user"
 
 
 def BackupDatabase():
@@ -184,16 +157,9 @@ def RefreshDatabase():
             response = requests.post(READINGURL, json.dumps(i))
             print response
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        users = session.query(User).all()
+        for i in users:
+            response = requests.post(USERURL, json.dumps({
+                'name': i.name,
+                'password': i.password
+            }))

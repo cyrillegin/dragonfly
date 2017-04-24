@@ -13,6 +13,7 @@ import serialPoller
 import weatherSensor
 import automate
 import databaseCommands
+import createUser
 
 
 class Command:
@@ -39,3 +40,19 @@ class Command:
     @staticmethod
     def Refresh():
         databaseCommands.RefreshDatabase()
+
+    @staticmethod
+    def CreateUser():
+        createUser.CreateSuperuser()
+
+    @staticmethod
+    def ChangePassword():
+        createUser.ChangePassword()
+
+    @staticmethod
+    def GetUsers():
+        createUser.GetUserList()
+
+    @staticmethod
+    def DeleteUser():
+        createUser.DeleteUser()
