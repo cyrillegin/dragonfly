@@ -28,7 +28,7 @@ def weatherSensor():
         "coefficients": "1,0",
         "sensor_type": "temperature"
     }
-    response = requests.post("http://localhost:8000/api/sensor", json.dumps(data))
+    response = requests.post("https://dragonf1y.herokuapp.com/api/sensor", json.dumps(data))
     print response
 
     while(True):
