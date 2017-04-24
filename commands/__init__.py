@@ -15,6 +15,7 @@ import automate
 import databaseCommands
 import createUser
 
+
 class Command:
     @staticmethod
     def LoadFixtures():
@@ -43,3 +44,7 @@ class Command:
     @staticmethod
     def CreateUser():
         createUser.CreateSuperuser()
+
+    @staticmethod
+    def ChangePassword():
+        createUser.ChangePassword()
