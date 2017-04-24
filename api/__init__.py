@@ -12,6 +12,7 @@ from reading import Readings
 from sensor import Sensors
 from log import Logs
 from command import Command
+from user import User
 
 
 class ResourceApi:
@@ -20,3 +21,4 @@ class ResourceApi:
     reading = Readings()
     log = Logs()
     command = Command()
+    user = User()
