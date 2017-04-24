@@ -1,4 +1,5 @@
 import getpass
+import os
 from models import User
 from sessionManager import sessionScope
 
@@ -11,7 +12,7 @@ def CreateSuperuser():
         print 'passwords do not match, please try again.'
         CreateSuperuser()
         return
-    with sessionScope() as session:
+    with sessionScope(getDB()) as session:
         try:
             newUser = User(name=userName, password=password)
             session.add(newUser)
@@ -30,7 +31,7 @@ def ChangePassword():
         print 'passwords do not match, please try again.'
         ChangePassword()
         return
-    with sessionScope() as session:
+    with sessionScope(getDB()) as session:
         try:
             user = session.query(User).filter_by(name=userName)
             setattr(user, 'password', password)
@@ -44,7 +45,7 @@ def ChangePassword():
 def GetUserList():
     userName = raw_input("User name: ")
     password = getpass.getpass(prompt='Password: ')
-    with sessionScope() as session:
+    with sessionScope(getDB()) as session:
         try:
             user = session.query(User).filter_by(name=userName, password=password).one()
             users = session.query(User).all()
@@ -59,7 +60,7 @@ def GetUserList():
 def DeleteUser():
     userName = raw_input("User name: ")
     password = getpass.getpass(prompt='Password: ')
-    with sessionScope() as session:
+    with sessionScope(getDB()) as session:
         try:
             user = session.query(User).filter_by(name=userName, password=password).one()
             print 'Hello, {}\n'.format(user.toDict()['name'])
@@ -75,3 +76,28 @@ def DeleteUser():
             print "Error:"
             print e
 
+
+def getDB():
+    backups = []
+    lastBackup = None
+    for dirpath, dirnames, filenames in os.walk('backups/'):
+        backups = filenames
+    for i in backups:
+        print 'here'
+        if i.startswith('.'):
+            continue
+        dates = i.split('.')[1].split('-')
+        lastDate = [0, 0, 0]
+        if int(dates[2]) > int(lastDate[2]):
+            lastDate = dates
+            lastBackup = i
+        elif int(dates[2]) == int(lastDate[2]):
+            if int(dates[1]) > int(lastDate[1]):
+                lastDate = dates
+                lastBackup = i
+            elif int(dates[1]) == int(lastDate[1]):
+                if int(dates[0]) > int(lastDate[0]):
+                    lastDate = dates
+                    lastBackup = i
+    dbURL = "sqlite:///{}".format(os.path.join('backups', lastBackup))
+    return dbURL
