@@ -89,5 +89,8 @@ if __name__ == "__main__":
         elif args[1] == "refreshDatabase":
             print "Refreshing database"
             Command.Refresh()
+        elif args[1] == "createUser":
+            print "Refreshing database"
+            Command.CreateUser()
         else:
             print "Could not understand arguements, please try again."

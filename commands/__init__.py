@@ -13,7 +13,7 @@ import serialPoller
 import weatherSensor
 import automate
 import databaseCommands
-
+import createUser
 
 class Command:
     @staticmethod
@@ -39,3 +39,7 @@ class Command:
     @staticmethod
     def Refresh():
         databaseCommands.RefreshDatabase()
+
+    @staticmethod
+    def CreateUser():
+        createUser.CreateSuperuser()
