@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup as bs
 def weatherSensor():
     print "Starting weather data collection!"
 
-    readingUrl = "http://localhost:8000/api/reading"
+    readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
     url = "http://www.lascruces-weather.com/"
     queryRate = 60 * 5
 
