@@ -66,3 +66,11 @@ class Log(Base):
             'title': self.title,
             'description': self.description
         }
+
+
+class User(Base):
+
+    __tablename__ = "user"
+
+    name = Column(Text, nullable=False)
+    password = Column(Text, nullable=False)
