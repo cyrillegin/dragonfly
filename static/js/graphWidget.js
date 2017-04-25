@@ -3,7 +3,8 @@
 var angular, $;
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope', 'dataService', '$window', 'apiService', '$timeout', '$location', function ($scope, dataService, $window, apiService, $timeout, $location) {
+.controller("graphController",['$scope', 'dataService', '$window', 'apiService', '$timeout', '$location', '$http', function ($scope, dataService, $window, apiService, $timeout, $location, $http) {
+  $scope.LoggedIn = false;
   $scope.$watch(function(){
     return dataService.selection();
   }, function(v){
@@ -23,7 +24,6 @@ angular.module('dragonfly.graphcontroller', [])
     apiService.get('reading/?sensor=' + dataService.selection() + "&start="+start+"&end="+end)
         .then(function successCallback(response){
             DrawGraph(response.data);
-            UpdateModal(response.data.sensor);
         }, function errorCallback(response){
           console.log("An error has occured.", response.data);
         });
@@ -367,31 +367,24 @@ $scope.SubmitDate = function(){
     });
 };
 
-function UpdateModal(data){
-    return
-    $('#modal_description').val(data.description);
-    $('#modal_coefficients').val(data.coefficients);
-    $('#modal_sensorType')[0].value = data.self_type;
-    $('#modal_units').val(data.units);
-    $('#modal_minValue').val(data.min_value);
-    $('#modal_maxValue').val(data.max_value);
-}
-
 var sensorAttrs = [{
     'name': "name",
     'type': 'text',
     'value': 'default name',
-    'id': 'modal_name'
+    'id': 'modal_name',
+    'fieldName': 'name'
 }, {
     'name': "description",
     "type": "text",
     'value': "default description",
-    'id': 'modal_description'
+    'id': 'modal_description',
+    'fieldName': 'description'
 }, {
     'name': "coefficients",
     "type": "text",
     'value': "1,0",
-    'id': 'modal_coefficients'
+    'id': 'modal_coefficients',
+    'fieldName': 'coefficients'
 }, {
     'name': "self_type",
     'type': 'multiple',
@@ -404,59 +397,88 @@ var sensorAttrs = [{
     }, {
         'name': 'lightswitch'
     }],
-    'id': 'modal_type'
+    'id': 'modal_type',
+    'fieldName': 'sensor_type'
 }, {
     'name': "units",
     "type": "text",
     'value': "default unit",
-    'id': 'modal_unit'
+    'id': 'modal_unit',
+    'fieldName': 'units'
 }, {
     'name': "Min Value",
     "type": "text",
     'value': 0,
-    'id': 'modal_min'
+    'id': 'modal_min',
+    'fieldName': 'min_value'
 }, {
     'name': 'Max Value',
     'type': 'text',
     'value': 1024,
-    'id': 'modal_max'
-}]
+    'id': 'modal_max',
+    'fieldName': 'max_value'
+}];
 
 var readingAttrs = [{
+    'name': "Sensor",
+    "type": "text",
+    'value': "",
+    'id': 'modal_sensor',
+    'fieldName': 'sensor'
+}, {
     'name': "value",
     "type": "text",
     'value': "default value",
-    'id': 'modal_value'
+    'id': 'modal_value',
+    'fieldName': 'value'
 }, {
     'name': "date",
     "type": "date",
     'value': 1000000,
-    'id': 'modal_date'
-}]
+    'id': 'modal_date',
+    'fieldName': 'created'
+}];
 
 var logAttrs = [{
     'name': "title",
     'type': 'text',
     'value': 'default log title',
-    'id': 'modal_title'
+    'id': 'modal_title',
+    'fieldName': 'title'
 }, {
     'name': "description",
     "type": "text",
     'value': "default description",
-    'id': 'modal_description'
+    'id': 'modal_description',
+    'fieldName': 'description'
 }, {
     'name': "date",
     "type": "date",
     'value': 1000000,
-    'id': 'modal_date'
-}]
+    'id': 'modal_date',
+    'fieldName': 'created'
+}];
+
+var loginAttrs = [{
+    'name': "Username",
+    'type': 'text',
+    'value': '',
+    'id': 'modal_username',
+    'fieldName': 'username'
+}, {
+    'name': "Password",
+    'type': 'password',
+    'value': '',
+    'id': "modal_password",
+    'fieldName': 'password'
+}];
 
 
 $scope.OpenModal = function(type){
     var attrs;
     $scope.isSensorModal = false;
     $scope.saveText = "Save " + type;
-    $scope.modalTitle = type
+    $scope.modalTitle = type;
     switch(type){
         case "sensor":
             attrs = sensorAttrs;
@@ -468,40 +490,55 @@ $scope.OpenModal = function(type){
         case "log":
             attrs = logAttrs;
             break;
+        case 'login':
+            attrs = loginAttrs;
+            $scope.saveText = "Log in";
+            break;
     }
     $scope.modalAttributes = attrs;
     $("#sensorEditModal").modal('toggle');
+    $('#modal_alert').css('display', 'hidden');
     $timeout(function(){
         $('#modal_date').datetimepicker();    
     });
 };
 
-$scope.SaveSensor = function(){ 
-    var newData = {
-        "name": dataService.selection(),
-        "description": $('#modal_description').val(),
-        "coefficients": $('#modal_coefficients').val(),
-        "units": $('#modal_unit').val(),
-        "min_value": $('#modal_min').val(),
-        "max_value": $('#modal_max').val()
-    };
-    if($scope.isSensorModal){
-        console.log($('#modal_type'))
-        var sel = $('#modal_type');
-        for(var i in sel)
-        newData.sensor_type = $('#modal_type')[0].value
-    } else {
-        newData.date = $('#modal_date').data("DateTimePicker").date()
+$scope.SubmitModal = function(){
+    var attrs;
+    var suffix;
+    switch($scope.modalTitle){
+        case "sensor":
+            attrs = sensorAttrs;
+            suffix = '/api/sensor';
+            break;
+        case "reading":
+            attrs = readingAttrs;
+            suffix = '/api/reading';
+            break;
+        case "log":
+            attrs = logAttrs;
+            suffix = '/api/log';
+            break;
+        case "login":
+            attrs = loginAttrs;
+            suffix = '/login';
+            break;
     }
-    console.log(newData)
-    return;
-    apiService.post('/sensor', newSensor).then(function successCallback(response){
-        $scope.$apply();
+    var data = {};
+    for(var i in attrs){
+        data[attrs[i].fieldName] = $('#'+attrs[i].id)[0].value;
+    }
+
+    $http.post(suffix, data).then(function successCallback(response){
+        console.log(response);
+        $scope.LoggedIn = true;
+        $("#sensorEditModal").modal('toggle');
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
+      $('#modal_alert').html( response.data.error);
+      $('#modal_alert').css('display', 'block');
+    }).then(function(){
+        console.log('all done');
     });
 };
-
-
-  
 }]);

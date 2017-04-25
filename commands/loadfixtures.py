@@ -13,9 +13,14 @@ import requests
 import json
 import time
 
+# Use for going to heroku
+# readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
+
+# Use if just testing localy
+readingUrl = "http://localhost:5000/api/reading"
+
 
 def loadfixtures():
-    readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
 
     # Create test sensor
     testTemp = {
