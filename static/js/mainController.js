@@ -26,21 +26,19 @@ angular.module('dragonfly.maincontroller', [])
           if($scope.lightSwitchCharts[i] === undefined) continue;
           $('#'+switchids[i]).bootstrapSwitch();
           $('#'+switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
-          $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
-            SendData(
-              '/api/command', {
-                "lightswitch": event.target.id.split('-')[1],
-                'value': state
-              }
-            );
-          });
+          // $('#'+switchids[i]).on('switchChange.bootstrapSwitch', function(event, state){
+            // SendData(
+            //   '/api/command', {
+            //     "lightswitch": event.target.id.split('-')[1],
+            //     'value': state
+            // });
+          // });
         }
       }, 500);
     });
   }
   
   function DrawLightSwitch(data){
-    console.log(data)
     var switchObj = {
       "title": data.name,
       "id": "switch-"+data.name,

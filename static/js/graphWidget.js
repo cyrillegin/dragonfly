@@ -417,7 +417,7 @@ var sensorAttrs = [{
     'value': 1024,
     'id': 'modal_max',
     'fieldName': 'max_value'
-}]
+}];
 
 var readingAttrs = [{
     'name': "Sensor",
@@ -437,7 +437,7 @@ var readingAttrs = [{
     'value': 1000000,
     'id': 'modal_date',
     'fieldName': 'created'
-}]
+}];
 
 var logAttrs = [{
     'name': "title",
@@ -457,7 +457,7 @@ var logAttrs = [{
     'value': 1000000,
     'id': 'modal_date',
     'fieldName': 'created'
-}]
+}];
 
 var loginAttrs = [{
     'name': "Username",
@@ -471,14 +471,14 @@ var loginAttrs = [{
     'value': '',
     'id': "modal_password",
     'fieldName': 'password'
-}]
+}];
 
 
 $scope.OpenModal = function(type){
     var attrs;
     $scope.isSensorModal = false;
     $scope.saveText = "Save " + type;
-    $scope.modalTitle = type
+    $scope.modalTitle = type;
     switch(type){
         case "sensor":
             attrs = sensorAttrs;
@@ -492,7 +492,7 @@ $scope.OpenModal = function(type){
             break;
         case 'login':
             attrs = loginAttrs;
-            $scope.saveText = "Log in"
+            $scope.saveText = "Log in";
             break;
     }
     $scope.modalAttributes = attrs;
@@ -522,51 +522,23 @@ $scope.SubmitModal = function(){
         case "login":
             attrs = loginAttrs;
             suffix = '/login';
+            break;
     }
-    var data = {}
+    var data = {};
     for(var i in attrs){
         data[attrs[i].fieldName] = $('#'+attrs[i].id)[0].value;
     }
-    console.log(data)
-
 
     $http.post(suffix, data).then(function successCallback(response){
-        console.log('got response')
-        console.log(response)
+        console.log(response);
+        $scope.LoggedIn = true;
+        $("#sensorEditModal").modal('toggle');
     }, function errorCallback(response){
       console.log("An error has occured.", response.data);
       $('#modal_alert').html( response.data.error);
       $('#modal_alert').css('display', 'block');
     }).then(function(){
-        console.log('all done')
+        console.log('all done');
     });
-}
-
-// $scope.SaveSensor = function(){ 
-//     var newData = {
-//         "name": dataService.selection(),
-//         "description": $('#modal_description').val(),
-//         "coefficients": $('#modal_coefficients').val(),
-//         "units": $('#modal_unit').val(),
-//         "min_value": $('#modal_min').val(),
-//         "max_value": $('#modal_max').val()
-//     };
-//     if($scope.isSensorModal){
-//         console.log($('#modal_type'))
-//         var sel = $('#modal_type');
-//         for(var i in sel)
-//         newData.sensor_type = $('#modal_type')[0].value
-//     } else {
-//         newData.date = $('#modal_date').data("DateTimePicker").date()
-//     }
-//     console.log(newData)
-
-//     apiService.post('/sensor', newSensor).then(function successCallback(response){
-//         $scope.$apply();
-//     }, function errorCallback(response){
-//       console.log("An error has occured.", response.data);
-//     });
-// };
-
-  
+};
 }]);
