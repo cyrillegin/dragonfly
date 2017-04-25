@@ -43,6 +43,9 @@ class Root(object):
         return t.render({})
     index.exposed = True
 
+    def login(self):
+        print 'doing things.'
+
 
 def RunServer():
 
