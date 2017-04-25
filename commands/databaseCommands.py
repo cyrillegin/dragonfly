@@ -95,7 +95,6 @@ def BackupDatabase():
                 if j['created'] > int(startTime) + 1:
                     newReading = Reading(created=j['created'], sensor=newSensor.toDict()['name'], value=j['value'])
                     session.add(newReading)
-                    print 'adding'
         print "committing"
         session.commit()
         print 'all done!'
@@ -157,9 +156,11 @@ def RefreshDatabase():
             response = requests.post(READINGURL, json.dumps(i))
             print response
 
+        print "Adding users."
         users = session.query(User).all()
         for i in users:
             response = requests.post(USERURL, json.dumps({
-                'name': i.name,
+                'user': i.name,
                 'password': i.password
             }))
+            print response
