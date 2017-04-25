@@ -38,55 +38,6 @@ angular.module('dragonfly.maincontroller', [])
       }, 500);
     });
   }
-
-  $scope.SubmitSensor = function(){
-    var params = {
-      "name": $scope.newSensorName,
-      "description": $scope.newSensorDesc,
-      "coefficients": $scope.newSensorType,
-      "sensor_type": $scope.newSensorUnits,
-      "units": $scope.newSensorCoef
-    };
-    if(params.name === "" || params.name === undefined){
-      console.log("warning");
-      return;
-    }
-    apiService.post('sensor', params)
-      .then(function(){
-        $window.location.reload();
-      })
-  };
-
-  $scope.SubmitReading = function(){
-    var params = {
-      "value": $scope.newReadingValue,
-      "date": $scope.newReadingDate,
-      "sensor": dataService.selection()
-    };
-    if(params.value === "" || params.value === undefined || params.date === "" || params.date === undefined){
-      console.log("warning");
-      return;
-    }
-    apiService.post('reading', params)
-      .then(function(){
-        $window.location.reload();
-      });
-  };
-
-  $scope.SubmitLog = function(){
-    var params = {
-      "title": $scope.newLogTitle,
-      "description": $scope.newLogDesc
-    };
-    if(params.title === "" || params.title === undefined || params.description === "" || params.description === undefined){
-      console.log("warning");
-      return;
-    }
-    apiService.post('log', params)
-      .then(function(){
-        $window.location.reload();
-      }) 
-  };  
   
   function DrawLightSwitch(data){
     console.log(data)

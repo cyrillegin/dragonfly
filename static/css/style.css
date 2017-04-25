@@ -10,6 +10,11 @@
   text-decoration: none;
 }
 
+.loginBtn{
+  float: right;
+  margin: 20px;
+}
+
 /*Table overriders*/
 .table-borderless > tbody > tr > td,
 .table-borderless > tbody > tr > th,
