@@ -17,7 +17,7 @@ import time
 # readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
 
 # Use if just testing localy
-readingUrl = "http://localhost:5000/api/reading"
+readingUrl = "http://localhost:8000/api/reading"
 
 
 def loadfixtures():

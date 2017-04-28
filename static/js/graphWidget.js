@@ -184,7 +184,26 @@ angular.module('dragonfly.graphcontroller', [])
     
 
 //Graph lines
+    var lastVal = 0;
+    var Av = 10000;
+    var count = 0;
     var lineFunction = d3.line()
+        .defined(function(d){
+            
+            d.created = parseInt(d.created)
+            // console.log(d.created)
+            if(d.created > lastVal){
+                // return false;
+                console.log('here')
+            }
+            // if(d.created > lastVal+Av){
+            //     lastVal = d.created;
+            //     return false;
+            // }
+            lastVal = d.created;
+            return true;
+            
+        })
         .x(function(d) {
             return xScale(d.created);
           })

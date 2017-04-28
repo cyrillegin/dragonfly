@@ -2,18 +2,17 @@ import json
 import requests
 import os
 import time
-from multiprocessing import Process
 from datetime import date
 from sqlalchemy import create_engine
-# import Aquaponics
 from sessionManager import sessionScope
-from models import Sensor, Reading, Log, User
+from models import Sensor, Reading, User
 import models
 from shutil import copyfile
 
-SENSORURL = "https://dragonf1y.herokuapp.com/api/sensor"
-READINGURL = "https://dragonf1y.herokuapp.com/api/reading"
-USERURL = "https://dragonf1y.herokuapp.com/api/user"
+SENSORURL = "http://192.168.0.5:5000/api/sensor"
+READINGURL = "http://192.168.0.5:5000/api/reading"
+USERURL = "http://192.168.0.5:5000/api/user"
+HEROKUREADING = "https://dragonf1y.herokuapp.com/api/reading"
 
 
 def BackupDatabase():
@@ -164,3 +163,52 @@ def RefreshDatabase():
                 'password': i.password
             }))
             print response
+
+
+def RefreshHeroku():
+    print "Restoring Heroku."
+    backups = []
+    lastBackup = None
+    lastDate = [0, 0, 0]
+    for dirpath, dirnames, filenames in os.walk('backups/'):
+        backups = filenames
+    for i in backups:
+        if i.startswith('.'):
+            continue
+        dates = i.split('.')[1].split('-')
+        if int(dates[2]) > int(lastDate[2]):
+            lastDate = dates
+            lastBackup = i
+        elif int(dates[2]) == int(lastDate[2]):
+            if int(dates[1]) > int(lastDate[1]):
+                lastDate = dates
+                lastBackup = i
+            elif int(dates[1]) == int(lastDate[1]):
+                if int(dates[0]) > int(lastDate[0]):
+                    lastDate = dates
+                    lastBackup = i
+    print lastBackup
+    dbURL = "sqlite:///{}".format(os.path.join('backups', lastBackup))
+    with sessionScope(dbURL) as session:
+        sensors = session.query(Sensor).all()
+        errors = []
+        for i in sensors:
+
+            print 'adding readings for {}'.format(i.toDict()['name'])
+            readings = session.query(Reading).filter_by(sensor=i.toDict()['name']).filter(Reading.created >= time.time() - 86400)
+            reads = {
+                'sensor': i.toDict(),
+                'readings': []
+            }
+            for i in readings:
+                reads['readings'].append({
+                    "value": i.toDict()['value'],
+                    "timestamp": i.toDict()['created']
+                })
+
+            print "making post"
+            print len(reads['readings'])
+            response = requests.post(HEROKUREADING, json.dumps(reads))
+            print response
+        for i in errors:
+            print 'err'
