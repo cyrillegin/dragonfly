@@ -42,6 +42,10 @@ class Command:
         databaseCommands.RefreshDatabase()
 
     @staticmethod
+    def RefreshHeroku():
+        databaseCommands.RefreshHeroku()
+
+    @staticmethod
     def CreateUser():
         createUser.CreateSuperuser()
 

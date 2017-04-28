@@ -126,6 +126,9 @@ if __name__ == "__main__":
         elif args[1] == "deleteUser":
             print "Deleting user."
             Command.DeleteUser()
+        elif args[1] == "refreshHeroku":
+            print "Refreshing Heroku."
+            Command.RefreshHeroku()
     else:
         print "Could not understand arguements, use one from the following list:"
         print "\n\nServer:"
