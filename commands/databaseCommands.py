@@ -11,9 +11,9 @@ from models import Sensor, Reading, Log, User
 import models
 from shutil import copyfile
 
-SENSORURL = "https://dragonf1y.herokuapp.com/api/sensor"
-READINGURL = "https://dragonf1y.herokuapp.com/api/reading"
-USERURL = "https://dragonf1y.herokuapp.com/api/user"
+SENSORURL = "http://localhost:8000/api/sensor"
+READINGURL = "http://localhost:8000/api/reading"
+USERURL = "http://localhost:8000/api/user"
 
 
 def BackupDatabase():
