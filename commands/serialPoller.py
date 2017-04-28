@@ -17,8 +17,8 @@ import serial
 import json
 import requests
 
-SENSORURL = "http://localhost:8000/api/sensor"
-READINGURL = "http://localhost:8000/api/reading"
+SENSORURL = "http://localhost:5000/api/sensor"
+READINGURL = "http://localhost:5000/api/reading"
 
 # For use on rasberry pi
 USBPREFIX = 'ttyUSB'
