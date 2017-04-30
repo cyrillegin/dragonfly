@@ -2,7 +2,7 @@ import json
 import requests
 import os
 import time
-from datetime import date
+import datetime
 from sqlalchemy import create_engine
 from sessionManager import sessionScope
 from models import Sensor, Reading, User
@@ -19,13 +19,14 @@ def BackupDatabase():
     backups = []
     lastBackup = None
     lastDate = [0, 0, 0]
-    currentDate = str(date.today()).split('-')
+    # Double check, this used to be data.today but then we just imported the whole datetime module.
+    currentDate = str(datetime.date.today()).split('-')
     for dirpath, dirnames, filenames in os.walk('backups/'):
         backups = filenames
     if len(backups) <= 1:
         print "No previous databases found, starting from the begining of time."
         currentBackup = "backups/dragonfly_database_backup.{}-{}-{}.db".format(currentDate[2], currentDate[1], currentDate[0])
-
+        open(currentBackup, "w+").close()
         dbURL = "sqlite:///{}".format(currentBackup)
         print 'initializing new database.'
         db = create_engine(dbURL)
@@ -135,9 +136,10 @@ def RefreshDatabase():
                 'readings': []
             }
             for i in readings:
-                if len(reads['readings']) > 1000:
+                if len(reads['readings']) > 100:
                     response = requests.post(READINGURL, json.dumps(reads))
                     print response
+                    time.sleep(10)
                     if response.status_code != 200:
                         errors.append(reads)
                     reads['readings'] = []
@@ -212,3 +214,6 @@ def RefreshHeroku():
             print response
         for i in errors:
             print 'err'
+    print "Refresh occured at {}".format(datetime.time())
+    print "Done for the day, sleeping"
+    time.sleep(87600)
