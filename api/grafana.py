@@ -5,7 +5,7 @@ import logging
 import delorean
 import dateutil.parser
 
-from reading import Readings
+import reading
 from sensor import Sensors
 
 
@@ -29,19 +29,20 @@ class Query():
         response = []
         for i in queryData['targets']:
 
-            sensor = i['target'],
-            start = int(delorean.Delorean(dateutil.parser.parse(queryData['range']['from'])).epoch),
+            sensor = i['target']
+            start = int(delorean.Delorean(dateutil.parser.parse(queryData['range']['from'])).epoch)
             end = int(delorean.Delorean(dateutil.parser.parse(queryData['range']['to'])).epoch)
 
-            readings = Readings.getReadings(sensor, start, end)
+            readings = reading.getReadings(sensor, start, end)
+
             newObj = {
                 "target": i['target'],
                 "datapoints": []
             }
+            print "were here"
             print readings
-            for j in readings[0]:
-                val = j[1] * coefficients[0] + coefficients[1]
-                newObj['datapoints'].append([val, int(j[0] * 1000)])
+            for j in readings['readings']:
+                newObj['datapoints'].append([j['value'], int(j['created'] * 1000)])
 
             response.append(newObj)
 
