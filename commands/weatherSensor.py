@@ -28,8 +28,8 @@ def weatherSensor():
         "coefficients": "1,0",
         "sensor_type": "temperature"
     }
-    response = requests.post("http://localhost:5000/api/sensor", json.dumps(data))
-    print response
+    sensor = requests.post("http://localhost:5000/api/sensor", json.dumps(data))
+    print sensor
 
     while(True):
         print "Finding new reading."
@@ -40,8 +40,13 @@ def weatherSensor():
 
         print "The temperature is currently: {}".format(temperature)
         newReading = {
-            'sensor_name': "weatherstation",
-            'value': temperature,
+            'sensor': {
+                'name': "weatherstation"
+            },
+            'readings': [{
+                'value': temperature,
+                'timestamp': time.time()
+            }]
         }
         response = requests.post(readingUrl, json.dumps(newReading))
         print "Reading sent."
