@@ -39,12 +39,10 @@ class Query():
                 "target": i['target'],
                 "datapoints": []
             }
-            print "were here"
-            print readings
             for j in readings['readings']:
                 newObj['datapoints'].append([j['value'], int(j['created'] * 1000)])
-
             response.append(newObj)
+        print response
 
         return json.dumps(response)
 
