@@ -33,22 +33,8 @@ class Readings:
         if kwargs['sensor'] is None:
             data = {"error": "Must provide a sensor name."}
             return json.dumps(data)
-        with sessionScope() as session:
-            try:
-                sensor = session.query(Sensor).filter_by(name=kwargs['sensor']).one()
-                readings = session.query(Reading).filter_by(sensor=kwargs['sensor']).filter(Reading.created >= int(kwargs['start']), Reading.created <= int(kwargs['end']))
-                data = {
-                    "readings": [],
-                    "sensor": sensor.toDict()
-                }
-                for i in readings:
-                    data['readings'].append(i.toDict())
-            except Exception, e:
-                data = {
-                    "error": e
-                }
-
-            return json.dumps(data)
+        data = getReadings(kwargs['sensor'], kwargs['start'], kwargs['end'])
+        return json.dumps(data)
 
     def POST(self):
         cherrypy.response.headers['Content-Type'] = 'application/json'
@@ -70,6 +56,25 @@ class Readings:
                 cursensor = sensor.CreateSensor(data['sensor'], session)
             for i in data['readings']:
                 AddReading(i, cursensor, session)
+
+
+def getReadings(sensor_id, start, end):
+    with sessionScope() as session:
+        try:
+            sensor = session.query(Sensor).filter_by(name=sensor_id).one()
+            readings = session.query(Reading).filter_by(sensor=sensor_id).filter(Reading.created >= int(start), Reading.created <= int(end))
+            data = {
+                "readings": [],
+                "sensor": sensor.toDict()
+            }
+            for i in readings:
+                data['readings'].append(i.toDict())
+        except Exception, e:
+            data = {
+                "error": e
+            }
+    print data
+    return data
 
 
 def AddReading(data, cursensor, session):

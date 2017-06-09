@@ -13,6 +13,7 @@ from sensor import Sensors
 from log import Logs
 from command import Command
 from user import Users
+from grafana import GrafanaApi
 
 
 class ResourceApi:
@@ -22,3 +23,4 @@ class ResourceApi:
     log = Logs()
     command = Command()
     user = Users()
+    grafana = GrafanaApi()
