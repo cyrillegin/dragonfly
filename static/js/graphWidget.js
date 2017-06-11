@@ -517,7 +517,7 @@ angular.module('dragonfly.graphcontroller', [])
                         'name': $('#modal_sensor')[0].selectedOptions[0].innerText
                     },
                     'readings': [{
-                        'value': parseInt($('#modal_value')[0].value),
+                        'value': parseFloat($('#modal_value')[0].value),
                         'timestamp': $('#modal_date').data("DateTimePicker").date().unix()
                     }]
                 };
@@ -533,7 +533,7 @@ angular.module('dragonfly.graphcontroller', [])
                 data[attrs[i].fieldName] = $('#' + attrs[i].id)[0].value;
             }
         } else {
-            if(parseInt(data.readings[0].value) < 2){
+            if(parseFloat(data.readings[0].value) < 2){
                 console.log('err');
                 return;
             }
