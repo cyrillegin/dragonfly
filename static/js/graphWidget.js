@@ -432,14 +432,14 @@ angular.module('dragonfly.graphcontroller', [])
 
     var readingAttrs = [{
         'name': "Sensor",
-        "type": "text",
-        'value': "",
+        "type": "multiple",
+        'value': [],
         'id': 'modal_sensor',
         'fieldName': 'sensor'
     }, {
         'name': "value",
         "type": "text",
-        'value': "default value",
+        'value': 7,
         'id': 'modal_value',
         'fieldName': 'value'
     }, {
@@ -449,6 +449,13 @@ angular.module('dragonfly.graphcontroller', [])
         'id': 'modal_date',
         'fieldName': 'created'
     }];
+
+    $timeout(function(){
+        var sensors = dataService.data();
+        for(var i in sensors){
+            readingAttrs[0].value.push({'name': sensors[i].name});
+        }
+    });
 
     var logAttrs = [{
         'name': "title",
@@ -497,27 +504,42 @@ angular.module('dragonfly.graphcontroller', [])
 
     $scope.SubmitModal = function() {
         var attrs;
-        var suffix;
+        var url;
+        var data = {};
         switch ($scope.modalTitle) {
             case "sensor":
                 attrs = sensorAttrs;
-                suffix = '/api/sensor';
+                url = 'sensor';
                 break;
             case "reading":
-                attrs = readingAttrs;
-                suffix = '/api/reading';
+                data = {
+                    'sensor': {
+                        'name': $('#modal_sensor')[0].selectedOptions[0].innerText
+                    },
+                    'readings': [{
+                        'value': parseInt($('#modal_value')[0].value),
+                        'timestamp': $('#modal_date').data("DateTimePicker").date().unix()
+                    }]
+                };
+                url = 'reading';
                 break;
             case "log":
                 attrs = logAttrs;
-                suffix = '/api/log';
+                url = 'log';
                 break;
         }
-        var data = {};
-        for (var i in attrs) {
-            data[attrs[i].fieldName] = $('#' + attrs[i].id)[0].value;
+        if($scope.modalTitle !== "reading"){
+            for (var i in attrs) {
+                data[attrs[i].fieldName] = $('#' + attrs[i].id)[0].value;
+            }
+        } else {
+            if(parseInt(data.readings[0].value) < 2){
+                console.log('err');
+                return;
+            }
         }
 
-        $http.post(suffix, data).then(function successCallback(response) {
+        apiService.post(url, data).then(function successCallback(response) {
             console.log(response);
             $scope.LoggedIn = true;
             $("#sensorEditModal").modal('toggle');
