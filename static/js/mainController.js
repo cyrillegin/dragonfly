@@ -8,6 +8,16 @@ angular.module('dragonfly.maincontroller', [])
   var switchids = [];
   $scope.graphIndex = 0;
 
+  function GetFishImage(){
+    apiService.get('camera').then(function successCallback(response){
+      $scope.fishcam = 'images/fishcam/image_'+response.data+'.jpg';
+      console.log(response)
+    });
+  }
+  $timeout(function(){
+  GetFishImage();
+})
+
   function GetData(){
     apiService.get('sensor').then(function successCallback(response){ 
       $scope.lightSwitchCharts = [];

@@ -42,7 +42,7 @@ class Root(object):
 
     def index(self):
         t = env.get_template("index.html")
-        return t.render({})
+        return t.render({'fish': 'something'})
     index.exposed = True
 
     def login(self):

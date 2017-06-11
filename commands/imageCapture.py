@@ -1,6 +1,7 @@
 import os
 import pygame
 import pygame.camera
+import time
 from pygame.locals import *
 
 IMAGE_FOLDER = 'static/images/fishcam'
@@ -16,15 +17,16 @@ def recordImages():
         cam = pygame.camera.Camera("/dev/video0", (640, 480))
         cam.start()
     except Exception, e:
-        print "error connecting to camera:"
+        print "Error connecting to camera:"
         print e
 
     imageIndex = 0
     for i in os.listdir(IMAGE_FOLDER):
         if i.startswith('image'):
-            if int(i.split('.')[1]) > imageIndex:
-                imageIndex = i.split('.')[1]
-    print 'image index starting at {}'.format(imageIndex)
+            index = int(i.split('_')[1].split('.')[0])
+            if index > imageIndex:
+                imageIndex = index
+    print 'Image index starting at {}'.format(imageIndex)
 
     Recording = True
     while(Recording):
@@ -32,13 +34,13 @@ def recordImages():
         try:
             image = cam.get_image()
         except Exception, e:
-            print "error getting image:"
+            print "Error getting image:"
             print e
             Recording = False
             break
 
-        print "Saveing image"
-
+        print "Saving image"
+        imageIndex += 1
         try:
             pygame.image.save(image, os.path.join(IMAGE_FOLDER, 'image_{}.jpg'.format(imageIndex)))
         except Exception, e:
