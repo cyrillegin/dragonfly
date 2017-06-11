@@ -17,16 +17,22 @@ Params: A json object with keys 'title' and 'description'.
 import json
 import cherrypy
 import time
+import logging
 
 from sessionManager import sessionScope
 from models import Log
 
 
 class Logs:
+    logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
+
     exposed = True
 
     def GET(self):
+        logging.info('GET request to log')
+
         cherrypy.response.headers['Content-Type'] = 'application/json'
+
         with sessionScope() as session:
             try:
                 logs = session.query(Log)
@@ -38,31 +44,35 @@ class Logs:
                     "error": e,
                     "note": "No logs currently exist."
                 }
+                logging.error(data)
             return json.dumps(data)
 
     def POST(self):
-        print "POST request to log."
+        logging.info("POST request to log.")
+
         cherrypy.response.headers['Content-Type'] = 'application/json'
+
         try:
             data = json.loads(cherrypy.request.body.read())
-        except ValueError:
-            data = {
-                "error": "data could not be read."
-            }
+        except Exception, e:
+            logging.error(e)
+            return "error data could not be read."
 
         if "title" not in data:
             data = {
                 "error": "Must provide a title."
             }
+            logging.error('No title found.')
         elif "description" not in data:
             data = {
                 "error": "Must provide a description."
             }
+            logging.error('No description found.')
         else:
             with sessionScope() as session:
                 newLog = Log(created=time.time(), title=data['title'], description=data['description'])
                 session.add(newLog)
                 session.commit()
-                print "Log added."
+                logging.info("Log added.")
                 data = newLog.toDict()
         return data

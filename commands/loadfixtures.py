@@ -12,6 +12,9 @@ import math
 import requests
 import json
 import time
+import logging
+
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
 # Use for going to heroku
 # readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
@@ -45,9 +48,9 @@ def loadfixtures():
         }
         newReadings['readings'].append(newReading)
     # Make post
-    print "Sending post for testTemp"
+    logging.info("Sending post for testTemp")
     response = requests.post(readingUrl, json.dumps(newReadings))
-    print "Response was: {}".format(response)
+    logging.debug("Response was: {}".format(response))
 
     # Create test sensor
     testTurb = {
@@ -75,9 +78,9 @@ def loadfixtures():
         newReadings['readings'].append(newReading)
 
     # Make post
-    print "Sending post for testTurb"
+    logging.info("Sending post for testTurb")
     response = requests.post(readingUrl, json.dumps(newReadings))
-    print "Response was: {}".format(response)
+    logging.debug("Response was: {}".format(response))
 
     # Create test sensor
     testSwitch = {
@@ -99,6 +102,6 @@ def loadfixtures():
             "timestamp": time.time() - i * 1000
         }
         newReadings['readings'].append(newReading)
-    print "Sending post for testSwitch"
+    logging.info("Sending post for testSwitch")
     response = requests.post(readingUrl, json.dumps(newReadings))
-    print "Response was: {}".format(response)
+    logging.debug("Response was: {}".format(response))

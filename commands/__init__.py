@@ -11,9 +11,6 @@ Sets up commands that are run from run.py
 import loadfixtures
 import serialPoller
 import weatherSensor
-import automate
-import databaseCommands
-import createUser
 import imageCapture
 
 
@@ -29,38 +26,6 @@ class Command:
     @staticmethod
     def WeatherSensor():
         weatherSensor.weatherSensor()
-
-    @staticmethod
-    def Automate():
-        automate.automate()
-
-    @staticmethod
-    def Backup():
-        databaseCommands.BackupDatabase()
-
-    @staticmethod
-    def Refresh():
-        databaseCommands.RefreshDatabase()
-
-    @staticmethod
-    def RefreshHeroku():
-        databaseCommands.RefreshHeroku()
-
-    @staticmethod
-    def CreateUser():
-        createUser.CreateSuperuser()
-
-    @staticmethod
-    def ChangePassword():
-        createUser.ChangePassword()
-
-    @staticmethod
-    def GetUsers():
-        createUser.GetUserList()
-
-    @staticmethod
-    def DeleteUser():
-        createUser.DeleteUser()
 
     @staticmethod
     def FishCam():
