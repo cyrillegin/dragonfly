@@ -8,18 +8,24 @@ import dateutil.parser
 import reading
 from sensor import Sensors
 
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
+
 
 class Query():
     exposed = True
 
     def GET(self, *args, **kwargs):
+        logging.info('GET request to grafana query.')
         return "query"
 
     def POST(self, *args, **kwargs):
+
+        logging.info('POST request to grafana query.')
+
         cherrypy.response.headers['Content-Type'] = 'application/json'
         try:
             queryData = json.load(cherrypy.request.body)
-            logging.debug("Got data:")
+            logging.debug("Got data:\n{}".format(queryData))
         except (ValueError, TypeError):
             logging.error("Request data is not JSON: %s", cherrypy.request.body)
             statusCode = "400"
@@ -42,7 +48,7 @@ class Query():
             for j in readings['readings']:
                 newObj['datapoints'].append([j['value'], int(j['created'] * 1000)])
             response.append(newObj)
-        print response
+        logging.debug('Responding with {}'.format(response))
 
         return json.dumps(response)
 
@@ -51,9 +57,11 @@ class Search():
     exposed = True
 
     def GET(self, *args, **kwargs):
+        logging.info('GET request to grafana search.')
         return "search"
 
     def POST(self, *args, **kwargs):
+        logging.info('POST request to grafana search.')
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
         response = []
@@ -71,4 +79,5 @@ class GrafanaApi:
     search = Search()
 
     def GET(self, *args, **kwargs):
+        logging.info('GET request to grafana api')
         return "pass"

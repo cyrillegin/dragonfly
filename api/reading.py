@@ -31,17 +31,22 @@ class Readings:
     exposed = True
 
     def GET(self, **kwargs):
-        logging.info('Get request to Reading')
+        logging.info('GET request to Reading')
+
         cherrypy.response.headers['Content-Type'] = 'application/json'
+
         if kwargs['sensor'] is None:
             data = {"error": "Must provide a sensor name."}
+            logging.error('Sensor name not found.')
             return json.dumps(data)
         data = getReadings(kwargs['sensor'], kwargs['start'], kwargs['end'])
         return json.dumps(data)
 
     def POST(self):
         logging.info('Post request to Reading')
+
         cherrypy.response.headers['Content-Type'] = 'application/json'
+
         try:
             data = json.loads(cherrypy.request.body.read())
         except ValueError:
@@ -58,7 +63,6 @@ class Readings:
             try:
                 cursensor = session.query(Sensor).filter_by(name=data['sensor']['name']).one()
             except Exception, e:
-                print e
                 logging.error("Sensor not found. Sending to sensor api")
                 logging.debug(e)
                 cursensor = sensor.CreateSensor(data['sensor'], session)
@@ -82,6 +86,7 @@ def getReadings(sensor_id, start, end):
             data = {
                 "error": e
             }
+            logging.error(e)
     return data
 
 
@@ -95,3 +100,4 @@ def AddReading(data, cursensor, session):
     session.add(cursensor)
     session.add(newReading)
     session.commit()
+    logging.info('New reading added.')

@@ -2,14 +2,17 @@ import os
 import pygame
 import pygame.camera
 import time
+import logging
 from pygame.locals import *
 
 IMAGE_FOLDER = 'static/images/fishcam'
 CAPTURE_RATE = 60 * 5
 
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
+
 
 def recordImages():
-    print 'starting image record'
+    logging.info('Starting image record.')
     pygame.init()
     pygame.camera.init()
 
@@ -17,8 +20,8 @@ def recordImages():
         cam = pygame.camera.Camera("/dev/video0", (640, 480))
         cam.start()
     except Exception, e:
-        print "Error connecting to camera:"
-        print e
+        logging.errer("Error connecting to camera.")
+        logging.error(e)
 
     imageIndex = 0
     for i in os.listdir(IMAGE_FOLDER):
@@ -26,26 +29,26 @@ def recordImages():
             index = int(i.split('_')[1].split('.')[0])
             if index > imageIndex:
                 imageIndex = index
-    print 'Image index starting at {}'.format(imageIndex)
+    logging.info('Image index starting at {}'.format(imageIndex))
 
     Recording = True
     while(Recording):
-        print "Getting image"
+        logging.info("Getting image.")
         try:
             image = cam.get_image()
         except Exception, e:
-            print "Error getting image:"
-            print e
+            logging.error("Error getting image")
+            logging.debug(e)
             Recording = False
             break
 
-        print "Saving image"
+        logging.info("Saving image.")
         imageIndex += 1
         try:
             pygame.image.save(image, os.path.join(IMAGE_FOLDER, 'image_{}.jpg'.format(imageIndex)))
         except Exception, e:
-            print "Error saving image:"
-            print e
+            logging.error("Error saving image:")
+            logging.debug(e)
             Recording = False
             break
         time.sleep(CAPTURE_RATE)

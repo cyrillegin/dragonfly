@@ -2,21 +2,16 @@
 import cherrypy
 import os
 import sys
-import jinja2
-import json
 from sqlalchemy import create_engine
 
 import models
 from api import ResourceApi
 from commands import Command
-from sessionManager import sessionScope
 
 PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 STATIC = os.path.join(PATH, 'static')
 NODE = os.path.join(PATH, 'node_modules')
 sys.path.append(PATH)
-
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=STATIC))
 
 
 def get_cp_config():
@@ -41,33 +36,9 @@ class Root(object):
     api = ResourceApi()
 
     def index(self):
-        t = env.get_template("index.html")
-        return t.render({'fish': 'something'})
+        cherrypy.response.headers['Content-Type'] = 'text/html'
+        return open(os.path.join(STATIC, "index.html"))
     index.exposed = True
-
-    def login(self):
-        cherrypy.response.headers['Content-Type'] = 'application/json'
-        try:
-            data = json.loads(cherrypy.request.body.read())
-        except ValueError:
-            cherrypy.response.status = 400
-            return json.dumps({'error': 'You must supply a username and password.'})
-        print 'Checking login credentials'
-        with sessionScope() as session:
-            try:
-                user = session.query(models.User).filter_by(name=data['username']).one()
-                print user.toDict()
-            except Exception, e:
-                print 'err'
-                print e
-                cherrypy.response.status = 400
-                return json.dumps({'error': 'User not found.'})
-            if str(user.password) != data['password']:
-                cherrypy.response.status = 400
-                return json.dumps({'error': 'Wrong password.'})
-            return json.dumps({'success': "you're logged in!"})
-
-    login.exposed = True
 
 
 def RunServer():
@@ -132,6 +103,8 @@ if __name__ == "__main__":
         elif args[1] == "fishCam":
             print "Starting Fish Cam."
             Command.FishCam()
+        else:
+            print 'Did not understand the command, please try again.'
     else:
         print "Could not understand arguements, use one from the following list:"
         print "\n\nServer:"
