@@ -1,0 +1,11 @@
+{
+    "globals": {
+        "$": false,
+        "angular": false,
+        "d3": false,
+        "$": false,
+        "document": false,
+        "location": false
+    },
+    "strict": true
+}

@@ -13,7 +13,6 @@ class Camera:
         logging.info('GET request to camera endpoint')
         imageIndex = 0
         for i in os.listdir(IMAGE_FOLDER):
-            print 'here'
             if i.startswith('image'):
                 index = int(i.split('_')[1].split('.')[0])
                 if index > imageIndex:

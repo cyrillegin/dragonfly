@@ -66,18 +66,3 @@ class Log(Base):
             'title': self.title,
             'description': self.description
         }
-
-
-class User(Base):
-
-    __tablename__ = "user"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(Text, nullable=False)
-    password = Column(Text, nullable=False)
-
-    def toDict(self):
-        return {
-            'id': self.id,
-            'name': self.name
-        }
