@@ -532,12 +532,7 @@ angular.module('dragonfly.graphcontroller', [])
             for (var i in attrs) {
                 data[attrs[i].fieldName] = $('#' + attrs[i].id)[0].value;
             }
-        } else {
-            if(parseFloat(data.readings[0].value) < 2){
-                console.log('err');
-                return;
-            }
-        }
+        } 
 
         apiService.post(url, data).then(function successCallback(response) {
             console.log(response);
