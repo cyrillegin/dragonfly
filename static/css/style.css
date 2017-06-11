@@ -75,6 +75,10 @@
   stroke-opacity:0.2;
 }
 
+.fish-cam {
+  width: 25%;
+}
+
 input{
   width: 100%;
 }

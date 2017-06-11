@@ -14,6 +14,7 @@ from log import Logs
 from command import Command
 from user import Users
 from grafana import GrafanaApi
+from camera import Camera
 
 
 class ResourceApi:
@@ -24,3 +25,4 @@ class ResourceApi:
     command = Command()
     user = Users()
     grafana = GrafanaApi()
+    camera = Camera()

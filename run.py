@@ -42,7 +42,7 @@ class Root(object):
 
     def index(self):
         t = env.get_template("index.html")
-        return t.render({})
+        return t.render({'fish': 'something'})
     index.exposed = True
 
     def login(self):
@@ -129,6 +129,9 @@ if __name__ == "__main__":
         elif args[1] == "refreshHeroku":
             print "Refreshing Heroku."
             Command.RefreshHeroku()
+        elif args[1] == "fishCam":
+            print "Starting Fish Cam."
+            Command.FishCam()
     else:
         print "Could not understand arguements, use one from the following list:"
         print "\n\nServer:"
