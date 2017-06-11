@@ -129,6 +129,9 @@ if __name__ == "__main__":
         elif args[1] == "refreshHeroku":
             print "Refreshing Heroku."
             Command.RefreshHeroku()
+        elif args[1] == "fishCam":
+            print "Starting Fish Cam."
+            Command.FishCam()
     else:
         print "Could not understand arguements, use one from the following list:"
         print "\n\nServer:"
