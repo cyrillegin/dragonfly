@@ -14,6 +14,7 @@ import weatherSensor
 import automate
 import databaseCommands
 import createUser
+import imageCapture
 
 
 class Command:
@@ -60,3 +61,7 @@ class Command:
     @staticmethod
     def DeleteUser():
         createUser.DeleteUser()
+
+    @staticmethod
+    def FishCam():
+        imageCapture.recordImages()
