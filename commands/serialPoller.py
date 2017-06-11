@@ -16,6 +16,7 @@ import time
 import serial
 import json
 import requests
+import logging
 
 SENSORURL = "http://localhost:5000/api/sensor"
 READINGURL = "http://localhost:5000/api/reading"
@@ -26,10 +27,12 @@ USBPREFIX = 'ttyUSB'
 # Foruse on OSX
 # USBPREFIX = 'tty.usb'
 
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
+
 
 def MCP(device):
     time.sleep(1)
-    print "starting device"
+    logging.info("starting device")
     ser = serial.Serial('/dev/{}'.format(device), 9600)
     p1 = Process(target=CollectData, args=(ser, ))
     p1.start()
@@ -38,14 +41,15 @@ def MCP(device):
 
 
 def CollectData(ser):
-    print "collect process starting"
+    logging.info("Collect process starting.")
     Alive = True
     pollRate = 60*5
     while(Alive):
         try:
             data = ser.readline()
-        except:
-            print "error reading data."
+        except Exception, e:
+            logging.error("Error reading data.")
+            logging.debug(e)
             Alive = False
             continue
         data = data.replace("'", '"')
@@ -53,13 +57,13 @@ def CollectData(ser):
             try:
                 serData = json.loads(data)
             except Exception, e:
-                print "error loading data"
-                print e
+                logging.error("Error loading data.")
+                logging.debug(e)
                 continue
-            print "saving data"
+            logging.info("saving data")
             for i in serData:
                 if "station" not in i:
-                    print 'discarding'
+                    logging.debug('Discarding.')
                     continue
                 for j in i['sensors']:
                     newReading = {
@@ -71,42 +75,12 @@ def CollectData(ser):
                             'value': j['value']
                         }]
                     }
-                    print "saving:"
-                    print newReading
+                    logging.info("Saving: {}".format(newReading))
                     response = requests.post(READINGURL, json.dumps(newReading))
-                    print "response was: {}".format(response)
+                    logging.debug("response was: {}".format(response))
         else:
-            print "data not formatted correctly, sleeping."
+            logging.error("Data not formatted correctly, sleeping.")
         time.sleep(pollRate)
-
-
-def SendData(ser):
-    print "send process starting"
-    CheckRate = 1
-    while(True):
-        FoundData = False
-        try:
-            with open('commandQueue.json') as data_file:
-                data = json.load(data_file)
-                if(len(data.keys()) > 0):
-                    print "got new command!"
-                    print data
-                    if(data['value'] is True):
-                        ser.write('1')
-                    else:
-                        ser.write('0')
-                    FoundData = True
-        except:
-            print "error opening json file."
-        if(FoundData):
-            try:
-                with open('commandQueue.json', 'w') as outfile:
-                    print "command complete"
-                    json.dump({}, outfile)
-                    FoundData = False
-            except:
-                print "error writing to json file."
-        time.sleep(CheckRate)
 
 
 def serialPoller():
@@ -121,10 +95,10 @@ def serialPoller():
             for i in f:
                 if i.startswith(USBPREFIX):
                     devices.append(i)
-            print"Devices found: {}".format(devices)
+            logging.info("Devices found: {}".format(devices))
             for j in devices:
                 if j not in currentDevices or currentDevices[j].is_alive() is False:
-                    print "New device found, starting serial: {}".format(j)
+                    logging.info("New device found, starting serial: {}".format(j))
                     p = Process(target=MCP, args=(j, ))
                     p.start()
                     currentDevices[j] = p

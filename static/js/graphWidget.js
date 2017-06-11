@@ -1,563 +1,554 @@
 /*jslint node: true */
+'use strict';
 
-var angular, $;
 angular.module('dragonfly.graphcontroller', [])
 
-.controller("graphController",['$scope', 'dataService', '$window', 'apiService', '$timeout', '$location', '$http', function ($scope, dataService, $window, apiService, $timeout, $location, $http) {
-  $scope.LoggedIn = false;
-  $scope.$watch(function(){
-    return dataService.selection();
-  }, function(v){
-    if(v === undefined) return;
-    if(dataService.data === undefined) return;
-    GetGraph();
-  });
+.controller("graphController", ['$scope', 'dataService', '$window', 'apiService', '$timeout', '$location', '$http', function($scope, dataService, $window, apiService, $timeout, $location, $http) {
 
-  function GetGraph(){
-    var args = $location.search();
-    var d = new Date();
-    var start = Math.round((d.getTime() - 1000*60*60*24) / 1000);
-    var end = Math.round(d.getTime() / 1000);
-    if(args.start_date !== undefined) start = args.start_date;
-    if(args.end_date !== undefined) end = args.end_date;
+    $scope.$watch(function() {
+        return dataService.selection();
+    }, function(v) {
+        if (v === undefined) return;
+        if (dataService.data === undefined) return;
+        GetGraph();
+    });
 
-    apiService.get('reading/?sensor=' + dataService.selection() + "&start="+start+"&end="+end)
-        .then(function successCallback(response){
-            DrawGraph(response.data);
-        }, function errorCallback(response){
-          console.log("An error has occured.", response.data);
-        });
-  }
+    function GetGraph() {
+        var args = $location.search();
+        var d = new Date();
+        var start = Math.round((d.getTime() - 1000 * 60 * 60 * 24) / 1000);
+        var end = Math.round(d.getTime() / 1000);
+        if (args.start_date !== undefined) start = args.start_date;
+        if (args.end_date !== undefined) end = args.end_date;
 
-  function DrawGraph(data){
-// Initialization.
-    var d3 = $window.d3;
-    var container = $('#graph-container');
-    container.html("");
-    
-    var width = container[0].clientWidth, height = 400;
-    var margin = {top: 20, right: 10, bottom: 30, left: 40};
-    width = width - margin.left - margin.right; height = height - margin.top - margin.bottom;
-    var i, j, newText;
-    
-// Apply calibration data.
-    var coef = {"x": 1, "y": 0};
-
-    for(i = 0; i < data.readings.length; i++){
-        data.readings[i].created = new Date(data.readings[i].created*1000).getTime();
-        data.readings[i].value = data.readings[i].value*coef.x + coef.y;
-    }
-    if(data.readings.length === 0){
-        $('#graph-container')[0].innerHTML = "There arn't enough readings for this sensor to display anything.";
-        return;
-    }
-    var start = data.readings[0].created;
-    var end = data.readings[0].created;
-    var min = data.readings[0].value;
-    var max = data.readings[0].value;
-
-// Set min and max values
-    for(i = 0; i < data.readings.length;i++){
-        if(min > data.readings[i].value) min = data.readings[i].value;
-        if(max < data.readings[i].value) max = data.readings[i].value;
-        if(start > data.readings[i].created) start = data.readings[i].created;
-        if(end < data.readings[i].created) end = data.readings[i].created;
-    }
-    if($location.search().start_date !== undefined) start = $location.search().start_date*1000;
-    if($location.search().end_date !== undefined) end = $location.search().end_date*1000;
-// Create the svg.
-    var newChart = d3.select('#graph-container')
-        .append("svg")
-        .attr("class", "Chart-Container")
-        .attr("id", "Graph" + data.sensor.name)
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")")
-        .classed("svg-content-responsive", true);
-    if(data.readings.length === 0){
-        newChart.append("g").append("text")
-            .text("No data exists for this time range.")
-            .attr("class", "ChartTitle-Text")
-            .attr("x", margin.left)
-            .attr("y", height/2);
-        return;
+        apiService.get('reading/?sensor=' + dataService.selection() + "&start=" + start + "&end=" + end)
+            .then(function successCallback(response) {
+                DrawGraph(response.data);
+            }, function errorCallback(response) {
+                console.log("An error has occured.", response.data);
+            });
     }
 
-// Scale
-    var xScale = d3.scaleTime()
-        .domain([new Date(start), new Date(end)])
-        .rangeRound([0, width]);
+    function DrawGraph(data) {
+        // Initialization.
+        var d3 = $window.d3;
+        var container = $('#graph-container');
+        container.html("");
 
-    var yScale = d3.scaleLinear()
-        .domain([min,max+(max-min)*0.1])
-        .rangeRound([height, margin.bottom]);
+        var width = container[0].clientWidth,
+            height = 400;
+        var margin = { top: 20, right: 10, bottom: 30, left: 40 };
+        width = width - margin.left - margin.right;
+        height = height - margin.top - margin.bottom;
+        var i, j, newText;
 
-// Y Axis
-    var yAxis = d3.axisLeft(yScale)
-        .tickSizeInner(-width)
-        .tickSizeOuter(0)
-        .tickValues(getTic())
-        .tickFormat(function(d){
-            var f = d3.format(".1f");
-            return f(d) + " " + data.sensor.units;
-        });
+        // Apply calibration data.
+        var coef = { "x": 1, "y": 0 };
 
-    function getTic(){
-        var Ticks = [];
-        var ratio  = (max-min) / 6;
-        for(var i = 0; i < 7; i++){
-            Ticks.push(min+(ratio*i));
+        for (i = 0; i < data.readings.length; i++) {
+            data.readings[i].created = new Date(data.readings[i].created * 1000).getTime();
+            data.readings[i].value = data.readings[i].value * coef.x + coef.y;
         }
-        return Ticks;
-    }
+        if (data.readings.length === 0) {
+            $('#graph-container')[0].innerHTML = "There arn't enough readings for this sensor to display anything.";
+            return;
+        }
+        var start = data.readings[0].created;
+        var end = data.readings[0].created;
+        var min = data.readings[0].value;
+        var max = data.readings[0].value;
 
-    newChart.append("g")
-        .attr("class", "ChartAxis-Shape")
-        .call(yAxis);
+        // Set min and max values
+        for (i = 0; i < data.readings.length; i++) {
+            if (min > data.readings[i].value) min = data.readings[i].value;
+            if (max < data.readings[i].value) max = data.readings[i].value;
+            if (start > data.readings[i].created) start = data.readings[i].created;
+            if (end < data.readings[i].created) end = data.readings[i].created;
+        }
+        if ($location.search().start_date !== undefined) start = $location.search().start_date * 1000;
+        if ($location.search().end_date !== undefined) end = $location.search().end_date * 1000;
 
-// X Axis
-    var xAxis = d3.axisBottom(xScale)
-        .tickSizeInner(-height + margin.bottom )
-        .tickSizeOuter(0)
-        .tickPadding(10)
-        .ticks(5);
+        // Create the svg.
+        var newChart = d3.select('#graph-container')
+            .append("svg")
+            .attr("class", "Chart-Container")
+            .attr("id", "Graph" + data.sensor.name)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")")
+            .classed("svg-content-responsive", true);
+        if (data.readings.length === 0) {
+            newChart.append("g").append("text")
+                .text("No data exists for this time range.")
+                .attr("class", "ChartTitle-Text")
+                .attr("x", margin.left)
+                .attr("y", height / 2);
+            return;
+        }
 
-    newChart.append("g")
-        .attr("class", "ChartAxis-Shape")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+        // Scale
+        var xScale = d3.scaleTime()
+            .domain([new Date(start), new Date(end)])
+            .rangeRound([0, width]);
 
-// Top border
-    newChart.append("g")
-        .append("line")
-        .attr("class", "ChartAxis-Shape")
-        .attr("x1", 0)
-        .attr("x2", width)
-        .attr("y1", margin.bottom)
-        .attr("y2", margin.bottom);
+        var yScale = d3.scaleLinear()
+            .domain([min, max + (max - min) * 0.1])
+            .rangeRound([height, margin.bottom]);
 
-// Right border
-    newChart.append("g")
-        .append("line")
-        .attr("class", "ChartAxis-Shape")
-        .attr("x1", width)
-        .attr("x2", width)
-        .attr("y1", margin.bottom)
-        .attr("y2", height);
+        // Y Axis
+        var yAxis = d3.axisLeft(yScale)
+            .tickSizeInner(-width)
+            .tickSizeOuter(0)
+            .tickValues(getTic())
+            .tickFormat(function(d) {
+                var f = d3.format(".1f");
+                return f(d) + " " + data.sensor.units;
+            });
 
-// Graph title
-    newChart.append("text")
-        .attr("class", "ChartTitle-Text")
-        .attr("x", 0)
-        .attr("y", 0)
-        .text(data.sensor.name);
-
-// Legend
-    var colors = ["#FFB90F", "#62f1ff", "blue", "red", "green", "yellow"];
-
-// Legend text
-    var temp = newChart.append("text")
-        .attr("class", "ChartLegend-Text")
-        .style("text-anchor","end")
-        .attr("x", width - 18)
-        .attr("y", 10)
-        .text(data.sensor.name);
-
-// Legend icon
-    newChart.append("rect")
-        .attr("fill", colors[i])
-        .attr("x", width-16)
-        .attr("y", 0)
-        .attr("width", 14)
-        .attr("height", 14);
-    
-
-// Selection box
-    var selectionBox = newChart.append("rect")
-        .attr("fill", "none")
-        .attr("opacity", 0.5)
-        .attr("x",0)
-        .attr("y", margin.top)
-        .attr("width", 14)
-        .attr("height", height-margin.top);
-    
-
-//Graph lines
-    var lastVal = 0;
-    var Av = 10000;
-    var count = 0;
-    var lineFunction = d3.line()
-        .defined(function(d){
-            
-            d.created = parseInt(d.created)
-            // console.log(d.created)
-            if(d.created > lastVal){
-                // return false;
-                console.log('here')
+        function getTic() {
+            var Ticks = [];
+            var ratio = (max - min) / 6;
+            for (var i = 0; i < 7; i++) {
+                Ticks.push(min + (ratio * i));
             }
-            // if(d.created > lastVal+Av){
-            //     lastVal = d.created;
-            //     return false;
-            // }
-            lastVal = d.created;
-            return true;
-            
-        })
-        .x(function(d) {
-            return xScale(d.created);
-          })
-        .y(function(d) {
-            return yScale(d.value);
-        });
+            return Ticks;
+        }
 
-    var lineGraph = newChart.append("path")
-        .attr("d", lineFunction(data.readings))
-        .attr("stroke", colors[0])
-        .attr("stroke-width", 2)
-        .attr("fill", "none");
+        newChart.append("g")
+            .attr("class", "ChartAxis-Shape")
+            .call(yAxis);
 
-// TOOL-TIPS
-// Tooltip container
-    var tooltip = newChart.append("g")
-        .style("display", "none");
-    var circleElements = [], lineElements = [], textElements = [];
+        // X Axis
+        var xAxis = d3.axisBottom(xScale)
+            .tickSizeInner(-height + margin.bottom)
+            .tickSizeOuter(0)
+            .tickPadding(10)
+            .ticks(5);
 
-// Tooltip circle
-    var newCircle = tooltip.append("circle")
-        .attr("class", "tooltip-circle")
-        .style("fill", "none")
-        .style("stroke", "blue")
-        .attr("r", 4);
-    circleElements.push(newCircle);
+        newChart.append("g")
+            .attr("class", "ChartAxis-Shape")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
-// Use if horizontal lines are desired, uncomment line in mousemove() to get correct positioning
-    var newLine = tooltip.append("line")
-        .attr("class", "tooltip-line")
-        .style("stroke", "blue")
-        .style("stroke-dasharray", "3,3")
-        .style("opacity", 0.5)
-        .attr("x1", 0)
-        .attr("x2", width);
-    lineElements.push(newLine);
-// Tooltip text
-    newText = tooltip.append("text")
-        .attr("width", 100*2)
-        .attr("height", 100*0.4)
-        .attr("fill", "black");
-    textElements.push(newText);
+        // Top border
+        newChart.append("g")
+            .append("line")
+            .attr("class", "ChartAxis-Shape")
+            .attr("x1", 0)
+            .attr("x2", width)
+            .attr("y1", margin.bottom)
+            .attr("y2", margin.bottom);
 
-// Y-axis line for tooltip
-    var yLine = tooltip.append("g")
-        .append("line")
-        .attr("class", "tooltip-line")
-        .style("stroke", "blue")
-        .style("stroke-dasharray", "3,3")
-        .style("opacity", 0.5)
-        .attr("y1", margin.bottom)
-        .attr("y2", height);
+        // Right border
+        newChart.append("g")
+            .append("line")
+            .attr("class", "ChartAxis-Shape")
+            .attr("x1", width)
+            .attr("x2", width)
+            .attr("y1", margin.bottom)
+            .attr("y2", height);
 
-// Date text
-    var timeText = tooltip.append("text")
-        .attr("x", 0)
-        .attr("y", margin.top-5)
-        .attr("width", 100)
-        .attr("height", 100*0.4)
-        .attr("fill", "black");
+        // Graph title
+        newChart.append("text")
+            .attr("class", "ChartTitle-Text")
+            .attr("x", 0)
+            .attr("y", 0)
+            .text(data.sensor.name);
 
-// Drag behaivors for the selection box.
-    // var dragStart = 0, dragStartPos = 0, dragEnd = 0;
-    // var drag = d3.drag()
-    //     .on("drag", function(d,i) {
-    //         var x0 = xScale.invert(d3.mouse(this)[0]);
-    //         i = bisectDate(data.readings, x0, 1);
-    //         var d0 = data.readings[i - 1],
-    //             d1 = data.readings[i];
-    //         d = x0 - d0.created > d1.created - x0 ? d1 : d0;
+        // Legend
+        var colors = ["#FFB90F", "#62f1ff", "blue", "red", "green", "yellow"];
 
-    //         if(xScale(d.created) > dragStartPos){
-    //             selectionBox.attr("width", (xScale(d.created) - dragStartPos));
-    //         } else {
-    //             selectionBox.attr("width", ( dragStartPos - xScale(d.created)));
-    //             selectionBox.attr("transform", "translate(" + xScale(d.created) + ",0)" );
-    //         }
-    //     })
-    //     .on("end", function(d,i){
-    //         dragEnd = d3.mouse(this)[0];
-    //         if(Math.abs(dragStart - dragEnd) < 10) return;
+        // Legend text
+        var temp = newChart.append("text")
+            .attr("class", "ChartLegend-Text")
+            .style("text-anchor", "end")
+            .attr("x", width - 18)
+            .attr("y", 10)
+            .text(data.sensor.name);
 
-    //         var x0 = xScale.invert(dragStart), x1 = xScale.invert(dragEnd);
+        // Legend icon
+        newChart.append("rect")
+            .attr("fill", colors[i])
+            .attr("x", width - 16)
+            .attr("y", 0)
+            .attr("width", 14)
+            .attr("height", 14);
 
-            // scope.$apply(function(){
-            //     if(x1 > x0){
-            //         $location.search('start_date', x0.getTime());
-            //         $location.search('end_date',x1.getTime());
-            //     } else {
-            //         $location.search('start_date', x1.getTime());
-            //         $location.search('end_date',x0.getTime());
-            //     }
-            // });
+        // Selection box
+        var selectionBox = newChart.append("rect")
+            .attr("fill", "none")
+            .attr("opacity", 0.5)
+            .attr("x", 0)
+            .attr("y", margin.top)
+            .attr("width", 14)
+            .attr("height", height - margin.top);
+
+
+        //Graph lines
+        var lastVal = 0;
+        var Av = 10000;
+        var count = 0;
+        var lineFunction = d3.line()
+            .defined(function(d) {
+                // TODO: add linebreak behaivor
+                return true;
+
+            })
+            .x(function(d) {
+                return xScale(d.created);
+            })
+            .y(function(d) {
+                return yScale(d.value);
+            });
+
+        var lineGraph = newChart.append("path")
+            .attr("d", lineFunction(data.readings))
+            .attr("stroke", colors[0])
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+
+        // TOOL-TIPS
+        // Tooltip container
+        var tooltip = newChart.append("g")
+            .style("display", "none");
+        var circleElements = [],
+            lineElements = [],
+            textElements = [];
+
+        // Tooltip circle
+        var newCircle = tooltip.append("circle")
+            .attr("class", "tooltip-circle")
+            .style("fill", "none")
+            .style("stroke", "blue")
+            .attr("r", 4);
+        circleElements.push(newCircle);
+
+        // Use if horizontal lines are desired, uncomment line in mousemove() to get correct positioning
+        var newLine = tooltip.append("line")
+            .attr("class", "tooltip-line")
+            .style("stroke", "blue")
+            .style("stroke-dasharray", "3,3")
+            .style("opacity", 0.5)
+            .attr("x1", 0)
+            .attr("x2", width);
+        lineElements.push(newLine);
+        // Tooltip text
+        newText = tooltip.append("text")
+            .attr("width", 100 * 2)
+            .attr("height", 100 * 0.4)
+            .attr("fill", "black");
+        textElements.push(newText);
+
+        // Y-axis line for tooltip
+        var yLine = tooltip.append("g")
+            .append("line")
+            .attr("class", "tooltip-line")
+            .style("stroke", "blue")
+            .style("stroke-dasharray", "3,3")
+            .style("opacity", 0.5)
+            .attr("y1", margin.bottom)
+            .attr("y2", height);
+
+        // Date text
+        var timeText = tooltip.append("text")
+            .attr("x", 0)
+            .attr("y", margin.top - 5)
+            .attr("width", 100)
+            .attr("height", 100 * 0.4)
+            .attr("fill", "black");
+
+        // Drag behaivors for the selection box.
+        // var dragStart = 0, dragStartPos = 0, dragEnd = 0;
+        // var drag = d3.drag()
+        //     .on("drag", function(d,i) {
+        //         var x0 = xScale.invert(d3.mouse(this)[0]);
+        //         i = bisectDate(data.readings, x0, 1);
+        //         var d0 = data.readings[i - 1],
+        //             d1 = data.readings[i];
+        //         d = x0 - d0.created > d1.created - x0 ? d1 : d0;
+
+        //         if(xScale(d.created) > dragStartPos){
+        //             selectionBox.attr("width", (xScale(d.created) - dragStartPos));
+        //         } else {
+        //             selectionBox.attr("width", ( dragStartPos - xScale(d.created)));
+        //             selectionBox.attr("transform", "translate(" + xScale(d.created) + ",0)" );
+        //         }
+        //     })
+        //     .on("end", function(d,i){
+        //         dragEnd = d3.mouse(this)[0];
+        //         if(Math.abs(dragStart - dragEnd) < 10) return;
+
+        //         var x0 = xScale.invert(dragStart), x1 = xScale.invert(dragEnd);
+
+        // scope.$apply(function(){
+        //     if(x1 > x0){
+        //         $location.search('start_date', x0.getTime());
+        //         $location.search('end_date',x1.getTime());
+        //     } else {
+        //         $location.search('start_date', x1.getTime());
+        //         $location.search('end_date',x0.getTime());
+        //     }
+        // });
         // });
 
-// Hit area for selection box
-    var circleHit = newChart.append("rect")
-        .attr("width", width)
-        .attr("height", height)
-        .style("fill", "none")
-        .style("pointer-events", "all")
-        .on("mouseover", function() {
-            tooltip.style("display", null);
-        })
-        .on("mouseout", function() {
-            tooltip.style("display", "none");
-        })
-        .on("mousemove", mousemove)
-        .on("mousedown", function(){
-            selectionBox.attr("fill", "#b7ff64");
-            // dragStart = d3.mouse(this)[0];
+        // Hit area for selection box
+        var circleHit = newChart.append("rect")
+            .attr("width", width)
+            .attr("height", height)
+            .style("fill", "none")
+            .style("pointer-events", "all")
+            .on("mouseover", function() {
+                tooltip.style("display", null);
+            })
+            .on("mouseout", function() {
+                tooltip.style("display", "none");
+            })
+            .on("mousemove", mousemove)
+            .on("mousedown", function() {
+                selectionBox.attr("fill", "#b7ff64");
+                // dragStart = d3.mouse(this)[0];
 
-            var x0 = xScale.invert(d3.mouse(this)[0]),
-                i = bisectDate(data.readings, x0, 1),
-                d0 = data.readings[i - 1],
-                d1 = data.readings[i],
-                d = x0 - d0.created > d1.created - x0 ? d1 : d0;
-            selectionBox.attr("transform", "translate(" + xScale(d.created) + ",0)" );
-            // dragStartPos = xScale(d.created);
-        });
+                var x0 = xScale.invert(d3.mouse(this)[0]), 
+                    i = bisectDate(data.readings, x0, 1),
+                    d0 = data.readings[i - 1],
+                    d1 = data.readings[i],
+                    d = x0 - d0.created > d1.created - x0 ? d1 : d0;
+                selectionBox.attr("transform", "translate(" + xScale(d.created) + ",0)");
+                // dragStartPos = xScale(d.created);
+            });
         // .call(drag);
 
-// Tooltip helper
-    var bisectDate = d3.bisector(function(d) {
-        return d.created;
-    }).left;
+        // Tooltip helper
+        var bisectDate = d3.bisector(function(d) {
+            return d.created;
+        }).left;
 
-// Update loop for tooltips.
-    function mousemove() {
-        var x0 = xScale.invert(d3.mouse(this)[0]),
-            i = bisectDate(data.readings, x0, 1),
-            d0 = data.readings[i - 1],
-            d1 = data.readings[i];
-        if(d1 === undefined) return;
-        var d = x0 - d0.created > d1.created - x0 ? d1 : d0;
+        // Update loop for tooltips.
+        function mousemove() {
+            var x0 = xScale.invert(d3.mouse(this)[0]), // jshint ignore:line
+                i = bisectDate(data.readings, x0, 1),
+                d0 = data.readings[i - 1],
+                d1 = data.readings[i];
+            if (d1 === undefined) return;
+            var d = x0 - d0.created > d1.created - x0 ? d1 : d0;
 
-        circleElements[0].attr("transform", "translate(" + xScale(d.created) + "," + yScale(d.value) + ")");
-        yLine.attr("transform", "translate(" + xScale(d.created) + "," + 0 + ")");
-        lineElements[0].attr("transform", "translate(" + 0 + "," + yScale(d.value) + ")"); //uncomment this line for update of horizontal line tooltip
-        timeText.text(new Date(d.created));
+            circleElements[0].attr("transform", "translate(" + xScale(d.created) + "," + yScale(d.value) + ")");
+            yLine.attr("transform", "translate(" + xScale(d.created) + "," + 0 + ")");
+            lineElements[0].attr("transform", "translate(" + 0 + "," + yScale(d.value) + ")"); //uncomment this line for update of horizontal line tooltip
+            timeText.text(new Date(d.created));
 
-        textElements[0]
-            .text(getFormattedText(d.value))
-            .attr("transform", "translate(" + (xScale(d.created)+10) + "," + (yScale(d.value)-10) + ")");
-         
-    }
+            textElements[0]
+                .text(getFormattedText(d.value))
+                .attr("transform", "translate(" + (xScale(d.created) + 10) + "," + (yScale(d.value) - 10) + ")");
 
-// Formats text for units display
-    function getFormattedText(d){
-        var f = d3.format(".1f");
-        var count = Math.round(d).toString().length;
-        var units = "";
-        if(data.sensor !== undefined){
-            units = data.sensor.units;
         }
-   
-        f = d3.format(".1f");
-        return f(d) + units;
-        
-     }
 
-}///End D3
+        // Formats text for units display
+        function getFormattedText(d) {
+            var f = d3.format(".1f");
+            var count = Math.round(d).toString().length;
+            var units = "";
+            if (data.sensor !== undefined) {
+                units = data.sensor.units;
+            }
 
-$timeout(function(){
-    $('#start_date').datetimepicker();
-    $('#end_date').datetimepicker();
-});
+            f = d3.format(".1f");
+            return f(d) + units;
+        }
 
-$scope.SubmitDate = function(){
-    var newDates = {
-        'start': $('#start_date').data("DateTimePicker").date(),
-        'end': $('#end_date').data("DateTimePicker").date()
-    };
-    $timeout(function(){
-        $scope.$apply(function(){
-            $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
-            $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
-            GetGraph();
+    } ///End D3
+
+    $timeout(function() {
+        $('#start_date').datetimepicker();
+        $('#end_date').datetimepicker();
+    });
+
+    $scope.SubmitDate = function() {
+        var newDates = {
+            'start': $('#start_date').data("DateTimePicker").date(),
+            'end': $('#end_date').data("DateTimePicker").date()
+        };
+        $timeout(function() {
+            $scope.$apply(function() {
+                $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
+                $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
+                GetGraph();
+            });
         });
-    });
-};
+    };
 
-var sensorAttrs = [{
-    'name': "name",
-    'type': 'text',
-    'value': 'default name',
-    'id': 'modal_name',
-    'fieldName': 'name'
-}, {
-    'name': "description",
-    "type": "text",
-    'value': "default description",
-    'id': 'modal_description',
-    'fieldName': 'description'
-}, {
-    'name': "coefficients",
-    "type": "text",
-    'value': "1,0",
-    'id': 'modal_coefficients',
-    'fieldName': 'coefficients'
-}, {
-    'name': "self_type",
-    'type': 'multiple',
-    'value': [{
-        'name': 'temperature'
+    var sensorAttrs = [{
+        'name': "name",
+        'type': 'text',
+        'value': 'default name',
+        'id': 'modal_name',
+        'fieldName': 'name'
     }, {
-        'name': 'cleanliness'
+        'name': "description",
+        "type": "text",
+        'value': "default description",
+        'id': 'modal_description',
+        'fieldName': 'description'
     }, {
-        'name': 'lightsensor'
+        'name': "coefficients",
+        "type": "text",
+        'value': "1,0",
+        'id': 'modal_coefficients',
+        'fieldName': 'coefficients'
     }, {
-        'name': 'lightswitch'
-    }],
-    'id': 'modal_type',
-    'fieldName': 'sensor_type'
-}, {
-    'name': "units",
-    "type": "text",
-    'value': "default unit",
-    'id': 'modal_unit',
-    'fieldName': 'units'
-}, {
-    'name': "Min Value",
-    "type": "text",
-    'value': 0,
-    'id': 'modal_min',
-    'fieldName': 'min_value'
-}, {
-    'name': 'Max Value',
-    'type': 'text',
-    'value': 1024,
-    'id': 'modal_max',
-    'fieldName': 'max_value'
-}];
+        'name': "self_type",
+        'type': 'multiple',
+        'value': [{
+            'name': 'temperature'
+        }, {
+            'name': 'cleanliness'
+        }, {
+            'name': 'lightsensor'
+        }, {
+            'name': 'lightswitch'
+        }],
+        'id': 'modal_type',
+        'fieldName': 'sensor_type'
+    }, {
+        'name': "units",
+        "type": "text",
+        'value': "default unit",
+        'id': 'modal_unit',
+        'fieldName': 'units'
+    }, {
+        'name': "Min Value",
+        "type": "text",
+        'value': 0,
+        'id': 'modal_min',
+        'fieldName': 'min_value'
+    }, {
+        'name': 'Max Value',
+        'type': 'text',
+        'value': 1024,
+        'id': 'modal_max',
+        'fieldName': 'max_value'
+    }];
 
-var readingAttrs = [{
-    'name': "Sensor",
-    "type": "text",
-    'value': "",
-    'id': 'modal_sensor',
-    'fieldName': 'sensor'
-}, {
-    'name': "value",
-    "type": "text",
-    'value': "default value",
-    'id': 'modal_value',
-    'fieldName': 'value'
-}, {
-    'name': "date",
-    "type": "date",
-    'value': 1000000,
-    'id': 'modal_date',
-    'fieldName': 'created'
-}];
+    var readingAttrs = [{
+        'name': "Sensor",
+        "type": "multiple",
+        'value': [],
+        'id': 'modal_sensor',
+        'fieldName': 'sensor'
+    }, {
+        'name': "value",
+        "type": "text",
+        'value': 7,
+        'id': 'modal_value',
+        'fieldName': 'value'
+    }, {
+        'name': "date",
+        "type": "date",
+        'value': 1000000,
+        'id': 'modal_date',
+        'fieldName': 'created'
+    }];
 
-var logAttrs = [{
-    'name': "title",
-    'type': 'text',
-    'value': 'default log title',
-    'id': 'modal_title',
-    'fieldName': 'title'
-}, {
-    'name': "description",
-    "type": "text",
-    'value': "default description",
-    'id': 'modal_description',
-    'fieldName': 'description'
-}, {
-    'name': "date",
-    "type": "date",
-    'value': 1000000,
-    'id': 'modal_date',
-    'fieldName': 'created'
-}];
-
-var loginAttrs = [{
-    'name': "Username",
-    'type': 'text',
-    'value': '',
-    'id': 'modal_username',
-    'fieldName': 'username'
-}, {
-    'name': "Password",
-    'type': 'password',
-    'value': '',
-    'id': "modal_password",
-    'fieldName': 'password'
-}];
-
-
-$scope.OpenModal = function(type){
-    var attrs;
-    $scope.isSensorModal = false;
-    $scope.saveText = "Save " + type;
-    $scope.modalTitle = type;
-    switch(type){
-        case "sensor":
-            attrs = sensorAttrs;
-            $scope.isSensorModal = true;
-            break;
-        case "reading":
-            attrs = readingAttrs;
-            break;
-        case "log":
-            attrs = logAttrs;
-            break;
-        case 'login':
-            attrs = loginAttrs;
-            $scope.saveText = "Log in";
-            break;
-    }
-    $scope.modalAttributes = attrs;
-    $("#sensorEditModal").modal('toggle');
-    $('#modal_alert').css('display', 'hidden');
     $timeout(function(){
-        $('#modal_date').datetimepicker();    
+        var sensors = dataService.data();
+        for(var i in sensors){
+            readingAttrs[0].value.push({'name': sensors[i].name});
+        }
     });
-};
 
-$scope.SubmitModal = function(){
-    var attrs;
-    var suffix;
-    switch($scope.modalTitle){
-        case "sensor":
-            attrs = sensorAttrs;
-            suffix = '/api/sensor';
-            break;
-        case "reading":
-            attrs = readingAttrs;
-            suffix = '/api/reading';
-            break;
-        case "log":
-            attrs = logAttrs;
-            suffix = '/api/log';
-            break;
-        case "login":
-            attrs = loginAttrs;
-            suffix = '/login';
-            break;
-    }
-    var data = {};
-    for(var i in attrs){
-        data[attrs[i].fieldName] = $('#'+attrs[i].id)[0].value;
-    }
+    var logAttrs = [{
+        'name': "title",
+        'type': 'text',
+        'value': 'default log title',
+        'id': 'modal_title',
+        'fieldName': 'title'
+    }, {
+        'name': "description",
+        "type": "text",
+        'value': "default description",
+        'id': 'modal_description',
+        'fieldName': 'description'
+    }, {
+        'name': "date",
+        "type": "date",
+        'value': 1000000,
+        'id': 'modal_date',
+        'fieldName': 'created'
+    }];
 
-    $http.post(suffix, data).then(function successCallback(response){
-        console.log(response);
-        $scope.LoggedIn = true;
+    $scope.OpenModal = function(type) {
+        var attrs;
+        $scope.isSensorModal = false;
+        $scope.saveText = "Save " + type;
+        $scope.modalTitle = type;
+        switch (type) {
+            case "sensor":
+                attrs = sensorAttrs;
+                $scope.isSensorModal = true;
+                break;
+            case "reading":
+                attrs = readingAttrs;
+                break;
+            case "log":
+                attrs = logAttrs;
+                break;
+        }
+        $scope.modalAttributes = attrs;
         $("#sensorEditModal").modal('toggle');
-    }, function errorCallback(response){
-      console.log("An error has occured.", response.data);
-      $('#modal_alert').html( response.data.error);
-      $('#modal_alert').css('display', 'block');
-    }).then(function(){
-        console.log('all done');
-    });
-};
+        $('#modal_alert').css('display', 'hidden');
+        $timeout(function() {
+            $('#modal_date').datetimepicker();
+        });
+    };
+
+    $scope.SubmitModal = function() {
+        var attrs;
+        var url;
+        var data = {};
+        switch ($scope.modalTitle) {
+            case "sensor":
+                attrs = sensorAttrs;
+                url = 'sensor';
+                break;
+            case "reading":
+                data = {
+                    'sensor': {
+                        'name': $('#modal_sensor')[0].selectedOptions[0].innerText
+                    },
+                    'readings': [{
+                        'value': parseFloat($('#modal_value')[0].value),
+                        'timestamp': $('#modal_date').data("DateTimePicker").date().unix()
+                    }]
+                };
+                url = 'reading';
+                break;
+            case "log":
+                attrs = logAttrs;
+                url = 'log';
+                break;
+        }
+        if($scope.modalTitle !== "reading"){
+            for (var i in attrs) {
+                data[attrs[i].fieldName] = $('#' + attrs[i].id)[0].value;
+            }
+        } else {
+            if(parseFloat(data.readings[0].value) < 2){
+                console.log('err');
+                return;
+            }
+        }
+
+        apiService.post(url, data).then(function successCallback(response) {
+            console.log(response);
+            $scope.LoggedIn = true;
+            $("#sensorEditModal").modal('toggle');
+        }, function errorCallback(response) {
+            console.log("An error has occured.", response.data);
+            $('#modal_alert').html(response.data.error);
+            $('#modal_alert').css('display', 'block');
+        }).then(function() {
+            console.log('all done');
+        });
+    };
 }]);
