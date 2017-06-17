@@ -79,6 +79,9 @@ if __name__ == "__main__":
         elif args[1] == "fishCam":
             print "Starting Fish Cam."
             Command.FishCam()
+        elif args[1] == "gpioPoller":
+            print "reading from gpio"
+            Command.GpioPoller()
         else:
             print 'Did not understand the command, please try again.'
     else:
