@@ -25,7 +25,6 @@ import requests
 from sessionManager import sessionScope
 from models import Reading, Sensor
 import sensor
-import config
 
 
 class Readings:
@@ -61,19 +60,16 @@ class Readings:
         if "readings" not in data:
             logging.error('Must provide values to add')
             return json.dumps({"Error": "Must provide (a) value(s) to add."})
-        if config.isMCP:
-            with sessionScope() as session:
-                try:
-                    cursensor = session.query(Sensor).filter_by(name=data['sensor']['name']).one()
-                except Exception, e:
-                    logging.error("Sensor not found. Sending to sensor api")
-                    logging.debug(e)
-                    cursensor = sensor.CreateSensor(data['sensor'], session)
-                for i in data['readings']:
-                    AddReading(i, cursensor, session)
-                    logging.info('Added: {}'.format(i))
-        else:
-            requests.post("{}/api/reading".format(config.MACPIP), json.dumps(data))
+        with sessionScope() as session:
+            try:
+                cursensor = session.query(Sensor).filter_by(name=data['sensor']['name']).one()
+            except Exception, e:
+                logging.error("Sensor not found. Sending to sensor api")
+                logging.debug(e)
+                cursensor = sensor.CreateSensor(data['sensor'], session)
+            for i in data['readings']:
+                AddReading(i, cursensor, session)
+                logging.info('Added: {}'.format(i))
 
 
 def getReadings(sensor_id, start, end):

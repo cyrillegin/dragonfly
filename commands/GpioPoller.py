@@ -1,6 +1,9 @@
 
 import dht11
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception, e:
+    print e
 import json
 import requests
 import logging

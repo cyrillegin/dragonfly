@@ -13,7 +13,7 @@ import loadfixtures
 import serialPoller
 import weatherSensor
 import imageCapture
-import gpioPoller
+import GpioPoller
 
 
 class Command:
@@ -35,4 +35,4 @@ class Command:
 
     @staticmethod
     def GpioPoller():
-        gpioPoller.gpioPoller()
+        GpioPoller.gpioPoller()
