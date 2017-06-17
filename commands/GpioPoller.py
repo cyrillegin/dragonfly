@@ -9,7 +9,7 @@ import requests
 import logging
 import time
 
-READINGURL = "http://192.168.0.3/api/reading"
+READINGURL = "http://192.168.0.3:5000/api/reading"
 POLL_RATE = 60*5
 
 Temp_sensor = 14
@@ -34,6 +34,7 @@ def GpioPoller():
         if result.is_valid():
                 logging.info("Got new readings")
                 temp = result.temperature
+                logging.info('Temp in C: {}'.format(temp))
                 temp = temp * (9/5) + 32
                 humd = result.humidity
                 logging.info("Temperature: {} Humidity: {}".format(temp, humd))
