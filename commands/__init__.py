@@ -35,4 +35,4 @@ class Command:
 
     @staticmethod
     def GpioPoller():
-        GpioPoller.gpioPoller()
+        GpioPoller.GpioPoller()
