@@ -35,7 +35,7 @@ def GpioPoller():
                 logging.info("Got new readings")
                 temp = result.temperature
                 logging.info('Temp in C: {}'.format(temp))
-                temp = temp * (9/5) + 32
+                temp = (temp * 1.8) + 32
                 humd = result.humidity
                 logging.info("Temperature: {} Humidity: {}".format(temp, humd))
                 newTempReading = {
