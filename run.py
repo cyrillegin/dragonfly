@@ -82,6 +82,9 @@ if __name__ == "__main__":
         elif args[1] == "gpioPoller":
             print "reading from gpio"
             Command.GpioPoller()
+        elif args[1] == "pressurePoller":
+            print "reading from pressure poller"
+            Command.PressurePoller()
         else:
             print 'Did not understand the command, please try again.'
     else:
