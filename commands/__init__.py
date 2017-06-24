@@ -14,6 +14,7 @@ import serialPoller
 import weatherSensor
 import imageCapture
 import GpioPoller
+import pressurePoller
 
 
 class Command:
@@ -36,3 +37,7 @@ class Command:
     @staticmethod
     def GpioPoller():
         GpioPoller.GpioPoller()
+
+    @staticmethod
+    def PressurePoller():
+        pressurePoller.pressurePoller()
