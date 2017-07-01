@@ -75,15 +75,15 @@ class Sensors:
         with sessionScope() as session:
             try:
                 sensor = session.query(Sensor).filter_by(name=data['name']).one()
-                print "Sensor found. Checking for updates."
+                logging.info("Sensor found. Checking for updates.")
                 data = UpdateSensor(sensor, data, session).toDict()
             except Exception:
                 logging.info("Sensor not found. Creating new one.")
                 data = CreateSensor(data, session).toDict()
-        return data
+        return json.dumps(data)
 
 
-ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'sensor_type', 'units', 'lastReading', 'min_value', 'max_value']
+ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'sensor_type', 'units', 'lastReading', 'min_value', 'max_value', 'station']
 DEFAULTS = [time.time(), None, "", '1,0', None, None, 0, 0, 1024]
 
 

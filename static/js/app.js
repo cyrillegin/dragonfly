@@ -8,6 +8,7 @@ var app = angular.module('dragonfly', [
     'dragonfly.gaugecontroller',
     'dragonfly.treecontroller',
     'dragonfly.graphcontroller',
+    'dragonfly.sensorcontroller',
     'dragonfly.services'
 ])
 
