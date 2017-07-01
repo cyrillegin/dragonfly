@@ -1,4 +1,5 @@
-'''
+"""
+
 Dragonfly
 Cyrille Gindreau
 2017
@@ -7,11 +8,13 @@ __init__.py
 
 Sets up commands that are run from run.py
 
-'''
+"""
 import loadfixtures
 import serialPoller
 import weatherSensor
 import imageCapture
+import GpioPoller
+import pressurePoller
 
 
 class Command:
@@ -30,3 +33,11 @@ class Command:
     @staticmethod
     def FishCam():
         imageCapture.recordImages()
+
+    @staticmethod
+    def GpioPoller():
+        GpioPoller.GpioPoller()
+
+    @staticmethod
+    def PressurePoller():
+        pressurePoller.pressurePoller()

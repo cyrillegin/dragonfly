@@ -20,6 +20,7 @@ import json
 import cherrypy
 import time
 import logging
+import requests
 
 from sessionManager import sessionScope
 from models import Reading, Sensor

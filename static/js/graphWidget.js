@@ -309,7 +309,7 @@ angular.module('dragonfly.graphcontroller', [])
                 selectionBox.attr("fill", "#b7ff64");
                 // dragStart = d3.mouse(this)[0];
 
-                var x0 = xScale.invert(d3.mouse(this)[0]), 
+                var x0 = xScale.invert(d3.mouse(this)[0]),
                     i = bisectDate(data.readings, x0, 1),
                     d0 = data.readings[i - 1],
                     d1 = data.readings[i],
@@ -428,6 +428,12 @@ angular.module('dragonfly.graphcontroller', [])
         'value': 1024,
         'id': 'modal_max',
         'fieldName': 'max_value'
+    }, {
+      'name': 'Station',
+      'type': 'text',
+      'value': 'not set',
+      'id': 'station',
+      'fieldName': 'station'
     }];
 
     var readingAttrs = [{

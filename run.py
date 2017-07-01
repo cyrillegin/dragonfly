@@ -79,6 +79,12 @@ if __name__ == "__main__":
         elif args[1] == "fishCam":
             print "Starting Fish Cam."
             Command.FishCam()
+        elif args[1] == "gpioPoller":
+            print "reading from gpio"
+            Command.GpioPoller()
+        elif args[1] == "pressurePoller":
+            print "reading from pressure poller"
+            Command.PressurePoller()
         else:
             print 'Did not understand the command, please try again.'
     else:
@@ -87,6 +93,9 @@ if __name__ == "__main__":
         print "run - Starts the server."
         print "\nData:"
         print "loadFixtures - Loads some sample data into the database via the api."
-        print "serialPoller - Start polling for USB devices to get data from."
         print "weatherSensor - Requests data from lascruce-weather.org to get temperature."
         print "fishCam - Takes a picture every 5 mintues."
+        print "\nPollers:"
+        print "serialPoller - Start polling for USB devices to get data from."
+        print "gpioPoller - Start polling for raspberry pi gpio pins to get data from."
+        print "pressurePoller - Start polling the pressure sensor."
