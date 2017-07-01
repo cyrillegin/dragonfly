@@ -10,14 +10,36 @@ angular.module('dragonfly.treecontroller', [])
     }, function(v) {
         if (v === undefined) return;
         if (Object.keys(v).length <= 1) return;
+        // console.log(v)
         var sensorNodes = {
             "name": "Sensors",
             "children": []
         };
+
         for (var i in v) {
+          if(v[i].station === null){
+            v[i].station = "Not set"
+          }
+          var stationExists = false;
+          for (var j in sensorNodes.children) {
+            if(v[i].station === sensorNodes.children[j].name){
+              stationExists = true;
+            }
+          }
+          if(!stationExists){
             sensorNodes.children.push({
-                "name": v[i].name
-            });
+              "name": v[i].station,
+              "children": []
+            })
+          }
+          for(var j in sensorNodes.children) {
+            if(sensorNodes.children[j].name === v[i].station) {
+              sensorNodes.children[j].children.push({
+                  "name": v[i].name
+              });
+            }
+          }
+
         }
         buildTree(sensorNodes);
     });
@@ -26,7 +48,7 @@ angular.module('dragonfly.treecontroller', [])
         // Set the dimensions and margins of the diagram
         var margin = { top: 30, right: 20, bottom: 20, left: 20 },
             width = $('#sensor-tree')[0].clientWidth - margin.right - margin.left,
-            height = 110 - margin.top - margin.bottom;
+            height = 170 - margin.top - margin.bottom;
 
         var svg = d3.select("#sensor-tree").append("svg")
             .attr("width", width + margin.right + margin.left)
@@ -202,7 +224,11 @@ angular.module('dragonfly.treecontroller', [])
                     d._children = null;
                 }
                 update(d);
-                dataService.select(d.data.name);
+                console.log(d)
+                if(d.children === undefined){
+                  console.log('go')
+                  dataService.select(d.data.name);
+                }
                 $scope.$apply();
             }
         }
