@@ -21,6 +21,7 @@ class Sensor(Base):
     last_reading = Column(Float)
     min_value = Column(Integer)
     max_value = Column(Integer)
+    station = Column(Text, default="none")
 
     def toDict(self):
         return {
@@ -32,7 +33,8 @@ class Sensor(Base):
             "units": self.units,
             "lastReading": self.last_reading,
             "min_value": self.min_value,
-            "max_value": self.max_value
+            "max_value": self.max_value,
+            "station": self.station
         }
 
 
