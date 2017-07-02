@@ -7,5 +7,14 @@
         "document": false,
         "location": false
     },
-    "strict": true
+    "strict": true,
+    "curly": true,
+    "eqeqeq": true,
+    "forin": true,
+    "latedef": true,
+    "trailingcomma": true,
+    "undef": true,
+    "unused": true,
+    "varstmt": true,
+    "esversion": 6
 }
