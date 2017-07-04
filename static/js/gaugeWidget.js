@@ -88,7 +88,7 @@ angular.module('dragonfly.gaugecontroller', [])
 
             config.transitionDuration = 500;
 
-            const svg = d3.select("#gaugeChart-" + id)
+            const svg = d3.select("#gaugeChart-" + data.name)
                 .append("svg:svg")
                 .attr("class", "gauge")
                 .attr("width", config.size)
@@ -282,13 +282,16 @@ angular.module('dragonfly.gaugecontroller', [])
             }
 
             v.forEach((i) => {
-                $scope.gauges.push({
-                    'id': 'gaugeChart-' + i,
-                });
+              console.log(i)
+              if(i.self_type === 'temperature'){
+                  $scope.gauges.push({
+                      'id': 'gaugeChart-' + i.name,
+                  });
+                }
             });
 
             $timeout(function() {
-                for (let i = 0; i < v.length; i++) {
+                for (let i = 0; i < v.length-1; i++) {
                     DrawTempChart(v[i], i);
                 }
             }, 500);
