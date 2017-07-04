@@ -29,7 +29,7 @@ angular.module('dragonfly.maincontroller', [])
                 $scope.lightSwitchCharts = [];
                 dataService.set(response.data.sensor_list);
                 response.data.sensor_list.forEach((i) => {
-                    if (i.self_type === "lightswitch") {
+                    if (i.self_type === "light-switch") {
                         DrawLightSwitch(i);
                     }
                 });
