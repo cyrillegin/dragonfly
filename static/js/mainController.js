@@ -29,7 +29,7 @@ angular.module('dragonfly.maincontroller', [])
                 $scope.lightSwitchCharts = [];
                 dataService.set(response.data.sensor_list);
                 response.data.sensor_list.forEach((i) => {
-                    if (i.self_type === "light-switch") {
+                    if (i.self_type === "lightswitch") {
                         DrawLightSwitch(i);
                     }
                 });
@@ -38,13 +38,13 @@ angular.module('dragonfly.maincontroller', [])
             }).then(function() {
                 //initialize bootstrap switches
                 $timeout(function() {
-                    switchids.forEach((i) => {
+                    for(let i = 0; i < switchids.length; i++){
                         if ($scope.lightSwitchCharts[i] === undefined) {
                             return;
                         }
                         $('#' + switchids[i]).bootstrapSwitch();
                         $('#' + switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
-                    });
+                    };
                 }, 500);
             });
         }
