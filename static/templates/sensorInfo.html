@@ -5,18 +5,7 @@
             <tr>
                 <td>Name</td>
                 <td>
-                  <div ng-if=!edit>
-                  {{sensorName}}
-                </div>
-                <div ng-if=edit>
                   <input type="text" ng-model="sensorName" value="{{sensorName}}" />
-                </div>
-                  <div style="float:right">
-                    <input type="checkbox" name="movie" id="edit-button" ng-model=edit value=false>
-                    <label for="edit-button" >
-                      Create new sensor.
-                    </label>
-                  </div>
                 </td>
             </tr>
             <tr>

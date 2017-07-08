@@ -53,12 +53,13 @@ angular.module('dragonfly.sensorcontroller', [])
                 'name': $scope.sensorName,
                 'description': $scope.sensorDescription,
                 'coefficients': $scope.sensorCoefficients,
-                'self_type': $scope.sensorType,
+                'sensor_type': $scope.sensorType,
                 'units': $scope.sensorUnits,
                 'min_value': $scope.sensorMinValue,
                 'max_value': $scope.sensorMaxValue,
                 'station': $scope.sensorStation,
             };
+            console.log(data)
 
             apiService.post('sensor', data).then(function successCallback() {
                 $('#message').html('Sensor update successfully.');
