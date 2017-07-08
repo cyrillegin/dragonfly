@@ -282,7 +282,6 @@ angular.module('dragonfly.gaugecontroller', [])
             }
 
             v.forEach((i) => {
-              console.log(i)
               if(i.self_type === 'temperature'){
                   $scope.gauges.push({
                       'id': 'gaugeChart-' + i.name,

@@ -59,7 +59,6 @@ angular.module('dragonfly.sensorcontroller', [])
                 'max_value': $scope.sensorMaxValue,
                 'station': $scope.sensorStation,
             };
-            console.log(data)
 
             apiService.post('sensor', data).then(function successCallback() {
                 $('#message').html('Sensor update successfully.');
