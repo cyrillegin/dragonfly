@@ -270,7 +270,6 @@ angular.module('dragonfly.gaugecontroller', [])
 
             const val = data.lastReading;
             redraw(id, val, 10, config);
-console.log($scope.gauges)
             $scope.gauges[id].config = config;
         }
 
