@@ -512,6 +512,7 @@ angular.module('dragonfly.graphcontroller', [])
                     attrs = logAttrs;
                     break;
             }
+        
             $scope.modalAttributes = attrs;
             $("#sensorEditModal").modal('toggle');
             $('#modal_alert').css('display', 'hidden');
@@ -550,11 +551,6 @@ angular.module('dragonfly.graphcontroller', [])
                 attrs.forEach((i) => {
                     data[attrs[i].fieldName] = $('#' + attrs[i].id)[0].value;
                 });
-            } else {
-                if (parseFloat(data.readings[0].value) < 2) {
-                    console.log('err');
-                    return;
-                }
             }
 
             apiService.post(url, data).then(function successCallback(response) {

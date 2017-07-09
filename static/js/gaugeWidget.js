@@ -270,7 +270,7 @@ angular.module('dragonfly.gaugecontroller', [])
 
             const val = data.lastReading;
             redraw(id, val, 10, config);
-
+console.log($scope.gauges)
             $scope.gauges[id].config = config;
         }
 
@@ -280,19 +280,19 @@ angular.module('dragonfly.gaugecontroller', [])
             if (v === undefined || v[0] === undefined) {
                 return;
             }
-
             v.forEach((i) => {
-              console.log(i)
               if(i.self_type === 'temperature'){
-                  $scope.gauges.push({
+		  $scope.gauges.push({
                       'id': 'gaugeChart-' + i.name,
                   });
                 }
             });
 
             $timeout(function() {
-                for (let i = 0; i < v.length-1; i++) {
-                    DrawTempChart(v[i], i);
+                for (let i = 0; i < v.length - 1; i++) {
+		    if(v[i].self_type === 'temperature'){
+                    	DrawTempChart(v[i], i);
+		    }
                 }
             }, 500);
         });

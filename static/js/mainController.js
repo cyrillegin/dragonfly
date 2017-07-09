@@ -44,7 +44,7 @@ angular.module('dragonfly.maincontroller', [])
                         }
                         $('#' + switchids[i]).bootstrapSwitch();
                         $('#' + switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
-                    };
+                    }
                 }, 500);
             });
         }
