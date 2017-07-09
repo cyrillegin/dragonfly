@@ -5,7 +5,14 @@
   "description": "Arduino poller",
   "repository": "https://github.com/cyrillegin/Aquaponics.git",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "lint": "sh validate.sh",
+    "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
+  },
+  "pre-commit": [
+    "precommit-msg",
+    "lint"
+  ],
   "dependencies": {
     "jquery": "~2.1.4",
     "angular": "^1.5.1",
@@ -20,10 +27,10 @@
     "eonasdan-bootstrap-datetimepicker": "^4.17.47"
   },
   "devDependencies": {
-    "angular-mocks": "^1.4.8",
     "csslint": "^1.0.1",
     "htmlhint": "^0.9.13",
     "jshint": "^2.9.5",
-    "requirejs": "^2.1.22"
+    "requirejs": "^2.1.22",
+    "pre-commit": "^1.1.3"
   }
 }
