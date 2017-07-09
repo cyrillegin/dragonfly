@@ -388,64 +388,6 @@ angular.module('dragonfly.graphcontroller', [])
             });
         };
 
-        const sensorAttrs = [{
-            'name': "name",
-            'type': 'text',
-            'value': 'default name',
-            'id': 'modal_name',
-            'fieldName': 'name',
-        }, {
-            'name': "description",
-            "type": "text",
-            'value': "default description",
-            'id': 'modal_description',
-            'fieldName': 'description',
-        }, {
-            'name': "coefficients",
-            "type": "text",
-            'value': "1,0",
-            'id': 'modal_coefficients',
-            'fieldName': 'coefficients',
-        }, {
-            'name': "self_type",
-            'type': 'multiple',
-            'value': [{
-                'name': 'temperature',
-            }, {
-                'name': 'cleanliness',
-            }, {
-                'name': 'lightsensor',
-            }, {
-                'name': 'lightswitch',
-            }, ],
-            'id': 'modal_type',
-            'fieldName': 'sensor_type',
-        }, {
-            'name': "units",
-            "type": "text",
-            'value': "default unit",
-            'id': 'modal_unit',
-            'fieldName': 'units',
-        }, {
-            'name': "Min Value",
-            "type": "text",
-            'value': 0,
-            'id': 'modal_min',
-            'fieldName': 'min_value',
-        }, {
-            'name': 'Max Value',
-            'type': 'text',
-            'value': 1024,
-            'id': 'modal_max',
-            'fieldName': 'max_value',
-        }, {
-            'name': 'Station',
-            'type': 'text',
-            'value': 'not set',
-            'id': 'station',
-            'fieldName': 'station',
-        }, ];
-
         const readingAttrs = [{
             'name': "Sensor",
             "type": "multiple",
@@ -475,87 +417,73 @@ angular.module('dragonfly.graphcontroller', [])
             });
         });
 
-        const logAttrs = [{
-            'name': "title",
-            'type': 'text',
-            'value': 'default log title',
-            'id': 'modal_title',
-            'fieldName': 'title',
-        }, {
-            'name': "description",
-            "type": "text",
-            'value': "default description",
-            'id': 'modal_description',
-            'fieldName': 'description',
-        }, {
-            'name': "date",
-            "type": "date",
-            'value': 1000000,
-            'id': 'modal_date',
-            'fieldName': 'created',
-        }, ];
+        $scope.addReading = () => {
+          $scope.modalAttributes.push({
+            sensor: null,
+            date: null,
+            value: 0,
+            id: $scope.modalAttributes.length + 1,
+          });
+          $timeout(function() {
+              $('#date-' + $scope.modalAttributes.length).datetimepicker();
+          });
+        };
 
-        $scope.OpenModal = function(type) {
-            let attrs;
-            $scope.isSensorModal = false;
-            $scope.saveText = "Save " + type;
-            $scope.modalTitle = type;
-            switch (type) {
-                case "sensor":
-                    attrs = sensorAttrs;
-                    $scope.isSensorModal = true;
-                    break;
-                case "reading":
-                    attrs = readingAttrs;
-                    break;
-                case "log":
-                    attrs = logAttrs;
-                    break;
-            }
-        
-            $scope.modalAttributes = attrs;
+        $scope.OpenModal = function() {
             $("#sensorEditModal").modal('toggle');
             $('#modal_alert').css('display', 'hidden');
+            const selection = dataService.selection();
+            const data = dataService.data();
+            $scope.modalAttributes = [{
+              sensor: selection,
+              date: 1,
+              value: 0,
+              id: 1,
+            }, ];
+            $scope.sensorlist = [];
+            data.forEach((sensor) => {
+              $scope.sensorlist.push({name: sensor.name,});
+            });
+
             $timeout(function() {
-                $('#modal_date').datetimepicker();
+                $('#date-1').datetimepicker();
             });
         };
 
         $scope.SubmitModal = function() {
-            let attrs;
-            let url;
-            let data = {};
-            switch ($scope.modalTitle) {
-                case "sensor":
-                    attrs = sensorAttrs;
-                    url = 'sensor';
-                    break;
-                case "reading":
-                    data = {
-                        'sensor': {
-                            'name': $('#modal_sensor')[0].selectedOptions[0].innerText,
-                        },
-                        'readings': [{
-                            'value': parseFloat($('#modal_value')[0].value),
-                            'timestamp': $('#modal_date').data("DateTimePicker").date().unix(),
-                        }, ],
-                    };
-                    url = 'reading';
-                    break;
-                case "log":
-                    attrs = logAttrs;
-                    url = 'log';
-                    break;
+          const url = 'reading';
+          let error = false;
+          const dataObjects = [];
+          $scope.modalAttributes.forEach((reading) => {
+            const data = {
+                'sensor': {
+                    'name': $('#sensor-' + reading.id)[0].selectedOptions[0].innerText,
+                },
+                'readings': [{
+                    'value': parseFloat($('#value-' + reading.id)[0].value),
+                    'timestamp': $('#date-' + reading.id).data("DateTimePicker").date().unix(),
+                }, ],
+            };
+            if (data.sensor.name === "") {
+              $('#modal_alert').html("readings need a sensor name.");
+              $('#modal_alert').css('display', 'block');
+              error = true;
+              return;
             }
-            if ($scope.modalTitle !== "reading") {
-                attrs.forEach((i) => {
-                    data[attrs[i].fieldName] = $('#' + attrs[i].id)[0].value;
-                });
+            if(isNaN(data.readings[0].value)){
+              $('#modal_alert').html("Values must be numbers.");
+              $('#modal_alert').css('display', 'block');
+              error = true;
+              return;
             }
-
-            apiService.post(url, data).then(function successCallback(response) {
+            dataObjects.push(data);
+          });
+          if(error === true){
+            return;
+          }
+          dataObjects.forEach((file) => {
+            apiService.post(url, file).then(function successCallback(response) {
                 console.log(response);
-                $scope.LoggedIn = true;
                 $("#sensorEditModal").modal('toggle');
             }, function errorCallback(response) {
                 console.log("An error has occured.", response.data);
@@ -564,6 +492,7 @@ angular.module('dragonfly.graphcontroller', [])
             }).then(function() {
                 console.log('all done');
             });
+          });
         };
 
         $scope.$watch(function() {

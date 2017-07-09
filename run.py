@@ -62,27 +62,28 @@ def RunServer():
 if __name__ == "__main__":
     args = sys.argv
     if len(args) > 1:
-        if(args[1] == "run"):
+        arg = "{}".format(args[1]).lower()
+        if(arg == "run"):
             print "starting server!"
             RunServer()
-        elif(args[1] == "loadFixtures"):
+        elif(arg == "loadfixtures"):
             print "loading fixtures"
             Command.LoadFixtures()
-        elif(args[1] == "serialPoller"):
+        elif(arg == "serialpoller"):
             print "starting poller"
             Command.SerialPoller()
-        elif args[1] == "weatherSensor":
+        elif arg == "weathersensor":
             print "getting weather data"
             Command.WeatherSensor()
-        elif args[1] == "cleanReadings":
+        elif arg == "cleanreadings":
             print "cleaning readings"
-        elif args[1] == "fishCam":
+        elif arg == "fishcam":
             print "Starting Fish Cam."
             Command.FishCam()
-        elif args[1] == "gpioPoller":
+        elif arg == "gpiopoller":
             print "reading from gpio"
             Command.GpioPoller()
-        elif args[1] == "pressurePoller":
+        elif arg == "pressurepoller":
             print "reading from pressure poller"
             Command.PressurePoller()
         else:

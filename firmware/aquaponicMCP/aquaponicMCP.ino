@@ -1,15 +1,11 @@
 
 #include "OneWire.h"
 
-//analog pins
-#define plantLight A0
-#define aquaLight A3
-#define waterTurbSensor A1
-#define ovenTempSensor A4
-
 //digital pins  
-OneWire  ds(2); //water temp sensor
-#define RELAY1 3
+OneWire ds1(2); //water temp sensor
+OneWire ds2(3); //living room temp sensor
+
+#define RELAY1 10
 
 bool powerIsOn = true;
 
@@ -28,26 +24,14 @@ void loop() {
   GetInput();
 }
 
-/*these will be raw readings, converting from voltage to 
- * degrees or light etc should most likly done in a seperate 
- * function or even in the data logger.
- */
 void SendData(){
   String mystr = "['data', {'station': 'aquaponicStation', 'sensors': [";
-  mystr += "{'sensor': 'aquaLight', 'type': 'lightsensor', 'value': ";
-  mystr += analogRead(aquaLight) ;
-  mystr += "},{'sensor':'ovenTemp', 'type': 'temperature', 'value':";
-  mystr += analogRead(ovenTempSensor);  
-  mystr += "},{'sensor':'plantLight', 'type': 'lightsensor', 'value':";
-  mystr += analogRead(plantLight);
-  mystr += "},{'sensor':'waterTurb', 'type': 'cleanliness', 'value':";
-  mystr += analogRead(waterTurbSensor);
-  
-  mystr += "},{'sensor':'waterTemp', 'type': 'temperature', 'value':";
-  mystr += ReadTemp();
+  mystr += "{'sensor':'waterTemp', 'type': 'temperature', 'value':";
+  mystr += ReadTemp(ds1);
+  mystr += "},{'sensor':'livingRoomTemp', 'type': 'temperature', 'value':";
+  mystr += ReadTemp(ds2);
   mystr += "},{'sensor':'lightSwitch', 'type': 'lightswitch', 'value':";
   mystr += powerIsOn;
-  
   mystr += "}]}]";
   Serial.println(mystr);
 }
@@ -72,7 +56,7 @@ void GetInput(){
 }
 
 //Script I found online and modifed using the OneWire library, returns the temperature in fahrenheit.
-float ReadTemp(){
+float ReadTemp(OneWire ds){
   byte i;
   byte present = 0;
   byte type_s;
