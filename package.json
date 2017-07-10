@@ -18,7 +18,7 @@
     "angular-mocks": "1.6.5",
     "angular-resource": "1.6.5",
     "angular-route": "1.6.5",
-    "angular-ui-router": "1.0.3",
+    "@uirouter/angularjs": "1.0.3",
     "bootstrap": "3.3.7",
     "bootstrap-switch": "3.3.4",
     "d3": "4.9.1",
