@@ -1,10 +1,8 @@
-/*jslint node: true */
-'use strict';
 
-angular.module('dragonfly.maincontroller', [])
 
-    .controller("mainController", ['$scope', '$timeout', 'apiService', 'dataService', function($scope, $timeout, apiService, dataService) {
-
+export default class mainController {
+    constructor($scope, $timeout, apiService, dataService) {
+        'ngInject'
         const switchids = [];
         $scope.graphIndex = 0;
 
@@ -17,11 +15,10 @@ angular.module('dragonfly.maincontroller', [])
         function DrawLightSwitch(data) {
             const switchObj = {
                 "title": data.name,
-                "id": "switch-" + data.name,
+                "id": "switch-" + data.name.split(' ').join(''),
                 'val': data.lastReading,
             };
             $scope.lightSwitchCharts.push(switchObj);
-            switchids.push(switchObj.id);
         }
 
         function GetData() {
@@ -38,15 +35,14 @@ angular.module('dragonfly.maincontroller', [])
             }).then(function() {
                 //initialize bootstrap switches
                 $timeout(function() {
-                    for(let i = 0; i < switchids.length; i++){
-                        if ($scope.lightSwitchCharts[i] === undefined) {
-                            return;
-                        }
-                        $('#' + switchids[i]).bootstrapSwitch();
-                        $('#' + switchids[i]).bootstrapSwitch('state', $scope.lightSwitchCharts[i].val);
-                    }
+                    $scope.lightSwitchCharts.forEach((lightSwitch) => {
+                        console.log('here')
+                        $('#' + lightSwitch.id).bootstrapSwitch();
+                        $('#' + lightSwitch.id).bootstrapSwitch('state', lightSwitch.val);
+                    });
                 }, 500);
             });
         }
         GetData();
-    }, ]);
+    }
+  }

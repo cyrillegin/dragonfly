@@ -1,9 +1,9 @@
-/*jslint node: true */
-'use strict';
 
-angular.module('dragonfly.gaugecontroller', [])
 
-    .controller("gaugeController", ['$scope', 'dataService', '$timeout', function($scope, dataService, $timeout) {
+export default class gaugeController {
+
+    constructor($scope, dataService, $timeout) {
+      'ngInject'
 
         $scope.gauges = [];
 
@@ -297,4 +297,5 @@ angular.module('dragonfly.gaugecontroller', [])
                 }
             }, 500);
         });
-    }, ]);
+    }
+  }

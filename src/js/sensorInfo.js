@@ -1,9 +1,8 @@
-/*jslint node: true */
-'use strict';
 
-angular.module('dragonfly.sensorcontroller', [])
+    export default class sensorController {
 
-    .controller("sensorController", ['$scope', 'dataService', '$window', 'apiService', function($scope, dataService, $window, apiService) {
+    constructor ($scope, dataService, $window, apiService) {
+      'ngInject'
         let data;
         let selection;
 
@@ -70,4 +69,5 @@ angular.module('dragonfly.sensorcontroller', [])
                 $('#message').toggleClass('alert alert-danger');
             });
         };
-    }, ]);
+    }
+  }

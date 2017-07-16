@@ -1,9 +1,6 @@
-/*jslint node: true */
-'use strict';
-
-angular.module('dragonfly.graphcontroller', [])
-
-    .controller("graphController", ['$scope', 'dataService', '$window', 'apiService', '$timeout', '$location', function($scope, dataService, $window, apiService, $timeout, $location) {
+export default class graphController {
+    constructor($scope, dataService, $window, apiService, $timeout, $location) {
+        'ngInject';
 
         function DrawGraph(data) {
             // Initialization.
@@ -418,15 +415,15 @@ angular.module('dragonfly.graphcontroller', [])
         });
 
         $scope.addReading = () => {
-          $scope.modalAttributes.push({
-            sensor: null,
-            date: null,
-            value: 0,
-            id: $scope.modalAttributes.length + 1,
-          });
-          $timeout(function() {
-              $('#date-' + $scope.modalAttributes.length).datetimepicker();
-          });
+            $scope.modalAttributes.push({
+                sensor: null,
+                date: null,
+                value: 0,
+                id: $scope.modalAttributes.length + 1,
+            });
+            $timeout(function() {
+                $('#date-' + $scope.modalAttributes.length).datetimepicker();
+            });
         };
 
         $scope.OpenModal = function() {
@@ -435,14 +432,16 @@ angular.module('dragonfly.graphcontroller', [])
             const selection = dataService.selection();
             const data = dataService.data();
             $scope.modalAttributes = [{
-              sensor: selection,
-              date: 1,
-              value: 0,
-              id: 1,
+                sensor: selection,
+                date: 1,
+                value: 0,
+                id: 1,
             }, ];
             $scope.sensorlist = [];
             data.forEach((sensor) => {
-              $scope.sensorlist.push({name: sensor.name,});
+                $scope.sensorlist.push({
+                    name: sensor.name,
+                });
             });
 
             $timeout(function() {
@@ -451,48 +450,48 @@ angular.module('dragonfly.graphcontroller', [])
         };
 
         $scope.SubmitModal = function() {
-          const url = 'reading';
-          let error = false;
-          const dataObjects = [];
-          $scope.modalAttributes.forEach((reading) => {
-            const data = {
-                'sensor': {
-                    'name': $('#sensor-' + reading.id)[0].selectedOptions[0].innerText,
-                },
-                'readings': [{
-                    'value': parseFloat($('#value-' + reading.id)[0].value),
-                    'timestamp': $('#date-' + reading.id).data("DateTimePicker").date().unix(),
-                }, ],
-            };
-            if (data.sensor.name === "") {
-              $('#modal_alert').html("readings need a sensor name.");
-              $('#modal_alert').css('display', 'block');
-              error = true;
-              return;
-            }
-            if(isNaN(data.readings[0].value)){
-              $('#modal_alert').html("Values must be numbers.");
-              $('#modal_alert').css('display', 'block');
-              error = true;
-              return;
-            }
-            dataObjects.push(data);
-          });
-          if(error === true){
-            return;
-          }
-          dataObjects.forEach((file) => {
-            apiService.post(url, file).then(function successCallback(response) {
-                console.log(response);
-                $("#sensorEditModal").modal('toggle');
-            }, function errorCallback(response) {
-                console.log("An error has occured.", response.data);
-                $('#modal_alert').html(response.data.error);
-                $('#modal_alert').css('display', 'block');
-            }).then(function() {
-                console.log('all done');
+            const url = 'reading';
+            let error = false;
+            const dataObjects = [];
+            $scope.modalAttributes.forEach((reading) => {
+                const data = {
+                    'sensor': {
+                        'name': $('#sensor-' + reading.id)[0].selectedOptions[0].innerText,
+                    },
+                    'readings': [{
+                        'value': parseFloat($('#value-' + reading.id)[0].value),
+                        'timestamp': $('#date-' + reading.id).data("DateTimePicker").date().unix(),
+                    }, ],
+                };
+                if (data.sensor.name === "") {
+                    $('#modal_alert').html("readings need a sensor name.");
+                    $('#modal_alert').css('display', 'block');
+                    error = true;
+                    return;
+                }
+                if (isNaN(data.readings[0].value)) {
+                    $('#modal_alert').html("Values must be numbers.");
+                    $('#modal_alert').css('display', 'block');
+                    error = true;
+                    return;
+                }
+                dataObjects.push(data);
             });
-          });
+            if (error === true) {
+                return;
+            }
+            dataObjects.forEach((file) => {
+                apiService.post(url, file).then(function successCallback(response) {
+                    console.log(response);
+                    $("#sensorEditModal").modal('toggle');
+                }, function errorCallback(response) {
+                    console.log("An error has occured.", response.data);
+                    $('#modal_alert').html(response.data.error);
+                    $('#modal_alert').css('display', 'block');
+                }).then(function() {
+                    console.log('all done');
+                });
+            });
         };
 
         $scope.$watch(function() {
@@ -506,4 +505,5 @@ angular.module('dragonfly.graphcontroller', [])
             }
             GetGraph();
         });
-    }, ]);
+    }
+  }

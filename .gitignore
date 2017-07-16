@@ -5,7 +5,7 @@
 hackadayFiles/
 node_modules/
 bower_components/
-static/images/fishcam/
+src/images/fishcam/
 
 #database files
 *.db
@@ -17,3 +17,10 @@ static/images/fishcam/
 #yarn files
 package-lock.json
 yarn.lock
+
+# webpack
+webpack-stats.json
+static/dist/
+
+
+

@@ -1,9 +1,7 @@
-/*jslint node: true */
-'use strict';
+export class dataSerivce {
+    constructor() {
+        'ngInject'
 
-angular.module('dragonfly.services', [])
-
-    .factory('dataService', function() {
         let data = {};
         let selection;
         return {
@@ -20,9 +18,10 @@ angular.module('dragonfly.services', [])
                 selection = name;
             },
         };
-    })
-
-    .factory('apiService', ['$http', function($http) {
+    }
+}
+export class apiService {
+    constructor($http) {
         let urlBase = '/api/';
         let apiService = {};
 
@@ -34,4 +33,5 @@ angular.module('dragonfly.services', [])
             return $http.post(urlBase + Str, params);
         };
         return apiService;
-    }, ]);
+    }
+}

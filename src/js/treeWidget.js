@@ -1,10 +1,6 @@
-/*jslint node: true */
-'use strict';
 
-angular.module('dragonfly.treecontroller', [])
-
-    .controller("treeController", ['$scope', '$window', 'dataService', function($scope, $window, dataService) {
-
+export default class treeController {
+  constructor($scope, $window, dataService){
         function buildTree(treeData) {
             // Set the dimensions and margins of the diagram
             let margin = {
@@ -233,4 +229,5 @@ angular.module('dragonfly.treecontroller', [])
         });
 
         dataService.select('waterTemp');
-    }, ]);
+    }
+  }
