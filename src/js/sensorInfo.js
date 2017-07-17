@@ -1,8 +1,8 @@
+export default class sensorController {
 
-    export default class sensorController {
+    constructor($scope, $window, $http) {
+        'ngInject'
 
-    constructor ($scope, dataService, $window, apiService) {
-      'ngInject'
         let data;
         let selection;
 
@@ -28,7 +28,7 @@
         }
 
         $scope.$watch(function() {
-            return dataService.selection();
+            // return dataService.selection();
         }, function(v) {
             if (v === undefined) {
                 return;
@@ -38,7 +38,7 @@
         });
 
         $scope.$watch(function() {
-            return dataService.data();
+            // return dataService.data();
         }, function(v) {
             if (v === undefined) {
                 return;
@@ -59,7 +59,7 @@
                 'station': $scope.sensorStation,
             };
 
-            apiService.post('sensor', data).then(function successCallback() {
+            $http.post('sensor', data).then(function successCallback() {
                 $('#message').html('Sensor update successfully.');
                 $('#message').toggleClass('alert alert-success');
             }, function errorCallback(response) {
@@ -70,4 +70,4 @@
             });
         };
     }
-  }
+}

@@ -2,8 +2,7 @@ import logging
 import json
 import os
 
-IMAGE_FOLDER = 'static/images/fishcam'
-
+IMAGE_FOLDER = 'src/images/fishcam'
 
 class Camera:
     logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)

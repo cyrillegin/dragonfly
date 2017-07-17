@@ -1,5 +1,5 @@
 export default class graphController {
-    constructor($scope, dataService, $window, apiService, $timeout, $location) {
+    constructor($scope, $window, $timeout, $location, $http) {
         'ngInject';
 
         function DrawGraph(data) {
@@ -358,152 +358,153 @@ export default class graphController {
                 end = args.end_date;
             }
 
-            apiService.get('reading/?sensor=' + dataService.selection() + "&start=" + start + "&end=" + end)
-                .then(function successCallback(response) {
-                    DrawGraph(response.data);
-                }, function errorCallback(response) {
-                    console.log("An error has occured.", response.data);
-                });
-        }
-
-        $timeout(function() {
-            $('#start_date').datetimepicker();
-            $('#end_date').datetimepicker();
-        });
-
-        $scope.SubmitDate = function() {
-            const newDates = {
-                'start': $('#start_date').data("DateTimePicker").date(),
-                'end': $('#end_date').data("DateTimePicker").date(),
-            };
-            $timeout(function() {
-                $scope.$apply(function() {
-                    $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
-                    $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
-                    GetGraph();
-                });
-            });
-        };
-
-        const readingAttrs = [{
-            'name': "Sensor",
-            "type": "multiple",
-            'value': [],
-            'id': 'modal_sensor',
-            'fieldName': 'sensor',
-        }, {
-            'name': "value",
-            "type": "text",
-            'value': 7,
-            'id': 'modal_value',
-            'fieldName': 'value',
-        }, {
-            'name': "date",
-            "type": "date",
-            'value': 1000000,
-            'id': 'modal_date',
-            'fieldName': 'created',
-        }, ];
-
-        $timeout(function() {
-            const sensors = dataService.data();
-            sensors.forEach((i) => {
-                readingAttrs[0].value.push({
-                    'name': i.name,
-                });
-            });
-        });
-
-        $scope.addReading = () => {
-            $scope.modalAttributes.push({
-                sensor: null,
-                date: null,
-                value: 0,
-                id: $scope.modalAttributes.length + 1,
-            });
-            $timeout(function() {
-                $('#date-' + $scope.modalAttributes.length).datetimepicker();
-            });
-        };
-
-        $scope.OpenModal = function() {
-            $("#sensorEditModal").modal('toggle');
-            $('#modal_alert').css('display', 'hidden');
-            const selection = dataService.selection();
-            const data = dataService.data();
-            $scope.modalAttributes = [{
-                sensor: selection,
-                date: 1,
-                value: 0,
-                id: 1,
-            }, ];
-            $scope.sensorlist = [];
-            data.forEach((sensor) => {
-                $scope.sensorlist.push({
-                    name: sensor.name,
-                });
-            });
+            // $http.get('reading/?sensor=' + dataService.selection() + "&start=" + start + "&end=" + end)
+            //     .then(function successCallback(response) {
+            //         DrawGraph(response.data);
+            //     }, function errorCallback(response) {
+            //         console.log("An error has occured.", response.data);
+            //     });
+            //   }
 
             $timeout(function() {
-                $('#date-1').datetimepicker();
+                $('#start_date').datetimepicker();
+                $('#end_date').datetimepicker();
             });
-        };
 
-        $scope.SubmitModal = function() {
-            const url = 'reading';
-            let error = false;
-            const dataObjects = [];
-            $scope.modalAttributes.forEach((reading) => {
-                const data = {
-                    'sensor': {
-                        'name': $('#sensor-' + reading.id)[0].selectedOptions[0].innerText,
-                    },
-                    'readings': [{
-                        'value': parseFloat($('#value-' + reading.id)[0].value),
-                        'timestamp': $('#date-' + reading.id).data("DateTimePicker").date().unix(),
-                    }, ],
+            $scope.SubmitDate = function() {
+                const newDates = {
+                    'start': $('#start_date').data("DateTimePicker").date(),
+                    'end': $('#end_date').data("DateTimePicker").date(),
                 };
-                if (data.sensor.name === "") {
-                    $('#modal_alert').html("readings need a sensor name.");
-                    $('#modal_alert').css('display', 'block');
-                    error = true;
-                    return;
-                }
-                if (isNaN(data.readings[0].value)) {
-                    $('#modal_alert').html("Values must be numbers.");
-                    $('#modal_alert').css('display', 'block');
-                    error = true;
-                    return;
-                }
-                dataObjects.push(data);
-            });
-            if (error === true) {
-                return;
-            }
-            dataObjects.forEach((file) => {
-                apiService.post(url, file).then(function successCallback(response) {
-                    console.log(response);
-                    $("#sensorEditModal").modal('toggle');
-                }, function errorCallback(response) {
-                    console.log("An error has occured.", response.data);
-                    $('#modal_alert').html(response.data.error);
-                    $('#modal_alert').css('display', 'block');
-                }).then(function() {
-                    console.log('all done');
+                $timeout(function() {
+                    $scope.$apply(function() {
+                        $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
+                        $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
+                        GetGraph();
+                    });
+                });
+            };
+
+            const readingAttrs = [{
+                'name': "Sensor",
+                "type": "multiple",
+                'value': [],
+                'id': 'modal_sensor',
+                'fieldName': 'sensor',
+            }, {
+                'name': "value",
+                "type": "text",
+                'value': 7,
+                'id': 'modal_value',
+                'fieldName': 'value',
+            }, {
+                'name': "date",
+                "type": "date",
+                'value': 1000000,
+                'id': 'modal_date',
+                'fieldName': 'created',
+            }, ];
+
+            $timeout(function() {
+                // const sensors = dataService.data();
+                sensors.forEach((i) => {
+                    readingAttrs[0].value.push({
+                        'name': i.name,
+                    });
                 });
             });
-        };
 
-        $scope.$watch(function() {
-            return dataService.selection();
-        }, function(v) {
-            if (v === undefined) {
-                return;
-            }
-            if (dataService.data === undefined) {
-                return;
-            }
-            GetGraph();
-        });
+            $scope.addReading = () => {
+                $scope.modalAttributes.push({
+                    sensor: null,
+                    date: null,
+                    value: 0,
+                    id: $scope.modalAttributes.length + 1,
+                });
+                $timeout(function() {
+                    $('#date-' + $scope.modalAttributes.length).datetimepicker();
+                });
+            };
+
+            $scope.OpenModal = function() {
+                $("#sensorEditModal").modal('toggle');
+                $('#modal_alert').css('display', 'hidden');
+                // const selection = dataService.selection();
+                // const data = dataService.data();
+                $scope.modalAttributes = [{
+                    sensor: selection,
+                    date: 1,
+                    value: 0,
+                    id: 1,
+                }, ];
+                $scope.sensorlist = [];
+                data.forEach((sensor) => {
+                    $scope.sensorlist.push({
+                        name: sensor.name,
+                    });
+                });
+
+                $timeout(function() {
+                    // $('#date-1').datetimepicker();
+                });
+            };
+
+            $scope.SubmitModal = function() {
+                const url = 'reading';
+                let error = false;
+                const dataObjects = [];
+                $scope.modalAttributes.forEach((reading) => {
+                    const data = {
+                        'sensor': {
+                            'name': $('#sensor-' + reading.id)[0].selectedOptions[0].innerText,
+                        },
+                        'readings': [{
+                            'value': parseFloat($('#value-' + reading.id)[0].value),
+                            'timestamp': $('#date-' + reading.id).data("DateTimePicker").date().unix(),
+                        }, ],
+                    };
+                    if (data.sensor.name === "") {
+                        $('#modal_alert').html("readings need a sensor name.");
+                        $('#modal_alert').css('display', 'block');
+                        error = true;
+                        return;
+                    }
+                    if (isNaN(data.readings[0].value)) {
+                        $('#modal_alert').html("Values must be numbers.");
+                        $('#modal_alert').css('display', 'block');
+                        error = true;
+                        return;
+                    }
+                    dataObjects.push(data);
+                });
+                if (error === true) {
+                    return;
+                }
+                dataObjects.forEach((file) => {
+                    $http.post(url, file).then(function successCallback(response) {
+                        console.log(response);
+                        $("#sensorEditModal").modal('toggle');
+                    }, function errorCallback(response) {
+                        console.log("An error has occured.", response.data);
+                        $('#modal_alert').html(response.data.error);
+                        $('#modal_alert').css('display', 'block');
+                    }).then(function() {
+                        console.log('all done');
+                    });
+                });
+            };
+
+            // $scope.$watch(function() {
+            //     return dataService.selection();
+            // }, function(v) {
+            //     if (v === undefined) {
+            //         return;
+            //     }
+            //     if (dataService.data === undefined) {
+            //         return;
+            //     }
+            //     GetGraph();
+            // });
+        }
     }
   }

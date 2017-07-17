@@ -1,6 +1,8 @@
-
+// import dataService from './services.js'
 export default class treeController {
-  constructor($scope, $window, dataService){
+    constructor($scope, $window) {
+      'ngInject'
+
         function buildTree(treeData) {
             // Set the dimensions and margins of the diagram
             let margin = {
@@ -69,7 +71,7 @@ export default class treeController {
                     }
                     update(d);
                     if (d.children === undefined) {
-                        dataService.select(d.data.name);
+                        // dataService.select(d.data.name);
                     }
                     $scope.$apply();
                 }
@@ -188,7 +190,7 @@ export default class treeController {
             update(root);
         }
         $scope.$watch(function() {
-            return dataService.data();
+            // return dataService.data();
         }, function(v) {
             if (v === undefined) {
                 return;
@@ -228,6 +230,6 @@ export default class treeController {
             buildTree(sensorNodes);
         });
 
-        dataService.select('waterTemp');
+        // dataService.select('waterTemp');
     }
-  }
+}

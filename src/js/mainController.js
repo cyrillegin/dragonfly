@@ -1,14 +1,18 @@
-
+import {apiGet} from './services.js'
+import 'eonasdan-bootstrap-datetimepicker';
+import './../css/bootstrap-datetimepicker.min.css';
 
 export default class mainController {
-    constructor($scope, $timeout, apiService, dataService) {
+    constructor($scope, $timeout, $http) {
+      console.log('main')
+
         'ngInject'
         const switchids = [];
         $scope.graphIndex = 0;
 
         $timeout(function() {
-            apiService.get('camera').then(function successCallback(response) {
-                $scope.fishcam = 'images/fishcam/image_' + response.data + '.jpg';
+            $http.get('api/camera').then(function successCallback(response) {
+                $scope.fishcam = 'src/images/fishcam/image_' + response.data + '.jpg';
             });
         });
 
@@ -22,9 +26,9 @@ export default class mainController {
         }
 
         function GetData() {
-            apiService.get('sensor').then(function successCallback(response) {
+            $http.get('/api/sensor').then(function successCallback(response) {
                 $scope.lightSwitchCharts = [];
-                dataService.set(response.data.sensor_list);
+                // dataService.set(response.data.sensor_list);
                 response.data.sensor_list.forEach((i) => {
                     if (i.self_type === "lightswitch") {
                         DrawLightSwitch(i);
@@ -33,16 +37,18 @@ export default class mainController {
             }, function errorCallback(response) {
                 console.log("An error has occured.", response.data);
             }).then(function() {
+              $(() => {
                 //initialize bootstrap switches
                 $timeout(function() {
                     $scope.lightSwitchCharts.forEach((lightSwitch) => {
                         console.log('here')
-                        $('#' + lightSwitch.id).bootstrapSwitch();
-                        $('#' + lightSwitch.id).bootstrapSwitch('state', lightSwitch.val);
+                        // $('#' + lightSwitch.id).bootstrapSwitch();
+                        // $('#' + lightSwitch.id).bootstrapSwitch('state', lightSwitch.val);
                     });
                 }, 500);
+                  });
             });
         }
         GetData();
     }
-  }
+}

@@ -1,9 +1,7 @@
-
-
 export default class gaugeController {
 
-    constructor($scope, dataService, $timeout) {
-      'ngInject'
+    constructor($scope, $timeout) {
+        'ngInject'
 
         $scope.gauges = [];
 
@@ -270,32 +268,32 @@ export default class gaugeController {
 
             const val = data.lastReading;
             redraw(id, val, 10, config);
-            if($scope.gauges[id] !== undefined){
-	    $scope.gauges[id].config = config;
-}
+            if ($scope.gauges[id] !== undefined) {
+                $scope.gauges[id].config = config;
+            }
         }
 
         $scope.$watch(function() {
-            return dataService.data();
+            // return dataService.data();
         }, function(v) {
             if (v === undefined || v[0] === undefined) {
                 return;
             }
             v.forEach((i) => {
-              if(i.self_type === 'temperature'){
-		  $scope.gauges.push({
-                      'id': 'gaugeChart-' + i.name,
-                  });
+                if (i.self_type === 'temperature') {
+                    $scope.gauges.push({
+                        'id': 'gaugeChart-' + i.name,
+                    });
                 }
             });
 
             $timeout(function() {
                 for (let i = 0; i < v.length - 1; i++) {
-		    if(v[i].self_type === 'temperature'){
-                    	DrawTempChart(v[i], i);
-		    }
+                    if (v[i].self_type === 'temperature') {
+                        DrawTempChart(v[i], i);
+                    }
                 }
             }, 500);
         });
     }
-  }
+}

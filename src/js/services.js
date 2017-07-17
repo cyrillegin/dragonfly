@@ -1,37 +1,37 @@
-export class dataSerivce {
-    constructor() {
-        'ngInject'
+export default class serivces {
 
-        let data = {};
-        let selection;
-        return {
-            selection: function() {
-                return selection;
-            },
-            data: function() {
-                return data;
-            },
-            set: function(info) {
-                data = info;
-            },
-            select: function(name) {
-                selection = name;
-            },
-        };
-    }
-}
-export class apiService {
     constructor($http) {
-        let urlBase = '/api/';
-        let apiService = {};
-
-        apiService.get = function(Str) {
-            return $http.get(urlBase + Str);
-        };
-
-        apiService.post = function(Str, params) {
-            return $http.post(urlBase + Str, params);
-        };
-        return apiService;
+        'ngInject'
+        console.log('dataService');
+        this.selection = "";
+        this.data = {};
+        this.$http = $http;
+        this.urlBase = '/api/';
     }
+
+    selection() {
+        return this.selection;
+    }
+
+    data(){
+        return this.data;
+    }
+
+    set(info) {
+        data = info;
+    }
+
+    select  (name) {
+        selection = name;
+    }
+
+
+    apiGet(Str) {
+        return $http.get(urlBase + Str);
+    };
+
+    apiPost(Str, params){
+        return $http.post(urlBase + Str, params);
+    };
+
 }
