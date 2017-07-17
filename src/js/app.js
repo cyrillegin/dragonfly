@@ -4,11 +4,11 @@ import 'bootstrap';
 import '../css/style.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import graphController from './graphWidget.js';
-import gaugeController from './gaugeWidget.js';
-import mainController from './mainController.js';
-import sensorController from './sensorInfo.js';
-import treeController from './treeWidget.js';
+import graphController from './graphWidget';
+import gaugeController from './gaugeWidget';
+import mainController from './mainController';
+import sensorController from './sensorInfo';
+import treeController from './treeWidget';
 
 // Declare app level module which depends on views, and components
 angular.module('dragonfly', ['ngRoute'])

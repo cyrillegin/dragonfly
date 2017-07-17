@@ -1,7 +1,7 @@
 export default class sensorController {
 
     constructor($scope, $window, $http) {
-        'ngInject'
+        'ngInject';
 
         let data;
         let selection;
@@ -27,9 +27,9 @@ export default class sensorController {
             });
         }
 
-        $scope.$watch(function() {
+        $scope.$watch(() => {
             // return dataService.selection();
-        }, function(v) {
+        }, (v) => {
             if (v === undefined) {
                 return;
             }
@@ -37,9 +37,9 @@ export default class sensorController {
             LoadValues();
         });
 
-        $scope.$watch(function() {
+        $scope.$watch(() => {
             // return dataService.data();
-        }, function(v) {
+        }, (v) => {
             if (v === undefined) {
                 return;
             }
@@ -47,23 +47,23 @@ export default class sensorController {
             LoadValues();
         });
 
-        $scope.SaveSensor = function() {
+        $scope.SaveSensor = () => {
             data = {
-                'name': $scope.sensorName,
-                'description': $scope.sensorDescription,
-                'coefficients': $scope.sensorCoefficients,
-                'sensor_type': $scope.sensorType,
-                'units': $scope.sensorUnits,
-                'min_value': $scope.sensorMinValue,
-                'max_value': $scope.sensorMaxValue,
-                'station': $scope.sensorStation,
+                name: $scope.sensorName,
+                description: $scope.sensorDescription,
+                coefficients: $scope.sensorCoefficients,
+                sensor_type: $scope.sensorType,
+                units: $scope.sensorUnits,
+                min_value: $scope.sensorMinValue,
+                max_value: $scope.sensorMaxValue,
+                station: $scope.sensorStation,
             };
 
-            $http.post('sensor', data).then(function successCallback() {
+            $http.post('sensor', data).then(() => {
                 $('#message').html('Sensor update successfully.');
                 $('#message').toggleClass('alert alert-success');
-            }, function errorCallback(response) {
-                console.log("An error has occured.");
+            }, (response) => {
+                console.log('An error has occured.');
                 console.log(response);
                 $('#message').html('Oops! Something went wrong.');
                 $('#message').toggleClass('alert alert-danger');
