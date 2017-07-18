@@ -5,7 +5,7 @@
 hackadayFiles/
 node_modules/
 bower_components/
-src/images/fishcam/
+static/images/fishcam/
 
 #database files
 *.db

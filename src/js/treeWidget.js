@@ -20,7 +20,7 @@ export default class treeController {
                 .append('g')
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-            const i = 0;
+            let i = 0;
             const duration = 750;
 
             // declares a tree layout and assigns the size

@@ -8,8 +8,8 @@ export default class graphController {
             const container = $('#graph-container');
             container.html('');
 
-            const width = container[0].clientWidth;
-            const height = 400;
+            let width = container[0].clientWidth;
+            let height = 400;
             const margin = {
                 top: 20,
                 right: 10,
@@ -18,8 +18,8 @@ export default class graphController {
             };
             width = width - margin.left - margin.right;
             height = height - margin.top - margin.bottom;
-            const i = 0;
-            const newText = '';
+            let i = 0;
+            let newText = '';
 
             // Apply calibration data.
             const coef = {

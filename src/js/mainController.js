@@ -9,7 +9,7 @@ export default class mainController {
 
         $timeout(() => {
             $http.get('api/camera').then((response) => {
-                $scope.fishcam = 'src/images/fishcam/image_' + response.data + '.jpg';
+                $scope.fishcam = '/images/fishcam/image_' + response.data + '.jpg';
             });
         });
 
