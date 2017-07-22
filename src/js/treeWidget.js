@@ -1,16 +1,16 @@
 import * as d3 from 'd3';
 
 export default class treeController {
-    constructor($scope, $window, $http) {
+    constructor($scope, $window, $http, $location) {
         'ngInject';
 
         this.$scope = $scope;
         this.$window = $window;
         this.$http = $http;
+        this.$location = $location;
 
         this.LoadSensors();
     }
-
 
     LoadSensors() {
         const sensorNodes = {
@@ -18,11 +18,11 @@ export default class treeController {
             children: [],
         };
 
+        let v = [];
         this.$http.get('/api/sensor')
             .then(
-                (response) => {
-                    console.log(response);
-                    response.data.sensor_list.forEach((i) => {
+                (success) => {
+                    success.data.sensor_list.forEach((i) => {
                         if (i.station === null) {
                             i.station = 'Not set';
                         }
@@ -48,12 +48,11 @@ export default class treeController {
                     });
                     this.buildTree(sensorNodes);
                 },
-                (response) => {
+                (error) => {
                     console.log('error');
-                    return;
+                    console.log(error);
                 });
     };
-
 
     buildTree(treeData) {
         // Set the dimensions and margins of the diagram
@@ -93,6 +92,8 @@ export default class treeController {
                 d.children = null;
             }
         }
+
+        const that = this;
         // Collapse after the second level
         root.children.forEach(collapse);
 
@@ -122,9 +123,10 @@ export default class treeController {
                 }
                 update(d);
                 if (d.children === undefined) {
-                    // dataService.select(d.data.name);
+                    that.$scope.$apply(() => {
+                        that.$location.search('sensor', d.data.name);
+                    });
                 }
-                $scope.$apply();
             }
 
             // Update the nodes...
@@ -240,7 +242,6 @@ export default class treeController {
                 d.x0 = d.x;
                 d.y0 = d.y;
             });
-
         }
         update(root);
     }

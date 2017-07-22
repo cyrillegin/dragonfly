@@ -76,7 +76,7 @@ module.exports = {
             $: 'jquery',
             jquery: 'jquery'
         }),
-        // new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'vendor.bundle.js'

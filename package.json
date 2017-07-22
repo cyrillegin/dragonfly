@@ -18,11 +18,9 @@
   "author": "Cyrille Gindreau",
   "dependencies": {
     "angular": "1.6.5",
-    "angular-bootstrap-datetimepicker": "1.1.4",
     "angular-route": "1.6.5",
     "angular-ui-router": "1.0.3",
-    "angularjs-datepicker": "2.1.23",
-    "angularjs-datetime-picker": "0.1.16",
+    "bootstrap-switch": "3.3.4",
     "bootstrap": "3.3.7",
     "d3": "4.10.0",
     "eonasdan-bootstrap-datetimepicker": "4.17.47",
