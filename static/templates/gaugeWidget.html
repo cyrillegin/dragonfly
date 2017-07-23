@@ -1,8 +1,13 @@
-<div ng-controller="gaugeController">
-    <div ng-repeat="gauge in gauges">
-        <div class="clearfix" ng-if="$index % 2 == 0"></div>
-        <div class="col-lg-6">
-            <div id="{{gauge.id}}"></div>
+<div class="row" ng-controller="gaugeController">
+    <div class="footerDrawer" id="footerDrawer">
+        <div id="open-button" class="open-button glyphicon glyphicon-chevron-up">
+        </div>
+        <div class="content">
+            <div ng-repeat="gauge in gauges">
+                <div class="col-md-2">
+                    <div id="{{gauge.id}}"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -14,5 +14,13 @@ static/images/fishcam/
 #compile files
 *.pyc
 
-#misc
+#yarn files
 package-lock.json
+yarn.lock
+
+# webpack
+webpack-stats.json
+static/dist/
+
+
+
