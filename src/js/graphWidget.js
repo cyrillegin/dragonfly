@@ -26,7 +26,7 @@ export default class graphController {
                 $scope.$apply(() => {
                     $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
                     $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
-                    GetGraph();
+                    this.GetGraph();
                 });
             });
         };
@@ -75,20 +75,24 @@ export default class graphController {
         $scope.OpenModal = () => {
             $('#sensorEditModal').modal('toggle');
             $('#modal_alert').css('display', 'hidden');
-            // const selection = dataService.selection();
-            // const data = dataService.data();
+            const selection = {
+                id: $location.search().sensor
+            }
+            console.log(selection)
             $scope.modalAttributes = [{
                 sensor: selection,
                 date: 1,
                 value: 0,
                 id: 1,
             }];
+            console.log(this.sensor_list)
             $scope.sensorlist = [];
-            data.forEach((sensor) => {
+            this.sensor_list.forEach((sensor) => {
                 $scope.sensorlist.push({
                     name: sensor.name,
                 });
             });
+
 
             $timeout(() => {
                 $('#date-1').datetimepicker();
@@ -96,7 +100,6 @@ export default class graphController {
         };
 
         $scope.SubmitModal = () => {
-            const url = 'reading';
             let error = false;
             const dataObjects = [];
             $scope.modalAttributes.forEach((reading) => {
@@ -127,16 +130,15 @@ export default class graphController {
                 return;
             }
             dataObjects.forEach((file) => {
-                $http.post(url, file).then((response) => {
-                    console.log(response);
-                    $('#sensorEditModal').modal('toggle');
-                }, (response) => {
-                    console.log('An error has occured.', response.data);
-                    $('#modal_alert').html(response.data.error);
-                    $('#modal_alert').css('display', 'block');
-                }).then(() => {
-                    console.log('all done');
-                });
+                $http.post('api/reading', file).then(
+                    (success) => {
+                        console.log(success);
+                        $('#sensorEditModal').modal('toggle');
+                    }, (error) => {
+                        console.log('An error has occured.', error);
+                        $('#modal_alert').html(error.data);
+                        $('#modal_alert').css('display', 'block');
+                    });
             });
         };
 
@@ -172,6 +174,18 @@ export default class graphController {
                 (response) => {
                     console.log('An error has occured.', response.data);
                 });
+        // Used for populating the selections is add readings.
+        this.$http.get('api/sensor')
+            .then(
+                (success) => {
+                    console.log(success);
+                    this.sensor_list = success.data.sensor_list;
+                },
+                (error) => {
+                    console.log('error');
+                    console.log(error);
+                },
+            );
     }
 
     DrawGraph(data) {
