@@ -149,7 +149,7 @@ export default class gaugeController {
         });
 
         let fontSize;
-        if (undefined !== config.label) {
+        if (config.label !== undefined) {
             fontSize = Math.round(config.size / 9);
             svg.append('svg:text')
                 .attr('x', config.cx)

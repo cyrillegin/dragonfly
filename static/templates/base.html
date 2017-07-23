@@ -19,14 +19,16 @@
                 <div ng-include="'/templates/graphWidget.html'"></div>
             </div>
             <div class="row" style="margin-top: 15px">
-              <div ng-include="'/templates/sensorInfo.html'"> </div>
+                <div ng-include="'/templates/sensorInfo.html'"> </div>
             </div>
         </div>
         <div class="col-md-2">
             <!-- Start control widgets -->
             <div ng-repeat="graph in lightSwitchCharts">
                 <h3>{{ graph.title }}</h3>
-                <input type="checkbox" name="my-checkbox" id="{{graph.id}}" checked>
+                <div style="width: 150px">
+                    <input type="checkbox" name="my-checkbox" id="{{graph.id}}" checked>
+                </div>
             </div>
             <!-- End control widgets -->
         </div>

@@ -2,6 +2,7 @@ import 'eonasdan-bootstrap-datetimepicker';
 import './../css/bootstrap-datetimepicker.min.css';
 
 require('./../../node_modules/bootstrap-switch/dist/js/bootstrap-switch.min.js');
+require('./../../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css');
 
 export default class mainController {
     constructor($scope, $timeout, $http) {
@@ -42,16 +43,18 @@ export default class mainController {
                         this.DrawLightSwitch(i);
                     }
                 });
+                this.$scope.lightSwitchCharts.forEach((lightSwitch) => {
+                    $(() => {
+                        console.log('itter')
+                        $('#' + lightSwitch.id).bootstrapSwitch();
+                        $('#' + lightSwitch.id).bootstrapSwitch('state', lightSwitch.val);
+                    });
+                });
             },
             (error) => {
                 console.log('error');
                 console.log(error);
             },
-        ).then(() => {
-            this.$scope.lightSwitchCharts.forEach((lightSwitch) => {
-                $('#' + lightSwitch.id).bootstrapSwitch();
-                $('#' + lightSwitch.id).bootstrapSwitch('state', lightSwitch.val);
-            });
-        });
+        );
     }
 }
