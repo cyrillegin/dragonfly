@@ -92,19 +92,21 @@ input{
   position: fixed;
   bottom: 0;
   left: 0;
-  height: 15px;
+  height: 30px;
   transition: 1s ease;
   text-align: center;
   box-shadow: -1px -1px 3px rgba(0,0,0,0.12), -1px 1px 3px rgba(0,0,0,0.24);
 }
 
 .open-button {
+  padding-top: 5px;
   width:100%;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.12);
+  height: 30px;
 }
 
 .footerDrawerOpen {
-    height: 140px;
+    height: 150px;
 }
 
 
@@ -124,3 +126,46 @@ input{
 		font-weight: bold;
 		fill: #666;
 	}
+
+.side-bar {
+  width: 14%;
+  height: 100%;
+  left: -14%;
+  top: 0;
+  position: fixed;
+  padding: 10px;
+  transition: 1s;
+}
+
+.side-bar-open {
+  left: 0;
+}
+
+.side-bar-button {
+    box-shadow: 1px 0 3px rgba(0,0,0,0.3);
+    border-left: black 1px;
+    height: 100%;
+    width: 30px;
+    left: 0;
+    top: 0;
+    position: fixed;
+    transition: 1s;
+    padding-left: 5px;
+}
+
+.side-bar-button-open {
+  left: 14%;
+}
+
+.main-container {
+  width: 100%;
+  left: 0;
+  padding-left: 30px;
+  position: relative;
+  transition: 1s;
+}
+
+.main-container-open {
+  width: 86%;
+  left: 14%;
+}

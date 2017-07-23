@@ -22,16 +22,17 @@ export default class mainController {
                 console.log(error);
             },
         );
-        this.GetData();
-    }
 
-    DrawLightSwitch(data) {
-        const switchObj = {
-            title: data.name,
-            id: 'switch-' + data.name.split(' ').join(''),
-            val: data.lastReading,
-        };
-        this.$scope.lightSwitchCharts.push(switchObj);
+        $(() => {
+            $('#side-bar-button').on('click', () => {
+                $('#side-bar').toggleClass('side-bar-open');
+                $('#side-bar-button').toggleClass('side-bar-button-open');
+                $('#side-bar-button-icon').toggleClass('glyphicon-chevron-right');
+                $('#side-bar-button-icon').toggleClass('glyphicon-chevron-left');
+                $('#main-container').toggleClass('main-container-open');
+            })
+        })
+        this.GetData();
     }
 
     GetData() {
@@ -45,7 +46,6 @@ export default class mainController {
                 });
                 this.$scope.lightSwitchCharts.forEach((lightSwitch) => {
                     $(() => {
-                        console.log('itter')
                         $('#' + lightSwitch.id).bootstrapSwitch();
                         $('#' + lightSwitch.id).bootstrapSwitch('state', lightSwitch.val);
                     });
@@ -56,5 +56,14 @@ export default class mainController {
                 console.log(error);
             },
         );
+    }
+
+    DrawLightSwitch(data) {
+        const switchObj = {
+            title: data.name,
+            id: 'switch-' + data.name.split(' ').join(''),
+            val: data.lastReading,
+        };
+        this.$scope.lightSwitchCharts.push(switchObj);
     }
 }
