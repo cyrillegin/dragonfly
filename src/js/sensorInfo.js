@@ -1,54 +1,14 @@
 export default class sensorController {
 
-    constructor($scope, $window, $http) {
+    constructor($scope, $window, $http, $location) {
         'ngInject';
 
-        let data;
-        let selection;
-
-        function LoadValues() {
-            if (selection === undefined || selection[0] === undefined) {
-                return;
-            }
-            if (data === undefined || data[0] === undefined) {
-                return;
-            }
-            data.forEach((i) => {
-                if (i.name === selection) {
-                    $scope.sensorName = selection;
-                    $scope.sensorDescription = i.description;
-                    $scope.sensorCoefficients = i.coefficients;
-                    $scope.sensorType = i.self_type;
-                    $scope.sensorUnits = i.units;
-                    $scope.sensorMinValue = i.min_value;
-                    $scope.sensorMaxValue = i.max_value;
-                    $scope.sensorStation = i.station;
-                }
-            });
-        }
-
-        $scope.$watch(() => {
-            // return dataService.selection();
-        }, (v) => {
-            if (v === undefined) {
-                return;
-            }
-            selection = v;
-            LoadValues();
-        });
-
-        $scope.$watch(() => {
-            // return dataService.data();
-        }, (v) => {
-            if (v === undefined) {
-                return;
-            }
-            data = v;
-            LoadValues();
-        });
-
+        this.$http = $http;
+        this.$location = $location;
+        this.$scope = $scope;
+        
         $scope.SaveSensor = () => {
-            data = {
+            this.data = {
                 name: $scope.sensorName,
                 description: $scope.sensorDescription,
                 coefficients: $scope.sensorCoefficients,
@@ -59,15 +19,44 @@ export default class sensorController {
                 station: $scope.sensorStation,
             };
 
-            $http.post('sensor', data).then(() => {
-                $('#message').html('Sensor update successfully.');
-                $('#message').toggleClass('alert alert-success');
-            }, (response) => {
-                console.log('An error has occured.');
-                console.log(response);
-                $('#message').html('Oops! Something went wrong.');
-                $('#message').toggleClass('alert alert-danger');
-            });
+            $http.post('api/sensor', this.data).then(
+                (success) => {
+                    console.log(success);
+                    $('#message').html('Sensor update successfully.');
+                    $('#message').toggleClass('alert alert-success');
+                },
+                (error) => {
+                    console.log('An error has occured.');
+                    console.log(error);
+                    $('#message').html('Oops! Something went wrong.');
+                    $('#message').toggleClass('alert alert-danger');
+                },
+            );
         };
+        this.LoadValues();
+    }
+
+    LoadValues() {
+        this.$http.get('api/sensor/' + this.$location.search().sensor).then(
+            (success) => {
+                console.log(success);
+
+                this.$scope.sensorName = success.data.name;
+                this.$scope.sensorDescription = success.data.description;
+                this.$scope.sensorCoefficients = success.data.coefficients;
+                this.$scope.sensorType = success.data.self_type;
+                this.$scope.sensorUnits = success.data.units;
+                this.$scope.sensorMinValue = success.data.min_value;
+                this.$scope.sensorMaxValue = success.data.max_value;
+                this.$scope.sensorStation = success.data.station;
+
+            },
+            (error) => {
+                console.log('Error retriving sensor');
+                console.log(error);
+            },
+        );
+        console.log(this.data);
+
     }
 }
