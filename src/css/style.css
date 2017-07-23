@@ -82,3 +82,40 @@
 input{
   width: 100%;
 }
+
+
+
+
+.footerDrawer {
+  background-color: #eeeeee;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  height: 20px;
+  transition: 1s ease;
+  text-align: center;
+}
+
+
+.footerDrawerOpen {
+    height: 120px;
+
+}
+
+
+
+#power-gauge g.arc {
+		fill: steelblue;
+	}
+
+	#power-gauge g.pointer {
+		fill: #e85116;
+		stroke: #b64011;
+	}
+
+	#power-gauge g.label text {
+		text-anchor: middle;
+		font-size: 14px;
+		font-weight: bold;
+		fill: #666;
+	}

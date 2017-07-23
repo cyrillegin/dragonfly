@@ -1,36 +1,26 @@
-<div ng-controller="mainController">
-    <div class="row">
-        <div class="col-md-3">
-            <h2>Welcome to Dragonfly</h2>
-        </div>
-        <div class="col-md-6">
-            <div ng-include="'/templates/treeWidget.html'"></div>
-        </div>
-        <div class="col-md-3">
-            <img class="fish-cam" ng-src="{{fishcam}}" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <div ng-include="'/templates/gaugeWidget.html'"></div>
-        </div>
-        <div class="col-md-8">
-            <div class="row">
-                <div ng-include="'/templates/graphWidget.html'"></div>
+<div class="container-fluid" style="padding-left: 3%; padding-right: 3%">
+    <div ng-controller="mainController">
+        <div class="row">
+            <div class="col-md-3">
+                <h2>Dragonfly</h2>
             </div>
-            <div class="row" style="margin-top: 15px">
-                <div ng-include="'/templates/sensorInfo.html'"> </div>
+            <div class="col-md-6">
+                <div ng-include="'/templates/treeWidget.html'"></div>
+            </div>
+            <div class="col-md-3">
+                <img class="fish-cam" ng-src="{{fishcam}}" />
             </div>
         </div>
-        <div class="col-md-2">
-            <!-- Start control widgets -->
-            <div ng-repeat="graph in lightSwitchCharts">
-                <h3>{{ graph.title }}</h3>
-                <div style="width: 150px">
-                    <input type="checkbox" name="my-checkbox" id="{{graph.id}}" checked>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div ng-include="'/templates/graphWidget.html'"></div>
+                </div>
+                <div class="row" style="margin-top: 15px">
+                    <div ng-include="'/templates/sensorInfo.html'"> </div>
                 </div>
             </div>
-            <!-- End control widgets -->
         </div>
+        <div ng-include="'/templates/gaugeWidget.html'"></div>
     </div>
 </div>

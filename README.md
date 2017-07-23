@@ -2,8 +2,8 @@
 Code base for an aquaponics system
 
 # Description
-Dragonfly is a simple data collection service for arduino-like 
-sensors. It comes with a server and front end to view gathered 
+Dragonfly is a simple data collection service for arduino-like
+sensors. It comes with a server and front end to view gathered
 data as well as a sample .ino file.
 
 # Dependencies
@@ -12,9 +12,9 @@ npm
 cherrypy
 pySerial
 
-# Getting Started 
+# Getting Started
 1. git clone https://github.com/cyrillegin/Aquaponics.git into your preferred directory.
-2. upload sample arudino code. 
+2. upload sample arudino code.
 3. cd into dragonfly/static
 4. npm install
 5. cd into dragonfly
@@ -29,4 +29,6 @@ Enjoy!
 
 
 
-
+### TODO
+rain meter:
+https://codepen.io/widged/pen/MmWGoY
