@@ -75,7 +75,6 @@ export default class gaugeController {
             .value((d) => {
                 return d;
             });
-        console.log(sensor)
 
         const arcLines = [
             sensor.max_value - sensor.min_value,
@@ -83,7 +82,7 @@ export default class gaugeController {
             sensor.max_value - sensor.min_value,
         ].reverse();
 
-        const arcs = svg.selectAll('.arc')
+        svg.selectAll('.arc')
             .data(pie(arcLines))
             .enter()
             .append('path')
@@ -93,7 +92,7 @@ export default class gaugeController {
                 return color[i];
             });
 
-        const needle = svg.selectAll('.needle')
+        svg.selectAll('.needle')
             .data([sensor.lastReading])
             .enter()
             .append('line')

@@ -1,4 +1,4 @@
-.button{
+.button {
   background-color: #FFF;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -10,22 +10,21 @@
   text-decoration: none;
 }
 
-.loginBtn{
+.loginBtn {
   float: right;
   margin: 20px;
 }
 
+
 /*Table overriders*/
-.table-borderless > tbody > tr > td,
-.table-borderless > tbody > tr > th,
-.table-borderless > tfoot > tr > td,
-.table-borderless > tfoot > tr > th,
-.table-borderless > thead > tr > td,
-.table-borderless > thead > tr > th {
-    border: none;
+
+.table-borderless>tbody>tr>td, .table-borderless>tbody>tr>th, .table-borderless>tfoot>tr>td, .table-borderless>tfoot>tr>th, .table-borderless>thead>tr>td, .table-borderless>thead>tr>th {
+  border: none;
 }
 
+
 /*d3 node tree*/
+
 .node {
   cursor: pointer;
 }
@@ -46,103 +45,87 @@
   stroke-width: 1.5px;
 }
 
+
 /*d3 graph*/
-.ChartAxis-Shape{
+
+.ChartAxis-Shape {
   fill: none;
   shape-rendering: crispEdges;
   stroke: black;
   stroke-width: 1px;
 }
 
-.ChartTitle-Text{
+.ChartTitle-Text {
   fill: #777;
   font-size: 160%;
   text-align: left;
 }
 
-.tick{
+.tick {
   opacity: 0.7;
   stroke: lightgrey;
 }
 
-.tick text{
+.tick text {
   fill: black;
   shape-rendering: crispEdges;
   stroke: none;
 }
 
-.ChartAxis-Shape line{
-  stroke-opacity:0.2;
+.ChartAxis-Shape line {
+  stroke-opacity: 0.2;
 }
 
 .fish-cam {
   width: 25%;
 }
 
-input{
+input {
   width: 100%;
 }
-
-
-
 
 .footerDrawer {
   background-color: #eeeeee;
-  width: 100%;
-  position: fixed;
   bottom: 0;
-  left: 0;
+  box-shadow: -1px -1px 3px rgba(0, 0, 0, 0.12), -1px 1px 3px rgba(0, 0, 0, 0.24);
   height: 30px;
-  transition: 0.5s ease;
+  left: 0;
+  position: fixed;
   text-align: center;
-  box-shadow: -1px -1px 3px rgba(0,0,0,0.12), -1px 1px 3px rgba(0,0,0,0.24);
+  transition: 0.5s ease;
+  width: 100%;
 }
 
 .open-button {
-  padding-top: 5px;
-  width:100%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.12);
   height: 30px;
+  padding-top: 5px;
+  width: 100%;
 }
 
 .footerDrawerOpen {
-    height: 150px;
+  height: 150px;
 }
 
 .bottom-bar-container {
-    height: 30px;
-    transition: 0.5s;
+  height: 30px;
+  transition: 0.5s;
 }
 
 .bottom-bar-container-open {
-    height:150px;
+  height: 150px;
 }
 
 
-#power-gauge g.arc {
-		fill: steelblue;
-	}
-
-	#power-gauge g.pointer {
-		fill: #e85116;
-		stroke: #b64011;
-	}
-
-	#power-gauge g.label text {
-		text-anchor: middle;
-		font-size: 14px;
-		font-weight: bold;
-		fill: #666;
-	}
 
 .side-bar {
-  width: 14%;
   height: 100%;
   left: -14%;
-  top: 0;
-  position: fixed;
   padding: 10px;
+  position: fixed;
+  top: 0;
   transition: 0.5s;
+  width: 14%;
 }
 
 .side-bar-open {
@@ -150,15 +133,16 @@ input{
 }
 
 .side-bar-button {
-    box-shadow: 1px 0 3px rgba(0,0,0,0.3);
-    border-left: black 1px;
-    height: 100%;
-    width: 30px;
-    left: 0;
-    top: 0;
-    position: fixed;
-    transition: 0.5s;
-    padding-left: 5px;
+
+  border-left: black 1px;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.3);
+  height: 100%;
+  left: 0;
+  padding-left: 5px;
+  position: fixed;
+  top: 0;
+  transition: 0.5s;
+  width: 30px;
 }
 
 .side-bar-button-open {
@@ -166,14 +150,15 @@ input{
 }
 
 .main-container {
-  width: 100%;
   left: 0;
   padding-left: 30px;
   position: relative;
   transition: 0.5s;
+  width: 100%;
 }
 
 .main-container-open {
-  width: 86%;
   left: 14%;
+  width: 86%;
+
 }

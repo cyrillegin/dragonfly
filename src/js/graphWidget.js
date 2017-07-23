@@ -31,35 +31,6 @@ export default class graphController {
             });
         };
 
-        // const readingAttrs = [{
-        //     name: 'Sensor',
-        //     type: 'multiple',
-        //     value: [],
-        //     id: 'modal_sensor',
-        //     fieldName: 'sensor',
-        // }, {
-        //     name: 'value',
-        //     type: 'text',
-        //     value: 7,
-        //     id: 'modal_value',
-        //     fieldName: 'value',
-        // }, {
-        //     name: 'date',
-        //     type: 'date',
-        //     value: 1000000,
-        //     id: 'modal_date',
-        //     fieldName: 'created',
-        // }];
-
-        // $timeout(() => {
-        //     const sensors = dataService.data();
-        //     sensors.forEach((i) => {
-        //         readingAttrs[0].value.push({
-        //             name: i.name,
-        //         });
-        //     });
-        // });
-
         $scope.addReading = () => {
             $scope.modalAttributes.push({
                 sensor: null,
@@ -76,16 +47,14 @@ export default class graphController {
             $('#sensorEditModal').modal('toggle');
             $('#modal_alert').css('display', 'hidden');
             const selection = {
-                id: $location.search().sensor
-            }
-            console.log(selection)
+                id: $location.search().sensor,
+            };
             $scope.modalAttributes = [{
                 sensor: selection,
                 date: 1,
                 value: 0,
                 id: 1,
             }];
-            console.log(this.sensor_list)
             $scope.sensorlist = [];
             this.sensor_list.forEach((sensor) => {
                 $scope.sensorlist.push({
@@ -219,8 +188,8 @@ export default class graphController {
         for (i = 0; i < data.readings.length; i ++) {
             dataObject.readings.push({
                 created: new Date(data.readings[i].created * 1000).getTime(),
-                value: data.readings[i].value * coef.x + coef.y
-            })
+                value: data.readings[i].value * coef.x + coef.y,
+            });
         }
         if (dataObject.readings.length === 0) {
             $('#graph-container')[0].innerHTML = 'There arnt enough readings for this sensor to display anything.';

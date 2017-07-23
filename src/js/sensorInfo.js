@@ -6,7 +6,7 @@ export default class sensorController {
         this.$http = $http;
         this.$location = $location;
         this.$scope = $scope;
-        
+
         $scope.SaveSensor = () => {
             this.data = {
                 name: $scope.sensorName,

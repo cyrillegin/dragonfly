@@ -18,7 +18,6 @@ export default class treeController {
             children: [],
         };
 
-        let v = [];
         this.$http.get('/api/sensor')
             .then(
                 (success) => {
