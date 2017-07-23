@@ -5,7 +5,7 @@ require('./../../node_modules/bootstrap-switch/dist/js/bootstrap-switch.min.js')
 require('./../../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css');
 
 export default class mainController {
-    constructor($scope, $timeout, $http) {
+    constructor($scope, $timeout, $http, $window) {
         'ngInject';
 
         this.$scope = $scope;
@@ -30,8 +30,13 @@ export default class mainController {
                 $('#side-bar-button-icon').toggleClass('glyphicon-chevron-right');
                 $('#side-bar-button-icon').toggleClass('glyphicon-chevron-left');
                 $('#main-container').toggleClass('main-container-open');
-            })
-        })
+
+                $timeout(() => {
+                    console.log('asdf');
+                    $window.dispatchEvent(new Event('resize'));
+                }, 500);
+            });
+        });
         this.GetData();
     }
 

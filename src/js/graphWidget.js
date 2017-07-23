@@ -139,6 +139,10 @@ export default class graphController {
                 });
             });
         };
+
+        angular.element($window).bind('resize', () => {
+            this.DrawGraph(this.data);
+        });
         this.GetGraph();
     } // End Constructor
 
@@ -163,6 +167,7 @@ export default class graphController {
             .then(
                 (response) => {
                     this.DrawGraph(response.data);
+                    this.data = response.data;
                 },
                 (response) => {
                     console.log('An error has occured.', response.data);
@@ -193,32 +198,38 @@ export default class graphController {
             y: 0,
         };
 
+        const dataObject = {
+            readings: [],
+            sensor: [],
+        };
         for (i = 0; i < data.readings.length; i ++) {
-            data.readings[i].created = new Date(data.readings[i].created * 1000).getTime();
-            data.readings[i].value = data.readings[i].value * coef.x + coef.y;
+            dataObject.readings.push({
+                created: new Date(data.readings[i].created * 1000).getTime(),
+                value: data.readings[i].value * coef.x + coef.y
+            })
         }
-        if (data.readings.length === 0) {
+        if (dataObject.readings.length === 0) {
             $('#graph-container')[0].innerHTML = 'There arnt enough readings for this sensor to display anything.';
             return;
         }
-        let start = data.readings[0].created;
-        let end = data.readings[0].created;
-        let min = data.readings[0].value;
-        let max = data.readings[0].value;
+        let start = dataObject.readings[0].created;
+        let end = dataObject.readings[0].created;
+        let min = dataObject.readings[0].value;
+        let max = dataObject.readings[0].value;
 
         // Set min and max values
-        for (i = 0; i < data.readings.length; i ++) {
-            if (min > data.readings[i].value) {
-                min = data.readings[i].value;
+        for (i = 0; i < dataObject.readings.length; i ++) {
+            if (min > dataObject.readings[i].value) {
+                min = dataObject.readings[i].value;
             }
-            if (max < data.readings[i].value) {
-                max = data.readings[i].value;
+            if (max < dataObject.readings[i].value) {
+                max = dataObject.readings[i].value;
             }
-            if (start > data.readings[i].created) {
-                start = data.readings[i].created;
+            if (start > dataObject.readings[i].created) {
+                start = dataObject.readings[i].created;
             }
-            if (end < data.readings[i].created) {
-                end = data.readings[i].created;
+            if (end < dataObject.readings[i].created) {
+                end = dataObject.readings[i].created;
             }
         }
         if (this.$location.search().start_date !== undefined) {
@@ -238,7 +249,7 @@ export default class graphController {
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.bottom + ')')
             .classed('svg-content-responsive', true);
-        if (data.readings.length === 0) {
+        if (dataObject.readings.length === 0) {
             newChart.append('g').append('text')
                 .text('No data exists for this time range.')
                 .attr('class', 'ChartTitle-Text')
@@ -336,9 +347,9 @@ export default class graphController {
 
         function mousemove() {
             const x0 = xScale.invert(d3.mouse(this)[0]); // jshint ignore:line
-            const i = bisectDate(data.readings, x0, 1);
-            const d0 = data.readings[i - 1];
-            const d1 = data.readings[i];
+            const i = bisectDate(dataObject.readings, x0, 1);
+            const d0 = dataObject.readings[i - 1];
+            const d1 = dataObject.readings[i];
             if (d1 === undefined) {
                 return;
             }
@@ -382,9 +393,9 @@ export default class graphController {
                 // dragStart = d3.mouse(this)[0];
 
                 const x0 = xScale.invert(d3.mouse(this)[0]);
-                const i = bisectDate(data.readings, x0, 1);
-                const d0 = data.readings[i - 1];
-                const d1 = data.readings[i];
+                const i = bisectDate(dataObject.readings, x0, 1);
+                const d0 = dataObject.readings[i - 1];
+                const d1 = dataObject.readings[i];
                 const d = x0 - d0.created > d1.created - x0 ? d1 : d0;
                 selectionBox.attr('transform', 'translate(' + xScale(d.created) + ',0)');
                 // dragStartPos = xScale(d.created);
@@ -484,7 +495,7 @@ export default class graphController {
             });
 
         newChart.append('path')
-            .attr('d', lineFunction(data.readings))
+            .attr('d', lineFunction(dataObject.readings))
             .attr('stroke', colors[0])
             .attr('stroke-width', 2)
             .attr('fill', 'none');
