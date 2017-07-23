@@ -12,7 +12,6 @@ export default class gaugeController {
         $scope.gauges = [];
         $(() => {
             $('#footerDrawer').on('click', () => {
-                console.log('asdf');
                 $('#footerDrawer').toggleClass('footerDrawerOpen');
                 $('#open-button').toggleClass('glyphicon-chevron-up');
                 $('#open-button').toggleClass('glyphicon-chevron-down');
@@ -50,9 +49,12 @@ export default class gaugeController {
     }
 
     DrawTempChart(sensor, index) {
+        if (sensor.lastReading === null) {
+            return;
+        }
 
         const width = 200;
-        const height = 100;
+        const height = 140;
 
         const svg = d3.select('#gaugeChart-' + sensor.name)
             .append('svg')
@@ -64,10 +66,7 @@ export default class gaugeController {
             .outerRadius(80)
             .padAngle(0);
 
-        const color = ['#91cf60', '#d9ef8b', '#fee08b', '#fc8d59', '#d73027'].reverse();
-
-        let data = makeData();
-        console.log(data)
+        const color = ['#d73027', '#91cf60', '#198CFF'].reverse();
 
         const pie = d3.pie()
             .startAngle(- Math.PI / 2)
@@ -75,13 +74,13 @@ export default class gaugeController {
             .value((d) => {
                 return d;
             });
+        console.log(sensor)
 
         const arcLines = [
-            sensor.max_value * 1.1,
-            sensor.max_value,
-            sensor.min_value,
-            sensor.min_value * 0.9,
-        ]
+            sensor.max_value - sensor.min_value,
+            sensor.max_value - sensor.min_value,
+            sensor.max_value - sensor.min_value,
+        ].reverse();
 
         const arcs = svg.selectAll('.arc')
             .data(pie(arcLines))
@@ -90,7 +89,7 @@ export default class gaugeController {
             .attr('d', arc)
             .attr('transform', 'translate(100,100)')
             .style('fill', (d, i) => {
-                return color[ i ];
+                return color[i];
             });
 
         const needle = svg.selectAll('.needle')
@@ -103,36 +102,23 @@ export default class gaugeController {
             .attr('y2', 0)
             .style('stroke', 'black')
             .attr('transform', (d) => {
-                const r = 180 * d / arcLines[ 3 ];
+                const r = 180 * (d / arcLines[0]);
                 return ' translate(100, 100) rotate(' + r + ')';
             });
 
-        console.log(sensor)
+        // Title
+        svg.append('text')
+            .style('text-anchor', 'middle')
+            .attr('x', width / 2)
+            .attr('y', height - 25)
+            .text(sensor.name);
 
-        d3.select('#button')
-            .on('click', () => {
-                data = makeData();
-                arcs.data(pie(arcLines))
-                    .transition()
-                    .attr('d', arc);
-                needle.data([sensor.lastReading])
-                    .transition()
-                    .ease(d3.easeElasticOut)
-                    .duration(2000)
-                    .attr('transform', (d) => {
-                        r = 180 * d / arcLines;
-                        return ' translate(100, 100) rotate(' + r + ')';
-                    });
-            });
-
-        function makeData() {
-            const newarcsdata = d3.range(4)
-                .map(() => {
-                    return d3.randomUniform()();
-                })
-                .sort();
-            const newneedledata = [d3.randomUniform(0, newarcsdata[ 3 ])()];
-            return [newneedledata, newarcsdata];
-        };
+        // Display
+        svg.append('text')
+            .style('text-anchor', 'middle')
+            .attr('class', 'ChartTitle-Text')
+            .attr('x', width / 2)
+            .attr('y', height - 40)
+            .text(sensor.lastReading.toFixed(1));
     }
 }
