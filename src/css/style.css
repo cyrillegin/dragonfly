@@ -109,6 +109,14 @@ input{
     height: 150px;
 }
 
+.bottom-bar-container {
+    height: 30px;
+    transition: 0.5s;
+}
+
+.bottom-bar-container-open {
+    height:150px;
+}
 
 
 #power-gauge g.arc {

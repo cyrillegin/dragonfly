@@ -15,6 +15,7 @@ export default class gaugeController {
                 $('#footerDrawer').toggleClass('footerDrawerOpen');
                 $('#open-button').toggleClass('glyphicon-chevron-up');
                 $('#open-button').toggleClass('glyphicon-chevron-down');
+                $('#bottom-bar-container').toggleClass('bottom-bar-container-open');
             });
         });
 
