@@ -59,8 +59,8 @@ def loadfixtures():
         'coefficients': "(1,0)",
         'sensor_type': "temperature",
         'units': "F",
-        'min_value': 300,
-        'max_value': 900
+        'min_value': 50,
+        'max_value': 70
     }
 
     # Create data structure to send to api
@@ -72,7 +72,7 @@ def loadfixtures():
     # Populate readings
     for i in range(0, 24 * 60):
         newReading = {
-            "value": 600 + 200 * math.sin(0.1 * i),
+            "value": 60 + 7 * math.sin(0.1 * i),
             "timestamp": time.time() - i * 1000
         }
         newReadings['readings'].append(newReading)

@@ -19,8 +19,8 @@ import cherrypy
 import time
 import logging
 
-from sessionManager import sessionScope
-from models import Log
+from server.sessionManager import sessionScope
+from server.models import Log
 
 
 class Logs:

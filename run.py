@@ -2,16 +2,20 @@
 import cherrypy
 import os
 import sys
+import jinja2
+import json
 from sqlalchemy import create_engine
 
-import models
-from api import ResourceApi
-from commands import Command
+from server import models
+from server.api import ResourceApi
+from server.commands import Command
 
-PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+PATH = os.path.abspath(os.path.dirname(__file__))
 STATIC = os.path.join(PATH, 'static')
-NODE = os.path.join(PATH, 'node_modules')
 sys.path.append(PATH)
+
+env = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(searchpath=os.path.join(PATH, 'static/templates/')), )
 
 
 def get_cp_config():
@@ -24,10 +28,6 @@ def get_cp_config():
         '/api': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher()
         },
-        '/vendor': {
-            'tools.staticdir.on': True,
-            'tools.staticdir.dir': NODE
-        }
     }
     return config
 
@@ -36,8 +36,14 @@ class Root(object):
     api = ResourceApi()
 
     def index(self):
-        cherrypy.response.headers['Content-Type'] = 'text/html'
-        return open(os.path.join(STATIC, "index.html"))
+        src = json.load(open(os.path.join(PATH, 'webpack-stats.json')))
+        vendor = json.load(open(os.path.join(PATH, 'webpack-stats.json')))
+        context = {
+            "src": src['chunks']['app'][0]['name'],
+            "vendor": vendor['chunks']['vendor'][0]['name']
+        }
+        t = env.get_template("index.html")
+        return t.render(context)
     index.exposed = True
 
 

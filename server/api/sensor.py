@@ -24,8 +24,8 @@ import cherrypy
 import time
 import logging
 
-from sessionManager import sessionScope
-from models import Sensor
+from server.sessionManager import sessionScope
+from server.models import Sensor
 
 
 class Sensors:
