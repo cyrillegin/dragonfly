@@ -4,3 +4,4 @@ sqlalchemy==1.0.13
 jinja2==2.8
 requests==2.13.0
 beautifulsoup4==4.4.1
+pygame==1.9.3

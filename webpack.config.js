@@ -6,7 +6,7 @@ var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlug
 
 module.exports = {
     entry: {
-        app: './src/js/app.js',
+        app: './src/app.js',
         vendor: [
             'angular',
             'd3',
@@ -27,32 +27,44 @@ module.exports = {
             exclude: /node_modules/,
             loader: 'babel-loader',
             options: {
-                presets: ['es2015']
-            }
+                presets: ['es2015'],
+            },
+        }, {
+            test: /\.html$/,
+            loader: 'html-loader',
         }, {
             test: /bootstrap\/dist\/js\/umd\//,
-            loader: 'imports?jQuery=jquery'
+            loader: 'imports?jQuery=jquery',
         }, {
             test: /\.css$/,
-            loader: 'style-loader!css-loader'
+            loader: 'style-loader!css-loader',
+        }, {
+            test: /\.scss$/,
+            use: [{
+                loader: 'style-loader',
+            }, {
+                loader: 'css-loader',
+            }, {
+                loader: 'sass-loader',
+            }],
         }, {
             test: /\.png$/,
-            loader: 'url-loader?publicPath=/static/dist/&limit=100000'
+            loader: 'url-loader?publicPath=/static/dist/&limit=100000',
         }, {
             test: /\.jpg$/,
-            loader: 'file-loader'
+            loader: 'file-loader',
         }, {
             test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
-            loader: 'url-loader'
+            loader: 'url-loader',
         }],
     },
     plugins: [
         new BundleTracker({
-            filename: './webpack-stats.json'
+            filename: './webpack-stats.json',
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true,
-            debug: false
+            debug: false,
         }),
         // new webpack.optimize.UglifyJsPlugin({
         //     compress: {
@@ -74,13 +86,13 @@ module.exports = {
         new webpack.ProvidePlugin({
             jQuery: 'jquery',
             $: 'jquery',
-            jquery: 'jquery'
+            jquery: 'jquery',
         }),
-        new BundleAnalyzerPlugin(),
+        // new BundleAnalyzerPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            filename: 'vendor.bundle.js'
+            filename: 'vendor.bundle.js',
         }),
-        new webpack.NamedModulesPlugin()
+        new webpack.NamedModulesPlugin(),
     ]
 }
