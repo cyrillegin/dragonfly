@@ -1,24 +1,25 @@
+const path = require('path');
 const webpack = require('webpack');
-var path = require('path');
-var BundleTracker = require('webpack-bundle-tracker');
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleTracker = require('webpack-bundle-tracker');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     entry: {
         app: './src/app.js',
         vendor: [
             'angular',
+            'angular-route',
             'd3',
             'bootstrap',
             'jquery',
             'moment',
-            'eonasdan-bootstrap-datetimepicker'
-        ]
+            'eonasdan-bootstrap-datetimepicker',
+        ],
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'static/dist')
+        path: path.resolve(__dirname, 'static/dist'),
     },
     devtool: 'eval-cheap-module-source-map',
     module: {
@@ -88,7 +89,7 @@ module.exports = {
             $: 'jquery',
             jquery: 'jquery',
         }),
-        // new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'vendor.bundle.js',

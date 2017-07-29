@@ -8,7 +8,9 @@ export default class treeController {
         this.$window = $window;
         this.$http = $http;
         this.$location = $location;
+    }
 
+    $onInit() {
         this.LoadSensors();
     }
 
@@ -19,38 +21,37 @@ export default class treeController {
         };
 
         this.$http.get('/api/sensor')
-            .then(
-                (success) => {
-                    success.data.sensor_list.forEach((i) => {
-                        if (i.station === null) {
-                            i.station = 'Not set';
+            .then((success) => {
+                success.data.sensor_list.forEach((i) => {
+                    if (i.station === null) {
+                        i.station = 'Not set';
+                    }
+                    let stationExists = false;
+                    sensorNodes.children.forEach((j) => {
+                        if (i.station === j.name) {
+                            stationExists = true;
                         }
-                        let stationExists = false;
-                        sensorNodes.children.forEach((j) => {
-                            if (i.station === j.name) {
-                                stationExists = true;
-                            }
+                    });
+                    if (! stationExists) {
+                        sensorNodes.children.push({
+                            name: i.station,
+                            children: [],
                         });
-                        if (! stationExists) {
-                            sensorNodes.children.push({
-                                name: i.station,
-                                children: [],
+                    }
+                    sensorNodes.children.forEach((j) => {
+                        if (j.name === i.station) {
+                            j.children.push({
+                                name: i.name,
                             });
                         }
-                        sensorNodes.children.forEach((j) => {
-                            if (j.name === i.station) {
-                                j.children.push({
-                                    name: i.name,
-                                });
-                            }
-                        });
                     });
-                    this.buildTree(sensorNodes);
-                },
-                (error) => {
-                    console.log('error');
-                    console.log(error);
                 });
+                this.buildTree(sensorNodes);
+            })
+            .catch((error) => {
+                console.log('error');
+                console.log(error);
+            });
     };
 
     buildTree(treeData) {

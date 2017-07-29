@@ -8,15 +8,16 @@ export default class gaugeController {
         this.$scope = $scope;
         this.$timeout = $timeout;
         this.$http = $http;
+    }
 
-        $scope.gauges = [];
-        $(() => {
-            $('#footerDrawer').on('click', () => {
-                $('#footerDrawer').toggleClass('footerDrawerOpen');
-                $('#open-button').toggleClass('glyphicon-chevron-up');
-                $('#open-button').toggleClass('glyphicon-chevron-down');
-                $('#bottom-bar-container').toggleClass('bottom-bar-container-open');
-            });
+    $onInit() {
+        this.$scope.gauges = [];
+
+        $('#footerDrawer').on('click', () => {
+            $('#footerDrawer').toggleClass('footerDrawerOpen');
+            $('#open-button').toggleClass('glyphicon-chevron-up');
+            $('#open-button').toggleClass('glyphicon-chevron-down');
+            $('#bottom-bar-container').toggleClass('bottom-bar-container-open');
         });
 
         this.GetData();

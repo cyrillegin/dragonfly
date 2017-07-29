@@ -15,7 +15,7 @@ STATIC = os.path.join(PATH, 'static')
 sys.path.append(PATH)
 
 env = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(searchpath=os.path.join(PATH, 'static/templates/')), )
+    loader=jinja2.FileSystemLoader(searchpath=os.path.join(PATH, 'static/')), )
 
 
 def get_cp_config():
