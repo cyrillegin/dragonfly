@@ -1,12 +1,12 @@
-<div class="container-fluid base" ng-controller='baseController'>
+<div class="container-fluid base" ng-controller="baseController">
     <div class="side-bar" id="side-bar">
         <div class="side-bar-button" id="side-bar-button">
-            <span id="side-bar-button-icon" class="glyphicon glyphicon-chevron-right" style="top: 49%;" />
+            <span id="side-bar-button-icon" class="glyphicon glyphicon-chevron-right side-bar-button-icon" />
         </div>
-        <div ng-repeat="graph in lightSwitchCharts">
-            <h3>{{ graph.title }}</h3>
-            <div style="width: 100px">
-                <input type="checkbox" name="my-checkbox" id="{{graph.id}}" checked />
+        <div ng-repeat="lightswitch in lightSwitchCharts">
+            <h3>{{lightswitch.title }}</h3>
+            <div class="lightswitch-container">
+                <input type="checkbox" name="my-checkbox" id="{{lightswitch.id}}" checked />
             </div>
         </div>
     </div>
@@ -16,26 +16,28 @@
                 <h2>Dragonfly</h2>
             </div>
             <div class="col-md-6">
-                <treecomponent></treecomponent>
+                <treecomponent />
             </div>
             <div class="col-md-3">
-                <img class="fish-cam" ng-src="{{fishcam}}" />
+                <img class="fish-cam" alt="fish-pic" ng-src="{{fishcam}}" />
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
-                    <graphcomponent></graphcomponent>
+                    <graphcomponent />
                 </div>
-                <div class="row" style="margin-top: 15px">
-                    <sensorcomponent></sensorcomponent>
+                <div class="row sensor-container">
+                    <sensorcomponent />
                 </div>
             </div>
         </div>
         <div class="bottom-bar-container" id="bottom-bar-container">
-            <gaugecomponent></gaugecomponent>
-
+            <div class="footer-drawer" id="footer-drawer">
+                <div id="open-button" class="open-button glyphicon glyphicon-chevron-up">
+                </div>
+                <gaugecomponent />
+            </div>
         </div>
     </div>
-</div>
-</div>
+  </div>

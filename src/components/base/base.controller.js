@@ -40,6 +40,13 @@ export default class mainController {
             }, 500);
         });
 
+        $('#footer-drawer').on('click', () => {
+            $('#footer-drawer').toggleClass('footer-drawer-open');
+            $('#open-button').toggleClass('glyphicon-chevron-up');
+            $('#open-button').toggleClass('glyphicon-chevron-down');
+            $('#bottom-bar-container').toggleClass('bottom-bar-container-open');
+        });
+
         this.GetData();
     }
 

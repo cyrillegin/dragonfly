@@ -1,68 +1,68 @@
-
-    <div id="graph-container"></div>
-    <div class="row">
-        <div class="col-md-3">
-            Start Date
-            <input type="text" style="width: auto;" id="start_date" />
-        </div>
-        <div class="col-md-3">
-            End Date
-            <input type="text" style="width: auto;" id="end_date" />
-        </div>
-        <div class="col-md-1">
-            <button class="button" ng-click="SubmitDate()">Submit</button>
-        </div>
-        <div class="col-md-5">
-            <button class="button" ng-click="OpenModal('log')" style="float: right">Add Log</button>
-            <button class="button" ng-click="OpenModal('reading')" style="float: right">Add Reading</button>
-        </div>
+<div id="graph-container">
+</div>
+<div class="row">
+    <div class="col-md-3">
+        Start Date
+        <input type="text" class="date-input" id="start_date" />
     </div>
+    <div class="col-md-3">
+        End Date
+        <input type="text" class="date-input" id="end_date" />
+    </div>
+    <div class="col-md-1">
+        <button class="button" ng-click="SubmitDate()">Submit</button>
+    </div>
+    <div class="col-md-5 edit-buttons">
+        <button class="button" ng-click="OpenModal('log')" >Add Log</button>
+        <button class="button" ng-click="OpenModal('reading')" >Add Reading</button>
+    </div>
+</div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="sensorEditModal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-title">Add Readings</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<!-- Modal -->
+<div class="modal fade" id="sensorEditModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Add Readings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div>
-                <!-- Description -->
-                <div class="modal-body clearfix">
-                    <div class="alert alert-danger" style="display: none;" id="modal_alert" > </div>
+            </div>
+            <!-- Description -->
+            <div class="modal-body clearfix">
+                <div class="alert alert-danger" id="modal_alert"> </div>
 
-                    <table class="table">
-                        <tr>
-                            <td>Sensor</td>
+                <table class="table">
+                    <tr>
+                        <td>Sensor</td>
 
-                            <td>Date</td>
+                        <td>Date</td>
 
-                            <td>Value</td>
-                        </tr>
+                        <td>Value</td>
+                    </tr>
 
-                        <tr ng-repeat="input in modalAttributes">
-                            <td>
-                                <select id="sensor-{{input.id}}" ng-model="selection" ng-options="val.name for val in sensorlist"></select>
-                            </td>
+                    <tr ng-repeat="input in modalAttributes">
+                        <td>
+                            <select id="sensor-{{input.id}}" ng-model="selection" ng-options="val.name for val in sensorlist"></select>
+                        </td>
 
-                            <td>
-                                <input type="text" id="date-{{input.id}}" />
-                            </td>
+                        <td>
+                            <input type="text" id="date-{{input.id}}" />
+                        </td>
 
-                            <td>
-                                <input type="text" id="value-{{input.id}}" />
-                            </td>
-                        </tr>
-                    </table>
-                    <button class="button" ng-click="addReading()" style="float:right">Add Reading</button>
+                        <td>
+                            <input type="text" id="value-{{input.id}}" />
+                        </td>
+                    </tr>
+                </table>
+                <button class="button add-reading-button" ng-click="addReading()">Add Reading</button>
 
-                </div>
+            </div>
 
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" ng-click="SubmitModal()">Save</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="SubmitModal()">Save</button>
+            </div>
         </div>
-      </div>
-  </div>
     </div>
+</div>

@@ -138,21 +138,21 @@ export default class graphController {
 
         this.$http.get('api/reading/?sensor=' + sensor + '&start=' + start + '&end=' + end)
             .then((success) => {
-                    this.DrawGraph(success.data);
-                    this.data = success.data;
-                })
-                .catch((error) => {
-                    console.log('An error has occured.', error.data);
-                });
+                this.DrawGraph(success.data);
+                this.data = success.data;
+            })
+            .catch((error) => {
+                console.log('An error has occured.', error.data);
+            });
         // Used for populating the selections is add readings.
         this.$http.get('api/sensor')
             .then((success) => {
-                    this.sensor_list = success.data.sensor_list;
-                })
-                .catch((error) => {
-                    console.log('error');
-                    console.log(error);
-                });
+                this.sensor_list = success.data.sensor_list;
+            })
+            .catch((error) => {
+                console.log('error');
+                console.log(error);
+            });
     }
 
     DrawGraph(data) {
@@ -223,7 +223,7 @@ export default class graphController {
         // Create the svg.
         const newChart = d3.select('#graph-container')
             .append('svg')
-            .attr('class', 'Chart-Container')
+            .attr('class', 'chart-container')
             .attr('id', 'Graph' + data.sensor.name)
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
@@ -233,7 +233,7 @@ export default class graphController {
         if (dataObject.readings.length === 0) {
             newChart.append('g').append('text')
                 .text('No data exists for this time range.')
-                .attr('class', 'ChartTitle-Text')
+                .attr('class', 'chart-title-text')
                 .attr('x', margin.left)
                 .attr('y', height / 2);
             return;
@@ -403,7 +403,7 @@ export default class graphController {
             });
 
         newChart.append('g')
-            .attr('class', 'ChartAxis-Shape')
+            .attr('class', 'chart-axis-shape')
             .call(yAxis);
 
         // X Axis
@@ -414,14 +414,14 @@ export default class graphController {
             .ticks(5);
 
         newChart.append('g')
-            .attr('class', 'ChartAxis-Shape')
+            .attr('class', 'chart-axis-shape')
             .attr('transform', 'translate(0,' + height + ')')
             .call(xAxis);
 
         // Top border
         newChart.append('g')
             .append('line')
-            .attr('class', 'ChartAxis-Shape')
+            .attr('class', 'chart-axis-shape')
             .attr('x1', 0)
             .attr('x2', width)
             .attr('y1', margin.bottom)
@@ -430,7 +430,7 @@ export default class graphController {
         // Right border
         newChart.append('g')
             .append('line')
-            .attr('class', 'ChartAxis-Shape')
+            .attr('class', 'chart-axis-shape')
             .attr('x1', width)
             .attr('x2', width)
             .attr('y1', margin.bottom)
@@ -438,7 +438,7 @@ export default class graphController {
 
         // Graph title
         newChart.append('text')
-            .attr('class', 'ChartTitle-Text')
+            .attr('class', 'chart-title-text')
             .attr('x', 0)
             .attr('y', 0)
             .text(data.sensor.name);
@@ -448,7 +448,7 @@ export default class graphController {
 
         // Legend text
         newChart.append('text')
-            .attr('class', 'ChartLegend-Text')
+            .attr('class', 'chart-legend-text')
             .style('text-anchor', 'end')
             .attr('x', width - 18)
             .attr('y', 10)

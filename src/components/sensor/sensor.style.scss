@@ -1,17 +1,21 @@
+$button-background: #fff;
+$button-color: #337ab7;
+$button-border: #ddd
+
 .submit-button {
   float: right;
 }
 
 .button {
-  background-color: #FFF;
-  border: 1px solid #ddd;
+  background-color: $button-background;
+  border: 1px solid $button-border;
   border-radius: 4px;
-  color: #337ab7;
+  color: $button-color;
   display: inline;
   line-height: 1.42857143;
   padding: 4px;
   position: relative;
-  text-decoration: none;
+  text-decoration: 0;
 }
 
 .table-borderless > tbody > tr > td,
@@ -20,5 +24,5 @@
 .table-borderless > tfoot > tr > th,
 .table-borderless > thead > tr > td,
 .table-borderless > thead > tr > th {
-  border: none;
+  border: 0;
 }

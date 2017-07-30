@@ -8,11 +8,11 @@
     "webpack": "webpack",
     "watch": "webpack --watch",
     "build": "npm run clean && npm run watch",
-    "start": "npm run build & python run.py run",
+    "start": "npm run build & python server/run.py run",
     "htmllint": "./node_modules/.bin/htmlhint --config .htmlhintrc src",
     "scsslint": "./node_modules/.bin/sass-lint src '**/*.scss' -v -q",
     "eslint": "./node_modules/.bin/eslint src",
-    "pythonlint": "find ./ -name '*.py' | xargs pep8  --max-line-length=200 --exclude='server/commands/dht11.py'",
+    "pythonlint": "find ./server -name '*.py' | xargs pep8 --max-line-length=200 --exclude='server/commands/dht11.py'",
     "lint": "npm run htmllint & npm run scsslint & npm run eslint & npm run pythonlint"
   },
   "author": "Cyrille Gindreau",

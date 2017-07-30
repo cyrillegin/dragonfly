@@ -22,8 +22,8 @@ import time
 import logging
 import requests
 
-from server.sessionManager import sessionScope
-from server.models import Reading, Sensor
+from sessionManager import sessionScope
+from models import Reading, Sensor
 import sensor
 
 
