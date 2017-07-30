@@ -10,68 +10,69 @@ export default class graphController {
         this.$location = $location;
         this.$http = $http;
 
-        $(() => {
-            $timeout(() => {
-                $('#start_date').datetimepicker();
-                $('#end_date').datetimepicker();
-            });
+    }
+
+    $onInit() {
+        this.$timeout(() => {
+            $('#start_date').datetimepicker();
+            $('#end_date').datetimepicker();
         });
 
-        $scope.SubmitDate = () => {
+
+        this.$scope.SubmitDate = () => {
             const newDates = {
                 start: $('#start_date').data('DateTimePicker').date(),
                 end: $('#end_date').data('DateTimePicker').date(),
             };
-            $timeout(() => {
-                $scope.$apply(() => {
-                    $location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
-                    $location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
+            this.$timeout(() => {
+                this.$scope.$apply(() => {
+                    this.$location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
+                    this.$location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
                     this.GetGraph();
                 });
             });
         };
 
-        $scope.addReading = () => {
-            $scope.modalAttributes.push({
+        this.$scope.addReading = () => {
+            this.$scope.modalAttributes.push({
                 sensor: null,
                 date: null,
                 value: 0,
-                id: $scope.modalAttributes.length + 1,
+                id: this.$scope.modalAttributes.length + 1,
             });
-            $timeout(() => {
-                $('#date-' + $scope.modalAttributes.length).datetimepicker();
+            this.$timeout(() => {
+                $('#date-' + this.$scope.modalAttributes.length).datetimepicker();
             });
         };
 
-        $scope.OpenModal = () => {
+        this.$scope.OpenModal = () => {
             $('#sensorEditModal').modal('toggle');
             $('#modal_alert').css('display', 'hidden');
+
             const selection = {
-                id: $location.search().sensor,
+                id: this.$location.search().sensor,
             };
-            $scope.modalAttributes = [{
+            this.$scope.modalAttributes = [{
                 sensor: selection,
                 date: 1,
                 value: 0,
                 id: 1,
             }];
-            $scope.sensorlist = [];
+            this.$scope.sensorlist = [];
             this.sensor_list.forEach((sensor) => {
-                $scope.sensorlist.push({
+                this.$scope.sensorlist.push({
                     name: sensor.name,
                 });
             });
-
-
-            $timeout(() => {
+            this.$timeout(() => {
                 $('#date-1').datetimepicker();
             });
         };
 
-        $scope.SubmitModal = () => {
+        this.$scope.SubmitModal = () => {
             let error = false;
             const dataObjects = [];
-            $scope.modalAttributes.forEach((reading) => {
+            this.$scope.modalAttributes.forEach((reading) => {
                 const data = {
                     sensor: {
                         name: $('#sensor-' + reading.id)[0].selectedOptions[0].innerText,
@@ -99,11 +100,12 @@ export default class graphController {
                 return;
             }
             dataObjects.forEach((file) => {
-                $http.post('api/reading', file).then(
-                    (success) => {
+                this.$http.post('api/reading', file)
+                    .then((success) => {
                         console.log(success);
                         $('#sensorEditModal').modal('toggle');
-                    }, (error) => {
+                    })
+                    .catch((error) => {
                         console.log('An error has occured.', error);
                         $('#modal_alert').html(error.data);
                         $('#modal_alert').css('display', 'block');
@@ -111,7 +113,7 @@ export default class graphController {
             });
         };
 
-        angular.element($window).bind('resize', () => {
+        angular.element(this.$window).bind('resize', () => {
             this.DrawGraph(this.data);
         });
         this.GetGraph();
@@ -135,26 +137,22 @@ export default class graphController {
         }
 
         this.$http.get('api/reading/?sensor=' + sensor + '&start=' + start + '&end=' + end)
-            .then(
-                (response) => {
-                    this.DrawGraph(response.data);
-                    this.data = response.data;
-                },
-                (response) => {
-                    console.log('An error has occured.', response.data);
-                });
+            .then((success) => {
+                this.DrawGraph(success.data);
+                this.data = success.data;
+            })
+            .catch((error) => {
+                console.log('An error has occured.', error.data);
+            });
         // Used for populating the selections is add readings.
         this.$http.get('api/sensor')
-            .then(
-                (success) => {
-                    console.log(success);
-                    this.sensor_list = success.data.sensor_list;
-                },
-                (error) => {
-                    console.log('error');
-                    console.log(error);
-                },
-            );
+            .then((success) => {
+                this.sensor_list = success.data.sensor_list;
+            })
+            .catch((error) => {
+                console.log('error');
+                console.log(error);
+            });
     }
 
     DrawGraph(data) {
@@ -225,7 +223,7 @@ export default class graphController {
         // Create the svg.
         const newChart = d3.select('#graph-container')
             .append('svg')
-            .attr('class', 'Chart-Container')
+            .attr('class', 'chart-container')
             .attr('id', 'Graph' + data.sensor.name)
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
@@ -235,7 +233,7 @@ export default class graphController {
         if (dataObject.readings.length === 0) {
             newChart.append('g').append('text')
                 .text('No data exists for this time range.')
-                .attr('class', 'ChartTitle-Text')
+                .attr('class', 'chart-title-text')
                 .attr('x', margin.left)
                 .attr('y', height / 2);
             return;
@@ -405,7 +403,7 @@ export default class graphController {
             });
 
         newChart.append('g')
-            .attr('class', 'ChartAxis-Shape')
+            .attr('class', 'chart-axis-shape')
             .call(yAxis);
 
         // X Axis
@@ -416,14 +414,14 @@ export default class graphController {
             .ticks(5);
 
         newChart.append('g')
-            .attr('class', 'ChartAxis-Shape')
+            .attr('class', 'chart-axis-shape')
             .attr('transform', 'translate(0,' + height + ')')
             .call(xAxis);
 
         // Top border
         newChart.append('g')
             .append('line')
-            .attr('class', 'ChartAxis-Shape')
+            .attr('class', 'chart-axis-shape')
             .attr('x1', 0)
             .attr('x2', width)
             .attr('y1', margin.bottom)
@@ -432,7 +430,7 @@ export default class graphController {
         // Right border
         newChart.append('g')
             .append('line')
-            .attr('class', 'ChartAxis-Shape')
+            .attr('class', 'chart-axis-shape')
             .attr('x1', width)
             .attr('x2', width)
             .attr('y1', margin.bottom)
@@ -440,7 +438,7 @@ export default class graphController {
 
         // Graph title
         newChart.append('text')
-            .attr('class', 'ChartTitle-Text')
+            .attr('class', 'chart-title-text')
             .attr('x', 0)
             .attr('y', 0)
             .text(data.sensor.name);
@@ -450,7 +448,7 @@ export default class graphController {
 
         // Legend text
         newChart.append('text')
-            .attr('class', 'ChartLegend-Text')
+            .attr('class', 'chart-legend-text')
             .style('text-anchor', 'end')
             .attr('x', width - 18)
             .attr('y', 10)

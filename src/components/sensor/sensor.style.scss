@@ -1,0 +1,28 @@
+$button-background: #fff;
+$button-color: #337ab7;
+$button-border: #ddd;
+
+.submit-button {
+  float: right;
+}
+
+.button {
+  background-color: $button-background;
+  border: 1px solid $button-border;
+  border-radius: 4px;
+  color: $button-color;
+  display: inline;
+  line-height: 1.42857143;
+  padding: 4px;
+  position: relative;
+  text-decoration: 0;
+}
+
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+  border: 0;
+}
