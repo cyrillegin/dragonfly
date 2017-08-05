@@ -13,8 +13,8 @@ require ('./../node_modules/angular-material/angular-material.min.css');
 // Declare app level module which depends on views, and components
 angular.module('dragonfly', ['ngRoute', 'ngMaterial'])
     .controller('gaugeController', gaugeController)
-    // .component('treecomponent', treecomponent)
-    // .component('graphcomponent', graphcomponent)
+    .component('treecomponent', treecomponent)
+    .component('graphcomponent', graphcomponent)
     // .component('sensorcomponent', sensorcomponent)
     .controller('baseController', baseController)
     .config(

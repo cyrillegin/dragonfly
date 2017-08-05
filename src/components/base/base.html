@@ -29,21 +29,31 @@
                   {{alert}}
                 </b>
             </div>
-
         </md-content>
+    </section>
+
+    <section layout="row" flex>
+        <div flex="20">
+            <h2>Dragonfly</h2>
+        </div>
+        <div flex="60">
+            <treecomponent />
+        </div>
+        <div flex="20">
+            <img class="fish-cam" alt="fish-pic" ng-src="{{fishcam}}" />
+        </div>
+    </section>
+
+    <section layout="row" flex>
+        <div flex="5" ></div>
+        <div flex="90">
+        <graphcomponent />
+    </div>
+    <div flex="5" ></div>
     </section>
 </div>
 
 <!--
-
-
-
-
-
-
-
-
-
 
 
     <div class="main-container" id="main-container">
@@ -52,10 +62,10 @@
                 <h2>Dragonfly</h2>
             </div>
             <div class="col-md-6">
-                <treecomponent />
+
             </div>
             <div class="col-md-3">
-                <img class="fish-cam" alt="fish-pic" ng-src="{{fishcam}}" />
+
             </div>
         </div>
         <div class="row">

@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 export default class graphController {
-    constructor($scope, $window, $timeout, $location, $http) {
+    constructor($scope, $window, $timeout, $location, $http, $mdDialog) {
         'ngInject';
 
         this.$scope = $scope;
@@ -10,14 +10,19 @@ export default class graphController {
         this.$location = $location;
         this.$http = $http;
 
+
+        $scope.showDialog = function (ev) {
+            $mdDialog.show({
+                contentElement: '#myDialog',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+            });
+        };
+
     }
 
     $onInit() {
-        this.$timeout(() => {
-            $('#start_date').datetimepicker();
-            $('#end_date').datetimepicker();
-        });
-
 
         this.$scope.SubmitDate = () => {
             const newDates = {
