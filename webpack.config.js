@@ -67,14 +67,8 @@ module.exports = {
             'angular',
             'angular-route',
             'd3',
-            'bootstrap',
             'jquery',
-            'moment',
-            'eonasdan-bootstrap-datetimepicker',
-            './node_modules/bootstrap/dist/css/bootstrap.min.css',
-            './node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css',
-            './node_modules/bootstrap-switch/dist/js/bootstrap-switch.min.js',
-            './node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+            'angular-material'
         ],
     },
     output: {

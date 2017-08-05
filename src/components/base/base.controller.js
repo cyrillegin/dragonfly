@@ -1,9 +1,4 @@
-import 'eonasdan-bootstrap-datetimepicker';
 import './base.style.scss';
-
-require('./../../../node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
-require('./../../../node_modules/bootstrap-switch/dist/js/bootstrap-switch.min.js');
-require('./../../../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css');
 
 export default class mainController {
     constructor($scope, $timeout, $http, $window) {
