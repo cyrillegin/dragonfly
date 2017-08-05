@@ -1,7 +1,8 @@
 import './base.style.scss';
+import gaugeContainer from './../gauge/gaugeContainer.html';
 
 export default class mainController {
-    constructor($scope, $timeout, $http, $window, $mdSidenav) {
+    constructor($scope, $timeout, $http, $window, $mdSidenav, $mdBottomSheet) {
         'ngInject';
 
         this.$scope = $scope;
@@ -12,10 +13,27 @@ export default class mainController {
         $scope.toggleLeft = buildToggler('left');
         function buildToggler(componentId) {
             return function () {
-                console.log('go')
+                console.log('go');
                 $mdSidenav(componentId).toggle();
             };
         }
+
+        $scope.showGridBottomSheet = function () {
+            $scope.alert = '';
+            $mdBottomSheet.show({
+                template: gaugeContainer,
+                controller: 'gaugeController',
+            }).then((clickedItem) => {
+                $mdToast.show(
+                    $mdToast.simple()
+                        .textContent(clickedItem['name'] + ' clicked!')
+                        .position('top right')
+                        .hideDelay(1500),
+                );
+            }).catch((error) => {
+                // User clicked outside or hit escape
+            });
+        };
     }
 
     $onInit() {

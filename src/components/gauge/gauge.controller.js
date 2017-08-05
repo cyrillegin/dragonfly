@@ -8,39 +8,35 @@ export default class gaugeController {
         this.$scope = $scope;
         this.$timeout = $timeout;
         this.$http = $http;
-    }
-
-    $onInit() {
         this.$scope.gauges = [];
-
         this.GetData();
+
     }
+
 
     GetData() {
         this.$http.get('api/sensor')
-            .then(
-                (success) => {
-                    success.data.sensor_list.forEach((i) => {
-                        if (i.self_type === 'temperature') {
-                            this.$scope.gauges.push({
-                                id: 'gaugeChart-' + i.name,
-                            });
-                        }
-                    });
+            .then((success) => {
+                success.data.sensor_list.forEach((i) => {
+                    if (i.self_type === 'temperature') {
+                        this.$scope.gauges.push({
+                            id: 'gaugeChart-' + i.name,
+                        });
+                    }
+                });
 
-                    this.$timeout(() => {
-                        for (let i = 0; i < success.data.sensor_list.length - 1; i ++) {
-                            if (success.data.sensor_list[i].self_type === 'temperature') {
-                                this.DrawTempChart(success.data.sensor_list[i], i);
-                            }
+                this.$timeout(() => {
+                    for (let i = 0; i < success.data.sensor_list.length - 1; i ++) {
+                        if (success.data.sensor_list[i].self_type === 'temperature') {
+                            this.DrawTempChart(success.data.sensor_list[i], i);
                         }
-                    }, 500);
-                },
-                (error) => {
-                    console.log('error');
-                    console.log(response);
-                },
-            );
+                    }
+                }, 500);
+            })
+            .catch((error) => {
+                console.log('error');
+                console.log(response);
+            });
     }
 
     DrawTempChart(sensor, index) {

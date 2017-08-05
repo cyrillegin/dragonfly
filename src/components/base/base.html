@@ -17,15 +17,18 @@
             </md-content>
         </md-sidenav>
 
-
-
-        
-
         <md-content flex layout-padding>
-
             <md-button ng-click="toggleLeft()" class="md-raised">
                 Toggle Sidenav
             </md-button>
+
+            <md-button flex="50" class="md-primary md-raised" ng-click="showGridBottomSheet()">Show as Grid</md-button>
+            <div ng-if="alert">
+                <br/>
+                <b layout="row" layout-align="center center" class="md-padding">
+                  {{alert}}
+                </b>
+            </div>
 
         </md-content>
     </section>
