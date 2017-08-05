@@ -1,39 +1,34 @@
 import './base.style.scss';
 
 export default class mainController {
-    constructor($scope, $timeout, $http, $window) {
+    constructor($scope, $timeout, $http, $window, $mdSidenav) {
         'ngInject';
 
         this.$scope = $scope;
         this.$http = $http;
         this.$window = $window;
         this.$timeout = $timeout;
+
+        $scope.toggleLeft = buildToggler('left');
+        function buildToggler(componentId) {
+            return function () {
+                console.log('go')
+                $mdSidenav(componentId).toggle();
+            };
+        }
     }
 
     $onInit() {
-
         this.$scope.graphIndex = 0;
 
-        this.$http.get('api/camera')
-            .then((success) => {
-                this.$scope.fishcam = '/images/fishcam/image_' + success.data + '.jpg';
-            })
-            .catch((error) => {
-                console.log('error');
-                console.log(error);
-            });
-
-        $('#side-bar-button').on('click', () => {
-            $('#side-bar').toggleClass('side-bar-open');
-            $('#side-bar-button').toggleClass('side-bar-button-open');
-            $('#side-bar-button-icon').toggleClass('glyphicon-chevron-right');
-            $('#side-bar-button-icon').toggleClass('glyphicon-chevron-left');
-            $('#main-container').toggleClass('main-container-open');
-
-            this.$timeout(() => {
-                this.$window.dispatchEvent(new Event('resize'));
-            }, 500);
-        });
+        // this.$http.get('api/camera')
+        //     .then((success) => {
+        //         this.$scope.fishcam = '/images/fishcam/image_' + success.data + '.jpg';
+        //     })
+        //     .catch((error) => {
+        //         console.log('error');
+        //         console.log(error);
+        //     });
 
         $('#footer-drawer').on('click', () => {
             $('#footer-drawer').toggleClass('footer-drawer-open');
@@ -53,12 +48,6 @@ export default class mainController {
                     if (i.self_type === 'lightswitch') {
                         this.DrawLightSwitch(i);
                     }
-                });
-                this.$scope.lightSwitchCharts.forEach((lightSwitch) => {
-                    $(() => {
-                        $('#' + lightSwitch.id).bootstrapSwitch();
-                        $('#' + lightSwitch.id).bootstrapSwitch('state', lightSwitch.val);
-                    });
                 });
             })
             .catch((error) => {

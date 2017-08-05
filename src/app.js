@@ -8,20 +8,22 @@ import baseController from './components/base/base.controller';
 import basePage from './components/base/base.html';
 import 'angular-material'; // eslint-disable-line
 
+require ('./../node_modules/angular-material/angular-material.min.css');
 
 // Declare app level module which depends on views, and components
 angular.module('dragonfly', ['ngRoute', 'ngMaterial'])
-    .component('gaugecomponent', gaugecomponent)
-    .component('treecomponent', treecomponent)
-    .component('graphcomponent', graphcomponent)
-    .component('sensorcomponent', sensorcomponent)
+    // .component('gaugecomponent', gaugecomponent)
+    // .component('treecomponent', treecomponent)
+    // .component('graphcomponent', graphcomponent)
+    // .component('sensorcomponent', sensorcomponent)
     .controller('baseController', baseController)
-    .config(['$routeProvider', ($routeProvider) => {
-        $routeProvider
-            .when('/', {
-                template: basePage,
-            })
-            .otherwise({
-                redirectTo: '/',
-            });
-    }]);
+    .config(
+        ['$routeProvider', ($routeProvider) => {
+            $routeProvider
+                .when('/', {
+                    template: basePage,
+                })
+                .otherwise({
+                    redirectTo: '/',
+                });
+        }]);

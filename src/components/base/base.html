@@ -1,15 +1,48 @@
-<div class="container-fluid base" ng-controller="baseController">
-    <div class="side-bar" id="side-bar">
-        <div class="side-bar-button" id="side-bar-button">
-            <span id="side-bar-button-icon" class="glyphicon glyphicon-chevron-right side-bar-button-icon" />
-        </div>
-        <div ng-repeat="lightswitch in lightSwitchCharts">
-            <h3>{{lightswitch.title }}</h3>
-            <div class="lightswitch-container">
-                <input type="checkbox" name="my-checkbox" id="{{lightswitch.id}}" checked />
-            </div>
-        </div>
-    </div>
+<div ng-controller="baseController" layout="column">
+    <section layout="row" flex>
+
+        <md-sidenav class="md-sidenav-left" md-component-id="left" md-disable-backdrop md-whiteframe="4">
+            <md-toolbar class="md-theme-indigo">
+                <h1 class="md-toolbar-tools">Controls</h1>
+            </md-toolbar>
+            <md-content layout-margin>
+                <md-button ng-click="toggleLeft()" class="md-accent">
+                    Close
+                </md-button>
+                <div ng-repeat="lightswitch in lightSwitchCharts">
+                    <md-switch ng-model="lightswitch.value" aria-label="{{lightswitch.title}}">
+                        {{ lightswitch.title }}
+                    </md-switch>
+                </div>
+            </md-content>
+        </md-sidenav>
+
+
+
+        
+
+        <md-content flex layout-padding>
+
+            <md-button ng-click="toggleLeft()" class="md-raised">
+                Toggle Sidenav
+            </md-button>
+
+        </md-content>
+    </section>
+</div>
+
+<!--
+
+
+
+
+
+
+
+
+
+
+
     <div class="main-container" id="main-container">
         <div class="row">
             <div class="col-md-3">
@@ -40,4 +73,4 @@
             </div>
         </div>
     </div>
-  </div>
+  </div> -->

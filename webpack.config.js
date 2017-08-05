@@ -4,9 +4,10 @@ const BundleTracker = require('webpack-bundle-tracker');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const Production = true;
+const Production = false;
 
 const plugins = [
+    // new BundleAnalyzerPlugin(),
     new BundleTracker({
         filename: './webpack-stats.json',
     }),
@@ -16,12 +17,15 @@ const plugins = [
         $: 'jquery',
         jquery: 'jquery',
     }),
-    new BundleAnalyzerPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
         name: 'vendor',
         filename: 'vendor.bundle.js',
     }),
     new webpack.NamedModulesPlugin(),
+    new webpack.LoaderOptionsPlugin({
+        minimize: true,
+        debug: false,
+    }),
 ];
 
 if (Production) {
@@ -45,10 +49,6 @@ if (Production) {
         output: {
             comments: false,
         },
-    }));
-    plugins.push(new webpack.LoaderOptionsPlugin({
-        minimize: true,
-        debug: false,
     }));
 
     plugins.push(new webpack.DefinePlugin({
