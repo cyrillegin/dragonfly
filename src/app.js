@@ -1,7 +1,7 @@
 import angular from 'angular';
 import angularRoute from 'angular-route'; // eslint-disable-line
 import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import graphcomponent from './components/graph/graph.component';
 import gaugecomponent from './components/gauge/gauge.component';
 import sensorcomponent from './components/sensor/sensor.component';
