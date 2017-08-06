@@ -26,3 +26,7 @@ $button-border: #ddd;
 .table-borderless > thead > tr > th {
   border: 0;
 }
+
+md-input-container .md-input{
+    text-align: right;
+}

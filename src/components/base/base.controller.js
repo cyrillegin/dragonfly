@@ -18,6 +18,14 @@ export default class mainController {
             };
         }
 
+        $scope.toggleRight = buildToggler('right');
+        function buildToggler(componentId) {
+            return function () {
+                console.log('go');
+                $mdSidenav(componentId).toggle();
+            };
+        }
+
         $scope.showGridBottomSheet = function () {
             $scope.alert = '';
             $mdBottomSheet.show({

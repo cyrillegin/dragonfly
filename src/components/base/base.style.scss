@@ -118,3 +118,42 @@ input {
 .sensor-container {
   margin-top: 15px;
 }
+
+.input-override {
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+// some error thing that screws up input
+md-input-container .md-errors-spacer {
+    display:none
+}
+
+
+.right-button-container {
+    position: fixed;
+    right: 0;
+    margin-right: 0;
+    margin-top: 7px;
+    padding-right: 0;
+}
+
+.left-panel-header {
+    flex-direction: (row-reverse !important);
+}
+
+.left-button-container {
+    position: fixed;
+    left: 0;
+    margin-left: 0;
+    margin-top: 7px;
+    padding-left: 0;
+}
+
+.margin-30 {
+    margin: 30px;
+}
+
+.main-title {
+    margin-left: 10px;
+}

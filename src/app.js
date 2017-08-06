@@ -15,7 +15,7 @@ angular.module('dragonfly', ['ngRoute', 'ngMaterial'])
     .controller('gaugeController', gaugeController)
     .component('treecomponent', treecomponent)
     .component('graphcomponent', graphcomponent)
-    // .component('sensorcomponent', sensorcomponent)
+    .component('sensorcomponent', sensorcomponent)
     .controller('baseController', baseController)
     .config(
         ['$routeProvider', ($routeProvider) => {

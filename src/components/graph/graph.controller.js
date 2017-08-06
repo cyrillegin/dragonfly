@@ -20,6 +20,16 @@ export default class graphController {
             });
         };
 
+        const selection = {
+            id: this.$location.search().sensor,
+        };
+        this.$scope.readingsInput = [{
+            sensor: selection,
+            date: 1,
+            value: 0,
+            id: 1,
+        }];
+
     }
 
     $onInit() {
@@ -39,38 +49,11 @@ export default class graphController {
         };
 
         this.$scope.addReading = () => {
-            this.$scope.modalAttributes.push({
+            this.$scope.readingsInput.push({
                 sensor: null,
                 date: null,
                 value: 0,
-                id: this.$scope.modalAttributes.length + 1,
-            });
-            this.$timeout(() => {
-                $('#date-' + this.$scope.modalAttributes.length).datetimepicker();
-            });
-        };
-
-        this.$scope.OpenModal = () => {
-            $('#sensorEditModal').modal('toggle');
-            $('#modal_alert').css('display', 'hidden');
-
-            const selection = {
-                id: this.$location.search().sensor,
-            };
-            this.$scope.modalAttributes = [{
-                sensor: selection,
-                date: 1,
-                value: 0,
-                id: 1,
-            }];
-            this.$scope.sensorlist = [];
-            this.sensor_list.forEach((sensor) => {
-                this.$scope.sensorlist.push({
-                    name: sensor.name,
-                });
-            });
-            this.$timeout(() => {
-                $('#date-1').datetimepicker();
+                id: this.$scope.readingsInput.length + 1,
             });
         };
 
@@ -153,6 +136,7 @@ export default class graphController {
         this.$http.get('api/sensor')
             .then((success) => {
                 this.sensor_list = success.data.sensor_list;
+                this.$scope.sensorlist = success.data.sensor_list
             })
             .catch((error) => {
                 console.log('error');

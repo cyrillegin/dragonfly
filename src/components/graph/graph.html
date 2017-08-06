@@ -1,19 +1,21 @@
 <div id="graph-container"></div>
 <section layout="row" layout-align="start end" flex>
-    <div flex="10"></div>
+    <div flex="5"></div>
     <div flex="20">
         Start Date
 
-        <md-datepicker ng-model="startDate" md-placeholder="Enter date" md-open-on-focus></md-datepicker>
+        <md-datepicker ng-model="startDate" md-placeholder="Enter date" md-open-on-focus md-hide-icons="calendar"></md-datepicker>
     </div>
     <div flex="20">
         End Date
-        <md-datepicker ng-model="endDate" md-placeholder="Enter date" md-open-on-focus></md-datepicker>
+        <md-datepicker ng-model="endDate" md-placeholder="Enter date" md-open-on-focus md-hide-icons="calendar"></md-datepicker>
     </div>
     <div flex="10">
-        <button class="button" ng-click="SubmitDate()">Submit</button>
+        <md-button class="md-primary md-raised" ng-click="submitDate()">
+            Submit
+        </md-button>
     </div>
-    <div flex="20"></div>
+    <div flex="30"></div>
     <div flex="10">
 
         <md-button class="md-primary md-raised" ng-click="showDialog($event)">
@@ -21,42 +23,49 @@
         </md-button>
 
     </div>
+    <div flex="5"></div>
 
 </section>
 
-<br><br><br><br>
 <div style="visibility: hidden">
     <div class="md-dialog-container" id="myDialog">
         <md-dialog layout-padding>
+
             <h3>add Readings</h3>
 
-            <table>
-                <tr>
-                    <td>Sensor</td>
+            <div ng-repeat="input in readingsInput">
+                <div layout="row">
 
-                    <td>Date</td>
+                    <md-input-container class="input-override">
+                        <label>Sensor</label>
+                        <md-select ng-model="selection">
+                            <md-option><em>None</em></md-option>
+                            <md-option ng-repeat="val in sensorlist" ng-value="val.name">
+                                {{val.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
 
-                    <td>Value</td>
-                </tr>
+                    <md-input-container class="input-override">
+                        <label>Date</label>
+                        <md-datepicker ng-model="readingDate" md-open-on-focus md-hide-icons="calendar"></md-datepicker>
+                    </md-input-container>
 
-                <tr ng-repeat="input in modalAttributes">
-                    <td>
-                        <select id="sensor-{{input.id}}" ng-model="selection" ng-options="val.name for val in sensorlist"></select>
-                    </td>
+                    <md-input-container class="input-override">
+                        <label>Value</label>
+                        <input>
+                    </md-input-container>
+                </div>
+            </div>
 
-                    <td>
-                        <input type="text" id="date-{{input.id}}" />
-                    </td>
+            <div layout="row" layout-align="end start">
+                <md-button class="md-primary" ng-click="addReading()">Add Link</md-button>
+            </div>
+            <div layout="row" layout-align="end end">
+                <md-button class="md-raised">Close</md-button>
+      <md-button class="md-raised md-primary" ng-click="SubmitModal()">save</md-button>
 
-                    <td>
-                        <input type="text" id="value-{{input.id}}" />
-                    </td>
-                </tr>
-            </table>
-            <button class="button add-reading-button" ng-click="addReading()">Add Reading</button>
-
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" ng-click="SubmitModal()">Save</button>
+            </div>
         </md-dialog>
     </div>
 </div>
