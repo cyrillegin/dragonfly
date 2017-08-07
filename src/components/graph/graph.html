@@ -11,7 +11,7 @@
         <md-datepicker ng-model="endDate" md-placeholder="Enter date" md-open-on-focus md-hide-icons="calendar"></md-datepicker>
     </div>
     <div flex="10">
-        <md-button class="md-primary md-raised" ng-click="submitDate()">
+        <md-button class="md-primary md-raised" ng-click="SubmitDate()">
             Submit
         </md-button>
     </div>
@@ -48,22 +48,22 @@
 
                     <md-input-container class="input-override">
                         <label>Date</label>
-                        <md-datepicker ng-model="readingDate" md-open-on-focus md-hide-icons="calendar"></md-datepicker>
+                        <md-datepicker ng-model="input.readingDate" md-open-on-focus md-hide-icons="calendar"></md-datepicker>
                     </md-input-container>
 
                     <md-input-container class="input-override">
                         <label>Value</label>
-                        <input>
+                        <input ng-model="input.value">
                     </md-input-container>
                 </div>
             </div>
 
             <div layout="row" layout-align="end start">
-                <md-button class="md-primary" ng-click="addReading()">Add Link</md-button>
+                <md-button class="md-primary" ng-click="addReading()">Add Another Reading</md-button>
             </div>
             <div layout="row" layout-align="end end">
                 <md-button class="md-raised">Close</md-button>
-      <md-button class="md-raised md-primary" ng-click="SubmitModal()">save</md-button>
+      <md-button class="md-raised md-primary" ng-click="SubmitModal()">Save</md-button>
 
             </div>
         </md-dialog>

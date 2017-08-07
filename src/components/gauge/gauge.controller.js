@@ -9,37 +9,15 @@ export default class gaugeController {
         this.$timeout = $timeout;
         this.$http = $http;
         this.$scope.gauges = [];
-        this.GetData();
-
     }
 
-
-    GetData() {
-        this.$http.get('api/sensor')
-            .then((success) => {
-                success.data.sensor_list.forEach((i) => {
-                    if (i.self_type === 'temperature') {
-                        this.$scope.gauges.push({
-                            id: 'gaugeChart-' + i.name,
-                        });
-                    }
-                });
-
-                this.$timeout(() => {
-                    for (let i = 0; i < success.data.sensor_list.length - 1; i ++) {
-                        if (success.data.sensor_list[i].self_type === 'temperature') {
-                            this.DrawTempChart(success.data.sensor_list[i], i);
-                        }
-                    }
-                }, 500);
-            })
-            .catch((error) => {
-                console.log('error');
-                console.log(response);
-            });
+    $onInit() {
+        this.$timeout(() => {
+            this.DrawTempChart(this.attributes);
+        });
     }
 
-    DrawTempChart(sensor, index) {
+    DrawTempChart(sensor) {
         if (sensor.lastReading === null) {
             return;
         }
@@ -47,7 +25,7 @@ export default class gaugeController {
         const width = 200;
         const height = 140;
 
-        const svg = d3.select('#gaugeChart-' + sensor.name)
+        const svg = d3.select('#' + sensor.name)
             .append('svg')
             .attr('width', width)
             .attr('height', height);

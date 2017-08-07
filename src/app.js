@@ -1,7 +1,8 @@
 import angular from 'angular';
 import angularRoute from 'angular-route'; // eslint-disable-line
 import graphcomponent from './components/graph/graph.component';
-import gaugeController from './components/gauge/gauge.controller';
+import gaugecomponent from './components/gauge/gauge.component';
+import gaugeContainerController from './components/gauge/gauge.controller';
 import sensorcomponent from './components/sensor/sensor.component';
 import treecomponent from './components/tree/tree.component';
 import baseController from './components/base/base.controller';
@@ -12,7 +13,8 @@ require ('./../node_modules/angular-material/angular-material.min.css');
 
 // Declare app level module which depends on views, and components
 angular.module('dragonfly', ['ngRoute', 'ngMaterial'])
-    .controller('gaugeController', gaugeController)
+    .component('gaugecomponent', gaugecomponent)
+    .controller('gaugeContainerController', gaugeContainerController)
     .component('treecomponent', treecomponent)
     .component('graphcomponent', graphcomponent)
     .component('sensorcomponent', sensorcomponent)

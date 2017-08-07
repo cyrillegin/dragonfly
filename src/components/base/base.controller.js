@@ -1,5 +1,6 @@
 import './base.style.scss';
 import gaugeContainer from './../gauge/gaugeContainer.html';
+import gaugeContainerController from './../gauge/gauge.container.controller';
 
 export default class mainController {
     constructor($scope, $timeout, $http, $window, $mdSidenav, $mdBottomSheet) {
@@ -30,7 +31,7 @@ export default class mainController {
             $scope.alert = '';
             $mdBottomSheet.show({
                 template: gaugeContainer,
-                controller: 'gaugeController',
+                controller: gaugeContainerController,
             }).then((clickedItem) => {
                 $mdToast.show(
                     $mdToast.simple()

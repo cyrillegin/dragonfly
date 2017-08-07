@@ -5,6 +5,9 @@ import './gauge.style.scss';
 const gaugecomponent = {
     template: gauge,
     controller: gaugeController,
+    bindings: {
+        'attributes': '<',
+    }
 };
 
 export default gaugecomponent;
