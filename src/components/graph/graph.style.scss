@@ -1,0 +1,39 @@
+$title-fill-text: #777;
+$black: #000;
+$lightgrey: #d3d3d3;
+
+.chart-axis-shape {
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: $black;
+    stroke-width: 1px;
+
+    line {
+        stroke-opacity: .2;
+    }
+}
+
+.chart-title-text {
+    fill: $title-fill-text;
+    font-size: 160%;
+    text-align: left;
+}
+
+.tick {
+    opacity: .7;
+    stroke: $lightgrey;
+
+    text {
+        fill: $black;
+        shape-rendering: crispEdges;
+        stroke: none;
+    }
+}
+
+input {
+    width: 100%;
+}
+
+.dialog-container {
+    visibility: hidden;
+}

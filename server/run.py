@@ -6,16 +6,16 @@ import jinja2
 import json
 from sqlalchemy import create_engine
 
-from server import models
-from server.api import ResourceApi
-from server.commands import Command
+import models
+from api import ResourceApi
+from commands import Command
 
 PATH = os.path.abspath(os.path.dirname(__file__))
-STATIC = os.path.join(PATH, 'static')
+STATIC = os.path.join(PATH, '../static')
 sys.path.append(PATH)
 
 env = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(searchpath=os.path.join(PATH, 'static/templates/')), )
+    loader=jinja2.FileSystemLoader(searchpath=os.path.join(PATH, '../static/')), )
 
 
 def get_cp_config():
@@ -36,8 +36,8 @@ class Root(object):
     api = ResourceApi()
 
     def index(self):
-        src = json.load(open(os.path.join(PATH, 'webpack-stats.json')))
-        vendor = json.load(open(os.path.join(PATH, 'webpack-stats.json')))
+        src = json.load(open(os.path.join(PATH, '../webpack-stats.json')))
+        vendor = json.load(open(os.path.join(PATH, '../webpack-stats.json')))
         context = {
             "src": src['chunks']['app'][0]['name'],
             "vendor": vendor['chunks']['vendor'][0]['name']
@@ -49,7 +49,7 @@ class Root(object):
 
 def RunServer():
 
-    open('dragonDB.db', 'a').close()
+    open('../dragonDB.db', 'a').close()
     print "db opened."
     dbURL = 'sqlite:///dragonDB.db'
 
