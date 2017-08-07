@@ -3,19 +3,19 @@ $button-color: #337ab7;
 $button-border: #ddd;
 
 .submit-button {
-  float: right;
+    float: right;
 }
 
 .button {
-  background-color: $button-background;
-  border: 1px solid $button-border;
-  border-radius: 4px;
-  color: $button-color;
-  display: inline;
-  line-height: 1.42857143;
-  padding: 4px;
-  position: relative;
-  text-decoration: 0;
+    background-color: $button-background;
+    border: 1px solid $button-border;
+    border-radius: 4px;
+    color: $button-color;
+    display: inline;
+    line-height: 1.42857143;
+    padding: 4px;
+    position: relative;
+    text-decoration: 0;
 }
 
 .table-borderless > tbody > tr > td,
@@ -24,9 +24,11 @@ $button-border: #ddd;
 .table-borderless > tfoot > tr > th,
 .table-borderless > thead > tr > td,
 .table-borderless > thead > tr > th {
-  border: 0;
+    border: 0;
 }
 
-md-input-container .md-input{
-    text-align: right;
+md-input-container {
+    .md-input {
+        text-align: right;
+    }
 }

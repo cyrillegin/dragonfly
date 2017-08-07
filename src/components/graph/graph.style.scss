@@ -3,53 +3,57 @@ $black: #000;
 $lightgrey: #d3d3d3;
 
 .edit-buttons {
-  float: right;
+    float: right;
 }
 
 .date-input {
-  width: auto;
+    width: auto;
 }
 
 .modal-alert {
-  display: none;
+    display: none;
 }
 
 .add-reading-button {
-  float: right;
+    float: right;
 }
 
 .chart-axis-shape {
-  fill: none;
-  shape-rendering: crispEdges;
-  stroke: $black;
-  stroke-width: 1px;
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: $black;
+    stroke-width: 1px;
 
-  line {
-    stroke-opacity: .2;
-  }
+    line {
+        stroke-opacity: .2;
+    }
 }
 
 .chart-title-text {
-  fill: $title-fill-text;
-  font-size: 160%;
-  text-align: left;
+    fill: $title-fill-text;
+    font-size: 160%;
+    text-align: left;
 }
 
 .tick {
-  opacity: .7;
-  stroke: $lightgrey;
+    opacity: .7;
+    stroke: $lightgrey;
 
-  text {
-    fill: $black;
-    shape-rendering: crispEdges;
-    stroke: none;
-  }
+    text {
+        fill: $black;
+        shape-rendering: crispEdges;
+        stroke: none;
+    }
 }
 
 .fish-cam {
-  width: 25%;
+    width: 25%;
 }
 
 input {
-  width: 100%;
+    width: 100%;
+}
+
+.dialog-container {
+    visibility: hidden;
 }

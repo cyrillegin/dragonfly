@@ -6,8 +6,8 @@ const gaugecomponent = {
     template: gauge,
     controller: gaugeController,
     bindings: {
-        'attributes': '<',
-    }
+        attributes: '<',
+    },
 };
 
 export default gaugecomponent;

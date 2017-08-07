@@ -3,21 +3,21 @@ $node-stroke: #4682b4;
 $link-stroke: #ccc;
 
 .node {
-  cursor: pointer;
+    cursor: pointer;
 
-  circle {
-    fill: $node-fill;
-    stroke: $node-stroke;
-    stroke-width: 1.5px;
-  }
+    circle {
+        fill: $node-fill;
+        stroke: $node-stroke;
+        stroke-width: 1.5px;
+    }
 
-  text {
-    font: 10px sans-serif;
-  }
+    text {
+        font: 10px sans-serif;
+    }
 }
 
 .link {
-  fill: none;
-  stroke: $link-stroke;
-  stroke-width: 1.5px;
+    fill: none;
+    stroke: $link-stroke;
+    stroke-width: 1.5px;
 }
