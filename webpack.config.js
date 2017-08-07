@@ -4,7 +4,7 @@ const BundleTracker = require('webpack-bundle-tracker');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const Production = false;
+const Production = true;
 
 const plugins = [
     // new BundleAnalyzerPlugin(),
@@ -30,32 +30,17 @@ const plugins = [
 
 if (Production) {
     console.log('Building for production');
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-        beautify: false,
-        compress: {
-            warnings: false,
-            screw_ie8: true,
-            conditionals: true,
-            unused: true,
-            comparisons: true,
-            sequences: true,
-            dead_code: true,
-            drop_debugger: true,
-            drop_console: true,
-            evaluate: true,
-            if_return: true,
-            join_vars: true,
-        },
-        output: {
-            comments: false,
-        },
-    }));
-
     plugins.push(new webpack.DefinePlugin({
         'process.env': {
             NODE_ENV: JSON.stringify('production'),
         },
     }));
+    // TODO figure out why this plugin only works when devtool has eval flag.
+    //   plugins.push(new webpack.optimize.UglifyJsPlugin({
+    //     compressor: {
+    //       warnings: false
+    //     }
+    // }));
 } else {
     console.log('Building for development.');
 }
@@ -68,14 +53,15 @@ module.exports = {
             'angular-route',
             'd3',
             'jquery',
-            'angular-material'
+            'angular-material',
+            './node_modules/angular-material/angular-material.min.css',
         ],
     },
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'static/dist'),
     },
-    devtool: 'eval-cheap-module-source-map',
+    devtool: 'source-map',
     module: {
         rules: [{
             test: /\.js$/,
