@@ -1,44 +1,61 @@
-import 'eonasdan-bootstrap-datetimepicker';
 import './base.style.scss';
-
-require('./../../../node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
-require('./../../../node_modules/bootstrap-switch/dist/js/bootstrap-switch.min.js');
-require('./../../../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css');
+import gaugeContainer from './../gauge/gaugeContainer.html';
+import gaugeContainerController from './../gauge/gauge.container.controller';
 
 export default class mainController {
-    constructor($scope, $timeout, $http, $window) {
+    constructor($scope, $timeout, $http, $window, $mdSidenav, $mdBottomSheet) {
         'ngInject';
 
         this.$scope = $scope;
         this.$http = $http;
         this.$window = $window;
         this.$timeout = $timeout;
+
+        $scope.toggleLeft = buildToggler('left');
+        function buildToggler(componentId) {
+            return function () {
+                console.log('go');
+                $mdSidenav(componentId).toggle();
+            };
+        }
+
+        $scope.toggleRight = buildToggler('right');
+        function buildToggler(componentId) {
+            return function () {
+                console.log('go');
+                $mdSidenav(componentId).toggle();
+            };
+        }
+
+        $scope.showGridBottomSheet = function () {
+            $scope.alert = '';
+            $mdBottomSheet.show({
+                template: gaugeContainer,
+                controller: gaugeContainerController,
+            }).then((clickedItem) => {
+                $mdToast.show(
+                    $mdToast.simple()
+                        .textContent(clickedItem['name'] + ' clicked!')
+                        .position('top right')
+                        .hideDelay(1500),
+                );
+            }).catch((error) => {
+                // User clicked outside or hit escape
+            });
+        };
     }
 
     $onInit() {
-
         this.$scope.graphIndex = 0;
 
-        this.$http.get('api/camera')
-            .then((success) => {
-                this.$scope.fishcam = '/images/fishcam/image_' + success.data + '.jpg';
-            })
-            .catch((error) => {
-                console.log('error');
-                console.log(error);
-            });
-
-        $('#side-bar-button').on('click', () => {
-            $('#side-bar').toggleClass('side-bar-open');
-            $('#side-bar-button').toggleClass('side-bar-button-open');
-            $('#side-bar-button-icon').toggleClass('glyphicon-chevron-right');
-            $('#side-bar-button-icon').toggleClass('glyphicon-chevron-left');
-            $('#main-container').toggleClass('main-container-open');
-
-            this.$timeout(() => {
-                this.$window.dispatchEvent(new Event('resize'));
-            }, 500);
-        });
+        // this.$http.get('api/camera')
+        //     .then((success) => {
+        //         this.$scope.fishcam = '/images/fishcam/image_' + success.data + '.jpg';
+        //     })
+        //     .catch((error) => {
+        //         console.log('error');
+        //         console.log(error);
+        //     });
 
         $('#footer-drawer').on('click', () => {
             $('#footer-drawer').toggleClass('footer-drawer-open');
@@ -58,12 +75,6 @@ export default class mainController {
                     if (i.self_type === 'lightswitch') {
                         this.DrawLightSwitch(i);
                     }
-                });
-                this.$scope.lightSwitchCharts.forEach((lightSwitch) => {
-                    $(() => {
-                        $('#' + lightSwitch.id).bootstrapSwitch();
-                        $('#' + lightSwitch.id).bootstrapSwitch('state', lightSwitch.val);
-                    });
                 });
             })
             .catch((error) => {

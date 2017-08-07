@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 export default class graphController {
-    constructor($scope, $window, $timeout, $location, $http) {
+    constructor($scope, $window, $timeout, $location, $http, $mdDialog) {
         'ngInject';
 
         this.$scope = $scope;
@@ -9,77 +9,67 @@ export default class graphController {
         this.$timeout = $timeout;
         this.$location = $location;
         this.$http = $http;
+        this.$mdDialog = $mdDialog;
+
+
+        $scope.showDialog = function (ev) {
+            $mdDialog.show({
+                contentElement: '#myDialog',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+            });
+        };
+
+        const selection = {
+            id: this.$location.search().sensor,
+        };
+        this.$scope.readingsInput = [{
+            sensor: selection,
+            date: 1,
+            value: 0,
+            id: 1,
+        }];
 
     }
 
     $onInit() {
-        this.$timeout(() => {
-            $('#start_date').datetimepicker();
-            $('#end_date').datetimepicker();
-        });
-
-
         this.$scope.SubmitDate = () => {
             const newDates = {
-                start: $('#start_date').data('DateTimePicker').date(),
-                end: $('#end_date').data('DateTimePicker').date(),
+                start: this.$scope.startDate === undefined ? undefined : this.$scope.startDate.getTime() / 1000,
+                end: this.$scope.endDate === undefined ? undefined : this.$scope.endDate.getTime() / 1000,
             };
             this.$timeout(() => {
                 this.$scope.$apply(() => {
-                    this.$location.search('start_date', newDates.start === null ? undefined : newDates.start.unix());
-                    this.$location.search('end_date', newDates.end === null ? undefined : newDates.end.unix());
+                    this.$location.search('start_date', newDates.start);
+                    this.$location.search('end_date', newDates.end);
                     this.GetGraph();
                 });
             });
         };
 
         this.$scope.addReading = () => {
-            this.$scope.modalAttributes.push({
+            this.$scope.readingsInput.push({
                 sensor: null,
                 date: null,
                 value: 0,
-                id: this.$scope.modalAttributes.length + 1,
-            });
-            this.$timeout(() => {
-                $('#date-' + this.$scope.modalAttributes.length).datetimepicker();
+                id: this.$scope.readingsInput.length + 1,
             });
         };
-
-        this.$scope.OpenModal = () => {
-            $('#sensorEditModal').modal('toggle');
-            $('#modal_alert').css('display', 'hidden');
-
-            const selection = {
-                id: this.$location.search().sensor,
-            };
-            this.$scope.modalAttributes = [{
-                sensor: selection,
-                date: 1,
-                value: 0,
-                id: 1,
-            }];
-            this.$scope.sensorlist = [];
-            this.sensor_list.forEach((sensor) => {
-                this.$scope.sensorlist.push({
-                    name: sensor.name,
-                });
-            });
-            this.$timeout(() => {
-                $('#date-1').datetimepicker();
-            });
-        };
+        console.log('asdf');
 
         this.$scope.SubmitModal = () => {
             let error = false;
             const dataObjects = [];
-            this.$scope.modalAttributes.forEach((reading) => {
+            this.$scope.readingsInput.forEach((reading) => {
+                console.log(reading);
                 const data = {
                     sensor: {
-                        name: $('#sensor-' + reading.id)[0].selectedOptions[0].innerText,
+                        name: reading.sensor.id,
                     },
                     readings: [{
-                        value: parseFloat($('#value-' + reading.id)[0].value),
-                        timestamp: $('#date-' + reading.id).data('DateTimePicker').date().unix(),
+                        value: parseFloat(reading.value),
+                        timestamp: reading.readingDate.getTime() / 1000,
                     }],
                 };
                 if (data.sensor.name === '') {
@@ -99,16 +89,35 @@ export default class graphController {
             if (error === true) {
                 return;
             }
-            dataObjects.forEach((file) => {
+            let postError = false;
+            let posts = 0;
+            const callback = () => {
+                this.$mdDialog.show(
+                    this.$mdDialog.alert()
+                        .clickOutsideToClose(true)
+                        .title('Readings Input')
+                        .textContent(postError ? 'An error occured, check console for details' : 'Readings successfully entered!')
+                        .ariaLabel('Alert Dialog Demo')
+                        .ok('Okay'),
+                );
+            };
+            dataObjects.forEach((file, index, array) => {
                 this.$http.post('api/reading', file)
                     .then((success) => {
                         console.log(success);
-                        $('#sensorEditModal').modal('toggle');
+                        posts ++;
+                        if (posts === array.length) {
+                            callback();
+                        }
                     })
                     .catch((error) => {
+                        postError = true;
+                        console.log('asdf');
                         console.log('An error has occured.', error);
-                        $('#modal_alert').html(error.data);
-                        $('#modal_alert').css('display', 'block');
+                        posts ++;
+                        if (posts = array.length) {
+                            callback();
+                        }
                     });
             });
         };
@@ -148,6 +157,7 @@ export default class graphController {
         this.$http.get('api/sensor')
             .then((success) => {
                 this.sensor_list = success.data.sensor_list;
+                this.$scope.sensorlist = success.data.sensor_list;
             })
             .catch((error) => {
                 console.log('error');

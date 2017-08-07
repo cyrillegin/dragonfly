@@ -1,59 +1,69 @@
-<div class="col-md-12">
-    <div id="message" />
-    <table class="table table-condensed table-bordered">
-        <tr>
-            <td>Name</td>
-            <td>
-                <input type="text" ng-model="sensorName" value="{{sensorName}}" />
-            </td>
-        </tr>
-        <tr>
-            <td>Description</td>
-            <td>
-                <input type="text" ng-model="sensorDescription" value="{{sensorDescription}}" />
-            </td>
-        </tr>
-        <tr>
-            <td>Coefficients</td>
-            <td>
-                <input type="text" ng-model="sensorCoefficients" value="{{sensorCoefficeints}}" />
-            </td>
-        </tr>
-        <tr>
-            <td>Sensor Type</td>
-            <td>
-                <input type="text" ng-model="sensorType" value="{{sensorType}}" />
-            </td>
-        </tr>
-        <tr>
-            <td>Units</td>
-            <td>
-                <input type="text" ng-model="sensorUnits" value="{{sensorUnits}}" />
-            </td>
-        </tr>
-        <tr>
-            <td>Minimum value</td>
-            <td>
-                <input type="text" ng-model="sensorMinValue" value="{{sensorMinValue}}" />
-            </td>
-        </tr>
-        <tr>
-            <td>Maximum value</td>
-            <td>
-                <input type="text" ng-model="sensorMaxValue" value="{{sensorMaxValue}}" />
-            </td>
-        </tr>
-        <tr>
-            <td>Station</td>
-            <td>
-                <input type="text" ng-model="sensorStation" value="{{sensorStation}}" />
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <button class="button button-primary submit-button" ng-click="SaveSensor()" >Submit Edits</button>
-            </td>
-        </tr>
-    </table>
-</div>
+
+<md-list-item class="secondary-button-padding">
+    <p>Value</p>
+    <md-input-container class="input-override">
+        <input ng-model="sensorName" />
+    </md-input-container>
+</md-list-item>
+
+<md-list-item class="secondary-button-padding">
+    <p>Description</p>
+    <md-input-container class="input-override">
+        <input ng-model="sensorDescription" />
+    </md-input-container>
+</md-list-item>
+
+<md-list-item class="secondary-button-padding">
+    <p>
+
+        coefficients</p>
+    <md-input-container class="input-override">
+        <input ng-model="sensorCoefficients" />
+    </md-input-container>
+
+</md-list-item>
+
+<md-list-item class="secondary-button-padding">
+    <p>Sensor Type</p>
+    <md-input-container class="input-override">
+        <input ng-model="sensorType" />
+    </md-input-container>
+
+</md-list-item>
+
+<md-list-item class="secondary-button-padding">
+    <p>Units</p>
+
+    <md-input-container class="input-override">
+
+        <input ng-model="sensorUnits" />
+    </md-input-container>
+
+</md-list-item>
+
+<md-list-item class="secondary-button-padding">
+    <p>Minimum</p>
+    <md-input-container class="input-override">
+        <input ng-model="sensorMinValue" />
+    </md-input-container>
+
+</md-list-item>
+
+<md-list-item class="secondary-button-padding">
+    <p>Maximum</p>
+    <md-input-container class="input-override">
+        <input ng-model="sensorMaxValue" />
+    </md-input-container>
+
+</md-list-item>
+
+<md-list-item class="secondary-button-padding">
+    <p>Station</p>
+    <md-input-container class="input-override">
+        <input ng-model="sensorStation" />
+    </md-input-container>
+</md-list-item>
+
+<md-button class="md-primary md-raised" ng-click="SaveSensor()">
+    Submit Edits
+</md-button>
