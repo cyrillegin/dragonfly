@@ -30,7 +30,6 @@ export default class graphController {
             value: 0,
             id: 1,
         }];
-
     }
 
     $onInit() {
@@ -65,7 +64,7 @@ export default class graphController {
                 console.log(reading);
                 const data = {
                     sensor: {
-                        name: reading.sensor.id,
+                        name: reading.sensor,
                     },
                     readings: [{
                         value: parseFloat(reading.value),
