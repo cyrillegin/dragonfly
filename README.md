@@ -1,5 +1,5 @@
-# Aquaponics
-Code base for an aquaponics system
+# Dragonfly
+Code base for an dragonfly
 
 # Description
 Dragonfly is a simple data collection service for arduino-like
