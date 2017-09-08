@@ -6,6 +6,7 @@ hackadayFiles/
 node_modules/
 bower_components/
 static/images/fishcam/
+dbBackups/
 
 #database files
 *.db
