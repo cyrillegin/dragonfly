@@ -4,16 +4,19 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "start": "npm run buildDev & python server/run.py run",
+    "buildDev": "npm run clean && npm run watch",
     "clean": "rm -fr static/dist/",
+    "watch": "webpack --watch --progress --config ./webpack.dev.config.js",
     "webpack": "webpack --progress",
-    "watch": "webpack --watch --progress",
-    "build": "npm run clean && npm run watch",
-    "start": "npm run build & python server/run.py run",
+    "startProd": "npm run buildProd & python server/run.py run",
+    "buildProd": "npm run clean && webpack --progress --config ./webpack.prod.config.js",
+    "lint": "npm run htmllint & npm run scsslint & npm run eslint & npm run pythonlint",
     "htmllint": "./node_modules/.bin/htmlhint --config .htmlhintrc src",
     "scsslint": "./node_modules/.bin/sass-lint src '**/*.scss' -v -q",
     "eslint": "./node_modules/.bin/eslint src",
-    "pythonlint": "find ./server -name '*.py' | xargs pep8 --max-line-length=200 --exclude='server/commands/dht11.py'",
-    "lint": "npm run htmllint & npm run scsslint & npm run eslint & npm run pythonlint"
+    "pythonlint": "find ./server -name '*.py' | xargs pep8 --max-line-length=200 --exclude='server/commands/dht11.py'"
+
   },
   "author": "Cyrille Gindreau",
   "dependencies": {

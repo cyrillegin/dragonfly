@@ -36,12 +36,7 @@ class Root(object):
     api = ResourceApi()
 
     def index(self):
-        src = json.load(open(os.path.join(PATH, '../webpack-stats.json')))
-        vendor = json.load(open(os.path.join(PATH, '../webpack-stats.json')))
-        context = {
-            "src": src['chunks']['app'][0]['name'],
-            "vendor": vendor['chunks']['vendor'][0]['name']
-        }
+        context = {}
         t = env.get_template("index.html")
         return t.render(context)
     index.exposed = True
