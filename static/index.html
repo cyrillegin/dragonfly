@@ -12,9 +12,12 @@
     <script src="/dist/vendor.bundle.js"></script>
     <script src="/dist/bundle.js"></script>
 
+    <meta id="jinja-vars" data-time={{lastBackup}} />
+
 </head>
 
 <body ng-app="dragonfly">
+    {{lastBackup}}
       <div ng-view />
 </body>
 

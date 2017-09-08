@@ -3,7 +3,7 @@ import cherrypy
 import os
 import sys
 import jinja2
-import json
+import datetime
 from sqlalchemy import create_engine
 
 import models
@@ -32,11 +32,22 @@ def get_cp_config():
     return config
 
 
+def CheckBackups():
+    latestBackup = 0
+    for filename in os.listdir(os.path.join(PATH, "..", "dbBackups")):
+        if os.path.getmtime(os.path.join(PATH, "..", "dbBackups", filename)) > latestBackup:
+            latestBackup = os.path.getmtime(os.path.join(PATH, "..", "dbBackups", filename))
+    return latestBackup
+
+
 class Root(object):
     api = ResourceApi()
 
     def index(self):
-        context = {}
+        lastBackup = CheckBackups()
+        context = {
+            "lastBackup": lastBackup
+        }
         t = env.get_template("index.html")
         return t.render(context)
     index.exposed = True
