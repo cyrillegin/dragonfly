@@ -115,3 +115,4 @@ if __name__ == "__main__":
         print "serialPoller - Start polling for USB devices to get data from."
         print "gpioPoller - Start polling for raspberry pi gpio pins to get data from."
         print "pressurePoller - Start polling the pressure sensor."
+        print "wiresensor - Poll from a One Wire sensor."

@@ -59,7 +59,7 @@ def read_temp():
         return temp_c, temp_f
 
 
-def RunOneWire():
+def ReadOneWire():
     while True:
         read_temp()
         time.sleep(POLL_RATE)
