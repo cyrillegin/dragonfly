@@ -98,6 +98,9 @@ if __name__ == "__main__":
         elif arg == "pressurepoller":
             print "reading from pressure poller"
             Command.PressurePoller()
+        elif arg == "wiresensor":
+            print "reading from one wire sensor."
+            Command.OneWirePoller()
         else:
             print 'Did not understand the command, please try again.'
     else:
