@@ -4,6 +4,28 @@ import json
 import requests
 import logging
 
+"""
+Setup:
+add 'dtoverlay=w1-gpio' (noquotes)
+to /boot/config.txt
+
+turn on modules:
+`sudo modprobe w1-gpio`
+`sudo modprobe w1-therm`
+
+`ls /sys/bus/w1/devices/``
+you will see a device id in the form of:
+    28-0516a49158ff
+copy this and paste it for DEVICE_ID.
+
+code and hardware setup  adapted from:
+https://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
+
+"""
+
+DEVICE_ID = "28-0516a49158ff"
+DEVICE_LOCATION = "/sys/bus/w1/devices/{}/w1_slave".format(DEVICE_ID)
+
 READINGURL = "http://192.168.0.2:5000/api/reading"
 
 POLL_RATE = 60 * 5
@@ -15,12 +37,10 @@ logging.info("Starting presure poller.")
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
-temp_sensor = "/sys/bus/w1/devices/28-0516a49158ff/w1_slave"
-
 
 def temp_raw():
 
-    f = open(temp_sensor, 'r')
+    f = open(DEVICE_LOCATION, 'r')
     lines = f.readlines()
     f.close()
     return lines
