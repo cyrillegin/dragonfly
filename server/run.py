@@ -3,7 +3,6 @@ import cherrypy
 import os
 import sys
 import jinja2
-import datetime
 from sqlalchemy import create_engine
 
 import models

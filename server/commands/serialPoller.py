@@ -1,4 +1,4 @@
-'''
+"""
 Dragonfly
 Cyrille Gindreau
 2017
@@ -9,7 +9,7 @@ Walks dev directory searching for usb devices.
 Once found, starts new process to collect and send data.
 
 
-'''
+"""
 from multiprocessing import Process
 from os import walk
 import time
@@ -17,9 +17,10 @@ import serial
 import json
 import requests
 import logging
+from dragonfly import MCPIP
 
-SENSORURL = "http://localhost:5000/api/sensor"
-READINGURL = "http://localhost:5000/api/reading"
+SENSORURL = "http://{}:5000/api/sensor".format(MCPIP)
+READINGURL = "http://{}:5000/api/reading".format(MCPIP)
 
 # For use on rasberry pi
 USBPREFIX = 'ttyUSB'

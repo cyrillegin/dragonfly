@@ -1,8 +1,3 @@
-import os
-import time
-import json
-import requests
-import logging
 
 """
 Setup:
@@ -23,10 +18,17 @@ https://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the
 
 """
 
+import os
+import time
+import json
+import requests
+import logging
+from dragonfly import MCPIP
+
 DEVICE_ID = "28-0516a49158ff"
 DEVICE_LOCATION = "/sys/bus/w1/devices/{}/w1_slave".format(DEVICE_ID)
 
-READINGURL = "http://192.168.0.2:5000/api/reading"
+READINGURL = "http://{}:5000/api/reading".format(MCPIP)
 
 POLL_RATE = 60 * 5
 

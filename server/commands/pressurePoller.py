@@ -1,23 +1,27 @@
-'''
+"""
 Dragonfly
 Cyrille Gindreau
 2017
 
 pressurePoller.py
 
-Opens a sensor and sends it Dragonfly API
+Opens a sensor and sends it to Dragonfly API
 
-'''
+"""
 
 import json
 import requests
 import logging
 import time
+from dragonfly import MCPIP
+
 try:
     import Adafruit_BMP.BMP085 as BMP085
 except Exception, e:
     print "error loading Adafruit plugin"
-READINGURL = "http://192.168.0.3:5000/api/reading"
+
+READINGURL = "http://{}:5000/api/reading".format(MCPIP)
+
 POLL_RATE = 60 * 5
 
 
