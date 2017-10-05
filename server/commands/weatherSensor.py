@@ -14,12 +14,12 @@ import requests
 import json
 import logging
 from bs4 import BeautifulSoup as bs
-from dragonfly import MCPIP
+# from dragonfly import MCPIP
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
-READINGURL = "http://{}:5000/api/reading".format(MCPIP)
-SENSORURL = "http://{}:5000/api/sensor".format(MCPIP)
+READINGURL = "http://192.168.0.10:5000/api/reading"
+SENSORURL = "http://192.168.0.10:5000/api/sensor"
 
 
 def weatherSensor():

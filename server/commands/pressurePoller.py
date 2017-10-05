@@ -13,14 +13,14 @@ import json
 import requests
 import logging
 import time
-from dragonfly import MCPIP
+# from dragonfly import MCPIP
 
 try:
     import Adafruit_BMP.BMP085 as BMP085
 except Exception, e:
     print "error loading Adafruit plugin"
 
-READINGURL = "http://{}:5000/api/reading".format(MCPIP)
+READINGURL = "http://192.168.0.10:5000/api/reading"
 
 POLL_RATE = 60 * 5
 

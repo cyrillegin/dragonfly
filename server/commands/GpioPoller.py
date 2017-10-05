@@ -8,9 +8,9 @@ import json
 import requests
 import logging
 import time
-from dragonfly import MCPIP
+# from dragonfly import MCPIP
 
-READINGURL = "http://{}:5000/api/reading".format(MCPIP)
+READINGURL = "http://192.168.0.10:5000/api/reading"
 POLL_RATE = 60*5
 
 Temp_sensor = 14
