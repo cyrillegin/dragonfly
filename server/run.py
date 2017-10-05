@@ -3,7 +3,6 @@ import cherrypy
 import os
 import sys
 import jinja2
-import json
 from sqlalchemy import create_engine
 
 import models
@@ -32,15 +31,21 @@ def get_cp_config():
     return config
 
 
+def CheckBackups():
+    latestBackup = 0
+    for filename in os.listdir(os.path.join(PATH, "..", "dbBackups")):
+        if os.path.getmtime(os.path.join(PATH, "..", "dbBackups", filename)) > latestBackup:
+            latestBackup = os.path.getmtime(os.path.join(PATH, "..", "dbBackups", filename))
+    return latestBackup
+
+
 class Root(object):
     api = ResourceApi()
 
     def index(self):
-        src = json.load(open(os.path.join(PATH, '../webpack-stats.json')))
-        vendor = json.load(open(os.path.join(PATH, '../webpack-stats.json')))
+        lastBackup = CheckBackups()
         context = {
-            "src": src['chunks']['app'][0]['name'],
-            "vendor": vendor['chunks']['vendor'][0]['name']
+            "lastBackup": lastBackup
         }
         t = env.get_template("index.html")
         return t.render(context)
@@ -92,6 +97,9 @@ if __name__ == "__main__":
         elif arg == "pressurepoller":
             print "reading from pressure poller"
             Command.PressurePoller()
+        elif arg == "wiresensor":
+            print "reading from one wire sensor."
+            Command.OneWirePoller()
         else:
             print 'Did not understand the command, please try again.'
     else:
@@ -106,3 +114,4 @@ if __name__ == "__main__":
         print "serialPoller - Start polling for USB devices to get data from."
         print "gpioPoller - Start polling for raspberry pi gpio pins to get data from."
         print "pressurePoller - Start polling the pressure sensor."
+        print "wiresensor - Poll from a One Wire sensor."

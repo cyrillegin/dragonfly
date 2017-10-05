@@ -15,6 +15,7 @@ import weatherSensor
 import imageCapture
 import GpioPoller
 import pressurePoller
+import oneWireSensor
 
 
 class Command:
@@ -41,3 +42,7 @@ class Command:
     @staticmethod
     def PressurePoller():
         pressurePoller.pressurePoller()
+
+    @staticmethod
+    def OneWirePoller():
+        oneWireSensor.ReadOneWire()

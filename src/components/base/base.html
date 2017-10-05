@@ -30,7 +30,6 @@
         </div>
 
         <div flex="10">
-
             <md-button class="md-primary md-raised" ng-click="showGridBottomSheet()">View Gauges</md-button>
             <div ng-if="alert">
                 <br/>
@@ -47,6 +46,9 @@
         </div>
         <div flex="0"></div>
     </section>
+    <div class="backup-warning" id="backup-warning" ng-show="backupWarning">
+        Last backup was jun 12.
+    </div>
 
     <md-sidenav class="md-sidenav-left" md-component-id="left" md-disable-backdrop md-whiteframe="4">
         <md-toolbar class="md-theme-indigo">

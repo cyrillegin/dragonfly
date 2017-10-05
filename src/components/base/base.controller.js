@@ -11,6 +11,15 @@ export default class mainController {
         this.$window = $window;
         this.$timeout = $timeout;
 
+        $scope.backupWarning = false;
+
+        const jinjaData = $('#jinja-vars').data();
+        if (jinjaData.time * 1000 + (60 * 60 * 24 * 14) < Date.now()) {
+            console.log('too old');
+            $scope.backupWarning = true;
+            $('#backup-warning').html('Last database back was ' + new Date(jinjaData.time * 1000));
+        }
+
         $scope.toggleLeft = buildToggler('left');
         function buildToggler(componentId) {
             return function () {

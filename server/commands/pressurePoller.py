@@ -1,23 +1,27 @@
-'''
+"""
 Dragonfly
 Cyrille Gindreau
 2017
 
 pressurePoller.py
 
-Opens a sensor and sends it Dragonfly API
+Opens a sensor and sends it to Dragonfly API
 
-'''
+"""
 
 import json
 import requests
 import logging
 import time
+from dragonfly import MCPIP
+
 try:
     import Adafruit_BMP.BMP085 as BMP085
 except Exception, e:
     print "error loading Adafruit plugin"
-READINGURL = "http://192.168.0.3:5000/api/reading"
+
+READINGURL = "http://{}:5000/api/reading".format(MCPIP)
+
 POLL_RATE = 60 * 5
 
 
@@ -42,7 +46,11 @@ def pressurePoller():
                 'value': sensor.read_temperature() * 1.8 + 32,
             }]
         }
-        response1 = requests.post(READINGURL, json.dumps(obj))
+        try:
+            response1 = requests.post(READINGURL, json.dumps(obj))
+        except Exception, e:
+            print "error talking to server:"
+            print e
         logging.info('Pressure = {0:0.2f} Pa'.format(sensor.read_pressure()))
         obj = {
             'sensor': {
@@ -53,7 +61,11 @@ def pressurePoller():
                 'value': sensor.read_pressure(),
             }]
         }
-        response2 = requests.post(READINGURL, json.dumps(obj))
+        try:
+            response2 = requests.post(READINGURL, json.dumps(obj))
+        except Exception, e:
+            print "error talking to server:"
+            print e
         logging.info('Altitude = {0:0.2f} m'.format(sensor.read_altitude()))
         obj = {
             'sensor': {
@@ -64,7 +76,11 @@ def pressurePoller():
                 'value': sensor.read_altitude() * 3.28084,
             }]
         }
-        response3 = requests.post(READINGURL, json.dumps(obj))
+        try:
+            response3 = requests.post(READINGURL, json.dumps(obj))
+        except Exception, e:
+            print "error talking to server:"
+            print e
         logging.info('Sealevel Pressure = {0:0.2f} Pa'.format(sensor.read_sealevel_pressure()))
         obj = {
             'sensor': {
@@ -75,6 +91,10 @@ def pressurePoller():
                 'value': sensor.read_sealevel_pressure(),
             }]
         }
-        response4 = requests.post(READINGURL, json.dumps(obj))
+        try:
+            response4 = requests.post(READINGURL, json.dumps(obj))
+        except Exception, e:
+            print "error talking to server:"
+            print e
         logging.info("responses: {}, {}, {}, {}".format(response1, response2, response3, response4))
         time.sleep(POLL_RATE)

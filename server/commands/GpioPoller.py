@@ -8,8 +8,9 @@ import json
 import requests
 import logging
 import time
+from dragonfly import MCPIP
 
-READINGURL = "http://192.168.0.3:5000/api/reading"
+READINGURL = "http://{}:5000/api/reading".format(MCPIP)
 POLL_RATE = 60*5
 
 Temp_sensor = 14
@@ -29,8 +30,6 @@ def GpioPoller():
         except Exception, e:
             logging.error('Error reading from instance')
             logging.debug(e)
-    # Send some test
-
         if result.is_valid():
                 logging.info("Got new readings")
                 temp = result.temperature
@@ -58,10 +57,14 @@ def GpioPoller():
                 }
 
                 logging.info('Sending Data')
-                response = requests.post(READINGURL, json.dumps(newTempReading))
-                logging.info(response)
-                response = requests.post(READINGURL, json.dumps(newHumdReading))
-                logging.info(response)
+                try:
+                    response = requests.post(READINGURL, json.dumps(newTempReading))
+                    logging.info(response)
+                    response = requests.post(READINGURL, json.dumps(newHumdReading))
+                    logging.info(response)
+                except Exception, e:
+                    print "error talking to server:"
+                    print e
         else:
                 logging.error("result didn't return a valid")
                 logging.debug(result)

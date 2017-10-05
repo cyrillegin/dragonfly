@@ -1,4 +1,4 @@
-'''
+"""
 Dragonfly
 Cyrille Gindreau
 2017
@@ -6,21 +6,25 @@ Cyrille Gindreau
 weatherSensor.py
 Polls lascruces-weather.com and scraps for current temperature.
 
-'''
+"""
+
 import time
 import urllib2
 import requests
 import json
 import logging
 from bs4 import BeautifulSoup as bs
+from dragonfly import MCPIP
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
+
+READINGURL = "http://{}:5000/api/reading".format(MCPIP)
+SENSORURL = "http://{}:5000/api/sensor".format(MCPIP)
 
 
 def weatherSensor():
     logging.info("Starting weather data collection.")
 
-    readingUrl = "http://localhost:5000/api/reading"
     url = "http://www.lascruces-weather.com/"
     queryRate = 60 * 5
 
@@ -31,7 +35,7 @@ def weatherSensor():
         "coefficients": "1,0",
         "sensor_type": "temperature"
     }
-    sensor = requests.post("http://localhost:5000/api/sensor", json.dumps(data))
+    sensor = requests.post(SENSORURL, json.dumps(data))
     logging.debug(sensor)
 
     while(True):
@@ -51,7 +55,7 @@ def weatherSensor():
                 'timestamp': time.time()
             }]
         }
-        response = requests.post(readingUrl, json.dumps(newReading))
+        response = requests.post(READINGURL, json.dumps(newReading))
         logging.info("Reading sent.")
         logging.debug(response)
         time.sleep(queryRate)

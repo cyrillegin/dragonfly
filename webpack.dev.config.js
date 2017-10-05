@@ -1,49 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const BundleTracker = require('webpack-bundle-tracker');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
-const Production = true;
-
-const plugins = [
-    // new BundleAnalyzerPlugin(),
-    new BundleTracker({
-        filename: './webpack-stats.json',
-    }),
-
-    new webpack.ProvidePlugin({
-        jQuery: 'jquery',
-        $: 'jquery',
-        jquery: 'jquery',
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        filename: 'vendor.bundle.js',
-    }),
-    new webpack.NamedModulesPlugin(),
-    new webpack.LoaderOptionsPlugin({
-        minimize: true,
-        debug: false,
-    }),
-];
-
-if (Production) {
-    console.log('Building for production');
-    plugins.push(new webpack.DefinePlugin({
-        'process.env': {
-            NODE_ENV: JSON.stringify('production'),
-        },
-    }));
-    // TODO figure out why this plugin only works when devtool has eval flag.
-    //   plugins.push(new webpack.optimize.UglifyJsPlugin({
-    //     compressor: {
-    //       warnings: false
-    //     }
-    // }));
-} else {
-    console.log('Building for development.');
-}
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin'); // eslint-disable-line
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line
 
 module.exports = {
     entry: {
@@ -61,7 +19,7 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'static/dist'),
     },
-    devtool: 'source-map',
+    devtool: 'eval-cheap-module-source-map',
     module: {
         rules: [{
             test: /\.js$/,
@@ -73,9 +31,6 @@ module.exports = {
         }, {
             test: /\.html$/,
             loader: 'html-loader',
-        }, {
-            test: /bootstrap\/dist\/js\/umd\//,
-            loader: 'imports?jQuery=jquery',
         }, {
             test: /\.css$/,
             loader: 'style-loader!css-loader',
@@ -89,7 +44,7 @@ module.exports = {
                 loader: 'sass-loader',
             }],
         }, {
-            test: /\.png$/,
+            test: /\.png$|\?|\.gif($|\?)/,
             loader: 'url-loader?publicPath=/static/dist/&limit=100000',
         }, {
             test: /\.jpg$/,
@@ -99,5 +54,21 @@ module.exports = {
             loader: 'url-loader',
         }],
     },
-    plugins: plugins,
+    plugins: [
+        // new BundleAnalyzerPlugin(),
+        new webpack.ProvidePlugin({
+            jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery',
+        }),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: false,
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            filename: 'vendor.bundle.js',
+        }),
+        new webpack.NamedModulesPlugin(),
+    ],
 };

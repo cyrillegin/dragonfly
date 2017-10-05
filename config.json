@@ -1,7 +1,0 @@
-{
-    "DBFILE": "/dragonDB.db",
-    "isMCP": true,
-    "hasCam": true,
-    "MCPIP": "192.168.0.3",
-    "MyIP": "192.168.0.6"
-}
