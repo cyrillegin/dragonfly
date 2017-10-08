@@ -13,6 +13,7 @@ import json
 import requests
 import logging
 import time
+from wemoSend import controlFridge
 # from dragonfly import MCPIP
 
 try:
@@ -28,7 +29,7 @@ POLL_RATE = 60 * 5
 def pressurePoller():
     logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
     logging.info("Starting presure poller.")
-
+    on = False
     while(True):
         try:
             sensor = BMP085.BMP085()
@@ -48,6 +49,7 @@ def pressurePoller():
         }
         try:
             response1 = requests.post(READINGURL, json.dumps(obj))
+            on = controlFridge(obj['readings'][0]['value'], on)
         except Exception, e:
             print "error talking to server:"
             print e
