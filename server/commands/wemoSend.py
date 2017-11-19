@@ -1,8 +1,8 @@
 import subprocess
 
 
-minTemp = 47
-maxTemp = 51
+minTemp = 34
+maxTemp = 40
 
 
 def controlFridge(value, on):
@@ -13,6 +13,12 @@ def controlFridge(value, on):
     if value <= minTemp and on:
         doSwitch("off")
         return False
+    if value >= maxTemp + 5:
+	doSwitch("on")
+	return True
+    if value <= minTemp - 5:
+	doSwitch("off")
+	return False
     return on
 
 
