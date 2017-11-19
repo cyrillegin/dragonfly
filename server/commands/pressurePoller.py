@@ -23,7 +23,7 @@ except Exception, e:
 
 READINGURL = "http://192.168.0.10:5000/api/reading"
 
-POLL_RATE = 60 * 5
+POLL_RATE = 60
 
 
 def pressurePoller():
@@ -33,11 +33,12 @@ def pressurePoller():
     while(True):
         try:
             sensor = BMP085.BMP085()
-        except Exception, e:
+       	    logging.info('Temp = {0:0.2f} *C'.format(sensor.read_temperature()))
+	except Exception, e:
             logging.error("Couldn't create sensor.")
             logging.error(e)
-
-        logging.info('Temp = {0:0.2f} *C'.format(sensor.read_temperature()))
+	    time.slepp(30)
+	    return
         obj = {
             'sensor': {
                 'name': 'OutdoorTemperatureTwo'
@@ -48,8 +49,9 @@ def pressurePoller():
             }]
         }
         try:
-            response1 = requests.post(READINGURL, json.dumps(obj))
-            on = controlFridge(obj['readings'][0]['value'], on)
+	    on = controlFridge(obj['readings'][0]['value'], on)
+            print "light is on: {}".format(on)
+	    response1 = requests.post(READINGURL, json.dumps(obj))
         except Exception, e:
             print "error talking to server:"
             print e
@@ -98,5 +100,4 @@ def pressurePoller():
         except Exception, e:
             print "error talking to server:"
             print e
-        logging.info("responses: {}, {}, {}, {}".format(response1, response2, response3, response4))
         time.sleep(POLL_RATE)
