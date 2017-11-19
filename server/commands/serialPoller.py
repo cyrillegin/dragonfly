@@ -17,10 +17,10 @@ import serial
 import json
 import requests
 import logging
-from dragonfly import MCPIP
+# from dragonfly import MCPIP
 
-SENSORURL = "http://{}:5000/api/sensor".format(MCPIP)
-READINGURL = "http://{}:5000/api/reading".format(MCPIP)
+SENSORURL = "http://192.168.0.10:5000/api/sensor"
+READINGURL = "http://192.168.0.10:5000/api/reading"
 
 # For use on rasberry pi
 USBPREFIX = 'ttyUSB'

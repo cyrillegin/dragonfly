@@ -23,12 +23,12 @@ import time
 import json
 import requests
 import logging
-from dragonfly import MCPIP
+# from dragonfly import MCPIP
 
 DEVICE_ID = "28-0516a49158ff"
 DEVICE_LOCATION = "/sys/bus/w1/devices/{}/w1_slave".format(DEVICE_ID)
 
-READINGURL = "http://{}:5000/api/reading".format(MCPIP)
+READINGURL = "http://192.168.0.10:5000/api/reading"
 
 POLL_RATE = 60 * 5
 

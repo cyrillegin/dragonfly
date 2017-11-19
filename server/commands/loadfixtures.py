@@ -13,7 +13,7 @@ import requests
 import json
 import time
 import logging
-from dragonfly import MCPIP
+import sys
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
@@ -21,7 +21,7 @@ logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=loggin
 # readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
 
 # Use if just testing localy
-readingUrl = "http://{}:5000/api/reading".format(MCPIP)
+readingUrl = "http://192.168.0.10:5000/api/reading"
 
 
 def loadfixtures():
