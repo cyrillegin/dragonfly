@@ -30,7 +30,7 @@ POLL_RATE = 60
 def pressurePoller():
     logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
     logging.info("Starting presure poller.")
-    on = False
+
     while True:
         try:
             sensor = BMP085.BMP085()
@@ -49,8 +49,6 @@ def pressurePoller():
             }]
         }
         try:
-            on = controlFridge(obj['readings'][0]['value'], on)
-            print "light is on: {}".format(on)
             response1 = requests.post(READINGURL, json.dumps(obj))
             print "response1: {}".format(response1)
         except Exception, e:

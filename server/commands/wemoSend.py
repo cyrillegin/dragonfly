@@ -14,11 +14,11 @@ def controlFridge(value, on):
         doSwitch("off")
         return False
     if value >= maxTemp + 5:
-	doSwitch("on")
-	return True
+        doSwitch("on")
+        return True
     if value <= minTemp - 5:
-	doSwitch("off")
-	return False
+        doSwitch("off")
+        return False
     return on
 
 
