@@ -23,6 +23,7 @@ import time
 import json
 import requests
 import logging
+from wemoSend import controlFridge
 # from dragonfly import MCPIP
 
 DEVICE_ID = "28-0516a49158ff"
@@ -48,40 +49,36 @@ def temp_raw():
     return lines
 
 
-def read_temp():
-
-    lines = temp_raw()
-    while lines[0].strip()[-3:] != 'YES':
-        time.sleep(0.2)
-        lines = temp_raw()
-
-    temp_output = lines[1].find('t=')
-
-    if temp_output != -1:
-        temp_string = lines[1].strip()[temp_output+2:]
-        temp_c = float(temp_string) / 1000.0
-        temp_f = temp_c * 9.0 / 5.0 + 32.0
-
-        obj = {
-            'sensor': {
-                'name': 'kitchen-temperature'
-            },
-            'readings': [{
-                'timestamp': time.time(),
-                'value': temp_f,
-            }]
-        }
-        try:
-            response = requests.post(READINGURL, json.dumps(obj))
-            logging.info("Sent {} to station".format(response))
-        except Exception, e:
-            print "error talking to server:"
-            print e
-
-        return temp_c, temp_f
-
-
 def ReadOneWire():
+    on = False
     while True:
-        read_temp()
+        lines = temp_raw()
+        while lines[0].strip()[-3:] != 'YES':
+            time.sleep(0.2)
+            lines = temp_raw()
+
+        temp_output = lines[1].find('t=')
+
+        if temp_output != -1:
+            temp_string = lines[1].strip()[temp_output+2:]
+            temp_c = float(temp_string) / 1000.0
+            temp_f = temp_c * 9.0 / 5.0 + 32.0
+
+            obj = {
+                'sensor': {
+                    'name': 'kitchen-temperature'
+                },
+                'readings': [{
+                    'timestamp': time.time(),
+                    'value': temp_f,
+                }]
+            }
+            try:
+                on = controlFridge(obj['readings'][0]['value'], on)
+                print "light is on: {}".format(on)
+                response = requests.post(READINGURL, json.dumps(obj))
+                logging.info("Sent {} to station".format(response))
+            except Exception, e:
+                print "error talking to server:"
+                print e
         time.sleep(POLL_RATE)

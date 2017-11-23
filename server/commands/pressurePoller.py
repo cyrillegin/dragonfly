@@ -10,9 +10,10 @@ Opens a sensor and sends it to Dragonfly API
 """
 
 import json
-import requests
-import logging
 import time
+import logging
+import requests
+
 from wemoSend import controlFridge
 # from dragonfly import MCPIP
 
@@ -29,16 +30,15 @@ POLL_RATE = 60
 def pressurePoller():
     logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
     logging.info("Starting presure poller.")
-    on = False
-    while(True):
+
+    while True:
         try:
             sensor = BMP085.BMP085()
-       	    logging.info('Temp = {0:0.2f} *C'.format(sensor.read_temperature()))
-	except Exception, e:
+            logging.info('Temp = {0:0.2f} *C'.format(sensor.read_temperature()))
+        except Exception, e:
             logging.error("Couldn't create sensor.")
             logging.error(e)
-	    time.slepp(30)
-	    return
+        time.sleep(30)
         obj = {
             'sensor': {
                 'name': 'OutdoorTemperatureTwo'
@@ -49,9 +49,8 @@ def pressurePoller():
             }]
         }
         try:
-	    on = controlFridge(obj['readings'][0]['value'], on)
-            print "light is on: {}".format(on)
-	    response1 = requests.post(READINGURL, json.dumps(obj))
+            response1 = requests.post(READINGURL, json.dumps(obj))
+            print "response1: {}".format(response1)
         except Exception, e:
             print "error talking to server:"
             print e
@@ -67,6 +66,7 @@ def pressurePoller():
         }
         try:
             response2 = requests.post(READINGURL, json.dumps(obj))
+            print "response2: {}".format(response2)
         except Exception, e:
             print "error talking to server:"
             print e
@@ -82,6 +82,7 @@ def pressurePoller():
         }
         try:
             response3 = requests.post(READINGURL, json.dumps(obj))
+            print "response3: {}".format(response3)
         except Exception, e:
             print "error talking to server:"
             print e
@@ -97,6 +98,7 @@ def pressurePoller():
         }
         try:
             response4 = requests.post(READINGURL, json.dumps(obj))
+            print "response4: {}".format(response4)
         except Exception, e:
             print "error talking to server:"
             print e
