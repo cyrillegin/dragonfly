@@ -1,0 +1,21 @@
+{
+  "eslint": {
+    "run": true
+  },
+  "scsslint": {
+    "run": true
+  },
+  "htmlhint": {
+    "run": true
+  },
+  "sonarwhal": {
+    "run": true,
+    "uri": ["localhost:3000/#/", "localhost:3000/#/demo", "localhost:3000/#/about"]
+  },
+  "flake8": {
+    "run": false
+  },
+  "oudated": {
+    "run": "true"
+  }
+}
