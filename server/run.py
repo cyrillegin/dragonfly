@@ -100,13 +100,15 @@ if __name__ == "__main__":
             Command.PressurePoller()
         elif arg == "wiresensor":
             logging.info("reading from one wire sensor.")
-            Command.OneWirePoller()
+            Command.OneWirePoller(deviceId='asdf', pollRate=0, report=False)
         else:
             logging.info('Did not understand the command, please try again.')
     else:
         logging.info("Could not understand arguements, use one from the following list:")
         logging.info("\n\nServer:")
         logging.info("run - Starts the server.")
+        logging.info('\n\nPolling:')
+        logging.info('poll - Runs all of the pollers defined in config.py')
         logging.info("\nData:")
         logging.info("loadFixtures - Loads some sample data into the database via the api.")
         logging.info("weatherSensor - Requests data from lascruce-weather.org to get temperature.")
