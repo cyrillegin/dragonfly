@@ -49,6 +49,11 @@ STATIONNAME: What would you like your station to be called. This is used on the 
 setup config - see config section for details  
 `sudo npm run startProd`  
 
+##### Running pollers
+All pollers should be defined in the config.  
+To begin polling all sensors, run `python3 run.py startPollers`
+
+
 ##### Serial Poller
 `sudo pip3 install serial`  
 
@@ -61,7 +66,6 @@ Note: If developing on a mac, theres is currently an issue with pygame, see: htt
 
 
 ##### OneWire temperature sensor
-
 Add dtoverlay=w1-gpio to /boot/config.txt  
 This will use gpio pin 2 by default, to change it, run `dtoverlay=w1-gpio,gpiopin=x`  
 `sudo modprobe w1-gpio`  
@@ -77,6 +81,10 @@ the t=23125 means that the temperature is 23.125 degrees celcius
 To add this sensor to your list of pollers, make sure you include the device Id to the config.  
 To test it, run `python3 run.py wireSensor`. The temperature should be printed out.  
 * Can control (see controllers)  
+
+
+##### Motion Sensor
+VCC needs to be hooked up to 5v, both sensitivity and time delay pots should be relativly low to avoid false positives.  
 
 
 ##### Controllers
