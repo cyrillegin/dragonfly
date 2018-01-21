@@ -11,9 +11,9 @@ MCPPORT = '5000'
 STATIONNAME = 'computer'
 SENSORS = [{
     'OneWire': [{
-        'ID': 'id',
-        'SensorName': 'test sensor',
-        'PollRate': 60,
+        'deviceId': 'id',
+        'sensorName': 'test sensor',
+        'pollRate': 0,
         'controls': [{
             'controller': 'fermentationFridge',
             'events': [{

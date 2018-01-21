@@ -46,8 +46,8 @@ def readTemperature(deviceLocation):
     return lines
 
 
-def ReadOneWire(deviceId, deviceName, pollRate, report):
-    deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(deviceId)
+def ReadOneWire(params):
+    deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(params.deviceId)
     on = False
     while True:
         lines = readTemperature(deviceLocation)
@@ -66,7 +66,7 @@ def ReadOneWire(deviceId, deviceName, pollRate, report):
             if report:
                 obj = {
                     'sensor': {
-                        'name': deviceName
+                        'name': params.sensorName
                     },
                     'readings': [{
                         'timestamp': time.time(),
@@ -89,6 +89,6 @@ def ReadOneWire(deviceId, deviceName, pollRate, report):
                 if event.operator == 'lessThan':
                     if temp_f < event.condition:
                         sendEvent(command.controller, event.command)
-        if pollRate is 0:
+        if params.pollRate is 0:
             break
         time.sleep(pollRate)
