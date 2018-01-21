@@ -15,13 +15,6 @@ dbBackups/
 #compile files
 *.pyc
 
-#yarn files
-package-lock.json
-yarn.lock
-
 # webpack
 webpack-stats.json
 static/dist/
-
-
-
