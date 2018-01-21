@@ -1,12 +1,13 @@
 import json
 import time
 import logging
-import dht11
+
 
 try:
     import RPi.GPIO as GPIO
-except Exception, e:
-    print e
+    import dht11
+except Exception as e:
+    logging.info(e)
 
 import requests
 
@@ -29,7 +30,7 @@ def GpioPoller():
     while Alive:
         try:
             result = instance.read()
-        except Exception, e:
+        except Exception as e:
             logging.error('Error reading from instance')
             logging.debug(e)
         if result.is_valid():
@@ -64,9 +65,9 @@ def GpioPoller():
                 logging.info(response)
                 response = requests.post(READINGURL, json.dumps(newHumdReading))
                 logging.info(response)
-            except Exception, e:
-                print "error talking to server:"
-                print e
+            except Exception as e:
+                logging.info("error talking to server:")
+                logging.info(e)
         else:
             logging.error("result didn't return a valid")
             logging.debug(result)

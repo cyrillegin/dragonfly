@@ -48,7 +48,7 @@ def CollectData(ser):
     while(Alive):
         try:
             data = ser.readline()
-        except Exception, e:
+        except Exception as e:
             logging.error("Error reading data.")
             logging.debug(e)
             Alive = False
@@ -57,7 +57,7 @@ def CollectData(ser):
         if data.startswith('["data'):
             try:
                 serData = json.loads(data)
-            except Exception, e:
+            except Exception as e:
                 logging.error("Error loading data.")
                 logging.debug(e)
                 continue

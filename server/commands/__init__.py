@@ -9,13 +9,13 @@ __init__.py
 Sets up commands that are run from run.py
 
 """
-import loadfixtures
-import serialPoller
-import weatherSensor
-import imageCapture
-import GpioPoller
-import pressurePoller
-import oneWireSensor
+import commands.loadfixtures
+import commands.serialPoller
+import commands.weatherSensor
+import commands.imageCapture
+import commands.GpioPoller
+import commands.pressurePoller
+import commands.oneWireSensor
 
 
 class Command:
