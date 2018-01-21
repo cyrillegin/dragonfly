@@ -13,6 +13,20 @@ SENSORS = [{
     'OneWire': [{
         'ID': 'id',
         'SensorName': 'test sensor',
-        'PollRate': 60
+        'PollRate': 60,
+        'controls': [{
+            'controller': 'fermentationFridge',
+            'events': [{
+                'when': 'value',
+                'operator': 'greaterThan',
+                'condition': 40,
+                'command': 'turnOn'
+            }, {
+                'when': 'value',
+                'operator': 'lessThan',
+                'condition': 30,
+                'command': 'turnOff'
+            }]
+        }]
     }]
 }]

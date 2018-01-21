@@ -24,6 +24,7 @@ import json
 import requests
 import logging
 from commands.wemoSend import controlFridge
+from commands.controller import sendEvent
 from config import MCPIP
 from config import MCPPORT
 
@@ -80,5 +81,14 @@ def ReadOneWire(deviceId, deviceName, pollRate, report):
                 except Exception as e:
                     logging.info("error talking to server:")
                     logging.info(e)
-        if pollRate is not 0:
-            time.sleep(pollRate)
+        for command in params.controls:
+            for event in command.events:
+                if event.operator == 'greaterThan':
+                    if temp_f > event.condition:
+                        sendEvent(command.controller, event.command)
+                if event.operator == 'lessThan':
+                    if temp_f < event.condition:
+                        sendEvent(command.controller, event.command)
+        if pollRate is 0:
+            break
+        time.sleep(pollRate)
