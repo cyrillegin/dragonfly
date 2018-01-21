@@ -101,7 +101,7 @@ if __name__ == "__main__":
             Command.PressurePoller()
         elif arg == "wiresensor":
             logging.info("reading from one wire sensor.")
-            Command.OneWirePoller(config.SENSORS[0]['OneWire'])
+            Command.OneWirePoller(config.SENSORS[0]['OneWire'][0])
         else:
             logging.info('Did not understand the command, please try again.')
     else:

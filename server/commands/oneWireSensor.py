@@ -47,7 +47,7 @@ def readTemperature(deviceLocation):
 
 
 def ReadOneWire(params):
-    deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(params.deviceId)
+    deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(params['deviceId'])
     on = False
     while True:
         lines = readTemperature(deviceLocation)
@@ -66,7 +66,7 @@ def ReadOneWire(params):
             if report:
                 obj = {
                     'sensor': {
-                        'name': params.sensorName
+                        'name': params['sensorName']
                     },
                     'readings': [{
                         'timestamp': time.time(),
@@ -81,14 +81,14 @@ def ReadOneWire(params):
                 except Exception as e:
                     logging.info("error talking to server:")
                     logging.info(e)
-        for command in params.controls:
-            for event in command.events:
-                if event.operator == 'greaterThan':
-                    if temp_f > event.condition:
-                        sendEvent(command.controller, event.command)
-                if event.operator == 'lessThan':
-                    if temp_f < event.condition:
-                        sendEvent(command.controller, event.command)
-        if params.pollRate is 0:
+        for command in params['controls']:
+            for event in command['events']:
+                if event['operator'] == 'greaterThan':
+                    if temp_f > event['condition']:
+                        sendEvent(command['controller'], event['command'])
+                if event['operator'] == 'lessThan':
+                    if temp_f < event['condition']:
+                        sendEvent(command['controller'], event['command'])
+        if params['pollRate'] is 0:
             break
-        time.sleep(pollRate)
+        time.sleep(params['pollRate'])
