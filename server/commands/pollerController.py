@@ -11,18 +11,26 @@ CHECK_RATE = 5
 
 def startPollers(config):
     runningSensors = []
+    for j in range(len(config)):
+        runningSensors.append(None)
     while True:
         logging.info('Checking sensors')
+        print (runningSensors)
         for i in range(len(config)):
             if config[i]['poller'] == 'MotionPoller':
-                p = Process(target=handleMotionSensor, args=(config[i], ))
-                p.start()
-                runningSensors.append(p)
-                pass
+                if runningSensors[i] is not None and runningSensors[i].is_alive():
+                    continue
+                else:
+                    p = Process(target=handleMotionSensor, args=(config[i], ))
+                    p.start()
+                    runningSensors[i] = p
             if config[i]['poller'] == 'OneWire':
-                p = Process(target=handleWireSensor, args=(config[i], ))
-                p.start()
-                runningSensors.append(p)
+                if runningSensors[i] is not None and runningSensors[i].is_alive():
+                    continue
+                else:
+                    p = Process(target=handleWireSensor, args=(config[i], ))
+                    p.start()
+                    runningSensors[i] = p
         time.sleep(CHECK_RATE)
 
 
