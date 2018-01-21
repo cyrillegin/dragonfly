@@ -14,6 +14,7 @@ SENSORS = [{
         'deviceId': 'id',
         'sensorName': 'test sensor',
         'pollRate': 0,
+        'report': False,
         'controls': [{
             'controller': 'fermentationFridge',
             'events': [{

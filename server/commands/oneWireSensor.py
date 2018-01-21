@@ -63,7 +63,7 @@ def ReadOneWire(params):
             temp_f = temp_c * 9.0 / 5.0 + 32.0
 
             logging.info('Temperature is currently: {}'.format(temp_f))
-            if report:
+            if params['report']:
                 obj = {
                     'sensor': {
                         'name': params['sensorName']
