@@ -1,3 +1,4 @@
+import logging
 
 
 def sendEvent(device, value):
