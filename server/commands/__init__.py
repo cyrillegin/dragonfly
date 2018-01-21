@@ -16,6 +16,7 @@ import commands.imageCapture
 import commands.GpioPoller
 import commands.pressurePoller
 import commands.oneWireSensor
+import commands.motionSensor
 
 
 class Command:
@@ -46,3 +47,7 @@ class Command:
     @staticmethod
     def OneWirePoller(params):
         oneWireSensor.ReadOneWire(params)
+
+    @staticmethod
+    def MotionPoller(params):
+        motionSensor.ReadMotion(params)

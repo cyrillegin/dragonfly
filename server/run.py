@@ -102,6 +102,12 @@ if __name__ == "__main__":
         elif arg == "wiresensor":
             logging.info("reading from one wire sensor.")
             Command.OneWirePoller(config.SENSORS[0]['OneWire'][0])
+        elif arg == "motionsensor":
+            logging.info("reading from motion sensor.")
+            Command.MotionPoller(config.SENSORS[0]['MotionPoller'][0])
+        elif arg == "startpollers":
+            logging.info("Starting pollers.")
+            Command.PollerController(config.SENSORS)
         else:
             logging.info('Did not understand the command, please try again.')
     else:
@@ -109,7 +115,7 @@ if __name__ == "__main__":
         logging.info("\n\nServer:")
         logging.info("run - Starts the server.")
         logging.info('\n\nPolling:')
-        logging.info('poll - Runs all of the pollers defined in config.py')
+        logging.info('startPollers - Runs all of the pollers defined in config.py')
         logging.info("\nData:")
         logging.info("loadFixtures - Loads some sample data into the database via the api.")
         logging.info("weatherSensor - Requests data from lascruce-weather.org to get temperature.")
@@ -119,3 +125,4 @@ if __name__ == "__main__":
         logging.info("gpioPoller - Start polling for raspberry pi gpio pins to get data from.")
         logging.info("pressurePoller - Start polling the pressure sensor.")
         logging.info("wiresensor - Poll from a One Wire sensor.")
+        logging.info("motionSensor - Start polling a motion sensor.")
