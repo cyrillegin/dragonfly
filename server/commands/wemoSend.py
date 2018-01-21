@@ -6,7 +6,7 @@ maxTemp = 40
 
 
 def controlFridge(value, on):
-    print "Got new value: %d", value
+    logging.info("Got new value: %d", value)
     if value >= maxTemp and not on:
         doSwitch("on")
         return True

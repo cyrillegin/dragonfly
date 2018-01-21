@@ -3,6 +3,7 @@ import cherrypy
 import os
 import sys
 import jinja2
+import logging
 from sqlalchemy import create_engine
 
 import models
@@ -55,12 +56,12 @@ class Root(object):
 def RunServer():
 
     open('../dragonDB.db', 'a').close()
-    print "db opened."
-    dbURL = 'sqlite:///dragonDB.db'
+    logging.info("db opened.")
+    dbURL = "sqlite:///dragonDB.db"
 
     db = create_engine(dbURL)
 
-    print "Initializing database tables..."
+    logging.info("Initializing database tables...")
     models.Base.metadata.create_all(db)
 
     cherrypy.tree.mount(Root(), '/', config=get_cp_config())
@@ -75,43 +76,43 @@ if __name__ == "__main__":
     if len(args) > 1:
         arg = "{}".format(args[1]).lower()
         if(arg == "run"):
-            print "starting server!"
+            logging.info("starting server!")
             RunServer()
         elif(arg == "loadfixtures"):
-            print "loading fixtures"
+            logging.info("loading fixtures")
             Command.LoadFixtures()
         elif(arg == "serialpoller"):
-            print "starting poller"
+            logging.info("starting poller")
             Command.SerialPoller()
         elif arg == "weathersensor":
-            print "getting weather data"
+            logging.info("getting weather data")
             Command.WeatherSensor()
         elif arg == "cleanreadings":
-            print "cleaning readings"
+            logging.info("cleaning readings")
         elif arg == "fishcam":
-            print "Starting Fish Cam."
+            logging.info("Starting Fish Cam.")
             Command.FishCam()
         elif arg == "gpiopoller":
-            print "reading from gpio"
+            logging.info("reading from gpio")
             Command.GpioPoller()
         elif arg == "pressurepoller":
-            print "reading from pressure poller"
+            logging.info("reading from pressure poller")
             Command.PressurePoller()
         elif arg == "wiresensor":
-            print "reading from one wire sensor."
+            logging.info("reading from one wire sensor.")
             Command.OneWirePoller()
         else:
-            print 'Did not understand the command, please try again.'
+            logging.info('Did not understand the command, please try again.')
     else:
-        print"Could not understand arguements, use one from the following list:"
-        print "\n\nServer:"
-        print "run - Starts the server."
-        print "\nData:"
-        print "loadFixtures - Loads some sample data into the database via the api."
-        print "weatherSensor - Requests data from lascruce-weather.org to get temperature."
-        print "fishCam - Takes a picture every 5 mintues."
-        print "\nPollers:"
-        print "serialPoller - Start polling for USB devices to get data from."
-        print "gpioPoller - Start polling for raspberry pi gpio pins to get data from."
-        print "pressurePoller - Start polling the pressure sensor."
-        print "wiresensor - Poll from a One Wire sensor."
+        logging.info("Could not understand arguements, use one from the following list:")
+        logging.info("\n\nServer:")
+        logging.info("run - Starts the server.")
+        logging.info("\nData:")
+        logging.info("loadFixtures - Loads some sample data into the database via the api.")
+        logging.info("weatherSensor - Requests data from lascruce-weather.org to get temperature.")
+        logging.info("fishCam - Takes a picture every 5 mintues.")
+        logging.info("\nPollers:")
+        logging.info("serialPoller - Start polling for USB devices to get data from.")
+        logging.info("gpioPoller - Start polling for raspberry pi gpio pins to get data from.")
+        logging.info("pressurePoller - Start polling the pressure sensor.")
+        logging.info("wiresensor - Poll from a One Wire sensor.")

@@ -23,7 +23,7 @@ import time
 import json
 import requests
 import logging
-from wemoSend import controlFridge
+from commands.wemoSend import controlFridge
 # from dragonfly import MCPIP
 
 DEVICE_ID = "28-0516a49158ff"
@@ -75,10 +75,10 @@ def ReadOneWire():
             }
             try:
                 on = controlFridge(obj['readings'][0]['value'], on)
-                print "light is on: {}".format(on)
+                logging.info("light is on: {}".format(on))
                 response = requests.post(READINGURL, json.dumps(obj))
                 logging.info("Sent {} to station".format(response))
-            except Exception, e:
-                print "error talking to server:"
-                print e
+            except Exception as e:
+                logging.info("error talking to server:")
+                logging.info(e)
         time.sleep(POLL_RATE)

@@ -14,13 +14,13 @@ import time
 import logging
 import requests
 
-from wemoSend import controlFridge
+from commands.wemoSend import controlFridge
 # from dragonfly import MCPIP
 
 try:
     import Adafruit_BMP.BMP085 as BMP085
-except Exception, e:
-    print "error loading Adafruit plugin"
+except Exception as e:
+    logging.info("error loading Adafruit plugin")
 
 READINGURL = "http://192.168.0.10:5000/api/reading"
 
@@ -35,7 +35,7 @@ def pressurePoller():
         try:
             sensor = BMP085.BMP085()
             logging.info('Temp = {0:0.2f} *C'.format(sensor.read_temperature()))
-        except Exception, e:
+        except Exception as e:
             logging.error("Couldn't create sensor.")
             logging.error(e)
         time.sleep(30)
@@ -50,10 +50,10 @@ def pressurePoller():
         }
         try:
             response1 = requests.post(READINGURL, json.dumps(obj))
-            print "response1: {}".format(response1)
-        except Exception, e:
-            print "error talking to server:"
-            print e
+            logging.info("response1: {}".format(response1))
+        except Exception as e:
+            logging.info("error talking to server:")
+            logging.info(e)
         logging.info('Pressure = {0:0.2f} Pa'.format(sensor.read_pressure()))
         obj = {
             'sensor': {
@@ -66,10 +66,10 @@ def pressurePoller():
         }
         try:
             response2 = requests.post(READINGURL, json.dumps(obj))
-            print "response2: {}".format(response2)
-        except Exception, e:
-            print "error talking to server:"
-            print e
+            logging.info("response2: {}".format(response2))
+        except Exception as e:
+            logging.info("error talking to server:")
+            logging.info(e)
         logging.info('Altitude = {0:0.2f} m'.format(sensor.read_altitude()))
         obj = {
             'sensor': {
@@ -82,10 +82,10 @@ def pressurePoller():
         }
         try:
             response3 = requests.post(READINGURL, json.dumps(obj))
-            print "response3: {}".format(response3)
-        except Exception, e:
-            print "error talking to server:"
-            print e
+            logging.info("response3: {}".format(response3))
+        except Exception as e:
+            logging.info("error talking to server:")
+            logging.info(e)
         logging.info('Sealevel Pressure = {0:0.2f} Pa'.format(sensor.read_sealevel_pressure()))
         obj = {
             'sensor': {
@@ -98,8 +98,8 @@ def pressurePoller():
         }
         try:
             response4 = requests.post(READINGURL, json.dumps(obj))
-            print "response4: {}".format(response4)
-        except Exception, e:
-            print "error talking to server:"
-            print e
+            logging.info("response4: {}".format(response4))
+        except Exception as e:
+            logging.info("error talking to server:")
+            logging.info(e)
         time.sleep(POLL_RATE)

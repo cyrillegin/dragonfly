@@ -19,7 +19,7 @@ def recordImages():
     try:
         cam = pygame.camera.Camera("/dev/video0", (640, 480))
         cam.start()
-    except Exception, e:
+    except Exception as e:
         logging.errer("Error connecting to camera.")
         logging.error(e)
 
@@ -36,7 +36,7 @@ def recordImages():
         logging.info("Getting image.")
         try:
             image = cam.get_image()
-        except Exception, e:
+        except Exception as e:
             logging.error("Error getting image")
             logging.debug(e)
             Recording = False
@@ -46,7 +46,7 @@ def recordImages():
         imageIndex += 1
         try:
             pygame.image.save(image, os.path.join(IMAGE_FOLDER, 'image_{}.jpg'.format(imageIndex)))
-        except Exception, e:
+        except Exception as e:
             logging.error("Error saving image:")
             logging.debug(e)
             Recording = False
