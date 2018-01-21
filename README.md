@@ -23,12 +23,28 @@ pySerial
 8. python run.py serialPoller
 9. Navigate to http://localhost:8000
 
-You should see at least the basis of dragonfly. As the poller
-collects more data, the site will fill itself out.
-Enjoy!
-
-
 
 ### TODO
 rain meter:
 https://codepen.io/widged/pen/MmWGoY
+
+### Raspberry Pi setup
+##### Config
+copy and rename the config template 
+cp config-template.py config.py 
+DBFile: The location you'd like to store your database file. 
+isMCP: Is this pi going to be the home base. 
+MCPIP: The ip address of the home base pi. If this is the home base and it will also be running pollers, enter in localhost. 
+MCPPORT: What port should the server run on, or, what port should the pollers send data to. 
+STATIONNAME: What would you like your station to be called. This is used on the front end to organize which sensors should be grouped together. 
+
+##### Node
+sudo --silent --location https://deb.nodesource.com/setup_8.x | sudo bash - 
+sudo apt-get install --yes nodejs
+
+##### Main station
+sudo apt-get install screen
+sudo pip install cherrypy parse-http-list
+setup config - see config section for details
+sudo npm run startProd
+
