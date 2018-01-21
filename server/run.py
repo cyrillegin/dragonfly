@@ -101,10 +101,10 @@ if __name__ == "__main__":
             Command.PressurePoller()
         elif arg == "wiresensor":
             logging.info("reading from one wire sensor.")
-            Command.OneWirePoller(config.SENSORS[0]['OneWire'][0])
+            Command.OneWirePoller(config.SENSORS[1])
         elif arg == "motionsensor":
             logging.info("reading from motion sensor.")
-            Command.MotionPoller(config.SENSORS[0]['MotionPoller'][0])
+            Command.MotionPoller(config.SENSORS[0])
         elif arg == "startpollers":
             logging.info("Starting pollers.")
             Command.PollerController(config.SENSORS)

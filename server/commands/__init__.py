@@ -17,9 +17,15 @@ import commands.GpioPoller
 import commands.pressurePoller
 import commands.oneWireSensor
 import commands.motionSensor
+import commands.pollerController
 
 
 class Command:
+
+    @staticmethod
+    def PollerController(config):
+        pollerController.startPollers(config)
+
     @staticmethod
     def LoadFixtures():
         loadfixtures.loadfixtures()
