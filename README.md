@@ -30,13 +30,13 @@ https://codepen.io/widged/pen/MmWGoY
 
 ### Raspberry Pi setup
 ##### Config
-copy and rename the config template 
-cp config-template.py config.py 
-DBFile: The location you'd like to store your database file. 
-isMCP: Is this pi going to be the home base. 
-MCPIP: The ip address of the home base pi. If this is the home base and it will also be running pollers, enter in localhost. 
-MCPPORT: What port should the server run on, or, what port should the pollers send data to. 
-STATIONNAME: What would you like your station to be called. This is used on the front end to organize which sensors should be grouped together. 
+copy and rename the config template  
+cp config-template.py config.py  
+DBFile: The location you'd like to store your database file.   
+isMCP: Is this pi going to be the home base.  
+MCPIP: The ip address of the home base pi. If this is the home base and it will also be running pollers, enter in localhost.  
+MCPPORT: What port should the server run on, or, what port should the pollers send data to.  
+STATIONNAME: What would you like your station to be called. This is used on the front end to organize which sensors should be grouped together.  
 
 ##### Node
 sudo --silent --location https://deb.nodesource.com/setup_8.x | sudo bash - 
