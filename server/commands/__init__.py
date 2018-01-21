@@ -44,5 +44,5 @@ class Command:
         pressurePoller.pressurePoller()
 
     @staticmethod
-    def OneWirePoller(deviceId, pollRate, report):
-        oneWireSensor.ReadOneWire(deviceId, pollRate, report)
+    def OneWirePoller(deviceId, deviceName, pollRate, report):
+        oneWireSensor.ReadOneWire(deviceId, deviceName, pollRate, report)

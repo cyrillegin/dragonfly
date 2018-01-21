@@ -45,7 +45,7 @@ def readTemperature(deviceLocation):
     return lines
 
 
-def ReadOneWire(deviceId, pollRate, report):
+def ReadOneWire(deviceId, deviceName, pollRate, report):
     deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(deviceId)
     on = False
     while True:
@@ -65,7 +65,7 @@ def ReadOneWire(deviceId, pollRate, report):
             if report:
                 obj = {
                     'sensor': {
-                        'name': 'kitchen-temperature'
+                        'name': deviceName
                     },
                     'readings': [{
                         'timestamp': time.time(),

@@ -100,7 +100,7 @@ if __name__ == "__main__":
             Command.PressurePoller()
         elif arg == "wiresensor":
             logging.info("reading from one wire sensor.")
-            Command.OneWirePoller(deviceId='asdf', pollRate=0, report=False)
+            Command.OneWirePoller(deviceId='asdf', deviceName='Test', pollRate=0, report=False)
         else:
             logging.info('Did not understand the command, please try again.')
     else:
