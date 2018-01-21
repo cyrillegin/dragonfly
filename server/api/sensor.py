@@ -49,7 +49,7 @@ class Sensors:
                 try:
                     sensor = session.query(Sensor).filter_by(name=sensor_name).one()
                     data = sensor.toDict()
-                except Exception, e:
+                except Exception as e:
                     data = {
                         "error": e,
                         "note": "No sensors currently exist in data base."

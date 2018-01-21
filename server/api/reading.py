@@ -24,7 +24,7 @@ import requests
 
 from sessionManager import sessionScope
 from models import Reading, Sensor
-import sensor
+import api.sensor
 
 
 class Readings:
@@ -63,7 +63,7 @@ class Readings:
         with sessionScope() as session:
             try:
                 cursensor = session.query(Sensor).filter_by(name=data['sensor']['name']).one()
-            except Exception, e:
+            except Exception as e:
                 logging.error("Sensor not found. Sending to sensor api")
                 logging.debug(e)
                 cursensor = sensor.CreateSensor(data['sensor'], session)
@@ -83,7 +83,7 @@ def getReadings(sensor_id, start, end):
             }
             for i in readings:
                 data['readings'].append(i.toDict())
-        except Exception, e:
+        except Exception as e:
             data = {
                 "error": e
             }
