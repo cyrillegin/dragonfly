@@ -10,6 +10,22 @@ MCPIP = "192.168.0.10"
 MCPPORT = '5000'
 STATIONNAME = 'computer'
 SENSORS = [{
+    'MotionPoller': [{
+        'pin': 17,
+        'pollRate': 0,
+        'sensorName': 'test sensor',
+        'report': False,
+        'controls': [{
+            'controller': 'lightStrip',
+            'events': [{
+                'when': 'motion',
+                'operator': 'greaterThan',
+                'condition': 0,
+                'command': 'turnOn'
+            }]
+        }]
+    }]
+}, {
     'OneWire': [{
         'deviceId': 'id',
         'sensorName': 'test sensor',

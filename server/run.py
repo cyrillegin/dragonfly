@@ -102,6 +102,9 @@ if __name__ == "__main__":
         elif arg == "wiresensor":
             logging.info("reading from one wire sensor.")
             Command.OneWirePoller(config.SENSORS[0]['OneWire'][0])
+        elif arg == "motionsensor":
+            logging.info("reading from motion sensor.")
+            Command.MotionPoller(config.SENSORS[0]['MotionPoller'][0])
         else:
             logging.info('Did not understand the command, please try again.')
     else:
@@ -119,3 +122,4 @@ if __name__ == "__main__":
         logging.info("gpioPoller - Start polling for raspberry pi gpio pins to get data from.")
         logging.info("pressurePoller - Start polling the pressure sensor.")
         logging.info("wiresensor - Poll from a One Wire sensor.")
+        logging.info("motionSensor - Start polling a motion sensor.")
