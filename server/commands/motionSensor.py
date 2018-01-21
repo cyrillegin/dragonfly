@@ -39,8 +39,9 @@ def ReadMotion(params):
                 logging.error(e)
         for command in params['controls']:
             for event in command['events']:
-                if operator == 'greaterThan':
+                if event['operator'] == 'greaterThan':
                     if motionDetected > event['condition']:
                         sendEvent(command['controller'], event['command'])
-
+        if params['pollRate'] == 0:
+            break
         time.sleep(params['pollRate'])
