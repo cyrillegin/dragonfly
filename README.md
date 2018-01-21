@@ -39,12 +39,12 @@ MCPPORT: What port should the server run on, or, what port should the pollers se
 STATIONNAME: What would you like your station to be called. This is used on the front end to organize which sensors should be grouped together.  
 
 ##### Node
-sudo --silent --location https://deb.nodesource.com/setup_8.x | sudo bash - 
-sudo apt-get install --yes nodejs
+sudo --silent --location https://deb.nodesource.com/setup_8.x | sudo bash -  
+sudo apt-get install --yes nodejs  
 
 ##### Main station
-sudo apt-get install screen
-sudo pip install cherrypy parse-http-list
-setup config - see config section for details
-sudo npm run startProd
+sudo apt-get install screen  
+sudo pip3 install cherrypy  
+setup config - see config section for details  
+sudo npm run startProd  
 
