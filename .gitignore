@@ -1,4 +1,4 @@
-#OSX files
+# OSX files
 .DS_Store
 
 # folders
@@ -8,7 +8,7 @@ bower_components/
 static/images/fishcam/
 dbBackups/
 
-#database files
+# Database files
 *.db
 *.sqlite3
 
@@ -18,3 +18,6 @@ dbBackups/
 # webpack
 webpack-stats.json
 static/dist/
+
+# config
+config.py

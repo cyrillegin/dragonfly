@@ -23,12 +23,85 @@ pySerial
 8. python run.py serialPoller
 9. Navigate to http://localhost:8000
 
-You should see at least the basis of dragonfly. As the poller
-collects more data, the site will fill itself out.
-Enjoy!
+
+### Raspberry Pi setup
+
+##### Global preferences  
+The following is some general house keeping you should do before setting up any pollers or servers.
+Change default password  
+Connect to wifi  
+Assign static ip
+Enable ssh
+Enable any other interfaces you may need, more in depth details will be under each specific poller.
+Turn off bluetooth (There are no current uses for bluetooth in this project)
+
+run these commands:
+* `sudo apt-get update`
+* `sudo apt-get upgrade -y`
+* `sudo apt-get install screen vim -y`
 
 
+##### Config
+copy and rename the config template  
+`cp config-template.py config.py`
 
-### TODO
-rain meter:
-https://codepen.io/widged/pen/MmWGoY
+DBFile: The location you'd like to store your database file.   
+isMCP: Is this pi going to be the home base.  
+MCPIP: The ip address of the home base pi. If this is the home base and it will also be running pollers, enter in localhost.  
+MCPPORT: What port should the server run on, or, what port should the pollers send data to.  
+STATIONNAME: What would you like your station to be called. This is used on the front end to organize which sensors should be grouped together.  
+
+##### Node
+Node is only required if it will be running the server. All other satelites can skip this step
+`sudo --silent --location https://deb.nodesource.com/setup_8.x | sudo bash -`  
+`sudo apt-get install --yes nodejs`  
+`sudo npm install`
+
+##### Main station
+`sudo apt-get install screen`  
+`sudo pip3 install cherrypy sqlalchemy delorean` 
+setup config - see config section for details  
+`sudo npm run startProd`  
+
+##### Running pollers
+All pollers should be defined in the config.  
+To begin polling all sensors, run `python3 run.py startPollers`
+
+
+##### Serial Poller
+`sudo pip3 install serial`  
+
+##### WeatherSensor  
+`sudo apt-get install python3-bs4`
+
+##### image capture
+`sudo pip3 install pygame`
+Note: If developing on a mac, theres is currently an issue with pygame, see: https://stackoverflow.com/questions/22974339/pygame-installation-issue-in-mac-os
+
+
+##### OneWire temperature sensor
+Add dtoverlay=w1-gpio to /boot/config.txt  
+This will use gpio pin 2 by default, to change it, run `sudo dtoverlay w1-gpio gpiopin=x pullup=0` where x is the pin  
+`sudo modprobe w1-gpio`  
+`sudo modprobe w1-therm`  
+to see the device(s), `cd /sys/bus/w1/devices/`  
+to get a reading from a sensor, cd the sensor.  
+`cat w1_slave`  
+you will receive something like:  
+72 01 4b 46 7f ff 0e 10 57 : crc=57 YES  
+72 01 4b 46 7f ff 0e 10 57 t=23125  
+the t=23125 means that the temperature is 23.125 degrees celcius  
+
+To add this sensor to your list of pollers, make sure you include the device Id to the config.  
+To test it, run `python3 run.py wireSensor`. The temperature should be printed out.  
+* Can control (see controllers)  
+
+
+##### Motion Sensor
+VCC needs to be hooked up to 5v, both sensitivity and time delay pots should be relativly low to avoid false positives.  
+
+
+##### Controllers
+Certain sensors like the one wire temperature sensor have the ability to control other things.  
+
+The example config shows demonstrates how to set it up for controlling a wemo switch.
