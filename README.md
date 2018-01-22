@@ -24,11 +24,23 @@ pySerial
 9. Navigate to http://localhost:8000
 
 
-### TODO
-rain meter:
-https://codepen.io/widged/pen/MmWGoY
-
 ### Raspberry Pi setup
+
+##### Global preferences  
+The following is some general house keeping you should do before setting up any pollers or servers.
+Change default password  
+Connect to wifi  
+Assign static ip
+Enable ssh
+Enable any other interfaces you may need, more in depth details will be under each specific poller.
+Turn off bluetooth (There are no current uses for bluetooth in this project)
+
+run these commands:
+* `sudo apt-get update`
+* `sudo apt-get upgrade -y`
+* `sudo apt-get install screen vim -y`
+
+
 ##### Config
 copy and rename the config template  
 `cp config-template.py config.py`
@@ -40,8 +52,10 @@ MCPPORT: What port should the server run on, or, what port should the pollers se
 STATIONNAME: What would you like your station to be called. This is used on the front end to organize which sensors should be grouped together.  
 
 ##### Node
+Node is only required if it will be running the server. All other satelites can skip this step
 `sudo --silent --location https://deb.nodesource.com/setup_8.x | sudo bash -`  
 `sudo apt-get install --yes nodejs`  
+`sudo npm install`
 
 ##### Main station
 `sudo apt-get install screen`  
@@ -67,7 +81,7 @@ Note: If developing on a mac, theres is currently an issue with pygame, see: htt
 
 ##### OneWire temperature sensor
 Add dtoverlay=w1-gpio to /boot/config.txt  
-This will use gpio pin 2 by default, to change it, run `dtoverlay=w1-gpio,gpiopin=x`  
+This will use gpio pin 2 by default, to change it, run `sudo dtoverlay w1-gpio gpiopin=x pullup=0` where x is the pin  
 `sudo modprobe w1-gpio`  
 `sudo modprobe w1-therm`  
 to see the device(s), `cd /sys/bus/w1/devices/`  
