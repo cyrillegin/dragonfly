@@ -2,6 +2,7 @@
 import time
 import requests
 import logging
+import json
 try:
     import RPi.GPIO as GPIO
     GPIO.setwarnings(False)
@@ -10,6 +11,11 @@ except Exception as e:
     logging.debug('Could not import gpio')
 
 from commands.controller import sendEvent
+from config import MCPIP
+from config import MCPPORT
+
+
+READINGURL = "http://{}:{}/api/reading".format(MCPIP, MCPPORT)
 
 
 def ReadMotion(params):
@@ -18,7 +24,8 @@ def ReadMotion(params):
         motionDetected = GPIO.input(params['pin'])
         if motionDetected != 0:
             logging.info('Motion detected: {}'.format(motionDetected))
-
+        else:
+            logging.debug('No motion')
         if params['report']:
             payload = {
                 'sensor': {
