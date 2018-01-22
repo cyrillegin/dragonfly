@@ -74,8 +74,6 @@ def ReadOneWire(params):
                     }]
                 }
                 try:
-                    on = controlFridge(obj['readings'][0]['value'], on)
-                    logging.info("light is on: {}".format(on))
                     response = requests.post(READINGURL, json.dumps(obj))
                     logging.info("Sent {} to station".format(response))
                 except Exception as e:

@@ -9,10 +9,11 @@ isMCP = False
 MCPIP = "192.168.0.10"
 MCPPORT = '5000'
 STATIONNAME = 'computer'
+CHECK_RATE = 60
 SENSORS = [{
     'poller': 'MotionPoller',
-    'pin': 17,
-    'pollRate': 0,
+    'pin': 14,
+    'pollRate': 10,
     'sensorName': 'test sensor',
     'report': False,
     'controls': [{
@@ -28,7 +29,7 @@ SENSORS = [{
     'poller': 'OneWire',
     'deviceId': 'id',
     'sensorName': 'test sensor',
-    'pollRate': 0,
+    'pollRate': 30,
     'report': False,
     'controls': [{
         'controller': 'fermentationFridge',

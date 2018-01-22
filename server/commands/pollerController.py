@@ -4,9 +4,7 @@ import time
 from commands import motionSensor
 from commands import oneWireSensor
 from multiprocessing import Process
-
-
-CHECK_RATE = 5
+from config import CHECK_RATE
 
 
 def startPollers(config):
