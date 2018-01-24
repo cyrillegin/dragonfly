@@ -11,50 +11,53 @@ export default class mainController {
         this.$window = $window;
         this.$timeout = $timeout;
 
-        $scope.backupWarning = false;
+    }
+
+    $onInit() {
+        this.$scope.backupWarning = false;
 
         const jinjaData = $('#jinja-vars').data();
         if (jinjaData.time * 1000 + (60 * 60 * 24 * 14) < Date.now()) {
             console.log('too old');
-            $scope.backupWarning = true;
-            $('#backup-warning').html('Last database back was ' + new Date(jinjaData.time * 1000));
+            this.$scope.backupWarning = true;
+            $('#backup-warning').html(`Last database back was ${new Date(jinjaData.time * 1000)}`);
         }
 
-        $scope.toggleLeft = buildToggler('left');
+        this.$scope.toggleLeft = buildToggler('left');
         function buildToggler(componentId) {
             return function () {
                 console.log('go');
-                $mdSidenav(componentId).toggle();
+                this.$mdSidenav(componentId).toggle();
             };
         }
 
-        $scope.toggleRight = buildToggler('right');
+        this.$scope.toggleRight = buildToggler('right');
         function buildToggler(componentId) {
             return function () {
                 console.log('go');
-                $mdSidenav(componentId).toggle();
+                this.$mdSidenav(componentId).toggle();
             };
         }
 
-        $scope.showGridBottomSheet = function () {
-            $scope.alert = '';
-            $mdBottomSheet.show({
+        this.$scope.showGridBottomSheet = function () {
+            this.$scope.alert = '';
+            this.$mdBottomSheet.show({
                 template: gaugeContainer,
                 controller: gaugeContainerController,
-            }).then((clickedItem) => {
-                $mdToast.show(
-                    $mdToast.simple()
-                        .textContent(clickedItem['name'] + ' clicked!')
-                        .position('top right')
-                        .hideDelay(1500),
-                );
-            }).catch((error) => {
-                // User clicked outside or hit escape
-            });
+            })
+                .then((clickedItem) => {
+                    this.$mdToast.show(
+                        this.$mdToast.simple()
+                            .textContent(`${clickedItem.name} clicked!`)
+                            .position('top right')
+                            .hideDelay(1500),
+                    );
+                })
+                .catch((error) => {
+                    // User clicked outside or hit escape
+                });
         };
-    }
 
-    $onInit() {
         this.$scope.graphIndex = 0;
 
         // this.$http.get('api/camera')
@@ -73,16 +76,16 @@ export default class mainController {
             $('#bottom-bar-container').toggleClass('bottom-bar-container-open');
         });
 
-        this.GetData();
+        this.getData();
     }
 
-    GetData() {
+    getData() {
         this.$http.get('/api/sensor')
             .then((success) => {
                 this.$scope.lightSwitchCharts = [];
                 success.data.sensor_list.forEach((i) => {
                     if (i.self_type === 'lightswitch') {
-                        this.DrawLightSwitch(i);
+                        this.drawLightSwitch(i);
                     }
                 });
             })
@@ -92,10 +95,10 @@ export default class mainController {
             });
     }
 
-    DrawLightSwitch(data) {
+    drawLightSwitch(data) {
         const switchObj = {
             title: data.name,
-            id: 'switch-' + data.name.split(' ').join(''),
+            id: `switch-${data.name.split(' ').join('')}`,
             val: data.lastReading,
         };
         this.$scope.lightSwitchCharts.push(switchObj);

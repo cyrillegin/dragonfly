@@ -13,7 +13,7 @@ export default class gaugeController {
 
     $onInit() {
         this.$timeout(() => {
-            this.DrawTempChart(this.attributes);
+            this.drawTempChart(this.attributes);
         });
     }
 
@@ -25,7 +25,7 @@ export default class gaugeController {
         const width = 200;
         const height = 140;
 
-        const svg = d3.select('#' + sensor.name)
+        const svg = d3.select(`#${sensor.name}`)
             .append('svg')
             .attr('width', width)
             .attr('height', height);
@@ -40,9 +40,7 @@ export default class gaugeController {
         const pie = d3.pie()
             .startAngle(- Math.PI / 2)
             .endAngle(Math.PI / 2)
-            .value((d) => {
-                return d;
-            });
+            .value((d) => d);
 
         const arcLines = [
             sensor.max_value - sensor.min_value,
@@ -56,9 +54,7 @@ export default class gaugeController {
             .append('path')
             .attr('d', arc)
             .attr('transform', 'translate(100,100)')
-            .style('fill', (d, i) => {
-                return color[i];
-            });
+            .style('fill', (d, i) => color[i]);
 
         svg.selectAll('.needle')
             .data([sensor.lastReading])
@@ -71,7 +67,7 @@ export default class gaugeController {
             .style('stroke', 'black')
             .attr('transform', (d) => {
                 const r = 180 * (d / arcLines[0]);
-                return ' translate(100, 100) rotate(' + r + ')';
+                return ` translate(100, 100) rotate(${r})`;
             });
 
         // Title

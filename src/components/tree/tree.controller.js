@@ -11,10 +11,10 @@ export default class treeController {
     }
 
     $onInit() {
-        this.LoadSensors();
+        this.loadSensors();
     }
 
-    LoadSensors() {
+    loadSensors() {
         const sensorNodes = {
             name: 'Sensors',
             children: [],
@@ -52,7 +52,7 @@ export default class treeController {
                 console.log('error');
                 console.log(error);
             });
-    };
+    }
 
     buildTree(treeData) {
         // Set the dimensions and margins of the diagram
@@ -69,7 +69,7 @@ export default class treeController {
             .attr('width', width + margin.right + margin.left)
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            .attr('transform', `translate(${margin.left},${margin.top})`);
 
         let i = 0;
         const duration = 750;
@@ -78,17 +78,15 @@ export default class treeController {
         const treemap = d3.tree().size([width, height]);
 
         // Assigns parent, children, height, depth
-        const root = d3.hierarchy(treeData, (d) => {
-            return d.children;
-        });
+        const root = d3.hierarchy(treeData, (d) => d.children);
         root.x0 = width / 2;
         root.y0 = 0;
 
         // Collapse the node and all it's children
         function collapse(d) {
             if (d.children) {
-                d._children = d.children;
-                d._children.forEach(collapse);
+                d.childCopy = d.children;
+                d.childCopy.forEach(collapse);
                 d.children = null;
             }
         }
@@ -115,11 +113,11 @@ export default class treeController {
             // Toggle children on click.
             function click(d) {
                 if (d.children) {
-                    d._children = d.children;
+                    d.childCopy = d.children;
                     d.children = null;
                 } else {
-                    d.children = d._children;
-                    d._children = null;
+                    d.children = d.childCopy;
+                    d.childCopy = null;
                 }
                 update(d);
                 if (d.children === undefined) {
@@ -131,16 +129,12 @@ export default class treeController {
 
             // Update the nodes...
             const node = svg.selectAll('g.node')
-                .data(nodes, (d) => {
-                    return d.id || (d.id = ++ i);
-                });
+                .data(nodes, (d) => d.id || (d.id = ++ i));
 
             // Enter any new modes at the parent's previous position.
             const nodeEnter = node.enter().append('g')
                 .attr('class', 'node')
-                .attr('transform', () => {
-                    return 'translate(' + source.x0 + ',' + source.y0 + ')';
-                })
+                .attr('transform', `translate(${source.x0},${source.y0})`)
                 .on('click', click);
 
             // Add Circle for the nodes
@@ -148,18 +142,22 @@ export default class treeController {
                 .attr('class', 'node')
                 .attr('r', 1e-6)
                 .style('fill', (d) => {
-                    return d._children ? 'lightsteelblue' : '#fff';
+                    if (d.childCopy) {
+                        return 'lightsteelblue';
+                    }
+                    return '#fff';
                 });
 
             // Add labels for the nodes
             nodeEnter.append('text')
                 .attr('y', (d) => {
-                    return d.children || d._children ? - 14 : 20;
+                    if (d.children || d.childCopy) {
+                        return - 14;
+                    }
+                    return 20;
                 })
                 .attr('text-anchor', 'middle')
-                .text((d) => {
-                    return d.data.name;
-                });
+                .text((d) => d.data.name);
 
             // UPDATE
             const nodeUpdate = nodeEnter.merge(node);
@@ -167,24 +165,23 @@ export default class treeController {
             // Transition to the proper position for the node
             nodeUpdate.transition()
                 .duration(duration)
-                .attr('transform', (d) => {
-                    return 'translate(' + d.x + ',' + d.y + ')';
-                });
+                .attr('transform', (d) => `translate(${d.x},${d.y})`);
 
             // Update the node attributes and style
             nodeUpdate.select('circle.node')
                 .attr('r', 10)
                 .style('fill', (d) => {
-                    return d._children ? 'lightsteelblue' : '#fff';
+                    if (d.childCopy) {
+                        return 'lightsteelblue';
+                    }
+                    return '#fff';
                 })
                 .attr('cursor', 'pointer');
 
             // Remove any exiting nodes
             const nodeExit = node.exit().transition()
                 .duration(duration)
-                .attr('transform', () => {
-                    return 'translate(' + source.x + ',' + source.y + ')';
-                })
+                .attr('transform', () => `translate(${source.x},${source.y})`)
                 .remove();
 
             // On exit reduce the node circles size to 0
@@ -200,21 +197,15 @@ export default class treeController {
             // Creates a curved (diagonal) path from parent to the child nodes
             function diagonal(source, target) {
                 const d = {
-                    source: source,
-                    target: target,
+                    source,
+                    target,
                 };
-                return 'M' + d.source.x + ',' + d.source.y +
-                    'C' + d.source.x + ',' +
-                    (d.source.y + d.target.y) / 2 + ' ' + d.target.x + ',' +
-                    (d.source.y + d.target.y) / 2 + ' ' + d.target.x + ',' +
-                    d.target.y;
+                return `M${d.source.x},${d.source.y}C${d.source.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${d.target.y}`;
             }
 
             // Update the links...
             const link = svg.selectAll('path.link')
-                .data(links, (d) => {
-                    return d.id;
-                });
+                .data(links, (d) => d.id);
 
             // Enter any new links at the parent's previous position.
             const linkEnter = link.enter().insert('path', 'g')
@@ -233,9 +224,7 @@ export default class treeController {
             // Transition back to the parent element position
             linkUpdate.transition()
                 .duration(duration)
-                .attr('d', (d) => {
-                    return diagonal(d, d.parent);
-                });
+                .attr('d', (d) => diagonal(d, d.parent));
 
             // Store the old positions for transition.
             nodes.forEach((d) => {
