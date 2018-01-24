@@ -12,6 +12,7 @@
   "alt-require": true,
   "inline-script-disabled": true,
   "style-disabled": true,
-  "inline-style-disabled": true
+  "inline-style-disabled": true,
+  "doctype-first": false
 
 }
