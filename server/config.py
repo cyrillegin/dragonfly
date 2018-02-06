@@ -11,38 +11,17 @@ MCPPORT = '5000'
 STATIONNAME = 'computer'
 CHECK_RATE = 60
 SENSORS = [{
-    'poller': 'MotionPoller',
-    'pin': 14,
-    'pollRate': 10,
-    'sensorName': 'test sensor',
-    'report': False,
-    'controls': [{
-        'controller': 'lightStrip',
-        'events': [{
-            'when': 'motion',
-            'operator': 'greaterThan',
-            'condition': 0,
-            'command': 'turnOn'
-        }]
-    }]
+    'poller': 'Crypto',
+    'pollRate': 60,
+    'sensorName': 'Ethereum',
+    'id': 'ethereum',
+    'report': True,
+    'controls': []
 }, {
-    'poller': 'OneWire',
-    'deviceId': 'id',
-    'sensorName': 'test sensor',
-    'pollRate': 30,
-    'report': False,
-    'controls': [{
-        'controller': 'fermentationFridge',
-        'events': [{
-            'when': 'value',
-            'operator': 'greaterThan',
-            'condition': 40,
-            'command': 'turnOn'
-        }, {
-            'when': 'value',
-            'operator': 'lessThan',
-            'condition': 30,
-            'command': 'turnOff'
-        }]
-    }]
+    'poller': 'Crypto',
+    'pollRate': 60,
+    'sensorName': 'Ripple',
+    'id': 'ripple',
+    'report': True,
+    'controls': []
 }]

@@ -31,12 +31,6 @@ from config import MCPPORT
 
 READINGURL = "http://{}:{}/api/reading".format(MCPIP, MCPPORT)
 
-logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
-logging.info("Starting presure poller.")
-
-os.system('modprobe w1-gpio')
-os.system('modprobe w1-therm')
-
 
 def readTemperature(deviceLocation):
 
@@ -47,6 +41,11 @@ def readTemperature(deviceLocation):
 
 
 def ReadOneWire(params):
+    logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
+    logging.info("Starting presure poller.")
+
+    os.system('modprobe w1-gpio')
+    os.system('modprobe w1-therm')
     deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(params['deviceId'])
     on = False
     while True:
