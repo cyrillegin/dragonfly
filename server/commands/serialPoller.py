@@ -17,16 +17,16 @@ import serial
 import json
 import requests
 import logging
-# from dragonfly import MCPIP
+from config import SENSORS
 
 SENSORURL = "http://192.168.0.10:5000/api/sensor"
 READINGURL = "http://192.168.0.10:5000/api/reading"
 
 # For use on rasberry pi
-USBPREFIX = 'ttyUSB'
+# USBPREFIX = 'ttyUSB'
 
 # Foruse on OSX
-# USBPREFIX = 'tty.usb'
+USBPREFIX = 'tty.usb'
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
@@ -44,63 +44,62 @@ def MCP(device):
 def CollectData(ser):
     logging.info("Collect process starting.")
     Alive = True
-    pollRate = 60*5
+    pollRate = SENSORS
     while(Alive):
         try:
             data = ser.readline()
+            print data
         except Exception as e:
             logging.error("Error reading data.")
             logging.debug(e)
-            Alive = False
+            time.sleep(pollRate)
             continue
-        data = data.replace("'", '"')
-        if data.startswith('["data'):
-            try:
-                serData = json.loads(data)
-            except Exception as e:
-                logging.error("Error loading data.")
-                logging.debug(e)
-                continue
-            logging.info("saving data")
-            for i in serData:
-                if "station" not in i:
-                    logging.debug('Discarding.')
-                    continue
-                for j in i['sensors']:
-                    newReading = {
-                        'sensor': {
-                            'name': j['sensor']
-                        },
-                        'readings': [{
-                            'timestamp': time.time(),
-                            'value': j['value']
-                        }]
-                    }
-                    logging.info("Saving: {}".format(newReading))
-                    response = requests.post(READINGURL, json.dumps(newReading))
-                    logging.debug("response was: {}".format(response))
-        else:
-            logging.error("Data not formatted correctly, sleeping.")
+
+        try:
+            serData = json.loads(data)
+        except Exception as e:
+            logging.error("Error loading data.")
+            logging.debug(e)
+            time.sleep(pollRate)
+            continue
+        logging.info("saving data")
+        try:
+            newReading = {
+                'sensor': {
+                    'name': serData['sensor']['name']
+                },
+                'readings': [{
+                    'timestamp': time.time(),
+                    'value': serData['sensor']['value'] / 100
+                }]
+            }
+            logging.info("Saving: {}".format(newReading))
+            response = requests.post(READINGURL, json.dumps(newReading))
+            logging.debug("response was: {}".format(response))
+        except Exception as e:
+            logging.info("Json incorrectly formatted")
         time.sleep(pollRate)
 
 
-def serialPoller():
-        # poll every 1 minute
-        pollRate = 60
-        currentDevices = {}
-        while(True):
-            f = []
-            for (dirpath, dirnames, filenames) in walk("/dev/"):
-                f.extend(filenames)
-            devices = []
-            for i in f:
-                if i.startswith(USBPREFIX):
-                    devices.append(i)
-            logging.info("Devices found: {}".format(devices))
-            for j in devices:
-                if j not in currentDevices or currentDevices[j].is_alive() is False:
-                    logging.info("New device found, starting serial: {}".format(j))
-                    p = Process(target=MCP, args=(j, ))
-                    p.start()
-                    currentDevices[j] = p
-            time.sleep(pollRate)
+def serialPoller(config):
+    print config
+    return
+    # poll every 1 minute
+    pollRate = 60
+    currentDevices = {}
+    while(True):
+        f = []
+        for (dirpath, dirnames, filenames) in walk("/dev/"):
+            f.extend(filenames)
+        devices = []
+        for i in f:
+            if i.startswith(USBPREFIX):
+                devices.append(i)
+        logging.info("Devices found: {}".format(devices))
+        for j in devices:
+            if j not in currentDevices or currentDevices[j].is_alive() is False:
+                logging.info("New device found, starting serial: {}".format(j))
+                p = Process(target=MCP, args=(j, ))
+                p.start()
+                currentDevices[j] = p
+        time.sleep(pollRate)

@@ -10,6 +10,8 @@ export default class mainController {
         this.$http = $http;
         this.$window = $window;
         this.$timeout = $timeout;
+        this.$mdSidenav = $mdSidenav;
+        this.$mdBottomSheet = $mdBottomSheet;
 
     }
 
