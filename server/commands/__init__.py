@@ -17,6 +17,7 @@ import commands.GpioPoller
 import commands.pressurePoller
 import commands.oneWireSensor
 import commands.motionSensor
+import commands.cryptoPoller
 import commands.pollerController
 
 
@@ -57,3 +58,7 @@ class Command:
     @staticmethod
     def MotionPoller(params):
         motionSensor.ReadMotion(params)
+
+    @staticmethod
+    def CryptoPoller(params):
+        cryptoPoller.GetValues(params)

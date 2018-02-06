@@ -3,6 +3,7 @@ import time
 
 from commands import motionSensor
 from commands import oneWireSensor
+from commands import cryptoPoller
 from multiprocessing import Process
 from config import CHECK_RATE
 
@@ -29,6 +30,13 @@ def startPollers(config):
                     p = Process(target=handleWireSensor, args=(config[i], ))
                     p.start()
                     runningSensors[i] = p
+            if config[i]['poller'] == 'Crypto':
+                if runningSensors[i] is not None and runningSensors[i].is_alive():
+                    continue
+                else:
+                    p = Process(target=handleCryptoPoller, args=(config[i], ))
+                    p.start()
+                    runningSensors[i] = p
         time.sleep(CHECK_RATE)
 
 
@@ -49,4 +57,14 @@ def handleWireSensor(sensor):
         oneWireSensor.ReadOneWire(sensor)
     except Exception as e:
         logging.info('One wire sensor quitting')
+        logging.info(e)
+
+
+def handleCryptoPoller(sensor):
+    logging.info('Starting Crypto poller')
+    logging.info(sensor)
+    try:
+        cryptoPoller.GetValues(sensor)
+    except Exception as e:
+        logging.info('Crypto poller quitting')
         logging.info(e)
