@@ -16,22 +16,22 @@ def GetValues(params):
             response = requests.get(URL).json()
             for i in response:
                 if i['id'] == params['id']:
-                    data = i
+                    newReading = {
+                        'sensor': {
+                            'name': 'crypto-' + params['id']
+                        },
+                        'readings': [{
+                            'timestamp': time.time(),
+                            'value': i['price_usd']
+                        }]
+                    }
+                    
         except Exception as e:
             logging.error('Error pulling data.')
             logging.error(e)
             time.sleep(params['pollRate'])
         if params['report']:
             try:
-                newReading = {
-                    'sensor': {
-                        'name': 'crypto-' + params['id']
-                    },
-                    'readings': [{
-                        'timestamp': time.time(),
-                        'value': i['price_usd']
-                    }]
-                }
                 logging.info('Saving: {}'.format(newReading))
                 response = requests.post(READINGURL, json.dumps(newReading))
                 logging.info('Response: '.format(response))
