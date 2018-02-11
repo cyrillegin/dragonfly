@@ -4,9 +4,9 @@ LiquidCrystal lcd (12, 11, 5, 4, 3, 2);
 const int buttonPin = 6;
 const int sensorPin = A0;
 const int alarmPin = 7;
-const int led1 = 8;
+const int led1 = 10;
 const int led2 = 9;
-const int led3 = 10;
+const int led3 = 8;
 
 // Used for initial thermocouple reading.
 int sensorValue = 0;
@@ -104,9 +104,9 @@ void readThermoCouple() {
 
 void readOneWire() {
   oneWireValue = 60;
-  Serial.print("{\"sensor\": {\"name\": \"kitchen-temperature\", \"value\": ");
-  Serial.print((int)oneWireValue*100);
-  Serial.println("}}");
+//  Serial.print("{\"sensor\": {\"name\": \"kitchen-temperature\", \"value\": ");
+//  Serial.print((int)oneWireValue*100);
+//  Serial.println("}}");
 }
 int i = 0;
 
@@ -122,8 +122,8 @@ void updateLCD() {
     lcd.print(" F");
     lcd.setCursor(0, 1);
     lcd.print("Wire: ");
-    lcd.print(oneWireValue);
-    lcd.print(" F ");
+    lcd.print("Disconnected");
+    lcd.print("");
     lcd.print(i);
     i += 1;
   }

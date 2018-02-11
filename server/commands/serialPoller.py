@@ -17,10 +17,7 @@ import serial
 import json
 import requests
 import logging
-from config import SENSORS
-
-SENSORURL = "http://192.168.0.10:5000/api/sensor"
-READINGURL = "http://192.168.0.10:5000/api/reading"
+from config import READINGURL
 
 # For use on rasberry pi
 # USBPREFIX = 'ttyUSB'
@@ -31,30 +28,22 @@ USBPREFIX = 'tty.usb'
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
 
-def MCP(device):
+def CollectData(device, sensor):
     time.sleep(1)
     logging.info("starting device")
     ser = serial.Serial('/dev/{}'.format(device), 9600)
-    p1 = Process(target=CollectData, args=(ser, ))
-    p1.start()
-    p2 = Process(target=SendData, args=(ser, ))
-    p2.start()
-
-
-def CollectData(ser):
     logging.info("Collect process starting.")
     Alive = True
     pollRate = SENSORS
     while(Alive):
         try:
             data = ser.readline()
-            print data
+            logging.info('received: {}'.format(data))
         except Exception as e:
             logging.error("Error reading data.")
             logging.debug(e)
             time.sleep(pollRate)
             continue
-
         try:
             serData = json.loads(data)
         except Exception as e:
@@ -62,8 +51,8 @@ def CollectData(ser):
             logging.debug(e)
             time.sleep(pollRate)
             continue
-        logging.info("saving data")
-        try:
+        print sensor
+        if sensor['report']:
             newReading = {
                 'sensor': {
                     'name': serData['sensor']['name']
@@ -74,17 +63,15 @@ def CollectData(ser):
                 }]
             }
             logging.info("Saving: {}".format(newReading))
-            response = requests.post(READINGURL, json.dumps(newReading))
-            logging.debug("response was: {}".format(response))
-        except Exception as e:
-            logging.info("Json incorrectly formatted")
-        time.sleep(pollRate)
+            try:
+                response = requests.post(READINGURL, json.dumps(newReading))
+                logging.debug("response was: {}".format(response))
+            except Exception as e:
+                logging.info("Json incorrectly formatted")
+        time.sleep(sensor['pollRate'])
 
 
 def serialPoller(config):
-    print config
-    return
-    # poll every 1 minute
     pollRate = 60
     currentDevices = {}
     while(True):
@@ -99,7 +86,7 @@ def serialPoller(config):
         for j in devices:
             if j not in currentDevices or currentDevices[j].is_alive() is False:
                 logging.info("New device found, starting serial: {}".format(j))
-                p = Process(target=MCP, args=(j, ))
+                p = Process(target=CollectData, args=(j, config, ))
                 p.start()
                 currentDevices[j] = p
         time.sleep(pollRate)

@@ -15,13 +15,5 @@ SENSORS = [{
     'pollRate': 4,
     'sensorName': 'test sensor',
     'report': False,
-    'controls': [{
-        'controller': 'lightStrip',
-        'events': [{
-            'when': 'motion',
-            'operator': 'greaterThan',
-            'condition': 0,
-            'command': 'turnOn'
-        }]
-    }]
+    'controls': []
 }]
