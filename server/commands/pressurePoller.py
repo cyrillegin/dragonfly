@@ -28,7 +28,6 @@ POLL_RATE = 60
 
 
 def pressurePoller(config):
-    print config
     if config is None:
         return
     logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
