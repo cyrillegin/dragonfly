@@ -40,7 +40,7 @@ def weatherSensor():
 
     while(True):
         logging.info("Finding new reading.")
-        page = urllib2.urlopen(url) # TODO: In python3, this is included, need to transisition it.
+        page = urllib2.urlopen(url)  # TODO: In python3, this is included, need to transisition it.
         soup = bs(page, 'lxml')
         for idx, val in enumerate(soup.find_all('div', class_='headerTemp')):
             temperature = val.contents[1].contents[1].contents[0][:-6]

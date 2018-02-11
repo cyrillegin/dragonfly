@@ -22,10 +22,10 @@ import config
 READINGURL = 'http://{}:{}/api/reading'.format(config.MCPIP, config.MCPPORT)
 
 # For use on rasberry pi
-# USBPREFIX = 'ttyUSB'
+USBPREFIX = 'ttyUSB'
 
 # Foruse on OSX
-USBPREFIX = 'tty.usb'
+# USBPREFIX = 'tty.usb'
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 

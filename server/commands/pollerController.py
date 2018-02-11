@@ -11,13 +11,11 @@ from config import CHECK_RATE
 
 
 def startPollers(config):
-    print 'here'
     runningSensors = []
     for j in range(len(config)):
         runningSensors.append(None)
     while True:
         logging.info('Checking sensors')
-        print (runningSensors)
         for i in range(len(config)):
             if runningSensors[i] is not None and runningSensors[i].is_alive():
                 continue
@@ -44,6 +42,7 @@ def handleMotionSensor(sensor):
         logging.info('Motion sensor quitting')
         logging.info(e)
 
+
 def handleWireSensor(sensor):
     logging.info('Starting wire sensor with config:')
     logging.info(sensor)
@@ -53,6 +52,7 @@ def handleWireSensor(sensor):
         logging.info('One wire sensor quitting')
         logging.info(e)
 
+
 def handleSerialPoller(sensor):
     logging.info('Starting wire sensor with config:')
     logging.info(sensor)
@@ -61,6 +61,7 @@ def handleSerialPoller(sensor):
     except Exception as e:
         logging.info("Serial poller quitting.")
         logging.info(e)
+
 
 def handleCryptoPoller(sensor):
     logging.info('Starting Crypto poller')
