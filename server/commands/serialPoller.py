@@ -17,7 +17,9 @@ import serial
 import json
 import requests
 import logging
-from config import READINGURL
+import config
+
+READINGURL = 'http://{}:{}/api/reading'.format(config.MCPIP, config.MCPPORT)
 
 # For use on rasberry pi
 # USBPREFIX = 'ttyUSB'
@@ -34,7 +36,6 @@ def CollectData(device, sensor):
     ser = serial.Serial('/dev/{}'.format(device), 9600)
     logging.info("Collect process starting.")
     Alive = True
-    pollRate = SENSORS
     while(Alive):
         try:
             data = ser.readline()
@@ -51,7 +52,6 @@ def CollectData(device, sensor):
             logging.debug(e)
             time.sleep(pollRate)
             continue
-        print sensor
         if sensor['report']:
             newReading = {
                 'sensor': {

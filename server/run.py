@@ -73,6 +73,7 @@ def RunServer():
 
 
 if __name__ == "__main__":
+    print 'start'
     args = sys.argv
     if len(args) > 1:
         arg = "{}".format(args[1]).lower()
@@ -108,6 +109,9 @@ if __name__ == "__main__":
         elif arg == "startpollers":
             logging.info("Starting pollers.")
             Command.PollerController(config.SENSORS)
+        elif arg == "cryptopoller":
+            logging.info("Starting crypto poller.")
+            Command.CryptoPoller(config.SENSORS[0])
         else:
             logging.info('Did not understand the command, please try again.')
     else:
@@ -126,3 +130,4 @@ if __name__ == "__main__":
         logging.info("pressurePoller - Start polling the pressure sensor.")
         logging.info("wiresensor - Poll from a One Wire sensor.")
         logging.info("motionSensor - Start polling a motion sensor.")
+        logging.info("cryptoPoller - Start polling crypto api.")
