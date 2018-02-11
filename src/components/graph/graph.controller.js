@@ -10,10 +10,11 @@ export default class graphController {
         this.$location = $location;
         this.$http = $http;
         this.$mdDialog = $mdDialog;
+    }
 
-
-        $scope.showDialog = function (ev) {
-            $mdDialog.show({
+    $onInit() {
+        this.$scope.showDialog = function (ev) {
+            this.$mdDialog.show({
                 contentElement: '#myDialog',
                 parent: angular.element(document.body),
                 targetEvent: ev,
@@ -30,10 +31,8 @@ export default class graphController {
             value: 0,
             id: 1,
         }];
-    }
 
-    $onInit() {
-        this.$scope.SubmitDate = () => {
+        this.$scope.submitDate = () => {
             const newDates = {
                 start: this.$scope.startDate === undefined ? undefined : this.$scope.startDate.getTime() / 1000,
                 end: this.$scope.endDate === undefined ? undefined : this.$scope.endDate.getTime() / 1000,
@@ -42,7 +41,7 @@ export default class graphController {
                 this.$scope.$apply(() => {
                     this.$location.search('start_date', newDates.start);
                     this.$location.search('end_date', newDates.end);
-                    this.GetGraph();
+                    this.getGraph();
                 });
             });
         };
@@ -55,9 +54,8 @@ export default class graphController {
                 id: this.$scope.readingsInput.length + 1,
             });
         };
-        console.log('asdf');
 
-        this.$scope.SubmitModal = () => {
+        this.$scope.submitModal = () => {
             let error = false;
             const dataObjects = [];
             this.$scope.readingsInput.forEach((reading) => {
@@ -122,12 +120,12 @@ export default class graphController {
         };
 
         angular.element(this.$window).bind('resize', () => {
-            this.DrawGraph(this.data);
+            this.drawGraph(this.data);
         });
-        this.GetGraph();
-    } // End Constructor
+        this.getGraph();
+    } // End $OnInit
 
-    GetGraph() {
+    getGraph() {
         const args = this.$location.search();
         const d = new Date();
         let start = Math.round((d.getTime() - 1000 * 60 * 60 * 24) / 1000);
@@ -144,9 +142,9 @@ export default class graphController {
             sensor = 'waterTemp';
         }
 
-        this.$http.get('api/reading/?sensor=' + sensor + '&start=' + start + '&end=' + end)
+        this.$http.get(`api/reading/?sensor=${sensor}&start=${start}&end=${end}`)
             .then((success) => {
-                this.DrawGraph(success.data);
+                this.drawGraph(success.data);
                 this.data = success.data;
             })
             .catch((error) => {
@@ -155,7 +153,7 @@ export default class graphController {
         // Used for populating the selections is add readings.
         this.$http.get('api/sensor')
             .then((success) => {
-                this.sensor_list = success.data.sensor_list;
+                this.sensor_list = success.data.sensor_list; // eslint-disable-line
                 this.$scope.sensorlist = success.data.sensor_list;
             })
             .catch((error) => {
@@ -164,7 +162,7 @@ export default class graphController {
             });
     }
 
-    DrawGraph(data) {
+    drawGraph(data) {
         // Initialization.
         const container = $('#graph-container');
         container.html('');
@@ -233,11 +231,11 @@ export default class graphController {
         const newChart = d3.select('#graph-container')
             .append('svg')
             .attr('class', 'chart-container')
-            .attr('id', 'Graph' + data.sensor.name)
+            .attr('id', `Graph${data.sensor.name}`)
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.bottom + ')')
+            .attr('transform', `translate(${margin.left},${margin.bottom})`)
             .classed('svg-content-responsive', true);
         if (dataObject.readings.length === 0) {
             newChart.append('g').append('text')
@@ -274,9 +272,7 @@ export default class graphController {
             .style('display', 'none');
 
         // Tooltip helper
-        const bisectDate = d3.bisector((d) => {
-            return d.created;
-        }).left;
+        const bisectDate = d3.bisector((d) => d.created).left;
 
         // Y-axis line for tooltip
         const yLine = tooltip.append('g')
@@ -287,7 +283,6 @@ export default class graphController {
             .style('opacity', 0.5)
             .attr('y1', margin.bottom)
             .attr('y2', height);
-
 
         // Date text
         const timeText = tooltip.append('text')
@@ -345,15 +340,15 @@ export default class graphController {
             }
             const d = x0 - d0.created > d1.created - x0 ? d1 : d0;
 
-            circleElements[0].attr('transform', 'translate(' + xScale(d.created) + ',' + yScale(d.value) + ')');
-            yLine.attr('transform', 'translate(' + xScale(d.created) + ',' + 0 + ')');
+            circleElements[0].attr('transform', `translate(${xScale(d.created)},${yScale(d.value)})`);
+            yLine.attr('transform', `translate(${xScale(d.created)},0)`);
             // lineElements[0].attr('transform', 'translate(' + 0 + ',' + yScale(d.value) + ')');
             // uncomment this line for update of horizontal line tooltip
             timeText.text(new Date(d.created));
 
             textElements[0]
                 .text(getFormattedText(d.value))
-                .attr('transform', 'translate(' + (xScale(d.created) + 10) + ',' + (yScale(d.value) - 10) + ')');
+                .attr('transform', `translate(${(xScale(d.created) + 10)},${(yScale(d.value) - 10)})`);
         }
 
         // Selection box
@@ -387,7 +382,7 @@ export default class graphController {
                 const d0 = dataObject.readings[i - 1];
                 const d1 = dataObject.readings[i];
                 const d = x0 - d0.created > d1.created - x0 ? d1 : d0;
-                selectionBox.attr('transform', 'translate(' + xScale(d.created) + ',0)');
+                selectionBox.attr('transform', `translate(${xScale(d.created)},0)`);
                 // dragStartPos = xScale(d.created);
             });
         // .call(drag);
@@ -408,7 +403,7 @@ export default class graphController {
             .tickValues(getTic())
             .tickFormat((d) => {
                 const f = d3.format('.1f');
-                return f(d) + ' ' + data.sensor.units;
+                return `${f(d)} ${data.sensor.units}`;
             });
 
         newChart.append('g')
@@ -424,7 +419,7 @@ export default class graphController {
 
         newChart.append('g')
             .attr('class', 'chart-axis-shape')
-            .attr('transform', 'translate(0,' + height + ')')
+            .attr('transform', `translate(0,${height})`)
             .call(xAxis);
 
         // Top border
@@ -473,16 +468,12 @@ export default class graphController {
 
         // Graph lines
         const lineFunction = d3.line()
-            .defined(() => {
-                // TODO: add linebreak behaivor
-                return true;
-            })
-            .x((d) => {
-                return xScale(d.created);
-            })
-            .y((d) => {
-                return yScale(d.value);
-            });
+            // .defined(() => {
+            //     // TODO: add linebreak behaivor
+            //     return true;
+            // })
+            .x((d) => xScale(d.created))
+            .y((d) => yScale(d.value));
 
         newChart.append('path')
             .attr('d', lineFunction(dataObject.readings))

@@ -27,7 +27,7 @@ md-input-container {
 }
 
 .left-panel-header {
-    flex-direction: (row-reverse !important);
+    flex-direction: (row-reverse); //there used to be an important here but was throwing lint errors, discover why.
 }
 
 .left-button-container {

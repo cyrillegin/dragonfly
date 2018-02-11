@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "assess": "babel-node node_modules/.bin/code-assess src",
     "start": "concurrently --kill-others 'npm run buildDev ' 'python3 server/run.py run'",
     "buildDev": "npm run clean && concurrently --kill-others 'npm run watch'",
     "clean": "rm -fr static/dist/",

@@ -15,19 +15,13 @@ SENSORS = [{
     'pollRate': 4,
     'sensorName': 'test sensor',
     'report': False,
-    'controls': []
-}, {
-    'poller': 'Crypto',
-    'pollRate': 60,
-    'sensorName': 'Ethereum',
-    'id': 'ethereum',
-    'report': False,
-    'controls': []
-}, {
-    'poller': 'Crypto',
-    'pollRate': 60,
-    'sensorName': 'Ripple',
-    'id': 'ripple',
-    'report': False,
-    'controls': []
+    'controls': [{
+        'controller': 'lightStrip',
+        'events': [{
+            'when': 'motion',
+            'operator': 'greaterThan',
+            'condition': 0,
+            'command': 'turnOn'
+        }]
+    }]
 }]

@@ -21,3 +21,6 @@ static/dist/
 
 # config
 config.py
+
+# assess
+cdp.pid

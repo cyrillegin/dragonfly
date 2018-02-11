@@ -7,10 +7,10 @@ export default class gaugeController {
         this.$timeout = $timeout;
         this.$http = $http;
         this.$scope.gauges = [];
-        this.GetData();
+        this.getData();
     }
 
-    GetData() {
+    getData() {
         this.$http.get('api/sensor')
             .then((success) => {
                 success.data.sensor_list.forEach((i) => {

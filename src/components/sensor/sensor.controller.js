@@ -14,10 +14,10 @@ export default class sensorController {
                 name: this.$scope.sensorName,
                 description: this.$scope.sensorDescription,
                 coefficients: this.$scope.sensorCoefficients,
-                sensor_type: this.$scope.sensorType,
+                sensor_type: this.$scope.sensorType, // eslint-disable-line
                 units: this.$scope.sensorUnits,
-                min_value: this.$scope.sensorMinValue,
-                max_value: this.$scope.sensorMaxValue,
+                min_value: this.$scope.sensorMinValue, // eslint-disable-line
+                max_value: this.$scope.sensorMaxValue, // eslint-disable-line
                 station: this.$scope.sensorStation,
             };
 
@@ -33,11 +33,11 @@ export default class sensorController {
                     $('#message').toggleClass('alert alert-danger');
                 });
         };
-        this.LoadValues();
+        this.loadValues();
     }
 
-    LoadValues() {
-        this.$http.get('api/sensor/' + this.$location.search().sensor)
+    loadValues() {
+        this.$http.get(`api/sensor/${this.$location.search().sensor}`)
             .then((success) => {
 
                 this.$scope.sensorName = success.data.name;
