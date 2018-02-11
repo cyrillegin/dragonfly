@@ -22,7 +22,7 @@ import config
 READINGURL = 'http://{}:{}/api/reading'.format(config.MCPIP, config.MCPPORT)
 
 # For use on rasberry pi
-USBPREFIX = 'ttyUSB'
+USBPREFIX = 'ttyACM0'
 
 # Foruse on OSX
 # USBPREFIX = 'tty.usb'
@@ -38,19 +38,19 @@ def CollectData(device, sensor):
     Alive = True
     while(Alive):
         try:
-            data = ser.readline()
+            data = ser.readline().decode("utf-8")
             logging.info('received: {}'.format(data))
         except Exception as e:
             logging.error("Error reading data.")
-            logging.debug(e)
-            time.sleep(pollRate)
+            logging.error(e)
+            time.sleep(sensor['pollRate'])
             continue
         try:
             serData = json.loads(data)
         except Exception as e:
             logging.error("Error loading data.")
-            logging.debug(e)
-            time.sleep(pollRate)
+            logging.error(e)
+            time.sleep(sensor['pollRate'])
             continue
         if sensor['report']:
             newReading = {
@@ -67,7 +67,8 @@ def CollectData(device, sensor):
                 response = requests.post(READINGURL, json.dumps(newReading))
                 logging.debug("response was: {}".format(response))
             except Exception as e:
-                logging.info("Json incorrectly formatted")
+                logging.error("Json incorrectly formatted")
+                logging.error(e)
         time.sleep(sensor['pollRate'])
 
 
