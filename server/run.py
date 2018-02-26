@@ -9,6 +9,7 @@ from sqlalchemy import create_engine
 import models
 from api import ResourceApi
 from commands import Command
+from version import minorVersion, majorVersion, VERSION, BUILD_DATE
 import config
 
 PATH = os.path.abspath(os.path.dirname(__file__))
@@ -47,7 +48,9 @@ class Root(object):
     def index(self):
         lastBackup = CheckBackups()
         context = {
-            "lastBackup": lastBackup
+            "lastBackup": lastBackup,
+            "version": VERSION,
+            "buildDate": BUILD_DATE,
         }
         t = env.get_template("index.html")
         return t.render(context)
@@ -112,6 +115,12 @@ if __name__ == "__main__":
         elif arg == "cryptopoller":
             logging.info("Starting crypto poller.")
             Command.CryptoPoller(config.SENSORS[0])
+        elif arg == "incminor":
+            logging.info("Incrementing minor version")
+            minorVersion()
+        elif arg == "incmajor":
+            logging.info("Incrementing major version")
+            majorVersion()
         else:
             logging.info('Did not understand the command, please try again.')
     else:

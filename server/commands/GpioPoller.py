@@ -1,7 +1,7 @@
 import json
 import time
 import logging
-
+import requests
 
 try:
     import RPi.GPIO as GPIO
@@ -9,11 +9,9 @@ try:
 except Exception as e:
     logging.info(e)
 
-import requests
+from config import MCPIP
 
-# from dragonfly import MCPIP
-
-READINGURL = "http://192.168.0.10:5000/api/reading"
+READINGURL = 'http://{}/api/reading'.format(MCPIP)
 POLL_RATE = 60*5
 
 Temp_sensor = 14

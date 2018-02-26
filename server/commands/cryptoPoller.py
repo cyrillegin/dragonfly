@@ -7,7 +7,7 @@ import config
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
 URL = 'https://api.coinmarketcap.com/v1/ticker/'
-READINGURL = 'http://{}:{}/api/reading'.format(config.MCPIP, config.MCPPORT)
+READINGURL = 'http://{}/api/reading'.format(config.MCPIP)
 
 
 def GetValues(params):

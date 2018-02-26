@@ -15,13 +15,15 @@ import time
 import logging
 import sys
 
+from config import MCPIP
+
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
 # Use for going to heroku
 # readingUrl = "https://dragonf1y.herokuapp.com/api/reading"
 
 # Use if just testing localy
-readingUrl = "http://192.168.0.10:5000/api/reading"
+READINGURL = 'http://{}/api/reading'.format(MCPIP)
 
 
 def loadfixtures():
@@ -50,7 +52,7 @@ def loadfixtures():
         newReadings['readings'].append(newReading)
     # Make post
     logging.info("Sending post for testTemp")
-    response = requests.post(readingUrl, json.dumps(newReadings))
+    response = requests.post(READINGURL, json.dumps(newReadings))
     logging.debug("Response was: {}".format(response))
 
     # Create test sensor
@@ -80,7 +82,7 @@ def loadfixtures():
 
     # Make post
     logging.info("Sending post for testTurb")
-    response = requests.post(readingUrl, json.dumps(newReadings))
+    response = requests.post(READINGURL, json.dumps(newReadings))
     logging.debug("Response was: {}".format(response))
 
     # Create test sensor
@@ -104,5 +106,5 @@ def loadfixtures():
         }
         newReadings['readings'].append(newReading)
     logging.info("Sending post for testSwitch")
-    response = requests.post(readingUrl, json.dumps(newReadings))
+    response = requests.post(READINGURL, json.dumps(newReadings))
     logging.debug("Response was: {}".format(response))

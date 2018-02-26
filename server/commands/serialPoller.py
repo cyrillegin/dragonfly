@@ -19,7 +19,7 @@ import requests
 import logging
 import config
 
-READINGURL = 'http://{}:{}/api/reading'.format(config.MCPIP, config.MCPPORT)
+READINGURL = 'http://{}/api/reading'.format(config.MCPIP)
 
 # For use on rasberry pi
 USBPREFIX = 'ttyUSB'

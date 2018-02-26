@@ -43,11 +43,19 @@ md-input-container {
 }
 
 .main-title {
+  margin-bottom: 0;
     margin-left: 10px;
+    
 }
 
 .backup-warning {
     margin-bottom: 20px;
     margin-top: 10px;
     text-align: center;
+}
+
+.version {
+  margin-left: 13px;
+  font-size: 8pt;
+  font-family: monospace;
 }
