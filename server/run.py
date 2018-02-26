@@ -76,7 +76,6 @@ def RunServer():
 
 
 if __name__ == "__main__":
-    print 'start'
     args = sys.argv
     if len(args) > 1:
         arg = "{}".format(args[1]).lower()
