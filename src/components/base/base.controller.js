@@ -13,6 +13,9 @@ export default class mainController {
         this.$mdSidenav = $mdSidenav;
         this.$mdBottomSheet = $mdBottomSheet;
 
+        this.$scope.version = $('#version')[0].dataset.version;
+        this.$scope.buildDate = new Date($('#build-date')[0].dataset.build * 1000).toDateString();
+
     }
 
     $onInit() {
