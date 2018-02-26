@@ -12,10 +12,9 @@ except Exception as e:
 
 from commands.controller import sendEvent
 from config import MCPIP
-from config import MCPPORT
 
 
-READINGURL = "http://{}:{}/api/reading".format(MCPIP, MCPPORT)
+READINGURL = 'http://{}/api/reading'.format(MCPIP)
 
 
 def ReadMotion(params):

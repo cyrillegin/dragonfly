@@ -7,7 +7,6 @@ DBFILE = "/dragonDB.db"
 isMCP = False
 # Use 'localhost' for base station.
 MCPIP = "192.168.0.10"
-MCPPORT = '5000'
 STATIONNAME = 'computer'
 CHECK_RATE = 60
 SENSORS = [{

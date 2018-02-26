@@ -26,10 +26,9 @@ import logging
 from commands.wemoSend import controlFridge
 from commands.controller import sendEvent
 from config import MCPIP
-from config import MCPPORT
 
 
-READINGURL = "http://{}:{}/api/reading".format(MCPIP, MCPPORT)
+READINGURL = 'http://{}/api/reading'.format(MCPIP)
 
 
 def readTemperature(deviceLocation):
