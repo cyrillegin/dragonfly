@@ -24,8 +24,7 @@ import requests
 
 from sessionManager import sessionScope
 from models import Reading, Sensor
-import api.sensor
-
+from api import sensor
 
 class Readings:
     logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
