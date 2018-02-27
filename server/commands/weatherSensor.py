@@ -9,17 +9,17 @@ Polls lascruces-weather.com and scraps for current temperature.
 """
 
 import time
-import urllib2
 import requests
 import json
 import logging
 from bs4 import BeautifulSoup as bs
-# from dragonfly import MCPIP
+
+from config import MCPIP
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
-READINGURL = "http://192.168.0.10:5000/api/reading"
-SENSORURL = "http://192.168.0.10:5000/api/sensor"
+READINGURL = 'http://{}/api/reading'.format(MCPIP)
+SENSORURL = 'http://{}/api/sensor'.format(MCPIP)
 
 
 def weatherSensor():
@@ -40,7 +40,7 @@ def weatherSensor():
 
     while(True):
         logging.info("Finding new reading.")
-        page = urllib2.urlopen(url)
+        page = urllib2.urlopen(url)  # TODO: In python3, this is included, need to transisition it.
         soup = bs(page, 'lxml')
         for idx, val in enumerate(soup.find_all('div', class_='headerTemp')):
             temperature = val.contents[1].contents[1].contents[0][:-6]

@@ -1,0 +1,51 @@
+{
+    "browserslist": [
+      "last 2 Chrome versions",
+      "> 5%"
+    ],
+    "connector": {
+        "name": "chrome",
+        "options": {
+            "waitFor": 1000
+        }
+    },
+    "formatters": [
+        "stylish"
+    ],
+    "ignoredUrls": [],
+    "rules": {
+        "amp-validator": "off",
+        "apple-touch-icons": "error",
+        "axe": ["error", {
+          "rules": {
+            "link-name": {"enabled": false},
+            "color-contrast": {"enabled": false},
+            "list": {"enabled": false},
+            "listitem": {"enabled": false}
+          }
+        }],
+        "content-type": "off",
+        "disown-opener": "error",
+        "highest-available-document-mode": [ "warning", {"requireMetaTag": true}],
+        "html-checker": "off",
+        "http-cache": "off",
+        "image-optimization-cloudinary": "off",
+        "manifest-app-name": "error",
+        "manifest-exists": "error",
+        "manifest-file-extension": "error",
+        "manifest-is-valid": "error",
+        "meta-charset-utf-8": "warning",
+        "meta-viewport": "error",
+        "no-disallowed-headers": ["error", {"ignore": ["Server"]}],
+        "no-friendly-error-pages": "error",
+        "no-html-only-headers": "off",
+        "no-http-redirects": "error",
+        "no-protocol-relative-urls": "error",
+        "no-vulnerable-javascript-libraries": "error",
+        "ssllabs": "off",
+        "strict-transport-security": "off",
+        "validate-set-cookie-header": "error",
+        "x-content-type-options": "off"
+    },
+    "rulesTimeout": 120000
+}

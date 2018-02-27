@@ -8,11 +8,11 @@ __init__.py
 Setup for api
 
 '''
-from reading import Readings
-from sensor import Sensors
-from log import Logs
-from grafana import GrafanaApi
-from camera import Camera
+from api.reading import Readings
+from api.sensor import Sensors
+from api.log import Logs
+from api.grafana import GrafanaApi
+from api.camera import Camera
 
 
 class ResourceApi:

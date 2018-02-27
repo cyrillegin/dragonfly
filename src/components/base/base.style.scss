@@ -27,7 +27,7 @@ md-input-container {
 }
 
 .left-panel-header {
-    flex-direction: (row-reverse !important);
+    flex-direction: (row-reverse); //there used to be an important here but was throwing lint errors, discover why.
 }
 
 .left-button-container {
@@ -43,11 +43,19 @@ md-input-container {
 }
 
 .main-title {
+  margin-bottom: 0;
     margin-left: 10px;
+    
 }
 
 .backup-warning {
     margin-bottom: 20px;
     margin-top: 10px;
     text-align: center;
+}
+
+.version {
+  margin-left: 13px;
+  font-size: 8pt;
+  font-family: monospace;
 }

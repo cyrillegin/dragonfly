@@ -9,16 +9,24 @@ __init__.py
 Sets up commands that are run from run.py
 
 """
-import loadfixtures
-import serialPoller
-import weatherSensor
-import imageCapture
-import GpioPoller
-import pressurePoller
-import oneWireSensor
+import commands.loadfixtures
+import commands.serialPoller
+import commands.weatherSensor
+import commands.imageCapture
+import commands.GpioPoller
+import commands.pressurePoller
+import commands.oneWireSensor
+import commands.motionSensor
+import commands.cryptoPoller
+import commands.pollerController
 
 
 class Command:
+
+    @staticmethod
+    def PollerController(config):
+        pollerController.startPollers(config)
+
     @staticmethod
     def LoadFixtures():
         loadfixtures.loadfixtures()
@@ -44,5 +52,13 @@ class Command:
         pressurePoller.pressurePoller()
 
     @staticmethod
-    def OneWirePoller():
-        oneWireSensor.ReadOneWire()
+    def OneWirePoller(params):
+        oneWireSensor.ReadOneWire(params)
+
+    @staticmethod
+    def MotionPoller(params):
+        motionSensor.ReadMotion(params)
+
+    @staticmethod
+    def CryptoPoller(params):
+        cryptoPoller.GetValues(params)

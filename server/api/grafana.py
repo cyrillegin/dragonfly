@@ -5,8 +5,8 @@ import logging
 import delorean
 import dateutil.parser
 
-import reading
-from sensor import Sensors
+import api.reading
+from api.sensor import Sensors
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 

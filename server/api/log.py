@@ -39,7 +39,7 @@ class Logs:
                 data = {"logs": []}
                 for i in logs:
                     data['logs'].append(i.toDict())
-            except Exception, e:
+            except Exception as e:
                 data = {
                     "error": e,
                     "note": "No logs currently exist."
@@ -54,7 +54,7 @@ class Logs:
 
         try:
             data = json.loads(cherrypy.request.body.read())
-        except Exception, e:
+        except Exception as e:
             logging.error(e)
             return "error data could not be read."
 
