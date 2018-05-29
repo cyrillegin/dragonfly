@@ -1,6 +1,8 @@
 # Dragonfly
 Code base for an dragonfly
 
+This readme is out of date....
+
 # Description
 Dragonfly is a simple data collection service for arduino-like
 sensors. It comes with a server and front end to view gathered

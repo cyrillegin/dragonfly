@@ -3,17 +3,17 @@
     "run": true
   },
   "scsslint": {
-    "run": true
+    "run": false
   },
   "htmlhint": {
-    "run": true
+    "run": false
   },
   "sonarwhal": {
     "run": true,
-    "uri": ["localhost:5000"]
+    "uri": ["localhost:5000/"]
   },
   "flake8": {
-    "run": false
+    "run": true
   },
   "oudated": {
     "run": true

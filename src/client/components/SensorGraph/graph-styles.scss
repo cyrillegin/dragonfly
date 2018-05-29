@@ -1,0 +1,10 @@
+.chart-axis-shape {
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: #000;
+    stroke-width: 1px;
+
+    line {
+        stroke-opacity: .2;
+    }
+}
