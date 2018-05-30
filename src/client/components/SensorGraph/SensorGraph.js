@@ -33,16 +33,33 @@ export class SensorGraph extends Component {
   state = {
     loading: true,
     readings: [],
+    sensor: '',
+  }
+
+  loadData() {
+    this.props.getReadings().then((readings) => {
+      this.setState({
+        loading: false,
+        readings: readings,
+        sensor: this.props.sensor,
+      });
+    });
+  }
+
+  componentDidUpdate(prev) {
+    console.log('update');
+    if (this.props.sensor !== '' && this.props.sensor !== this.state.sensor) {
+      this.setState({
+        loading: true,
+        sensor: this.props.sensor,
+      });
+      this.loadData();
+    }
   }
 
   render() {
     if (this.state.loading && this.props.sensor !== '') {
-      this.props.getReadings().then((readings) => {
-        this.setState({
-          loading: false,
-          readings: readings,
-        });
-      });
+      this.loadData();
       return (
         <div className={this.props.classes.root}>
           <Paper className={this.props.classes.paper} elevation={4}>

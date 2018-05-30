@@ -9,7 +9,7 @@ export default compose(
     end = end > 0 ? end : search.length;
     const sensor = search.substring(start, end).split('=')[1];
     return {
-      sensor: sensor,
+      sensor: sensor || '',
       getReadings: () => {
         return new Promise((res, rej) => {
           fetch(`/api/reading${ownProps.history.location.search}`)

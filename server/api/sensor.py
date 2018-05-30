@@ -21,7 +21,7 @@ class Sensors:
 
         with sessionScope() as session:
             data = session.query(Sensor)
-            payload = [{'thing': 'here'}]
+            payload = []
             for i in data:
                 payload.append(i.toDict())
             return json.dumps(payload)
