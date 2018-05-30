@@ -20,9 +20,14 @@ export class Graph extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     units: PropTypes.string.isRequired,
+    readings: PropTypes.arrayOf(PropTypes.shape({
+      timestamp: PropTypes.number.isRequired,
+      value: PropTypes.number.isRequired,
+    })).isRequired,
   }
 
-  drawGraph(data) {
+  drawGraph() {
+    const data = this.props.readings;
     // Initialization.
     const container = document.querySelector('#graph-container');
 
@@ -305,7 +310,7 @@ export class Graph extends Component {
 
     newChart.append('path')
       .attr('d', lineFunction(dataObject))
-      .attr('stroke', 'yellow')
+      .attr('stroke', 'blue')
       .attr('stroke-width', 2)
       .attr('fill', 'none');
 

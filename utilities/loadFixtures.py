@@ -5,7 +5,6 @@ import time
 import uuid
 import base64
 import math
-import random
 
 logging.basicConfig(
     format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
@@ -25,11 +24,11 @@ if __name__ == "__main__":
         newPoint = {
             'sensor': {
                 'uuid': id,
-                'station': 'place-{}'.format(random.randrange(10))
+                'station': 'place'
             },
             'reading': {
                 'timestamp': (time.time() * 1000) - (i * 60 * 1000),
-                'value': math.sin(i / 100),
+                'value': math.sin(i/4),
             }
         }
         resp = requests.post('http://localhost:5000/api/sensor', data=json.dumps(newPoint))

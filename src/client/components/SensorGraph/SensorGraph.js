@@ -68,6 +68,7 @@ export class SensorGraph extends Component {
               </Typography>
               <Graph
                 units={'unit'}
+                readings={this.state.readings}
               />
             </div>
           }

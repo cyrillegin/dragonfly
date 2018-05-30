@@ -3,7 +3,6 @@ import SensorGraph from './SensorGraph';
 
 export default compose(
   mapProps((ownProps) => {
-    console.log(ownProps);
     const search = ownProps.history.location.search;
     const start = search.indexOf('sensor=');
     let end = search.substring(start, search.length).indexOf('&');
@@ -13,7 +12,11 @@ export default compose(
       sensor: sensor,
       getReadings: () => {
         return new Promise((res, rej) => {
-
+          fetch(`/api/reading${ownProps.history.location.search}`)
+            .then(response => response.json())
+            .then((data) => {
+              res(data);
+            });
         });
       },
     };

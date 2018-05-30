@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, ForeignKey, BigInteger, String
+from sqlalchemy import Column, Integer, Text, ForeignKey, Float, BigInteger, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -41,7 +41,7 @@ class Reading(Base):
     uuid = Column(String, index=True, primary_key=True)
     timestamp = Column(BigInteger)
     sensor = Column(Text, ForeignKey('sensor.uuid'))
-    value = Column(Integer)
+    value = Column(Float)
 
     def toDict(self):
         return {

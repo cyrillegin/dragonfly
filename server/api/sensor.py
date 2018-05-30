@@ -14,7 +14,7 @@ logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=loggin
 class Sensors:
     exposed = True
 
-    def GET(self):
+    def GET(self, **kwargs):
         logging.info('GET request to sensors.')
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
