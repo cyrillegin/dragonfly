@@ -21,14 +21,14 @@ class Readings:
         print kwargs
         if 'sensor' not in kwargs:
             logging.error('No sensor was given.')
-            return json.dumps({error: 'No sensor was given.'})
+            return json.dumps({'error': 'No sensor was given.'})
 
         with sessionScope() as session:
             data = session.query(Reading).filter_by(sensor=kwargs['sensor'])
             if 'start_time' in kwargs:
                 data.filter(Reading.timestamp >= kwargs['start_time'])
             else:
-                data.filter(Reading.timestamp >= (time.time() - 60*60*24) * 1000)
+                data.filter(Reading.timestamp >= (time.time() - 60 * 60 * 24) * 1000)
 
             if 'send)time' in kwargs:
                 data.filter(Reading.timestamp <= kwargs['end_time'])

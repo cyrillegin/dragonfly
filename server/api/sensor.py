@@ -1,11 +1,9 @@
 import json
 import cherrypy
 import logging
-import datetime
 from sessionManager import sessionScope
 from models import Sensor
 from api.Reading import addReading
-from short_uuid import short_uuid
 import time
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
@@ -104,6 +102,7 @@ def updateSensor(session, DbSensor, data):
             updates = True
             setattr(DbSensor, i, data[i])
     if updates:
+        setattr(DbSensor, 'modified', time.time() * 1000)
         logging.info('Sensor has changed, updating.')
         session.add(DbSensor)
         session.commit()
@@ -116,10 +115,9 @@ def createSensor(session, data):
     }
     if 'timestamp' in data:
         sensor['created'] = data['timestamp']
-        sensor['modified'] = data['timestamp']
     else:
         sensor['created'] = time.time() * 1000
-        sensor['modified'] = time.time() * 1000
+    sensor['modified'] = time.time() * 1000
 
     if 'name' in data:
         sensor['name'] = data['name']
