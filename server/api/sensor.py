@@ -21,6 +21,8 @@ class Sensors:
 
         with sessionScope() as session:
             data = session.query(Sensor)
+            if 'sensor' in kwargs:
+                data = data.filter_by(uuid=kwargs['sensor'])
             payload = []
             for i in data:
                 payload.append(i.toDict())
@@ -66,17 +68,41 @@ class Sensors:
                     logging.error(e)
                     payload['error'] = str(e)
 
-        print payload
         return json.dumps(payload)
+
+    def PUT(self):
+        logging.info('PUT request to sensors.')
+
+        try:
+            data = json.loads(cherrypy.request.body.read())
+        except ValueError:
+            logging.error('Json data could not be read.')
+            return {"error": "Data could not be read."}
+        if 'uuid' not in data:
+            logging.error('No sensor ID found.')
+            return json.dumps({"Error": "Sensor id not provided."})
+        with sessionScope() as session:
+            try:
+                sensor = session.query(Sensor).filter_by(uuid=data['uuid']).one()
+                logging.info('Sensor found.')
+                payload = {
+                    "sensor": updateSensor(session, sensor, data)
+                }
+            except Exception as e:
+                logging.error('Error updating sensor.')
+                logging.error(e)
+                return json.dumps({'Error': 'Error updating sensor.'})
+        return payload
 
 
 def updateSensor(session, DbSensor, data):
     updates = False
     for i in data:
         if i not in ['uuid', 'created', 'modified'] and data[i] != DbSensor.toDict()[i]:
+            if data[i] == '':
+                data[i] = None
             updates = True
             setattr(DbSensor, i, data[i])
-            print i
     if updates:
         logging.info('Sensor has changed, updating.')
         session.add(DbSensor)

@@ -17,6 +17,7 @@ const styles = {
   },
   graphTitle: {
     marginLeft: '8px',
+    textAlign: 'center',
   },
   spinner: {
     margin: 'auto',
@@ -47,7 +48,6 @@ export class SensorGraph extends Component {
   }
 
   componentDidUpdate(prev) {
-    console.log('update');
     if (this.props.sensor !== '' && this.props.sensor !== this.state.sensor) {
       this.setState({
         loading: true,

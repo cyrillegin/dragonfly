@@ -51,9 +51,8 @@ export class HomePage extends Component {
         </Drawer>
 
         <main className={this.props.classes.content}>
-          <SensorGraphContainer
-            history={this.props.history} />
-          <SensorDetailsContainer />
+          <SensorGraphContainer history={this.props.history} />
+          <SensorDetailsContainer history={this.props.history} />
         </main>
       </div>
     );
