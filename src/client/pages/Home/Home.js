@@ -32,11 +32,21 @@ export class HomePage extends Component {
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
       replace: PropTypes.func.isRequired,
+      location: PropTypes.shape({
+        search: PropTypes.string.isRequired,
+      }).isRequired,
     }).isRequired,
   }
 
 
   render() {
+    const search = this.props.history.location.search;
+    const start = search.indexOf('sensor=');
+    let end = search.substring(start, search.length).indexOf('&');
+    end = end > 0 ? end : search.length;
+    const sensorUUID = search.substring(start, end).split('=')[1] || '';
+    console.log(sensorUUID);
+
     return (
 
       <div className={this.props.classes.root}>
@@ -46,13 +56,21 @@ export class HomePage extends Component {
           classes={{paper: this.props.classes.drawerPaper}}
         >
           <SensorNavMenuContainer
-            history={this.props.history} />
+            history={this.props.history}
+            sensorUUID={sensorUUID}
+          />
 
         </Drawer>
 
         <main className={this.props.classes.content}>
-          <SensorGraphContainer history={this.props.history} />
-          <SensorDetailsContainer history={this.props.history} />
+          <SensorGraphContainer
+            sensorUUID={sensorUUID}
+            history={this.props.history}
+          />
+          <SensorDetailsContainer
+            sensorUUID={sensorUUID}
+            history={this.props.history}
+          />
         </main>
       </div>
     );

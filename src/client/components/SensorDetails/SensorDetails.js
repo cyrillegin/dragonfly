@@ -28,9 +28,11 @@ export class SensorDetails extends Component {
     classes: PropTypes.object.isRequired,
     getSensor: PropTypes.func.isRequired,
     updateSensor: PropTypes.func.isRequired,
+    sensorUUID: PropTypes.string.isRequired,
   };
 
   state = {
+    uuid: '',
     name: '',
     description: '',
     coefficients: '',
@@ -38,6 +40,7 @@ export class SensorDetails extends Component {
     poller: '',
     pin: '',
     units: '',
+    endpoint: '',
     loading: true,
   }
 
@@ -68,20 +71,28 @@ export class SensorDetails extends Component {
         poller: sensor[0].poller || '',
         pin: sensor[0].pin || '',
         units: sensor[0].units || '',
+        endpoint: sensor[0].endpoint || '',
       });
     });
+  }
+
+  componentDidUpdate(prev) {
+    if (prev.sensorUUID !== this.props.sensorUUID) {
+      this.setState({
+        loading: true,
+      });
+    }
   }
 
   render() {
     const updateSensor = () => {
       const {loading, ...sensor} = this.state; // eslint-disable-line
       this.props.updateSensor(sensor);
-
     };
     if (this.state.loading) {
       this.loadData();
       return (<div />);
-    } else if (this.state.uuid === undefined) {
+    } else if (this.state.uuid === '') {
       return (<div />);
     }
     return (
@@ -173,6 +184,14 @@ export class SensorDetails extends Component {
               onChange={this.handleChange('units')}
               className={this.props.classes.textField}
               value={this.state.units}
+              margin="normal"
+            />
+            <TextField
+              id="endpoint"
+              label={'Endpoint'}
+              onChange={this.handleChange('endpoint')}
+              className={this.props.classes.textField}
+              value={this.state.endpoint}
               margin="normal"
             />
             <Button className={this.props.classes.button} onClick={updateSensor}>Submit Changes</Button>

@@ -18,6 +18,7 @@ class Sensor(Base):
     station = Column(Text, default="none")
     poller = Column(Text)
     pin = Column(Integer)
+    endpoint = Column(Text)
 
     def toDict(self):
         return {
@@ -30,7 +31,8 @@ class Sensor(Base):
             "units": self.units,
             "station": self.station,
             "poller": self.poller,
-            "pin": self.pin
+            "pin": self.pin,
+            "endpoint": self.endpoint,
         }
 
 

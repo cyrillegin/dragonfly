@@ -4,8 +4,12 @@ import SensorDetails from './SensorDetails';
 export default compose(
   mapProps((ownProps) => {
     return {
+      sensorUUID: ownProps.sensorUUID,
       getSensor: () => {
         return new Promise((res, rej) => {
+          if (ownProps.sensorUUID === '') {
+            res([]);
+          }
           fetch(`/api/sensor${ownProps.history.location.search}`)
             .then(response => response.json())
             .then((data) => {
