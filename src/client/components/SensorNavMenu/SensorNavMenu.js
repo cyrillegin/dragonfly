@@ -5,6 +5,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Paper from '@material-ui/core/Paper';
 import InboxIcon from '@material-ui/icons/Inbox';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -62,6 +63,11 @@ export class SensorNavMenu extends Component {
         <MDSpinner
           className={this.props.classes.spinner}
           size={52} />
+      );
+    }
+    if (this.state.loading === false && Object.keys(this.state.tree).length === 0) {
+      return (
+        <div />
       );
     }
     return (

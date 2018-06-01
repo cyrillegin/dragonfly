@@ -10,9 +10,7 @@ export default compose(
           fetch('/api/sensor')
             .then(response => response.json())
             .then((data) => {
-              const tree = {
-                'stationless': [],
-              };
+              const tree = {};
               data.forEach((sensor) => {
                 if (sensor.station !== undefined) {
                   if (!(sensor.station in tree)) {
@@ -23,6 +21,9 @@ export default compose(
                     uuid: sensor.uuid,
                   });
                 } else {
+                  if (!('stationless' in tree)) {
+                    tree.stationless = [];
+                  }
                   tree.stationless.push({
                     name: sensor.name || 'nameless',
                     uuid: sensor.uuid,

@@ -49,6 +49,13 @@ export class SensorDetails extends Component {
 
   loadData() {
     this.props.getSensor().then((sensor) => {
+
+      if (sensor.length === 0) {
+        this.setState({
+          loading: false,
+        });
+        return;
+      }
       this.setState({
         loading: false,
         uuid: sensor[0].uuid || '',
@@ -73,6 +80,8 @@ export class SensorDetails extends Component {
     };
     if (this.state.loading) {
       this.loadData();
+      return (<div />);
+    } else if (this.state.uuid === undefined) {
       return (<div />);
     }
     return (
