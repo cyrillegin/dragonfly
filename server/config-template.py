@@ -3,24 +3,9 @@ config.py
 
 Holds config information for each system.
 """
-DBFILE = "/dragonDB.db"
-isMCP = False
-# Use 'localhost' for base station.
-MCPIP = "192.168.0.10"
-STATIONNAME = 'computer'
-CHECK_RATE = 60
-SENSORS = [{
-    'poller': 'Serial',
-    'pollRate': 4,
-    'sensorName': 'test sensor',
-    'report': False,
-    'controls': [{
-        'controller': 'lightStrip',
-        'events': [{
-            'when': 'motion',
-            'operator': 'greaterThan',
-            'condition': 0,
-            'command': 'turnOn'
-        }]
-    }]
-}]
+
+PGHOST = "pg"
+PGPORT = 5432
+PGUSERNAME = ""
+PGPASSWORD = ""
+DBNAME = ""

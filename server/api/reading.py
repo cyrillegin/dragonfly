@@ -1,104 +1,64 @@
-'''
-Dragonfly
-Cyrille Gindreau
-2017
-
-reading.py
-API endpoint for readings
-
-GET
-preconditions: sensor name, start, end
-Returns all readings for 'sensor' between 'start' and 'end' times.
-
-POST
-preconditions: sensor name, value
-Inserts a new reading for 'sensor_name' with 'value'
-
-
-'''
 import json
 import cherrypy
-import time
 import logging
-import requests
-
+import time
 from sessionManager import sessionScope
-from models import Reading, Sensor
-import api.sensor
+from models import Reading
+from short_uuid import short_uuid
+
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
 
 class Readings:
-    logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
     exposed = True
 
     def GET(self, **kwargs):
-        logging.info('GET request to Reading')
+        logging.info('GET request to readings.')
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
-        if kwargs['sensor'] is None:
-            data = {"error": "Must provide a sensor name."}
-            logging.error('Sensor name not found.')
-            return json.dumps(data)
-        data = getReadings(kwargs['sensor'], kwargs['start'], kwargs['end'])
-        return json.dumps(data)
+        print kwargs
+        if 'sensor' not in kwargs:
+            logging.error('No sensor was given.')
+            return json.dumps({'error': 'No sensor was given.'})
 
-    def POST(self):
-        logging.info('Post request to Reading')
-
-        cherrypy.response.headers['Content-Type'] = 'application/json'
-
-        try:
-            data = json.loads(cherrypy.request.body.read())
-        except ValueError:
-            logging.error('Could not red json data')
-            data = {}
-
-        if "sensor" not in data:
-            logging.error('Must provide a sensor name')
-            return json.dumps({"Error": "Must provide a sesnor name."})
-        if "readings" not in data:
-            logging.error('Must provide values to add')
-            return json.dumps({"Error": "Must provide (a) value(s) to add."})
         with sessionScope() as session:
-            try:
-                cursensor = session.query(Sensor).filter_by(name=data['sensor']['name']).one()
-            except Exception as e:
-                logging.error("Sensor not found. Sending to sensor api")
-                logging.debug(e)
-                cursensor = sensor.CreateSensor(data['sensor'], session)
-            for i in data['readings']:
-                AddReading(i, cursensor, session)
-                logging.info('Added: {}'.format(i))
+            data = session.query(Reading).filter_by(sensor=kwargs['sensor'])
+            if 'start_time' in kwargs:
+                data.filter(Reading.timestamp >= kwargs['start_time'])
+            else:
+                data.filter(Reading.timestamp >= (time.time() - 60 * 60 * 24) * 1000)
+
+            if 'end_time' in kwargs:
+                data.filter(Reading.timestamp <= kwargs['end_time'])
+            # No else because we shouldn't have readings in the future.
+
+            payload = []
+            for i in data:
+                payload.append(i.toDict())
+            return json.dumps(payload)
+
+    # def POST(self):
+    #
+    #     id = short_uuid()
+    #     # Save in database
+    #     logging.info('saving reading in database')
+    #
+    #     with sessionScope() as session:
+    #         readingModel = Reading(
+    #             uuid=id,
+    #             created=datetime.datetime.now(),
+    #         )
+    #         session.add(readingModel)
+    #         session.commit()
+    #
+    #     return json.dumps('success')
 
 
-def getReadings(sensor_id, start, end):
-    with sessionScope() as session:
-        try:
-            sensor = session.query(Sensor).filter_by(name=sensor_id).one()
-            readings = session.query(Reading).filter_by(sensor=sensor_id).filter(Reading.created >= int(start), Reading.created <= int(end))
-            data = {
-                "readings": [],
-                "sensor": sensor.toDict()
-            }
-            for i in readings:
-                data['readings'].append(i.toDict())
-        except Exception as e:
-            data = {
-                "error": e
-            }
-            logging.error(e)
-    return data
-
-
-def AddReading(data, cursensor, session):
-    if "timestamp" in data:
-        curtime = data['timestamp']
-    else:
-        curtime = time.time()
-    newReading = Reading(created=curtime, sensor=cursensor.toDict()['name'], value=data['value'])
-    setattr(cursensor, 'last_reading', data['value'])
-    session.add(cursensor)
+def addReading(session, sensor, reading):
+    newId = short_uuid()
+    newReading = Reading(uuid=newId, timestamp=reading['timestamp'], value=reading['value'], sensor=sensor['uuid'])
+    logging.info('Adding new reading')
     session.add(newReading)
     session.commit()
-    logging.info('New reading added.')
+    return session.query(Reading).filter_by(uuid=newId).one().toDict()
