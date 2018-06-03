@@ -1,6 +1,7 @@
 /* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
+const Jarvis = require('webpack-jarvis');
 
 module.exports = {
   devtool: 'inline-source-map',
@@ -54,6 +55,9 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    }),
+    new Jarvis({
+      port: 1337,
     }),
   ],
 };

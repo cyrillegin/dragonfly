@@ -2,6 +2,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const Jarvis = require('webpack-jarvis');
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -58,15 +59,10 @@ module.exports = {
         NODE_ENV: JSON.stringify('production'),
       },
     }),
-
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
     }),
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: 'vendor',
-    //   filename: 'vendor.bundle.js',
-    // }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.NamedModulesPlugin(),
     new UglifyJSPlugin({
@@ -94,6 +90,9 @@ module.exports = {
         },
       },
       exclude: /\/server/,
+    }),
+    new Jarvis({
+      port: 1337,
     }),
   ],
 };
