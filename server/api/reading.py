@@ -1,7 +1,6 @@
 import json
 import cherrypy
 import logging
-import datetime
 import time
 from sessionManager import sessionScope
 from models import Reading
@@ -40,11 +39,11 @@ class Readings:
             return json.dumps(payload)
 
     # def POST(self):
-    # 
+    #
     #     id = short_uuid()
     #     # Save in database
     #     logging.info('saving reading in database')
-    # 
+    #
     #     with sessionScope() as session:
     #         readingModel = Reading(
     #             uuid=id,
@@ -52,7 +51,7 @@ class Readings:
     #         )
     #         session.add(readingModel)
     #         session.commit()
-    # 
+    #
     #     return json.dumps('success')
 
 

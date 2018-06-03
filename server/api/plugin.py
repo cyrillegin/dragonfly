@@ -1,12 +1,7 @@
 import json
 import cherrypy
 import logging
-from sessionManager import sessionScope
 import plugins
-import os
-# from models import Sensor
-# from api.Reading import addReading
-import time
 import importlib
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
