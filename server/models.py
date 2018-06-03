@@ -15,7 +15,7 @@ class Sensor(Base):
     description = Column(Text)
     coefficients = Column(Text)
     units = Column(Text)
-    station = Column(Text, default="none")
+    station = Column(Text)
     poller = Column(Text)
     pin = Column(Text)
     endpoint = Column(Text)
@@ -36,6 +36,7 @@ class Sensor(Base):
             "poller": self.poller,
             "pin": self.pin,
             "endpoint": self.endpoint,
+            "status": self.status
         }
 
 

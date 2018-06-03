@@ -5,6 +5,7 @@ from sessionManager import sessionScope
 from models import Sensor
 from api.Reading import addReading
 import time
+from short_uuid import short_uuid
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
@@ -22,7 +23,9 @@ class Sensors:
             if 'sensor' in kwargs:
                 data = data.filter_by(uuid=kwargs['sensor'])
             payload = []
+            print data
             for i in data:
+                print i.toDict()
                 payload.append(i.toDict())
             return json.dumps(payload)
 
@@ -41,8 +44,7 @@ class Sensors:
             return json.dumps({'error': 'No sensor information in data.'})
 
         if 'uuid' not in data['sensor']:
-            logging.info('error: data had no uuid')
-            return json.dumps({'error': 'UUID is a required field.'})
+            data['sensor']['uuid'] = short_uuid()
 
         with sessionScope() as session:
             try:

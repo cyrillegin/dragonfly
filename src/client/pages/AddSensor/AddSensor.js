@@ -47,6 +47,7 @@ export class HomePage extends Component {
     classes: PropTypes.object.isRequired,
     getPlugins: PropTypes.func.isRequired,
     testPlugin: PropTypes.func.isRequired,
+    submitPlugin: PropTypes.func.isRequired,
   }
 
   state = {
@@ -79,7 +80,6 @@ export class HomePage extends Component {
   render() {
     if (this.state.loading) {
       this.props.getPlugins().then((data) => {
-        console.log(data);
         this.setState({
           loading: false,
           plugins: data.plugins,
@@ -94,6 +94,19 @@ export class HomePage extends Component {
 
     const submitSensor = () => {
       console.log('submitting');
+      this.props.submitPlugin(
+        this.state.selectedPlugin,
+        {
+          name: this.state.name,
+          description: this.state.description,
+          coefficients: this.state.coefficients,
+          station: this.state.station,
+          poller: this.state.poller,
+          pin: this.state.pin,
+          units: this.state.units,
+          endpoint: this.state.endpoint,
+        },
+      );
     };
 
     const testSensor = () => {
@@ -110,8 +123,6 @@ export class HomePage extends Component {
           endpoint: this.state.endpoint,
         },
       ).then((data) => {
-        console.log('all done.');
-        console.log(data);
         this.setState({
           testResult: data,
         });
@@ -183,14 +194,6 @@ export class HomePage extends Component {
               margin="normal"
             />
             <TextField
-              id="poller"
-              label="Poller"
-              onChange={this.handleChange('poller')}
-              className={this.props.classes.textField}
-              value={this.state.poller}
-              margin="normal"
-            />
-            <TextField
               id="pin"
               label="Pin"
               onChange={this.handleChange('pin')}
@@ -215,7 +218,13 @@ export class HomePage extends Component {
               margin="normal"
             />
             <Button className={this.props.classes.button} onClick={testSensor}>Test Sensor</Button>
-            <Button className={this.props.classes.button} onClick={submitSensor}>Submit Sensor</Button>
+            <Button
+              disabled={!(this.state.testResult && this.state.testResult.sensor)}
+              className={this.props.classes.button}
+              onClick={submitSensor}
+            >
+              Submit Sensor
+            </Button>
           </form>
           {this.state.testResult &&
             <div>
