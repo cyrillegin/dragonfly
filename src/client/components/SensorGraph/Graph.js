@@ -59,7 +59,7 @@ export class Graph extends Component {
     const dataObject = [];
     for (i = data.length - 1; i > 0; i --) {
       dataObject.push({
-        created: new Date(data[i].timestamp).getTime(),
+        created: data[i].timestamp,
         value: data[i].value * coef.x + coef.y,
       });
     }

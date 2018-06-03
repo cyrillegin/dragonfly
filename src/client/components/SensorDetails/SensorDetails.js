@@ -44,6 +44,7 @@ export class SensorDetails extends Component {
     pin: '',
     units: '',
     endpoint: '',
+    pollRate: '',
     loading: true,
   }
 
@@ -71,6 +72,7 @@ export class SensorDetails extends Component {
         pin: this.props.sensor.pin || '',
         units: this.props.sensor.units || '',
         endpoint: this.props.sensor.endpoint || '',
+        pollRate: this.props.sensor.pollRate || '',
       });
     }
   }
@@ -151,6 +153,14 @@ export class SensorDetails extends Component {
               onChange={this.handleChange('station')}
               className={this.props.classes.textField}
               value={this.state.station}
+              margin="normal"
+            />
+            <TextField
+              id="pollRate"
+              label="Poll Rate"
+              onChange={this.handleChange('pollRate')}
+              className={this.props.classes.textField}
+              value={this.state.pollRate}
               margin="normal"
             />
             <TextField
