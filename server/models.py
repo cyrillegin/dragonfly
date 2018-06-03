@@ -17,6 +17,7 @@ class Sensor(Base):
     units = Column(Text)
     station = Column(Text)
     poller = Column(Text)
+    pollRate = Column(Integer)
     pin = Column(Text)
     endpoint = Column(Text)
     # TODO: make this an enum
@@ -34,6 +35,7 @@ class Sensor(Base):
             "units": self.units,
             "station": self.station,
             "poller": self.poller,
+            "pollRate": self.pollRate,
             "pin": self.pin,
             "endpoint": self.endpoint,
             "status": self.status

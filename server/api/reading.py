@@ -30,7 +30,7 @@ class Readings:
             else:
                 data.filter(Reading.timestamp >= (time.time() - 60 * 60 * 24) * 1000)
 
-            if 'send)time' in kwargs:
+            if 'end_time' in kwargs:
                 data.filter(Reading.timestamp <= kwargs['end_time'])
             # No else because we shouldn't have readings in the future.
 

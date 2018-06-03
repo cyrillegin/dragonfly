@@ -101,7 +101,7 @@ export class HomePage extends Component {
           description: this.state.description,
           coefficients: this.state.coefficients,
           station: this.state.station,
-          poller: this.state.poller,
+          pollRate: this.state.pollRate,
           pin: this.state.pin,
           units: this.state.units,
           endpoint: this.state.endpoint,
@@ -117,7 +117,7 @@ export class HomePage extends Component {
           description: this.state.description,
           coefficients: this.state.coefficients,
           station: this.state.station,
-          poller: this.state.poller,
+          pollRate: this.state.pollRate,
           pin: this.state.pin,
           units: this.state.units,
           endpoint: this.state.endpoint,
@@ -191,6 +191,14 @@ export class HomePage extends Component {
               onChange={this.handleChange('station')}
               className={this.props.classes.textField}
               value={this.state.station}
+              margin="normal"
+            />
+            <TextField
+              id="pollRate"
+              label="Poll Rate"
+              onChange={this.handleChange('pollRate')}
+              className={this.props.classes.textField}
+              value={this.state.pollRate}
               margin="normal"
             />
             <TextField

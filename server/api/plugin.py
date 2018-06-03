@@ -44,7 +44,7 @@ class Plugins:
             return json.dumps({'error': 'No pin was provided'})
         try:
             module = importlib.import_module("plugins.{}".format(data['plugin']))
-            result = module.GetValues({'pin': data['details']['pin']})
+            result = module.GetValues({'pin': data['details']['pin'], 'uuid': 'test'})
             return json.dumps(result)
         except Exception as e:
             logging.error(e)

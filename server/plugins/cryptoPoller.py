@@ -7,21 +7,21 @@ logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=loggin
 URL = 'https://api.coinmarketcap.com/v1/ticker/'
 
 
-def GetValues(params):
+def GetValues(sensor):
     # Note, this usess to pin to figure out which endpoint to get.
     newReading = None
     try:
         response = requests.get(URL).json()
         for i in response:
-            if i['id'] == params['pin']:
+            if i['id'] == sensor['pin']:
                 newReading = {
                     'sensor': {
-                        'name': 'crypto-' + params['pin']
+                        'uuid': sensor['uuid']
                     },
-                    'readings': [{
+                    'reading': {
                         'timestamp': time.time(),
                         'value': i['price_usd']
-                    }]
+                    }
                 }
                 logging.info('Got reading: {}'.format(newReading))
     except Exception as e:
@@ -33,14 +33,8 @@ def GetValues(params):
         logging.error('Couldnt find sensor in api')
         return {'error': 'Couldnt find sensor in api'}
 
-    try:
-        logging.info('Saving: {}'.format(newReading))
-        return newReading
-    except Exception as e:
-        logging.error('Error posting data.')
-        logging.error(e)
-        return {'error': e}
+    return newReading
 
 
 if __name__ == "__main__":
-    GetValues({'id': 'bitcoin'})
+    GetValues({'pin': 'bitcoin'})

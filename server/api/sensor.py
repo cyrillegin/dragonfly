@@ -39,6 +39,7 @@ class Sensors:
             logging.error('Json data could not be read.')
             return {"error": "Data could not be read."}
 
+        print data
         if 'sensor' not in data:
             logging.info('error: no sensor information in data')
             return json.dumps({'error': 'No sensor information in data.'})
@@ -112,6 +113,7 @@ def updateSensor(session, DbSensor, data):
 
 
 def createSensor(session, data):
+    print data
     sensor = {
         'uuid': data['uuid']
     }
@@ -130,6 +132,23 @@ def createSensor(session, data):
         sensor['station'] = data['station']
     else:
         sensor['station'] = 'newStation'
+
+    if 'coefficients' in data:
+        sensor['coefficients'] = data['coefficients']
+    if 'description' in data:
+        sensor['description'] = data['description']
+    if 'endpoint' in data:
+        sensor['endpoint'] = data['endpoint']
+    if 'pin' in data:
+        sensor['pin'] = data['pin']
+    if 'pollRate' in data:
+        sensor['pollRate'] = int(data['pollRate'])
+    if 'station' in data:
+        sensor['station'] = data['station']
+    if 'poller' in data:
+        sensor['poller'] = data['poller']
+    if 'units' in data:
+        sensor['units'] = data['units']
     newSensor = Sensor(**sensor)
 
     session.add(newSensor)
