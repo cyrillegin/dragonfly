@@ -20,16 +20,16 @@ def generateUuid():
 if __name__ == "__main__":
     logging.info("Loading Fixtures.")
     id = generateUuid()
-    for i in range(60 * 24):
+    for i in range(12 * 60 * 24):
         newPoint = {
             'sensor': {
                 'uuid': id,
                 'station': 'place'
             },
             'reading': {
-                'timestamp': (time.time() * 1000) - (i * 60 * 1000),
-                'value': math.sin(i/4),
+                'timestamp': (time.time() * 1000) - (i * 1000 * 5),
+                'value': 400 * math.sin(0.1 * i),
             }
         }
         resp = requests.post('http://localhost:5000/api/sensor', data=json.dumps(newPoint))
-        print(resp)
+        print("{}% {}".format((i / 12 * 60 * 24), resp))

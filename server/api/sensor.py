@@ -90,7 +90,7 @@ class Sensors:
                 logging.error('Error updating sensor.')
                 logging.error(e)
                 return json.dumps({'Error': 'Error updating sensor.'})
-        return payload
+        return json.dumps(payload)
 
 
 def updateSensor(session, DbSensor, data):

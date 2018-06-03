@@ -26,10 +26,13 @@ const styles = {
 export class SensorDetails extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    getSensor: PropTypes.func.isRequired,
     updateSensor: PropTypes.func.isRequired,
-    sensorUUID: PropTypes.string.isRequired,
+    sensor: PropTypes.object,
   };
+
+  static defaultProps = {
+    sensor: null,
+  }
 
   state = {
     uuid: '',
@@ -50,36 +53,24 @@ export class SensorDetails extends Component {
     });
   };
 
-  loadData() {
-    this.props.getSensor().then((sensor) => {
-
-      if (sensor.length === 0) {
-        this.setState({
-          loading: false,
-        });
-        return;
-      }
-      this.setState({
-        loading: false,
-        uuid: sensor[0].uuid || '',
-        created: sensor[0].created || '',
-        modified: sensor[0].modified || '',
-        name: sensor[0].name || '',
-        description: sensor[0].description || '',
-        coefficients: sensor[0].coefficients || '',
-        station: sensor[0].station || '',
-        poller: sensor[0].poller || '',
-        pin: sensor[0].pin || '',
-        units: sensor[0].units || '',
-        endpoint: sensor[0].endpoint || '',
-      });
-    });
-  }
 
   componentDidUpdate(prev) {
-    if (prev.sensorUUID !== this.props.sensorUUID) {
+
+    if ((prev.sensor === null && this.props.sensor !== null) ||
+    (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)) {
       this.setState({
-        loading: true,
+        loading: false,
+        uuid: this.props.sensor.uuid || '',
+        created: this.props.sensor.created || '',
+        modified: this.props.sensor.modified || '',
+        name: this.props.sensor.name || '',
+        description: this.props.sensor.description || '',
+        coefficients: this.props.sensor.coefficients || '',
+        station: this.props.sensor.station || '',
+        poller: this.props.sensor.poller || '',
+        pin: this.props.sensor.pin || '',
+        units: this.props.sensor.units || '',
+        endpoint: this.props.sensor.endpoint || '',
       });
     }
   }
@@ -89,10 +80,10 @@ export class SensorDetails extends Component {
       const {loading, ...sensor} = this.state; // eslint-disable-line
       this.props.updateSensor(sensor);
     };
+
     if (this.state.loading) {
-      this.loadData();
       return (<div />);
-    } else if (this.state.uuid === '') {
+    } else if (this.props.sensor.uuid === '' || this.props.sensor.uuid === null) {
       return (<div />);
     }
     return (

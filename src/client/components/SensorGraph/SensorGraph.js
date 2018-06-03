@@ -17,7 +17,7 @@ const styles = {
   },
   graphTitle: {
     marginLeft: '8px',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   spinner: {
     margin: 'auto',
@@ -28,13 +28,16 @@ export class SensorGraph extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     getReadings: PropTypes.func.isRequired,
-    sensor: PropTypes.string.isRequired,
+    sensor: PropTypes.object,
   };
+
+  static defaultProps = {
+    sensor: null,
+  }
 
   state = {
     loading: true,
     readings: [],
-    sensor: '',
   }
 
   loadData() {
@@ -42,23 +45,36 @@ export class SensorGraph extends Component {
       this.setState({
         loading: false,
         readings: readings,
-        sensor: this.props.sensor,
       });
     });
   }
 
   componentDidUpdate(prev) {
-    if (this.props.sensor !== '' && this.props.sensor !== this.state.sensor) {
+    if (this.state.loading === false &&
+      this.props.sensor !== null &&
+      this.props.sensor.uuid !== '' &&
+      prev.sensor.uuid !== this.props.sensor.uuid
+    ) {
       this.setState({
         loading: true,
-        sensor: this.props.sensor,
       });
-      this.loadData();
     }
   }
 
   render() {
-    if (this.state.loading && this.props.sensor !== '') {
+
+    if (this.props.sensor === null) {
+      return (
+        <div className={this.props.classes.root}>
+          <Paper className={this.props.classes.paper} elevation={4}>
+            <Typography variant="headline" component="h3" className={this.props.classes.graphTitle}>
+            Please select a sensor.
+            </Typography>
+          </Paper>
+        </div>
+      );
+    }
+    if (this.state.loading === true) {
       this.loadData();
       return (
         <div className={this.props.classes.root}>
@@ -73,22 +89,14 @@ export class SensorGraph extends Component {
     return (
       <div className={this.props.classes.root}>
         <Paper className={this.props.classes.paper} elevation={4}>
-          {this.props.sensor === '' &&
-            <Typography variant="headline" component="h3" className={this.props.classes.graphTitle}>
-              Please select a sensor.
-            </Typography>
-          }
-          {this.props.sensor !== '' &&
-            <div>
-              <Typography variant="headline" component="h3" className={this.props.classes.graphTitle}>
-                  Sensor name
-              </Typography>
-              <Graph
-                units={'unit'}
-                readings={this.state.readings}
-              />
-            </div>
-          }
+          <Typography variant="headline" component="h3" className={this.props.classes.graphTitle}>
+            {this.props.sensor.name}
+          </Typography>
+          <Graph
+            sensor={this.props.sensor}
+            readings={this.state.readings}
+          />
+
         </Paper>
       </div>
     );

@@ -19,18 +19,21 @@ const styles = theme => ({
 export class Graph extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    units: PropTypes.string.isRequired,
+    sensor: PropTypes.object,
     readings: PropTypes.arrayOf(PropTypes.shape({
       timestamp: PropTypes.number.isRequired,
       value: PropTypes.number.isRequired,
     })).isRequired,
   }
 
+  static defaultProps = {
+    sensor: null,
+  }
+
   drawGraph() {
     const data = this.props.readings;
     // Initialization.
     const container = document.querySelector('#graph-container');
-
     container.innerHTML = '';
 
     let width = container.clientWidth;
@@ -40,7 +43,7 @@ export class Graph extends Component {
       top: 10,
       right: 20,
       bottom: 10,
-      left: 40, // TODO: set this based of value and unit length
+      left: this.props.sensor.units ? this.props.sensor.units.length * 10 : 60,
     };
     width = width - margin.left - margin.right;
     height = height - margin.top - margin.bottom;
@@ -118,15 +121,12 @@ export class Graph extends Component {
       .rangeRound([height - margin.bottom, margin.top]);
 
     // Formats text for units display
-    function getFormattedText(d) {
+    const getFormattedText = (d) => {
       const f = d3.format('.1f');
-      let units = '';
-      if (data.sensor !== undefined) {
-        units = data.sensor.units;
-      }
+      const units = this.props.sensor.units;
 
       return f(d) + units;
-    }
+    };
 
     // TOOL-TIPS
     // Tooltip container
@@ -262,7 +262,7 @@ export class Graph extends Component {
       .tickValues(getTic())
       .tickFormat((d) => {
         const f = d3.format('.1f');
-        return `${f(d)} ${this.props.units}`;
+        return `${f(d)} ${this.props.sensor.units}`;
       });
 
     newChart.append('g')

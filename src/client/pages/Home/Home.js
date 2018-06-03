@@ -36,19 +36,43 @@ export class HomePage extends Component {
         search: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
+    getSensor: PropTypes.func.isRequired,
   }
 
+  state = {
+    loading: true,
+    sensor: null,
+  }
 
-  render() {
+  getUUIDFromURL() {
     const search = this.props.history.location.search;
     const start = search.indexOf('sensor=');
     let end = search.substring(start, search.length).indexOf('&');
     end = end > 0 ? end : search.length;
-    const sensorUUID = search.substring(start, end).split('=')[1] || '';
-    console.log(sensorUUID);
+    return search.substring(start, end).split('=')[1] || '';
+  }
+  componentDidUpdate(prev) {
+    const sensorUUID = this.getUUIDFromURL();
+    if (this.state.loading === false && this.state.sensor !== null && sensorUUID !== this.state.sensor.uuid) {
+      this.setState({
+        loading: true,
+      });
+    }
+  }
+
+  render() {
+    const sensorUUID = this.getUUIDFromURL();
+
+    if (this.state.loading && sensorUUID !== '') {
+      this.props.getSensor().then((data) => {
+        this.setState({
+          sensor: data[0],
+          loading: false,
+        });
+      });
+    }
 
     return (
-
       <div className={this.props.classes.root}>
         <Drawer
           variant="permanent"
@@ -59,16 +83,15 @@ export class HomePage extends Component {
             history={this.props.history}
             sensorUUID={sensorUUID}
           />
-
         </Drawer>
 
         <main className={this.props.classes.content}>
           <SensorGraphContainer
-            sensorUUID={sensorUUID}
+            sensor={this.state.sensor}
             history={this.props.history}
           />
           <SensorDetailsContainer
-            sensorUUID={sensorUUID}
+            sensor={this.state.sensor}
             history={this.props.history}
           />
         </main>

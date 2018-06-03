@@ -1,14 +1,16 @@
 import {compose, mapProps} from 'recompose';
-import SensorGraph from './SensorGraph';
+import Home from './Home';
 
 export default compose(
   mapProps((ownProps) => {
-
     return {
-      sensor: ownProps.sensor,
-      getReadings: () => {
+      history: ownProps.history,
+      getSensor: () => {
         return new Promise((res, rej) => {
-          fetch(`/api/reading${ownProps.history.location.search}`)
+          if (ownProps.sensorUUID === '') {
+            res([]);
+          }
+          fetch(`/api/sensor${ownProps.history.location.search}`)
             .then(response => response.json())
             .then((data) => {
               res(data);
@@ -17,4 +19,4 @@ export default compose(
       },
     };
   }),
-)(SensorGraph);
+)(Home);
