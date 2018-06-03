@@ -39,20 +39,21 @@ class Readings:
                 payload.append(i.toDict())
             return json.dumps(payload)
 
-    def POST(self):
-        id = short_uuid()
-        # Save in database
-        logging.info('saving reading in database')
-
-        with sessionScope() as session:
-            readingModel = Reading(
-                uuid=id,
-                created=datetime.datetime.now(),
-            )
-            session.add(readingModel)
-            session.commit()
-
-        return json.dumps('success')
+    # def POST(self):
+    # 
+    #     id = short_uuid()
+    #     # Save in database
+    #     logging.info('saving reading in database')
+    # 
+    #     with sessionScope() as session:
+    #         readingModel = Reading(
+    #             uuid=id,
+    #             created=datetime.datetime.now(),
+    #         )
+    #         session.add(readingModel)
+    #         session.commit()
+    # 
+    #     return json.dumps('success')
 
 
 def addReading(session, sensor, reading):

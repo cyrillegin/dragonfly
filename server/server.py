@@ -4,6 +4,7 @@ import os
 import sys
 import logging
 from api import ResourceApi
+from cherrypy.lib.static import serve_file
 
 PATH = os.path.abspath(os.path.dirname(__file__))
 STATIC = os.path.join(PATH, '../dist')
@@ -31,6 +32,10 @@ def get_cp_config():
 
 class Root(object):
     api = ResourceApi()
+
+    @cherrypy.expose
+    def default(self, *args, **kwargs):
+        return serve_file(os.path.join(STATIC, 'index.html'))
 
 
 def RunServer():

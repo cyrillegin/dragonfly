@@ -41,7 +41,7 @@ export class NavBar extends Component {
               Home
               </Button>
             </Link>
-            <Link to="/sensors">
+            <Link to="/addsensors">
               <Button>
               Add Sensor
               </Button>

@@ -17,8 +17,11 @@ class Sensor(Base):
     units = Column(Text)
     station = Column(Text, default="none")
     poller = Column(Text)
-    pin = Column(Integer)
+    pin = Column(Text)
     endpoint = Column(Text)
+    # TODO: make this an enum
+    # offline, online, error
+    status = Column(Text)
 
     def toDict(self):
         return {
