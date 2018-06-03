@@ -2,7 +2,7 @@
   "author": "Cyrille Gindreau",
   "buildDate": 1527451286.864247,
   "dependencies": {
-    "@material-ui/core": "1.1.0",
+    "@material-ui/core": "1.2.0",
     "@material-ui/icons": "1.1.0",
     "d3": "^5.4.0",
     "prop-types": "15.6.1",
@@ -25,16 +25,17 @@
     "css-loader": "0.28.11",
     "eslint": "4.19.1",
     "eslint-plugin-import": "2.12.0",
-    "eslint-plugin-react": "7.8.2",
+    "eslint-plugin-react": "7.9.0",
     "jest": "23.1.0",
     "less": "3.0.4",
     "less-loader": "4.1.0",
     "node-sass": "4.9.0",
     "sass-lint": "1.12.1",
-    "sass-loader": "7.0.1",
+    "sass-loader": "7.0.2",
     "style-loader": "0.21.0",
     "webpack": "4.10.2",
-    "webpack-cli": "2.1.4"
+    "webpack-cli": "3.0.1",
+    "webpack-jarvis": "^0.3.2"
   },
   "engines": {
     "node": "8.6.2"
