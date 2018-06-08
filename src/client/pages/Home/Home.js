@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import queryString from 'query-string';
 import SensorNavMenuContainer from './../../components/SensorNavMenu/SensorNavMenuContainer';
 import SensorGraphContainer from './../../components/SensorGraph/SensorGraphContainer';
 import SensorDetailsContainer from './../../components/SensorDetails/SensorDetailsContainer';
@@ -40,37 +41,31 @@ export class HomePage extends Component {
   }
 
   state = {
-    loading: true,
     sensor: null,
   }
 
-  getUUIDFromURL() {
-    const search = this.props.history.location.search;
-    const start = search.indexOf('sensor=');
-    let end = search.substring(start, search.length).indexOf('&');
-    end = end > 0 ? end : search.length;
-    return search.substring(start, end).split('=')[1] || '';
-  }
   componentDidUpdate(prev) {
-    const sensorUUID = this.getUUIDFromURL();
-    if (this.state.loading === false && this.state.sensor !== null && sensorUUID !== this.state.sensor.uuid) {
-      this.setState({
-        loading: true,
+    const search = queryString.parse(location.search);
+    if ((search.sensor && this.state.sensor === null) || search.sensor !== this.state.sensor.uuid) {
+      this.props.getSensor().then((data) => {
+        this.setState({
+          sensor: data[0],
+        });
+      });
+    }
+  }
+
+  componentDidMount() {
+    if (queryString.parse(location.search).sensor) {
+      this.props.getSensor().then((data) => {
+        this.setState({
+          sensor: data[0],
+        });
       });
     }
   }
 
   render() {
-    const sensorUUID = this.getUUIDFromURL();
-
-    if (this.state.loading && sensorUUID !== '') {
-      this.props.getSensor().then((data) => {
-        this.setState({
-          sensor: data[0],
-          loading: false,
-        });
-      });
-    }
 
     return (
       <div className={this.props.classes.root}>
@@ -81,7 +76,7 @@ export class HomePage extends Component {
         >
           <SensorNavMenuContainer
             history={this.props.history}
-            sensorUUID={sensorUUID}
+            sensor={this.state.sensor}
           />
         </Drawer>
 

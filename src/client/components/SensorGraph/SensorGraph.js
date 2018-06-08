@@ -36,6 +36,7 @@ export class SensorGraph extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     getReadings: PropTypes.func.isRequired,
+    submitTime: PropTypes.func.isRequired,
     sensor: PropTypes.object,
   };
 
@@ -46,8 +47,8 @@ export class SensorGraph extends Component {
   state = {
     loading: true,
     readings: [],
-    startTime: 0,
-    endTime: 100,
+    startTime: null,
+    endTime: null,
   }
 
   loadData() {
@@ -72,7 +73,7 @@ export class SensorGraph extends Component {
   }
 
   render() {
-
+    console.log(this.props.sensor);
     if (this.props.sensor === null) {
       return (
         <div className={this.props.classes.root}>
@@ -84,6 +85,7 @@ export class SensorGraph extends Component {
         </div>
       );
     }
+    console.log(this.state);
     if (this.state.loading === true) {
       this.loadData();
       return (
@@ -110,8 +112,11 @@ export class SensorGraph extends Component {
     };
 
     const submitTime = () => {
-      console.log('submit');
-      console.log(this.state);
+      this.props.submitTime(this.state.startTime, this.state.endTime);
+      this.setState({
+        loading: true,
+        readings: [],
+      });
     };
 
     return (
@@ -150,9 +155,7 @@ export class SensorGraph extends Component {
             />
 
             <Button onClick={submitTime}>Submit Changes</Button>
-
           </form>
-
         </Paper>
       </div>
     );
