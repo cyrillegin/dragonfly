@@ -4,6 +4,8 @@ import {withStyles} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import MDSpinner from 'react-md-spinner';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import Graph from './Graph';
 
 const styles = {
@@ -22,6 +24,12 @@ const styles = {
   spinner: {
     margin: 'auto',
   },
+  timeControls: {
+    textAlign: 'right',
+  },
+  textField: {
+    margin: '12px',
+  },
 };
 
 export class SensorGraph extends Component {
@@ -38,6 +46,8 @@ export class SensorGraph extends Component {
   state = {
     loading: true,
     readings: [],
+    startTime: 0,
+    endTime: 100,
   }
 
   loadData() {
@@ -86,6 +96,24 @@ export class SensorGraph extends Component {
         </div>
       );
     }
+
+    const setStartTime = event => {
+      this.setState({
+        startTime: new Date(event.target.value).getTime(),
+      });
+    };
+
+    const setEndTime = event => {
+      this.setState({
+        endTime: new Date(event.target.value).getTime(),
+      });
+    };
+
+    const submitTime = () => {
+      console.log('submit');
+      console.log(this.state);
+    };
+
     return (
       <div className={this.props.classes.root}>
         <Paper className={this.props.classes.paper} elevation={4}>
@@ -96,6 +124,34 @@ export class SensorGraph extends Component {
             sensor={this.props.sensor}
             readings={this.state.readings}
           />
+
+          <form className={this.props.classes.timeControls} noValidate>
+            <TextField
+              id="datetime-start"
+              label="Start Time"
+              type="datetime-local"
+              defaultValue="2017-05-24T10:30"
+              className={this.props.classes.textField}
+              onChange={setStartTime}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <TextField
+              id="datetime-end"
+              label="End Time"
+              type="datetime-local"
+              defaultValue="2017-05-24T10:30"
+              className={this.props.classes.textField}
+              onChange={setEndTime}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+
+            <Button onClick={submitTime}>Submit Changes</Button>
+
+          </form>
 
         </Paper>
       </div>
