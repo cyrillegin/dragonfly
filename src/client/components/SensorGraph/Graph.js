@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
+import queryString from 'query-string';
 import './graph-styles.scss';
 
 const d3 = {
@@ -67,8 +68,16 @@ export class Graph extends Component {
       container.innerHTML = 'There arnt enough readings for this sensor to display anything.';
       return;
     }
-    let start = dataObject[0].created;
-    let end = dataObject[0].created;
+    let start = queryString.parse(location.search).startTime;
+    let end = queryString.parse(location.search).endTime;
+    if (end === undefined) {
+      end = Date.now();
+    }
+    if (start === undefined) {
+      start = Date.now() - 24 * 60 * 60 * 1000;
+    }
+    console.log(start);
+    console.log(end);
     let min = dataObject[0].value;
     let max = dataObject[0].value;
 
@@ -80,12 +89,6 @@ export class Graph extends Component {
       if (max < dataObject[i].value) {
         max = dataObject[i].value;
       }
-      if (start > dataObject[i].created) {
-        start = dataObject[i].created;
-      }
-      if (end < dataObject[i].created) {
-        end = dataObject[i].created;
-      }
     }
 
     let kwargstring = window.location.search.substr(1);
@@ -95,12 +98,6 @@ export class Graph extends Component {
       const kwarg = elem.split('=');
       kwargs[kwarg[0]] = kwarg[1];
     });
-    if (kwargs.start_date !== undefined) {
-      start = kwargs.start_date * 1000;
-    }
-    if (kwargs.end_date !== undefined) {
-      end = kwargs.end_date * 1000;
-    }
 
     // Create the svg.
     const newChart = d3.select('#graph-container')

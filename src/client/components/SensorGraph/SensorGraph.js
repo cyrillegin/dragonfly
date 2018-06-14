@@ -5,8 +5,12 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import MDSpinner from 'react-md-spinner';
 import TextField from '@material-ui/core/TextField';
+import moment from 'moment';
 import Button from '@material-ui/core/Button';
+import Datetime from 'react-datetime';
 import Graph from './Graph';
+import './timepicker.scss';
+
 
 const styles = {
   root: {
@@ -26,6 +30,9 @@ const styles = {
   },
   timeControls: {
     textAlign: 'right',
+    width: '100%',
+    display: 'inline-block',
+    margin: '10px',
   },
   textField: {
     margin: '12px',
@@ -38,6 +45,8 @@ export class SensorGraph extends Component {
     getReadings: PropTypes.func.isRequired,
     submitTime: PropTypes.func.isRequired,
     sensor: PropTypes.object,
+    currentStartTime: PropTypes.number,
+    currentEndTime: PropTypes.number,
   };
 
   static defaultProps = {
@@ -49,6 +58,14 @@ export class SensorGraph extends Component {
     readings: [],
     startTime: null,
     endTime: null,
+  }
+
+  constructor(props) {
+    super(props);
+    console.log(props);
+
+    this.state.startTime = props.currentStartTime || moment().unix() * 1000 - 24 * 60 * 60 * 1000;
+    this.state.endTime = props.currentEndTime || moment().unix() * 1000;
   }
 
   loadData() {
@@ -73,7 +90,6 @@ export class SensorGraph extends Component {
   }
 
   render() {
-    console.log(this.props.sensor);
     if (this.props.sensor === null) {
       return (
         <div className={this.props.classes.root}>
@@ -85,7 +101,6 @@ export class SensorGraph extends Component {
         </div>
       );
     }
-    console.log(this.state);
     if (this.state.loading === true) {
       this.loadData();
       return (
@@ -101,13 +116,13 @@ export class SensorGraph extends Component {
 
     const setStartTime = event => {
       this.setState({
-        startTime: new Date(event.target.value).getTime(),
+        startTime: event.unix() * 1000,
       });
     };
 
     const setEndTime = event => {
       this.setState({
-        endTime: new Date(event.target.value).getTime(),
+        endTime: event.unix() * 1000,
       });
     };
 
@@ -130,32 +145,17 @@ export class SensorGraph extends Component {
             readings={this.state.readings}
           />
 
-          <form className={this.props.classes.timeControls} noValidate>
-            <TextField
-              id="datetime-start"
-              label="Start Time"
-              type="datetime-local"
-              defaultValue="2017-05-24T10:30"
-              className={this.props.classes.textField}
+          <div className={this.props.classes.timeControls}>
+            Start Time
+            <Datetime
               onChange={setStartTime}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            <TextField
-              id="datetime-end"
-              label="End Time"
-              type="datetime-local"
-              defaultValue="2017-05-24T10:30"
-              className={this.props.classes.textField}
+              value={this.state.startTime} />
+            End Time
+            <Datetime
               onChange={setEndTime}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-
+              value={this.state.endTime} />
             <Button onClick={submitTime}>Submit Changes</Button>
-          </form>
+          </div>
         </Paper>
       </div>
     );

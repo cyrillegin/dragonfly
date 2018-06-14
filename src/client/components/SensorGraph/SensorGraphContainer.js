@@ -4,10 +4,14 @@ import SensorGraph from './SensorGraph';
 
 export default compose(
   mapProps((ownProps) => {
+    const current = queryString.parse(location.search);
+    const currentStartTime = current.start ? parseInt(current.start) : null;
+    const currentEndTime = current.end ? parseInt(current.end) : null;
     return {
       sensor: ownProps.sensor,
+      currentStartTime,
+      currentEndTime,
       submitTime: (startTime, endTime) => {
-        const current = queryString.parse(location.search);
         if (startTime !== null) {
           current.start = startTime;
         }
