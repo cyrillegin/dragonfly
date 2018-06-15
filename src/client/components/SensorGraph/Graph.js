@@ -68,16 +68,20 @@ export class Graph extends Component {
       container.innerHTML = 'There arnt enough readings for this sensor to display anything.';
       return;
     }
-    let start = queryString.parse(location.search).startTime;
-    let end = queryString.parse(location.search).endTime;
+    let start = queryString.parse(location.search).start;
+    let end = queryString.parse(location.search).end;
+    console.log(start, end);
     if (end === undefined) {
       end = Date.now();
+    } else {
+      end = new Date(parseInt(end));
     }
     if (start === undefined) {
       start = Date.now() - 24 * 60 * 60 * 1000;
+    } else {
+      start = new Date(parseInt(start));
     }
-    console.log(start);
-    console.log(end);
+    console.log(start, end);
     let min = dataObject[0].value;
     let max = dataObject[0].value;
 
@@ -91,13 +95,13 @@ export class Graph extends Component {
       }
     }
 
-    let kwargstring = window.location.search.substr(1);
-    kwargstring = kwargstring.split('&');
-    const kwargs = {};
-    kwargstring.forEach((elem) => {
-      const kwarg = elem.split('=');
-      kwargs[kwarg[0]] = kwarg[1];
-    });
+    // let kwargstring = window.location.search.substr(1);
+    // kwargstring = kwargstring.split('&');
+    // const kwargs = {};
+    // kwargstring.forEach((elem) => {
+    //   const kwarg = elem.split('=');
+    //   kwargs[kwarg[0]] = kwarg[1];
+    // });
 
     // Create the svg.
     const newChart = d3.select('#graph-container')
