@@ -29,21 +29,15 @@ class Readings:
 
             if 'start' in kwargs:
                 start = int(kwargs['start'])
-            else:
-                data.filter(Reading.timestamp >= (time.time() - 60 * 60 * 24) * 1000)
 
             if 'end' in kwargs:
                 end = int(kwargs['end'])
-            # No else because we shouldn't have readings in the future.
-            print time.time()
-            print start
-            print end
+
             data = session.query(Reading).filter_by(sensor=kwargs['sensor']).filter(Reading.timestamp >= start).filter(Reading.timestamp <= end)
 
             payload = []
             for i in data:
                 payload.append(i.toDict())
-            print "\nall done\n"
             return json.dumps(payload)
 
     # def POST(self):

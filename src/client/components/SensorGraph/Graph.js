@@ -95,14 +95,6 @@ export class Graph extends Component {
       }
     }
 
-    // let kwargstring = window.location.search.substr(1);
-    // kwargstring = kwargstring.split('&');
-    // const kwargs = {};
-    // kwargstring.forEach((elem) => {
-    //   const kwarg = elem.split('=');
-    //   kwargs[kwarg[0]] = kwarg[1];
-    // });
-
     // Create the svg.
     const newChart = d3.select('#graph-container')
       .append('svg')
