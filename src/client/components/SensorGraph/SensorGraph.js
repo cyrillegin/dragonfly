@@ -4,7 +4,13 @@ import {withStyles} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import MDSpinner from 'react-md-spinner';
+import TextField from '@material-ui/core/TextField';
+import moment from 'moment';
+import Button from '@material-ui/core/Button';
+import Datetime from 'react-datetime';
 import Graph from './Graph';
+import './timepicker.scss';
+
 
 const styles = {
   root: {
@@ -22,13 +28,25 @@ const styles = {
   spinner: {
     margin: 'auto',
   },
+  timeControls: {
+    textAlign: 'right',
+    width: '100%',
+    display: 'inline-block',
+    margin: '10px',
+  },
+  textField: {
+    margin: '12px',
+  },
 };
 
 export class SensorGraph extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     getReadings: PropTypes.func.isRequired,
+    submitTime: PropTypes.func.isRequired,
     sensor: PropTypes.object,
+    currentStartTime: PropTypes.number,
+    currentEndTime: PropTypes.number,
   };
 
   static defaultProps = {
@@ -38,6 +56,16 @@ export class SensorGraph extends Component {
   state = {
     loading: true,
     readings: [],
+    startTime: null,
+    endTime: null,
+  }
+
+  constructor(props) {
+    super(props);
+    console.log(props);
+
+    this.state.startTime = props.currentStartTime || moment().unix() * 1000 - 24 * 60 * 60 * 1000;
+    this.state.endTime = props.currentEndTime || moment().unix() * 1000;
   }
 
   loadData() {
@@ -62,7 +90,6 @@ export class SensorGraph extends Component {
   }
 
   render() {
-
     if (this.props.sensor === null) {
       return (
         <div className={this.props.classes.root}>
@@ -86,6 +113,27 @@ export class SensorGraph extends Component {
         </div>
       );
     }
+
+    const setStartTime = event => {
+      this.setState({
+        startTime: event.unix() * 1000,
+      });
+    };
+
+    const setEndTime = event => {
+      this.setState({
+        endTime: event.unix() * 1000,
+      });
+    };
+
+    const submitTime = () => {
+      this.props.submitTime(this.state.startTime, this.state.endTime);
+      this.setState({
+        loading: true,
+        readings: [],
+      });
+    };
+
     return (
       <div className={this.props.classes.root}>
         <Paper className={this.props.classes.paper} elevation={4}>
@@ -97,6 +145,17 @@ export class SensorGraph extends Component {
             readings={this.state.readings}
           />
 
+          <div className={this.props.classes.timeControls}>
+            Start Time
+            <Datetime
+              onChange={setStartTime}
+              value={this.state.startTime} />
+            End Time
+            <Datetime
+              onChange={setEndTime}
+              value={this.state.endTime} />
+            <Button onClick={submitTime}>Submit Changes</Button>
+          </div>
         </Paper>
       </div>
     );

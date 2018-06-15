@@ -38,7 +38,7 @@ export class SensorNavMenu extends Component {
   }
 
   handleSensorChange(name) {
-    const search = this.props.history.location.search;
+    const search = location.search;
     if (search === '') {
       this.props.history.push('?sensor=' + name);
     } else {

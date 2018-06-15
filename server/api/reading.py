@@ -23,19 +23,27 @@ class Readings:
             return json.dumps({'error': 'No sensor was given.'})
 
         with sessionScope() as session:
-            data = session.query(Reading).filter_by(sensor=kwargs['sensor'])
-            if 'start_time' in kwargs:
-                data.filter(Reading.timestamp >= kwargs['start_time'])
+
+            start = (time.time() - 60 * 60 * 24) * 1000
+            end = time.time()
+
+            if 'start' in kwargs:
+                start = int(kwargs['start'])
             else:
                 data.filter(Reading.timestamp >= (time.time() - 60 * 60 * 24) * 1000)
 
-            if 'end_time' in kwargs:
-                data.filter(Reading.timestamp <= kwargs['end_time'])
+            if 'end' in kwargs:
+                end = int(kwargs['end'])
             # No else because we shouldn't have readings in the future.
+            print time.time()
+            print start
+            print end
+            data = session.query(Reading).filter_by(sensor=kwargs['sensor']).filter(Reading.timestamp >= start).filter(Reading.timestamp <= end)
 
             payload = []
             for i in data:
                 payload.append(i.toDict())
+            print "\nall done\n"
             return json.dumps(payload)
 
     # def POST(self):
