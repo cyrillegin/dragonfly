@@ -18,6 +18,10 @@ const styles = {
   flex: {
     flex: 1,
   },
+  link: {
+    textDecoration: 'none',
+    color: 'rgba(0, 0, 0, 0.87)',
+  },
 };
 
 export class NavBar extends Component {
@@ -31,17 +35,21 @@ export class NavBar extends Component {
       <div className={this.props.classes.root}>
         <AppBar position="static" color="default">
           <Toolbar>
+
             <Typography variant="title" color="inherit" className={this.props.classes.flex}>
-            Dragonfly
+
+              <Link to="/" className={this.props.classes.link}>
+                Dragonfly
+              </Link>
             </Typography>
 
 
-            <Link to="/">
+            <Link to="/" className={this.props.classes.link}>
               <Button>
               Home
               </Button>
             </Link>
-            <Link to="/addsensors">
+            <Link to="/addsensors" className={this.props.classes.link}>
               <Button>
               Add Sensor
               </Button>
