@@ -12,6 +12,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
 import MDSpinner from 'react-md-spinner';
+import queryString from 'query-string';
 
 const styles = {
   root: {
@@ -38,16 +39,11 @@ export class SensorNavMenu extends Component {
   }
 
   handleSensorChange(name) {
-    const search = location.search;
-    if (search === '') {
-      this.props.history.push('?sensor=' + name);
-    } else {
-      const start = search.indexOf('sensor=');
-      let end = search.substring(start, search.length).indexOf('&');
-      end = end > 0 ? end : search.length;
-      const toReplace = search.substring(start, end).split('=')[1];
-      this.props.history.replace(search.replace(toReplace, name));
-    }
+    const search = queryString.parse(location.search);
+    search.sensor = name;
+    this.props.history.push({
+      search: queryString.stringify(search),
+    });
   }
 
   render() {
