@@ -61,7 +61,6 @@ export class SensorGraph extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
 
     this.state.startTime = props.currentStartTime || moment().unix() * 1000 - 24 * 60 * 60 * 1000;
     this.state.endTime = props.currentEndTime || moment().unix() * 1000;
