@@ -18,6 +18,7 @@ export default compose(
             .then(response => response.json())
             .then((data) => {
               res({'data': 'data'});
+              window.location.reload();
             });
         });
       },
@@ -35,6 +36,7 @@ export default compose(
             .then((data) => {
               ownProps.history.push('/');
               res({'data': data});
+              window.location.reload();
             });
         });
       },
