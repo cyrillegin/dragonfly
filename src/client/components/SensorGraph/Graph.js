@@ -70,18 +70,17 @@ export class Graph extends Component {
     }
     let start = queryString.parse(location.search).start;
     let end = queryString.parse(location.search).end;
-    console.log(start, end);
     if (end === undefined) {
       end = Date.now();
     } else {
       end = new Date(parseInt(end));
     }
+    console.log(start, end);
     if (start === undefined) {
       start = Date.now() - 24 * 60 * 60 * 1000;
     } else {
       start = new Date(parseInt(start));
     }
-    console.log(start, end);
     let min = dataObject[0].value;
     let max = dataObject[0].value;
 
@@ -303,7 +302,7 @@ export class Graph extends Component {
 
     newChart.append('path')
       .attr('d', lineFunction(dataObject))
-      .attr('stroke', 'blue')
+      .attr('stroke', 'rgba(45, 100, 255, 0.87)')
       .attr('stroke-width', 2)
       .attr('fill', 'none');
 

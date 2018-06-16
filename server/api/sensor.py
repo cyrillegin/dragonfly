@@ -2,7 +2,7 @@ import json
 import cherrypy
 import logging
 from sessionManager import sessionScope
-from models import Sensor
+from models import Sensor, Reading
 from api.Reading import addReading
 import time
 from short_uuid import short_uuid
@@ -94,6 +94,22 @@ class Sensors:
                 logging.error(e)
                 return json.dumps({'Error': 'Error updating sensor.'})
         return json.dumps(payload)
+
+    def DELETE(self, *args, **kwargs):
+        logging.info('DELETE request to sensors')
+        print kwargs
+        if 'sensor' not in kwargs:
+            logging.error("No sensor given")
+            return json.dumps({'error': 'No sensor given.'})
+        with sessionScope() as session:
+            sensor = session.query(Sensor).filter_by(uuid=kwargs['sensor']).one()
+            logging.info('Deleting all readings for sensor')
+            session.query(Reading).filter_by(sensor=kwargs['sensor']).delete()
+            logging.info('Deleting sensor')
+            session.delete(sensor)
+            session.commit()
+            logging.info('Delete successful')
+            return json.dumps({'success': 'delete successful.'})
 
 
 def updateSensor(session, DbSensor, data):

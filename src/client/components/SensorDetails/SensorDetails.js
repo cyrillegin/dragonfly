@@ -5,6 +5,11 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = {
   root: {
@@ -27,6 +32,7 @@ export class SensorDetails extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     updateSensor: PropTypes.func.isRequired,
+    deleteSensor: PropTypes.func.isRequired,
     sensor: PropTypes.object,
   };
 
@@ -46,6 +52,7 @@ export class SensorDetails extends Component {
     endpoint: '',
     pollRate: '',
     loading: true,
+    deleteDialogIsOpen: false,
   }
 
   handleChange = name => event => {
@@ -79,8 +86,36 @@ export class SensorDetails extends Component {
 
   render() {
     const updateSensor = () => {
-      const {loading, ...sensor} = this.state; // eslint-disable-line
-      this.props.updateSensor(sensor);
+      this.props.updateSensor({
+        uuid: this.state.uuid,
+        name: this.state.name,
+        description: this.state.description,
+        coefficients: this.state.coefficients,
+        station: this.state.station,
+        poller: this.state.poller,
+        pin: this.state.pin,
+        units: this.state.units,
+        endpoint: this.state.endpoint,
+        pollRate: this.state.pollRate,
+      });
+    };
+
+    const openDeleteSensorDialog = () => {
+      this.setState({
+        deleteDialogIsOpen: true,
+      });
+    };
+
+    const closeDeleteSensorDialog = () => {
+      this.setState({
+        deleteDialogIsOpen: false,
+      });
+    };
+
+    const handleDeleteSensor = () => {
+      this.props.deleteSensor().then((res) => {
+        closeDeleteSensorDialog();
+      });
     };
 
     if (this.state.loading) {
@@ -90,6 +125,30 @@ export class SensorDetails extends Component {
     }
     return (
       <div className={this.props.classes.root}>
+
+        <Dialog
+          open={this.state.deleteDialogIsOpen}
+          onClose={closeDeleteSensorDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{'Delete Sensor?'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete this sensor?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteSensor} color="primary">
+              Yes
+            </Button>
+            <Button onClick={closeDeleteSensorDialog} color="primary" autoFocus>
+              No
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+
         <Paper className={this.props.classes.paper} elevation={4}>
           <Typography variant="headline" component="h3">
             Sensor Details
@@ -196,6 +255,7 @@ export class SensorDetails extends Component {
               margin="normal"
             />
             <Button className={this.props.classes.button} onClick={updateSensor}>Submit Changes</Button>
+            <Button className={this.props.classes.button} onClick={openDeleteSensorDialog}>Delete Sensor</Button>
           </form>
         </Paper>
       </div>

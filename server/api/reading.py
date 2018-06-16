@@ -25,7 +25,7 @@ class Readings:
         with sessionScope() as session:
 
             start = (time.time() - 60 * 60 * 24) * 1000
-            end = time.time()
+            end = time.time() * 1000 
 
             if 'start' in kwargs:
                 start = int(kwargs['start'])

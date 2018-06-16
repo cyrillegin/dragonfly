@@ -28,24 +28,27 @@ def query(sensor):
         logging.error('Error importing plugin. Quiting')
         logging.error(e)
         return
-    if 'pollRate' in sensor:
+
+    if 'pollRate' in sensor and sensor['pollRate'] is not None and sensor['pollRate'] != '':
         timeout = int(sensor['pollRate'])
     else:
         timeout = 60
-    while True:
-        payload = module.GetValues(sensor)
-        resp = requests.post('http://{}/api/sensor'.format(sensor['endpoint']), data=json.dumps(payload))
-        logging.info(resp)
-        time.sleep(timeout)
+    if 'endpoint' in sensor and sensor['endpoint'] is not None and sensor['endpoint'] != '':
+        while True:
+            payload = module.GetValues(sensor)
+            resp = requests.post('http://{}/api/sensor'.format(sensor['endpoint']), data=json.dumps(payload))
+            logging.info(resp)
+            time.sleep(timeout)
+    else:
+        logging.info('Sensor needs endpoint')
 
 
 def checkForSensors():
     while True:
-        logging.info('Checking for sensor')
+        logging.info('Checking for sensors')
         with sessionScope() as session:
             sensors = session.query(Sensor)
             index = 0
-            print '\nloading sensors'
             for i in sensors:
                 if i.toDict()['poller'] is None:
                     continue
