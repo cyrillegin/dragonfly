@@ -1,0 +1,15 @@
+.chart-axis-shape {
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: #000;
+    stroke-width: 1px;
+}
+
+.chart-axis-shape > g > line {
+  stroke-opacity: .2;
+}
+
+.chart-axis-shape > g > text {
+  stroke: none;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif
+}

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import queryString from 'query-string';
-import './graph-styles.scss';
+import './graph-styles.css';
 
 const d3 = {
   ...require('d3-selection'), // eslint-disable-line

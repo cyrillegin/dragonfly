@@ -8,7 +8,7 @@ import moment from 'moment';
 import Button from '@material-ui/core/Button';
 import Datetime from 'react-datetime';
 import Graph from './Graph';
-import './timepicker.scss';
+import './timepicker.css';
 
 
 const styles = {
