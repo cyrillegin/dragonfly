@@ -18,6 +18,7 @@ import queryString from 'query-string';
 const styles = {
   root: {
     width: '100%',
+    height: '100%',
   },
   spinner: {
     margin: 'auto',

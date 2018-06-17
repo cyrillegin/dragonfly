@@ -4,15 +4,16 @@
   "dependencies": {
     "@material-ui/core": "1.2.1",
     "@material-ui/icons": "1.1.0",
-    "d3": "5.4.0",
-    "moment": "^2.22.2",
+    "d3": "5.5.0",
+    "moment": "2.22.2",
     "prop-types": "15.6.1",
-    "query-string": "^6.1.0",
+    "query-string": "6.1.0",
     "react": "16.4.1",
     "react-datetime": "2.14.0",
     "react-dom": "16.4.1",
     "react-md-spinner": "0.2.5",
-    "react-router-dom": "4.3.1"
+    "react-router-dom": "4.3.1",
+    "webpack-bundle-analyzer": "2.13.1"
   },
   "description": "",
   "devDependencies": {
@@ -43,9 +44,6 @@
   },
   "license": "",
   "name": "Dragonfly",
-  "optionalDependencies": {
-    "code-assess": "0.8.0"
-  },
   "private": true,
   "repository": "",
   "scripts": {
@@ -66,7 +64,8 @@
     "startServer": "python server/server.py",
     "test": "npm run jest",
     "tests": "npm run lint && npm run test",
-    "watchClient": "webpack --mode development --watch --progress --config webpack.dev.config.js src/client"
+    "watchClient": "webpack --mode development --watch --progress --config webpack.dev.config.js src/client",
+    "watchProd": "webpack --mode production --watch --progress --config webpack.prod.config.js src/client"
   },
   "version": "0.9.0"
 }

@@ -9,7 +9,7 @@ RUN apt-get install apt-transport-https
 RUN apt-get install -y postgresql
 
 # Node
-RUN curl -o /tmp/nodejs.deb https://deb.nodesource.com/node_8.x/pool/main/n/nodejs/nodejs_8.10.0-1nodesource1_amd64.deb && dpkg -i /tmp/nodejs.deb
+RUN curl -o /tmp/nodejs.deb https://deb.nodesource.com/node_10.x/pool/main/n/nodejs/nodejs_10.4.1-1nodesource1_amd64.deb && dpkg -i /tmp/nodejs.deb
 
 # Python
 RUN apt-get install -y python-pip
