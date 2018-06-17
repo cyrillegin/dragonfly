@@ -27,7 +27,6 @@ def rebuild():
     dboptions['username'] = PGUSERNAME
     dboptions['password'] = PGPASSWORD
     dboptions['database'] = DBNAME
-    print(dboptions)
     dbURL = URL(**dboptions)
     engine = create_engine(dbURL)
 

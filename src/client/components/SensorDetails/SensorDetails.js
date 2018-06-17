@@ -296,8 +296,12 @@ export class SensorDetails extends Component {
               value={this.state.status}
               margin="normal"
             />
-            <Button className={this.props.classes.button} onClick={updateSensor}>Submit Changes</Button>
-            <Button className={this.props.classes.button} onClick={openDeleteSensorDialog}>Delete Sensor</Button>
+            <Button className={this.props.classes.button} onClick={updateSensor}>
+              Submit Changes
+            </Button>
+            <Button className={this.props.classes.button} onClick={openDeleteSensorDialog}>
+              Delete Sensor
+            </Button>
           </form>
         </Paper>
       </div>

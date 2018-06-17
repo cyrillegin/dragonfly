@@ -17,7 +17,6 @@ class Readings:
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
-        print kwargs
         if 'sensor' not in kwargs:
             logging.error('No sensor was given.')
             return json.dumps({'error': 'No sensor was given.'})
@@ -25,7 +24,7 @@ class Readings:
         with sessionScope() as session:
 
             start = (time.time() - 60 * 60 * 24) * 1000
-            end = time.time() * 1000 
+            end = time.time() * 1000
 
             if 'start' in kwargs:
                 start = int(kwargs['start'])

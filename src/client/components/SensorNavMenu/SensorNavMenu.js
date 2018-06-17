@@ -5,7 +5,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -97,7 +96,6 @@ export class SensorNavMenu extends Component {
           );
       }
     };
-    console.log(this.state.tree);
     return (
       <div className={this.props.classes.root}>
         {Object.keys(this.state.tree).map((station, outerIndex) => {

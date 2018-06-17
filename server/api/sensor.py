@@ -23,9 +23,7 @@ class Sensors:
             if 'sensor' in kwargs:
                 data = data.filter_by(uuid=kwargs['sensor'])
             payload = []
-            print data
             for i in data:
-                print i.toDict()
                 payload.append(i.toDict())
             return json.dumps(payload)
 

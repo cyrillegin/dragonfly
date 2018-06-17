@@ -34,7 +34,7 @@ def get_cp_config():
 
 class Root(object):
     api = ResourceApi()
-    
+
     @cherrypy.expose
     def getIP(self):
         ip = socket.gethostbyname(socket.gethostname())
