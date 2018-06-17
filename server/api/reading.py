@@ -4,7 +4,7 @@ import logging
 import time
 from sessionManager import sessionScope
 from models import Reading
-from short_uuid import short_uuid
+from api.short_uuid import short_uuid
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
