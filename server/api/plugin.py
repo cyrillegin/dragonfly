@@ -39,7 +39,7 @@ class Plugins:
             return json.dumps({'error': 'No pin was provided'}).encode('utf-8')
         try:
             module = importlib.import_module("plugins.{}".format(data['plugin']))
-            result = module.GetValues({'pin': data['details']['pin'], 'uuid': 'test'})
+            result = module.GetValues({'pin': data['details']['pin'], 'uuid': 'test', 'meta': data['details']['meta']})
             return json.dumps(result).encode('utf-8')
         except Exception as e:
             logging.error(e)

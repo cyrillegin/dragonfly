@@ -11,7 +11,8 @@ def readTemperature(deviceLocation):
     return lines
 
 
-def ReadGPIO(params):
+def GetValues(params):
+    print(params)
     logging.info("Starting presure poller.")
 
     deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(params['meta'])
@@ -44,4 +45,4 @@ def ReadGPIO(params):
 
 
 if __name__ == '__main__':
-    ReadGPIO({'pin': '4', 'meta': '00-asdf', 'uuid': 'test'})
+    GetValues({'pin': '4', 'meta': '28-0516a43668ff', 'uuid': 'test'})
