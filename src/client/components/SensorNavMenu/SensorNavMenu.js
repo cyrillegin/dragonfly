@@ -5,7 +5,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/Inbox';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -23,6 +25,24 @@ const styles = {
   },
   sensorListItem: {
     width: '100%',
+  },
+  sensorStatusOnline: {
+    background: 'rgba(21, 234, 21, 1)',
+    borderRadius: '5px',
+    width: '10px',
+    height: '10px',
+  },
+  sensorStatusError: {
+    background: 'red',
+    borderRadius: '5px',
+    width: '10px',
+    height: '10px',
+  },
+  sensorStatusDisabled: {
+    background: 'grey',
+    borderRadius: '5px',
+    width: '10px',
+    height: '10px',
   },
 };
 
@@ -65,6 +85,19 @@ export class SensorNavMenu extends Component {
         <div />
       );
     }
+    const pollerIcon = (icon) => {
+      switch (icon) {
+        case 'cryptoPoller':
+          return (
+            <MonetizationOnIcon />
+          );
+        default:
+          return (
+            <ShowChartIcon />
+          );
+      }
+    };
+    console.log(this.state.tree);
     return (
       <div className={this.props.classes.root}>
         {Object.keys(this.state.tree).map((station, outerIndex) => {
@@ -84,10 +117,22 @@ export class SensorNavMenu extends Component {
                           <ListItem key={innerIndex} button onClick={() => {
                             this.handleSensorChange(sensor.uuid);
                           }}>
+
                             <ListItemIcon>
-                              <InboxIcon />
+                              {pollerIcon(sensor.poller)}
                             </ListItemIcon>
                             <ListItemText primary={sensor.name} />
+
+                            {sensor.status === 'online' &&
+                              <div className={this.props.classes.sensorStatusOnline} />
+                            }
+                            {sensor.status === 'disabled' &&
+                              <div className={this.props.classes.sensorStatusDisabled} />
+                            }
+                            {sensor.status === 'error' &&
+                              <div className={this.props.classes.sensorStatusError} />
+                            }
+
                           </ListItem>
                         );
 
