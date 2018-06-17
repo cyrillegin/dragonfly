@@ -20,7 +20,7 @@ def GetValues(params):
                         'poller': 'cryptoPoller'
                     },
                     'reading': {
-                        'timestamp': time.time(),
+                        'timestamp': time.time() * 1000,
                         'value': i['price_usd']
                     }
                 }

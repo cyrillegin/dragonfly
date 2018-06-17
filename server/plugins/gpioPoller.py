@@ -34,7 +34,7 @@ def GetValues(params):
                     'poller': 'gpioPoller'
                 },
                 'readings': [{
-                    'timestamp': time.time(),
+                    'timestamp': time.time() * 1000,
                     'value': temp_f,
                 }]
             }

@@ -14,7 +14,7 @@ baseUrl = "http://localhost:5000/api"
 
 def generateUuid():
     u = getattr(uuid, 'uuid1')()
-    return base64.b64encode(u.bytes, "-_")[:-2]
+    return str(u)
 
 
 if __name__ == "__main__":
