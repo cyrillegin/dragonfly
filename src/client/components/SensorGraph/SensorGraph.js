@@ -147,11 +147,13 @@ export class SensorGraph extends Component {
             Start Time
             <Datetime
               onChange={setStartTime}
-              value={this.state.startTime} />
+              value={this.state.startTime}
+              inputProps={{'aria-label': 'start time'}} />
             End Time
             <Datetime
               onChange={setEndTime}
-              value={this.state.endTime} />
+              value={this.state.endTime}
+              inputProps={{'aria-label': 'end time'}} />
             <Button onClick={submitTime}>Submit Changes</Button>
           </div>
         </Paper>
