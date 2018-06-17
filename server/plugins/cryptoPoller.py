@@ -7,16 +7,16 @@ logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=loggin
 URL = 'https://api.coinmarketcap.com/v1/ticker/'
 
 
-def GetValues(sensor):
+def GetValues(params):
     # Note, this usess to pin to figure out which endpoint to get.
     newReading = None
     try:
         response = requests.get(URL).json()
         for i in response:
-            if i['id'] == sensor['pin']:
+            if i['id'] == params['pin']:
                 newReading = {
                     'sensor': {
-                        'uuid': sensor['uuid'],
+                        'uuid': params['uuid'],
                         'poller': 'cryptoPoller'
                     },
                     'reading': {
@@ -38,4 +38,4 @@ def GetValues(sensor):
 
 
 if __name__ == "__main__":
-    GetValues({'pin': 'bitcoin'})
+    GetValues({'pin': 'bitcoin', 'uuid': 'test'})
