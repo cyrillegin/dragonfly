@@ -4,7 +4,7 @@ import logging
 import time
 from sessionManager import sessionScope
 from models import Reading
-from short_uuid import short_uuid
+from api.short_uuid import short_uuid
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
@@ -19,7 +19,7 @@ class Readings:
 
         if 'sensor' not in kwargs:
             logging.error('No sensor was given.')
-            return json.dumps({'error': 'No sensor was given.'})
+            return json.dumps({'error': 'No sensor was given.'}).encode('utf-8')
 
         with sessionScope() as session:
 
@@ -37,7 +37,7 @@ class Readings:
             payload = []
             for i in data:
                 payload.append(i.toDict())
-            return json.dumps(payload)
+            return json.dumps(payload).encode('utf-8')
 
     # def POST(self):
     #

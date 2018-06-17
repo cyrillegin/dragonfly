@@ -1,11 +1,11 @@
 import json
 import cherrypy
 import logging
+import time
 from sessionManager import sessionScope
 from models import Sensor, Reading
-from api.Reading import addReading
-import time
-from short_uuid import short_uuid
+from api.reading import addReading
+from api.short_uuid import short_uuid
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
@@ -25,25 +25,25 @@ class Sensors:
             payload = []
             for i in data:
                 payload.append(i.toDict())
-            return json.dumps(payload)
+            return json.dumps(payload).encode('utf-8')
 
     def POST(self):
         # Save in database
         logging.info('POST request to sensors')
 
         try:
-            data = json.loads(cherrypy.request.body.read())
+            data = json.loads(cherrypy.request.body.read().decode('utf-8'))
         except ValueError:
             logging.error('Json data could not be read.')
-            return {"error": "Data could not be read."}
+            return json.dumps({"error": "Data could not be read."}).encode('utf-8')
 
         if 'sensor' not in data:
             logging.info('error: no sensor information in data')
-            return json.dumps({'error': 'No sensor information in data.'})
+            return json.dumps({'error': 'No sensor information in data.'}).encode('utf-8')
 
         if 'poller' not in data['sensor']:
             logging.info('Error: No poller information given.')
-            return json.dumps({'Error': 'No poller information in data.'})
+            return json.dumps({'Error': 'No poller information in data.'}).encode('utf-8')
 
         if 'uuid' not in data['sensor']:
             data['sensor']['uuid'] = short_uuid()
@@ -70,19 +70,19 @@ class Sensors:
                     logging.error(e)
                     payload['error'] = str(e)
 
-        return json.dumps(payload)
+        return json.dumps(payload).encode('utf-8')
 
     def PUT(self):
         logging.info('PUT request to sensors.')
 
         try:
-            data = json.loads(cherrypy.request.body.read())
+            data = json.loads(cherrypy.request.body.read().decode('utf-8'))
         except ValueError:
             logging.error('Json data could not be read.')
-            return {"error": "Data could not be read."}
+            return json.dumps({"error": "Data could not be read."}).encode('utf-8')
         if 'uuid' not in data:
             logging.error('No sensor ID found.')
-            return json.dumps({"Error": "Sensor id not provided."})
+            return json.dumps({"Error": "Sensor id not provided."}).encode('utf-8')
         with sessionScope() as session:
             try:
                 sensor = session.query(Sensor).filter_by(uuid=data['uuid']).one()
@@ -93,14 +93,14 @@ class Sensors:
             except Exception as e:
                 logging.error('Error updating sensor.')
                 logging.error(e)
-                return json.dumps({'Error': 'Error updating sensor.'})
-        return json.dumps(payload)
+                return json.dumps({'Error': 'Error updating sensor.'}).encode('utf-8')
+        return json.dumps(payload).encode('utf-8')
 
     def DELETE(self, *args, **kwargs):
         logging.info('DELETE request to sensors')
         if 'sensor' not in kwargs:
             logging.error("No sensor given")
-            return json.dumps({'error': 'No sensor given.'})
+            return json.dumps({'error': 'No sensor given.'}).encode('utf-8')
         with sessionScope() as session:
             sensor = session.query(Sensor).filter_by(uuid=kwargs['sensor']).one()
             logging.info('Deleting all readings for sensor')
@@ -109,7 +109,7 @@ class Sensors:
             session.delete(sensor)
             session.commit()
             logging.info('Delete successful')
-            return json.dumps({'success': 'delete successful.'})
+            return json.dumps({'success': 'delete successful.'}).encode('utf-8')
 
 
 def updateSensor(session, DbSensor, data):
