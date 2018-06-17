@@ -22,6 +22,8 @@ for filename in os.listdir(os.path.abspath(os.path.dirname(__file__))):
 
 def query(sensor):
     logging.info('Starting polling for {}'.format(sensor['name']))
+    if sensor['status'] == 'disabled':
+        return
     try:
         module = importlib.import_module('plugins.{}'.format(sensor['poller']))
     except Exception as e:
@@ -36,6 +38,8 @@ def query(sensor):
     if 'endpoint' in sensor and sensor['endpoint'] is not None and sensor['endpoint'] != '':
         while True:
             payload = module.GetValues(sensor)
+            if sensor['status'] == 'error' and payload['sensor']['status'] != 'error':
+                sensor['sensor']['status'] = 'online'
             resp = requests.post('http://{}/api/sensor'.format(sensor['endpoint']), data=json.dumps(payload))
             logging.info(resp)
             time.sleep(timeout)
@@ -45,22 +49,20 @@ def query(sensor):
 
 def checkForSensors():
     while True:
-        logging.info('Checking for sensors')
+        logging.info('Checking for new sensors and restarting child processes.')
         with sessionScope() as session:
             sensors = session.query(Sensor)
             index = 0
             for i in sensors:
-                if i.toDict()['poller'] is None:
-                    continue
                 if len(runningSensors) < index + 1:
                     runningSensors.append(None)
                 if runningSensors[index] is not None and runningSensors[index].is_alive():
-                    continue
+                    runningSensors[index].terminate()
                 p = Process(target=query, args=(i.toDict(), ))
                 p.start()
                 runningSensors[index] = p
                 index += 1
-        time.sleep(60 * 5)
+        time.sleep(60 * 10)
 
 
 p = Process(target=checkForSensors)

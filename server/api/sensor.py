@@ -42,7 +42,7 @@ class Sensors:
         if 'sensor' not in data:
             logging.info('error: no sensor information in data')
             return json.dumps({'error': 'No sensor information in data.'})
-        
+
         if 'poller' not in data['sensor']:
             logging.info('Error: No poller information given.')
             return json.dumps({'Error': 'No poller information in data.'})
@@ -56,7 +56,7 @@ class Sensors:
                 logging.info('Sensor found, checking for updates')
                 sensor = updateSensor(session, DbSensor, data['sensor'])
             except Exception:
-                logging.info('Sensor not found, creating new one.')
+                logging.error('Sensor not found, creating new one.')
                 sensor = createSensor(session, data['sensor'])
 
             payload = {
@@ -100,7 +100,6 @@ class Sensors:
 
     def DELETE(self, *args, **kwargs):
         logging.info('DELETE request to sensors')
-        print kwargs
         if 'sensor' not in kwargs:
             logging.error("No sensor given")
             return json.dumps({'error': 'No sensor given.'})
