@@ -21,7 +21,7 @@ class Sensor(Base):
     pin = Column(Text)
     endpoint = Column(Text)
     # TODO: make this an enum
-    # offline, online, error
+    # disabled, online, error
     status = Column(Text)
 
     def toDict(self):

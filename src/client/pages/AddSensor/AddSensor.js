@@ -93,7 +93,6 @@ export class HomePage extends Component {
     }
 
     const submitSensor = () => {
-      console.log('submitting');
       this.props.submitPlugin(
         this.state.selectedPlugin,
         {

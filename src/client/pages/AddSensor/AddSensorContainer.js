@@ -41,7 +41,6 @@ export default compose(
               ...details,
             },
           };
-          console.log(payload);
 
           fetch('/api/sensor', {
             method: 'POST',

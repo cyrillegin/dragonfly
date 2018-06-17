@@ -24,7 +24,9 @@ if __name__ == "__main__":
         newPoint = {
             'sensor': {
                 'uuid': id,
-                'station': 'place'
+                'station': 'place',
+                'poller': 'test',
+                'pin': 'test'
             },
             'reading': {
                 'timestamp': (time.time() * 1000) - (i * 1000 * 60),

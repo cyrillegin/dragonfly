@@ -3,6 +3,8 @@ import cherrypy
 import os
 import sys
 import logging
+import socket
+import json
 from api import ResourceApi
 from cherrypy.lib.static import serve_file
 
@@ -32,6 +34,11 @@ def get_cp_config():
 
 class Root(object):
     api = ResourceApi()
+
+    @cherrypy.expose
+    def getIP(self):
+        ip = socket.gethostbyname(socket.gethostname())
+        return json.dumps({'localIP': ip})
 
     @cherrypy.expose
     def default(self, *args, **kwargs):

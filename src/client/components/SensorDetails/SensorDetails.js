@@ -33,7 +33,21 @@ export class SensorDetails extends Component {
     classes: PropTypes.object.isRequired,
     updateSensor: PropTypes.func.isRequired,
     deleteSensor: PropTypes.func.isRequired,
-    sensor: PropTypes.object,
+    sensor: PropTypes.shape({
+      uuid: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      created: PropTypes.number.isRequired,
+      modified: PropTypes.number.isRequired,
+      poller: PropTypes.string.isRequired,
+      pin: PropTypes.string.isRequired,
+      pollRate: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
+      station: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      coefficients: PropTypes.string,
+      units: PropTypes.string,
+      endpoint: PropTypes.string,
+    }),
   };
 
   static defaultProps = {
@@ -51,6 +65,8 @@ export class SensorDetails extends Component {
     units: '',
     endpoint: '',
     pollRate: '',
+    status: '',
+    localIP: '',
     loading: true,
     deleteDialogIsOpen: false,
   }
@@ -61,9 +77,7 @@ export class SensorDetails extends Component {
     });
   };
 
-
   componentDidUpdate(prev) {
-
     if ((prev.sensor === null && this.props.sensor !== null) ||
     (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)) {
       this.setState({
@@ -80,8 +94,19 @@ export class SensorDetails extends Component {
         units: this.props.sensor.units || '',
         endpoint: this.props.sensor.endpoint || '',
         pollRate: this.props.sensor.pollRate || '',
+        status: this.props.sensor.status || '',
       });
     }
+  }
+
+  componentDidMount() {
+    fetch('/getIP')
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          localIP: data.localIP,
+        });
+      });
   }
 
   render() {
@@ -97,6 +122,7 @@ export class SensorDetails extends Component {
         units: this.state.units,
         endpoint: this.state.endpoint,
         pollRate: this.state.pollRate,
+        status: this.state.status,
       });
     };
 
@@ -173,9 +199,17 @@ export class SensorDetails extends Component {
             />
             <TextField
               id="modified"
-              label="Las Modified"
+              label="Last Modified"
               className={this.props.classes.textField}
               value={new Date(this.state.modified).toGMTString()}
+              margin="normal"
+              disabled
+            />
+            <TextField
+              id="localip"
+              label="Local IP Address"
+              className={this.props.classes.textField}
+              value={this.state.localIP}
               margin="normal"
               disabled
             />
@@ -254,8 +288,20 @@ export class SensorDetails extends Component {
               value={this.state.endpoint}
               margin="normal"
             />
-            <Button className={this.props.classes.button} onClick={updateSensor}>Submit Changes</Button>
-            <Button className={this.props.classes.button} onClick={openDeleteSensorDialog}>Delete Sensor</Button>
+            <TextField
+              id="status"
+              label={'Status'}
+              onChange={this.handleChange('status')}
+              className={this.props.classes.textField}
+              value={this.state.status}
+              margin="normal"
+            />
+            <Button className={this.props.classes.button} onClick={updateSensor}>
+              Submit Changes
+            </Button>
+            <Button className={this.props.classes.button} onClick={openDeleteSensorDialog}>
+              Delete Sensor
+            </Button>
           </form>
         </Paper>
       </div>

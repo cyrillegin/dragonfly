@@ -23,9 +23,7 @@ class Sensors:
             if 'sensor' in kwargs:
                 data = data.filter_by(uuid=kwargs['sensor'])
             payload = []
-            print data
             for i in data:
-                print i.toDict()
                 payload.append(i.toDict())
             return json.dumps(payload)
 
@@ -39,10 +37,13 @@ class Sensors:
             logging.error('Json data could not be read.')
             return {"error": "Data could not be read."}
 
-        print data
         if 'sensor' not in data:
             logging.info('error: no sensor information in data')
             return json.dumps({'error': 'No sensor information in data.'})
+
+        if 'poller' not in data['sensor']:
+            logging.info('Error: No poller information given.')
+            return json.dumps({'Error': 'No poller information in data.'})
 
         if 'uuid' not in data['sensor']:
             data['sensor']['uuid'] = short_uuid()
@@ -53,7 +54,7 @@ class Sensors:
                 logging.info('Sensor found, checking for updates')
                 sensor = updateSensor(session, DbSensor, data['sensor'])
             except Exception:
-                logging.info('Sensor not found, creating new one.')
+                logging.error('Sensor not found, creating new one.')
                 sensor = createSensor(session, data['sensor'])
 
             payload = {
@@ -97,7 +98,6 @@ class Sensors:
 
     def DELETE(self, *args, **kwargs):
         logging.info('DELETE request to sensors')
-        print kwargs
         if 'sensor' not in kwargs:
             logging.error("No sensor given")
             return json.dumps({'error': 'No sensor given.'})
@@ -129,10 +129,14 @@ def updateSensor(session, DbSensor, data):
 
 
 def createSensor(session, data):
-    print data
+    # Required Fields
     sensor = {
-        'uuid': data['uuid']
+        'uuid': data['uuid'],
+        'poller': data['poller'],
+        'status': 'online'
     }
+
+    # Fields with defaults
     if 'timestamp' in data:
         sensor['created'] = data['timestamp']
     else:
@@ -144,11 +148,17 @@ def createSensor(session, data):
     else:
         sensor['name'] = 'newSensor'
 
+    if 'pollRate' in data:
+        sensor['pollRate'] = int(data['pollRate'])
+    else:
+        sensor['pollRate'] = 60 * 5
+
     if 'station' in data:
         sensor['station'] = data['station']
     else:
         sensor['station'] = 'newStation'
 
+    # Optional fields.
     if 'coefficients' in data:
         sensor['coefficients'] = data['coefficients']
     if 'description' in data:
@@ -157,12 +167,8 @@ def createSensor(session, data):
         sensor['endpoint'] = data['endpoint']
     if 'pin' in data:
         sensor['pin'] = data['pin']
-    if 'pollRate' in data:
-        sensor['pollRate'] = int(data['pollRate'])
     if 'station' in data:
         sensor['station'] = data['station']
-    if 'poller' in data:
-        sensor['poller'] = data['poller']
     if 'units' in data:
         sensor['units'] = data['units']
     newSensor = Sensor(**sensor)

@@ -16,7 +16,8 @@ def GetValues(sensor):
             if i['id'] == sensor['pin']:
                 newReading = {
                     'sensor': {
-                        'uuid': sensor['uuid']
+                        'uuid': sensor['uuid'],
+                        'poller': 'cryptoPoller'
                     },
                     'reading': {
                         'timestamp': time.time(),

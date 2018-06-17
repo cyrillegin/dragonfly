@@ -75,7 +75,6 @@ export class Graph extends Component {
     } else {
       end = new Date(parseInt(end));
     }
-    console.log(start, end);
     if (start === undefined) {
       start = Date.now() - 24 * 60 * 60 * 1000;
     } else {

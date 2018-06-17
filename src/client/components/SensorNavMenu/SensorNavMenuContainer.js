@@ -19,6 +19,8 @@ export default compose(
                   tree[sensor.station].push({
                     name: sensor.name || 'nameless',
                     uuid: sensor.uuid,
+                    status: sensor.status,
+                    poller: sensor.poller,
                   });
                 } else {
                   if (!('stationless' in tree)) {
@@ -27,6 +29,7 @@ export default compose(
                   tree.stationless.push({
                     name: sensor.name || 'nameless',
                     uuid: sensor.uuid,
+                    status: sensor.status,
                   });
                 }
               });
