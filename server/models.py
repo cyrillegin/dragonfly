@@ -23,6 +23,7 @@ class Sensor(Base):
     # TODO: make this an enum
     # disabled, online, error
     status = Column(Text)
+    meta = Column(Text)
 
     def toDict(self):
         return {
@@ -38,7 +39,8 @@ class Sensor(Base):
             "pollRate": self.pollRate,
             "pin": self.pin,
             "endpoint": self.endpoint,
-            "status": self.status
+            "status": self.status,
+            "meta": self.meta
         }
 
 

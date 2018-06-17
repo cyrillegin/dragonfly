@@ -62,6 +62,7 @@ export class HomePage extends Component {
     pin: '',
     units: '',
     endpoint: '',
+    meta: '',
   }
 
   handlePluginSelect(name) {
@@ -104,6 +105,7 @@ export class HomePage extends Component {
           pin: this.state.pin,
           units: this.state.units,
           endpoint: this.state.endpoint,
+          meta: this.state.meta,
         },
       );
     };
@@ -120,6 +122,7 @@ export class HomePage extends Component {
           pin: this.state.pin,
           units: this.state.units,
           endpoint: this.state.endpoint,
+          meta: this.state.meta,
         },
       ).then((data) => {
         this.setState({
@@ -222,6 +225,14 @@ export class HomePage extends Component {
               onChange={this.handleChange('endpoint')}
               className={this.props.classes.textField}
               value={this.state.endpoint}
+              margin="normal"
+            />
+            <TextField
+              id="meta"
+              label={'Meta'}
+              onChange={this.handleChange('meta')}
+              className={this.props.classes.textField}
+              value={this.state.meta}
               margin="normal"
             />
             <Button className={this.props.classes.button} onClick={testSensor}>Test Sensor</Button>
