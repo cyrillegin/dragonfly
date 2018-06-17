@@ -22,7 +22,6 @@ def rebuild():
     # Get a connection to the postgres db
     dboptions = {}
     dboptions['drivername'] = 'postgres'
-    dboptions['host'] = PGHOST
     dboptions['port'] = PGPORT
     dboptions['username'] = PGUSERNAME
     dboptions['password'] = PGPASSWORD
@@ -68,7 +67,6 @@ def setup():
     logging.info("Setting up db.")
     dboptions = {}
     dboptions['drivername'] = 'postgres'
-    dboptions['host'] = PGHOST
     dboptions['port'] = PGPORT
     dboptions['username'] = PGUSERNAME
     dboptions['password'] = PGPASSWORD

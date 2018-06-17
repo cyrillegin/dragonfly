@@ -8,7 +8,6 @@ from config import PGHOST, PGPORT, PGUSERNAME, PGPASSWORD, DBNAME
 
 dboptions = {}
 dboptions['drivername'] = 'postgres'
-dboptions['host'] = PGHOST
 dboptions['port'] = PGPORT
 dboptions['username'] = PGUSERNAME
 dboptions['password'] = PGPASSWORD
