@@ -1,4 +1,5 @@
 # System Imports
+import platform
 from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -8,6 +9,9 @@ from config import PGHOST, PGPORT, PGUSERNAME, PGPASSWORD, DBNAME
 
 dboptions = {}
 dboptions['drivername'] = 'postgres'
+# We're using this to differenciate between a raspberry pi and the docker container.
+if platform.architecture()[0] == '64bit':
+    dboptions['host'] = PGHOST
 dboptions['port'] = PGPORT
 dboptions['username'] = PGUSERNAME
 dboptions['password'] = PGPASSWORD

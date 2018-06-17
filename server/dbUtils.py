@@ -10,6 +10,7 @@ from sqlalchemy.schema import (
 )
 import logging
 import sys
+import platform
 
 from config import PGHOST, PGPORT, PGUSERNAME, PGPASSWORD, DBNAME
 import models
@@ -22,6 +23,9 @@ def rebuild():
     # Get a connection to the postgres db
     dboptions = {}
     dboptions['drivername'] = 'postgres'
+    # We're using this to differenciate between a raspberry pi and the docker container.
+    if platform.architecture()[0] == '64bit':
+        dboptions['host'] = PGHOST
     dboptions['port'] = PGPORT
     dboptions['username'] = PGUSERNAME
     dboptions['password'] = PGPASSWORD
@@ -67,6 +71,9 @@ def setup():
     logging.info("Setting up db.")
     dboptions = {}
     dboptions['drivername'] = 'postgres'
+    # We're using this to differenciate between a raspberry pi and the docker container.
+    if platform.architecture()[0] == '64bit':
+        dboptions['host'] = PGHOST
     dboptions['port'] = PGPORT
     dboptions['username'] = PGUSERNAME
     dboptions['password'] = PGPASSWORD
