@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const Jarvis = require('webpack-jarvis');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -45,10 +46,12 @@ module.exports = {
     ],
   },
   plugins: [
+    new BundleAnalyzerPlugin(),
+    new Jarvis({
+      port: 1337,
+    }),
     new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-      },
+      'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
@@ -81,9 +84,6 @@ module.exports = {
         },
       },
       exclude: /\/server/,
-    }),
-    new Jarvis({
-      port: 1337,
     }),
   ],
 };
