@@ -12,9 +12,6 @@ def readTemperature(deviceLocation):
 
 
 def GetValues(params):
-    print(params)
-    logging.info("Starting presure poller.")
-
     deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(params['meta'])
 
     while True:

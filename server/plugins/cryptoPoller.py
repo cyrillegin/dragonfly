@@ -13,7 +13,7 @@ def GetValues(params):
     try:
         response = requests.get(URL).json()
         for i in response:
-            if i['id'] == params['pin']:
+            if i['id'] == params['meta']:
                 newReading = {
                     'sensor': {
                         'uuid': params['uuid'],
@@ -38,4 +38,4 @@ def GetValues(params):
 
 
 if __name__ == "__main__":
-    GetValues({'pin': 'bitcoin', 'uuid': 'test'})
+    GetValues({'meta': 'bitcoin', 'uuid': 'test'})
