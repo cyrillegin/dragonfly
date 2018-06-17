@@ -1,18 +1,21 @@
-FROM centos:7
+FROM debian:stretch
 
 # System
-RUN yum install -y screen vim sudo wget screen git && yum clean all
+RUN apt-get update
+RUN apt-get install -y screen vim sudo wget screen git curl python make automake gcc
+RUN apt-get install apt-transport-https
+#gcc-c++ postgresql-devel
 
 # Postgres
-RUN yum install -y postgresql  postgresql-devel make automake gcc gcc-c++ && yum clean all
+RUN apt-get install -y postgresql
 
 # Node
-RUN curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
-RUN yum install -y nodejs-8.9.4-1nodesource
+RUN curl -o /tmp/nodejs.deb https://deb.nodesource.com/node_8.x/pool/main/n/nodejs/nodejs_8.10.0-1nodesource1_amd64.deb && dpkg -i /tmp/nodejs.deb
 
 # Python
-RUN yum install -y epel-release python-devel python-setuptools && yum clean all
-RUN easy_install pip
+#RUN apt-get install -y epel-release python-devel python-setuptools
+RUN apt-get install -y python-pip
+RUN pip install --upgrade pip
 ADD requirements.txt .
 RUN pip install -r requirements.txt
 
