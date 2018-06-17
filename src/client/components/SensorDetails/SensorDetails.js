@@ -66,6 +66,7 @@ export class SensorDetails extends Component {
     endpoint: '',
     pollRate: '',
     status: '',
+    localIP: '',
     loading: true,
     deleteDialogIsOpen: false,
   }
@@ -76,9 +77,7 @@ export class SensorDetails extends Component {
     });
   };
 
-
   componentDidUpdate(prev) {
-
     if ((prev.sensor === null && this.props.sensor !== null) ||
     (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)) {
       this.setState({
@@ -98,6 +97,16 @@ export class SensorDetails extends Component {
         status: this.props.sensor.status || '',
       });
     }
+  }
+
+  componentDidMount() {
+    fetch('/getIP')
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          localIP: data.localIP,
+        });
+      });
   }
 
   render() {
@@ -190,9 +199,17 @@ export class SensorDetails extends Component {
             />
             <TextField
               id="modified"
-              label="Las Modified"
+              label="Last Modified"
               className={this.props.classes.textField}
               value={new Date(this.state.modified).toGMTString()}
+              margin="normal"
+              disabled
+            />
+            <TextField
+              id="localip"
+              label="Local IP Address"
+              className={this.props.classes.textField}
+              value={this.state.localIP}
               margin="normal"
               disabled
             />
