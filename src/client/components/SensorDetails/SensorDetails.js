@@ -47,6 +47,7 @@ export class SensorDetails extends Component {
       coefficients: PropTypes.string,
       units: PropTypes.string,
       endpoint: PropTypes.string,
+      meta: PropTypes.string,
     }),
   };
 
@@ -67,6 +68,7 @@ export class SensorDetails extends Component {
     pollRate: '',
     status: '',
     localIP: '',
+    meta: '',
     loading: true,
     deleteDialogIsOpen: false,
   }
@@ -95,6 +97,7 @@ export class SensorDetails extends Component {
         endpoint: this.props.sensor.endpoint || '',
         pollRate: this.props.sensor.pollRate || '',
         status: this.props.sensor.status || '',
+        meta: this.props.sensor.meta || '',
       });
     }
   }
@@ -123,6 +126,7 @@ export class SensorDetails extends Component {
         endpoint: this.state.endpoint,
         pollRate: this.state.pollRate,
         status: this.state.status,
+        meta: this.state.meta,
       });
     };
 
@@ -294,6 +298,14 @@ export class SensorDetails extends Component {
               onChange={this.handleChange('status')}
               className={this.props.classes.textField}
               value={this.state.status}
+              margin="normal"
+            />
+            <TextField
+              id="meta"
+              label={'Meta'}
+              onChange={this.handleChange('meta')}
+              className={this.props.classes.textField}
+              value={this.state.meta}
               margin="normal"
             />
             <Button className={this.props.classes.button} onClick={updateSensor}>
