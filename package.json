@@ -12,7 +12,8 @@
     "react-datetime": "2.14.0",
     "react-dom": "16.4.1",
     "react-md-spinner": "0.2.5",
-    "react-router-dom": "4.3.1"
+    "react-router-dom": "4.3.1",
+    "webpack-bundle-analyzer": "2.13.1"
   },
   "description": "",
   "devDependencies": {
@@ -63,7 +64,8 @@
     "startServer": "python server/server.py",
     "test": "npm run jest",
     "tests": "npm run lint && npm run test",
-    "watchClient": "webpack --mode development --watch --progress --config webpack.dev.config.js src/client"
+    "watchClient": "webpack --mode development --watch --progress --config webpack.dev.config.js src/client",
+    "watchProd": "webpack --mode production --watch --progress --config webpack.prod.config.js src/client"
   },
   "version": "0.9.0"
 }
