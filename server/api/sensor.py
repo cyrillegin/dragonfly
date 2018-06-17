@@ -39,10 +39,13 @@ class Sensors:
             logging.error('Json data could not be read.')
             return {"error": "Data could not be read."}
 
-        print data
         if 'sensor' not in data:
             logging.info('error: no sensor information in data')
             return json.dumps({'error': 'No sensor information in data.'})
+        
+        if 'poller' not in data['sensor']:
+            logging.info('Error: No poller information given.')
+            return json.dumps({'Error': 'No poller information in data.'})
 
         if 'uuid' not in data['sensor']:
             data['sensor']['uuid'] = short_uuid()
@@ -129,10 +132,14 @@ def updateSensor(session, DbSensor, data):
 
 
 def createSensor(session, data):
-    print data
+    # Required Fields
     sensor = {
-        'uuid': data['uuid']
+        'uuid': data['uuid'],
+        'poller': data['poller'],
+        'status': 'online'
     }
+
+    # Fields with defaults
     if 'timestamp' in data:
         sensor['created'] = data['timestamp']
     else:
@@ -144,11 +151,17 @@ def createSensor(session, data):
     else:
         sensor['name'] = 'newSensor'
 
+    if 'pollRate' in data:
+        sensor['pollRate'] = int(data['pollRate'])
+    else:
+        sensor['pollRate'] = 60 * 5
+
     if 'station' in data:
         sensor['station'] = data['station']
     else:
         sensor['station'] = 'newStation'
 
+    # Optional fields.
     if 'coefficients' in data:
         sensor['coefficients'] = data['coefficients']
     if 'description' in data:
@@ -157,12 +170,8 @@ def createSensor(session, data):
         sensor['endpoint'] = data['endpoint']
     if 'pin' in data:
         sensor['pin'] = data['pin']
-    if 'pollRate' in data:
-        sensor['pollRate'] = int(data['pollRate'])
     if 'station' in data:
         sensor['station'] = data['station']
-    if 'poller' in data:
-        sensor['poller'] = data['poller']
     if 'units' in data:
         sensor['units'] = data['units']
     newSensor = Sensor(**sensor)

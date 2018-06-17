@@ -33,7 +33,21 @@ export class SensorDetails extends Component {
     classes: PropTypes.object.isRequired,
     updateSensor: PropTypes.func.isRequired,
     deleteSensor: PropTypes.func.isRequired,
-    sensor: PropTypes.object,
+    sensor: PropTypes.shape({
+      uuid: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      created: PropTypes.number.isRequired,
+      modified: PropTypes.number.isRequired,
+      poller: PropTypes.string.isRequired,
+      pin: PropTypes.string.isRequired,
+      pollRate: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
+      station: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      coefficients: PropTypes.string,
+      units: PropTypes.string,
+      endpoint: PropTypes.string,
+    }),
   };
 
   static defaultProps = {
@@ -51,6 +65,7 @@ export class SensorDetails extends Component {
     units: '',
     endpoint: '',
     pollRate: '',
+    status: '',
     loading: true,
     deleteDialogIsOpen: false,
   }
@@ -80,6 +95,7 @@ export class SensorDetails extends Component {
         units: this.props.sensor.units || '',
         endpoint: this.props.sensor.endpoint || '',
         pollRate: this.props.sensor.pollRate || '',
+        status: this.props.sensor.status || '',
       });
     }
   }
@@ -97,6 +113,7 @@ export class SensorDetails extends Component {
         units: this.state.units,
         endpoint: this.state.endpoint,
         pollRate: this.state.pollRate,
+        status: this.state.status,
       });
     };
 
@@ -252,6 +269,14 @@ export class SensorDetails extends Component {
               onChange={this.handleChange('endpoint')}
               className={this.props.classes.textField}
               value={this.state.endpoint}
+              margin="normal"
+            />
+            <TextField
+              id="status"
+              label={'Status'}
+              onChange={this.handleChange('status')}
+              className={this.props.classes.textField}
+              value={this.state.status}
               margin="normal"
             />
             <Button className={this.props.classes.button} onClick={updateSensor}>Submit Changes</Button>
