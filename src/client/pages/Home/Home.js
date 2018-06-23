@@ -6,6 +6,7 @@ import queryString from 'query-string';
 import SensorNavMenuContainer from './../../components/SensorNavMenu/SensorNavMenuContainer';
 import SensorGraphContainer from './../../components/SensorGraph/SensorGraphContainer';
 import SensorDetailsContainer from './../../components/SensorDetails/SensorDetailsContainer';
+import SensorActionsContainer from './../../components/SensorActions/SensorActionsContainer';
 
 const styles = theme => ({
   root: {
@@ -47,7 +48,7 @@ export class HomePage extends Component {
 
   componentDidUpdate(prev) {
     const search = queryString.parse(location.search);
-    if ((search.sensor && this.state.sensor === null) || search.sensor !== this.state.sensor.uuid) {
+    if ((search.sensor && this.state.sensor === null) || (this.state.sensor && search.sensor !== this.state.sensor.uuid)) {
       this.props.getSensor().then((data) => {
         this.setState({
           sensor: data[0],
@@ -89,6 +90,9 @@ export class HomePage extends Component {
           <SensorDetailsContainer
             sensor={this.state.sensor}
             history={this.props.history}
+          />
+          <SensorActionsContainer
+            sensor={this.state.sensor}
           />
         </main>
       </div>
