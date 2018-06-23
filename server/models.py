@@ -60,3 +60,35 @@ class Reading(Base):
             "sensor": self.sensor,
             "value": self.value
         }
+
+
+class Action(Base):
+
+    __tablename__ = 'action'
+
+    uuid = Column(String, index=True, primary_key=True)
+    created = Column(BigInteger)
+    modified = Column(BigInteger)
+    status = Column(String)
+    sensor = Column(String)
+    plugin = Column(String)
+    meta = Column(String)
+    poll_rate = Column(String)
+    notification_rate = Column(String)
+    value = Column(String)
+    operator = Column(String)
+
+    def toDict(self):
+        return {
+            "uuid": self.uuid,
+            "created": self.created,
+            "modified": self.modified,
+            "status": self.status,
+            "sensor": self.sensor,
+            "plugin": self.plugin,
+            "meta": self.meta,
+            "pollRate": self.poll_rate,
+            "notificationRate": self.notification_rate,
+            "value": self.value,
+            "operator": self.operator
+        }
