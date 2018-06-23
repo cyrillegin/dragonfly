@@ -33,10 +33,10 @@ def GetValues(params):
                     'uuid': params['uuid'],
                     'poller': 'gpioPoller'
                 },
-                'readings': [{
+                'reading': {
                     'timestamp': time.time() * 1000,
                     'value': temp_f,
-                }]
+                }
             }
             return newReading
 
