@@ -171,6 +171,8 @@ def createSensor(session, data):
         sensor['station'] = data['station']
     if 'units' in data:
         sensor['units'] = data['units']
+    if 'meta' in data:
+        sensor['meta'] = data['meta']
     newSensor = Sensor(**sensor)
 
     session.add(newSensor)
