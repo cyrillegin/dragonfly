@@ -9,3 +9,6 @@ PGPORT = 5432
 PGUSERNAME = ""
 PGPASSWORD = ""
 DBNAME = ""
+
+# Used for slack action.
+SLACK_URL = ""

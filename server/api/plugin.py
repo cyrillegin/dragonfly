@@ -1,7 +1,7 @@
 import json
 import cherrypy
 import logging
-import plugins
+import sensorPlugins
 import importlib
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
@@ -15,7 +15,7 @@ class Plugins:
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
-        return json.dumps({'plugins': plugins.PLUGINS}).encode('utf-8')
+        return json.dumps({'plugins': sensorPlugins.PLUGINS}).encode('utf-8')
 
     def POST(self):
         logging.info('POST request to plugins')
@@ -38,7 +38,7 @@ class Plugins:
             logging.error('No pin was provided.')
             return json.dumps({'error': 'No pin was provided'}).encode('utf-8')
         try:
-            module = importlib.import_module("plugins.{}".format(data['plugin']))
+            module = importlib.import_module("sensorPlugins.{}".format(data['plugin']))
             result = module.GetValues({'pin': data['details']['pin'], 'uuid': 'test', 'meta': data['details']['meta']})
             return json.dumps(result).encode('utf-8')
         except Exception as e:
