@@ -30,7 +30,6 @@ export class ActionDialog extends Component {
       uuid: PropTypes.string.isRequired,
       plugin: PropTypes.string.isRequired,
       meta: PropTypes.string.isRequired,
-      pollRate: PropTypes.string.isRequired,
       notificationRate: PropTypes.string.isRequired,
       operator: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
@@ -40,7 +39,6 @@ export class ActionDialog extends Component {
   state = {
     plugin: '',
     meta: '',
-    pollRate: '',
     notificationRate: '',
     operator: '',
     value: '',
@@ -58,7 +56,6 @@ export class ActionDialog extends Component {
         isUpdate: true,
         plugin: nextProps.action.plugin,
         meta: nextProps.action.meta,
-        pollRate: nextProps.action.pollRate,
         notificationRate: nextProps.action.notificationRate,
         operator: nextProps.action.operator,
         value: nextProps.action.value,
@@ -75,7 +72,6 @@ export class ActionDialog extends Component {
         uuid: this.props.action && this.props.action.uuid,
         plugin: this.state.plugin,
         meta: this.state.meta,
-        pollRate: this.state.pollRate,
         notificationRate: this.state.notificationRate,
         operator: this.state.operator,
         value: this.state.value,
@@ -114,14 +110,6 @@ export class ActionDialog extends Component {
               onChange={this.handleChange('meta')}
               className={this.props.classes.textField}
               value={this.state.meta}
-              margin="normal"
-            />
-            <TextField
-              id="pollRate"
-              label="Poll Rate"
-              onChange={this.handleChange('pollRate')}
-              className={this.props.classes.textField}
-              value={this.state.pollRate}
               margin="normal"
             />
             <TextField
