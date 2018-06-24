@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import MDSpinner from 'react-md-spinner';
 import moment from 'moment';
 import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
 import Datetime from 'react-datetime';
 import Graph from './Graph';
 import './timepicker.css';
@@ -42,6 +43,9 @@ const styles = {
   extras: {
     display: 'flex',
   },
+  list: {
+    listStyleType: 'none',
+  },
 };
 
 export class SensorGraph extends Component {
@@ -64,6 +68,7 @@ export class SensorGraph extends Component {
     startTime: null,
     endTime: null,
     status: null,
+    autoRefresh: 'false',
   }
 
   constructor(props) {
@@ -164,6 +169,23 @@ export class SensorGraph extends Component {
       });
     };
 
+    const handleAutoRefresh = event => {
+      this.setState({
+        autoRefresh: event.target.checked + '',
+      });
+    };
+
+    if (this.state.autoRefresh === 'true') {
+      if (!this.autoRefreshTimer) {
+        this.autoRefreshTimer = setInterval(() => {
+          this.loadData();
+        }, 60 * 1000);
+      }
+    } else if (this.autoRefreshTimer) {
+      clearInterval(this.autoRefreshTimer);
+      this.autoRefreshTimer = null;
+    }
+
     return (
       <div className={this.props.classes.root}>
         <Paper className={this.props.classes.paper} elevation={4}>
@@ -203,17 +225,28 @@ export class SensorGraph extends Component {
             </div>
 
             <div className={this.props.classes.timeControls}>
-            Start Time
-              <Datetime
-                onChange={setStartTime}
-                value={this.state.startTime}
-                inputProps={{'aria-label': 'start time'}} />
-            End Time
-              <Datetime
-                onChange={setEndTime}
-                value={this.state.endTime}
-                inputProps={{'aria-label': 'end time'}} />
-              <Button onClick={submitTime}>Submit Changes</Button>
+              <ul className={this.props.classes.list}>
+                <li>
+              Start Time
+                  <Datetime
+                    onChange={setStartTime}
+                    value={this.state.startTime}
+                    inputProps={{'aria-label': 'start time'}} />
+                End Time
+                  <Datetime
+                    onChange={setEndTime}
+                    value={this.state.endTime}
+                    inputProps={{'aria-label': 'end time'}} />
+                  <Button onClick={submitTime}>Submit Changes</Button>
+                </li>
+                <li>
+                  AutoRefresh
+                  <Switch value={this.state.autoRefresh} onChange={handleAutoRefresh} />
+                  <Button onClick={() => {
+                    this.loadData();
+                  }}>Refresh Now</Button>
+                </li>
+              </ul>
             </div>
           </div>
         </Paper>

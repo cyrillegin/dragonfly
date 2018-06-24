@@ -32,6 +32,7 @@ export class Graph extends Component {
   }
 
   drawGraph() {
+    console.log('draw');
     const data = this.props.readings;
     // Initialization.
     const container = document.querySelector('#graph-container');
@@ -328,16 +329,27 @@ export class Graph extends Component {
   } // End D3
 
   componentDidMount() {
-    const data = [];
-    for (let i = 0; i < 24 * 60; i++) {
-      data.push({
-        timestamp: Date.now() - (i * 60 * 1000),
-        value: Math.sin(i / 100),
-      });
-    }
-    this.drawGraph(data);
+    this.setState({
+      readings: this.props.readings,
+    });
+    this.drawGraph();
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      this.state &&
+      this.state.readings &&
+      (nextProps.readings[0].timestamp !== this.state.readings[0].timestamp ||
+        nextProps.readings.length !== this.state.readings.length
+      )
+    ) {
+      this.setState({
+        readings: this.props.readings,
+      });
+      this.drawGraph();
+    }
+    return true;
+  }
 
   render() {
     return (
