@@ -5,12 +5,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.url import URL
 # Global
-from config import PGHOST, PGPORT, PGUSERNAME, PGPASSWORD, DBNAME
+from config import PGHOST, PGPORT, PGUSERNAME, PGPASSWORD, DBNAME, USE_PG_HOST
 
 dboptions = {}
 dboptions['drivername'] = 'postgres'
 # We're using this to differenciate between a raspberry pi and the docker container.
-if platform.architecture()[0] == '64bit':
+if USE_PG_HOST:
     dboptions['host'] = PGHOST
 dboptions['port'] = PGPORT
 dboptions['username'] = PGUSERNAME

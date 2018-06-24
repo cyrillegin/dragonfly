@@ -12,7 +12,7 @@ import logging
 import sys
 import platform
 
-from config import PGHOST, PGPORT, PGUSERNAME, PGPASSWORD, DBNAME
+from config import PGHOST, PGPORT, PGUSERNAME, PGPASSWORD, DBNAME, USE_PG_HOST
 import models
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
@@ -24,7 +24,7 @@ def rebuild():
     dboptions = {}
     dboptions['drivername'] = 'postgres'
     # We're using this to differenciate between a raspberry pi and the docker container.
-    if platform.architecture()[0] == '64bit':
+    if USE_PG_HOST:
         dboptions['host'] = PGHOST
     dboptions['port'] = PGPORT
     dboptions['username'] = PGUSERNAME

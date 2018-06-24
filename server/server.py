@@ -7,6 +7,7 @@ import socket
 import json
 from api import ResourceApi
 from cherrypy.lib.static import serve_file
+from config import PORT
 
 import sensorPlugins  # noqa: F401
 import actionPlugins  # noqa: F401
@@ -51,7 +52,7 @@ class Root(object):
 def RunServer():
     cherrypy.tree.mount(Root(), '/', config=get_cp_config())
     cherrypy.server.socket_host = "0.0.0.0"
-    cherrypy.server.socket_port = int(os.environ.get('PORT', 5000))
+    cherrypy.server.socket_port = int(os.environ.get('PORT', PORT))
     cherrypy.engine.start()
     cherrypy.engine.block()
 
