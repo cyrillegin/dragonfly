@@ -44,14 +44,14 @@ export default compose(
             .then(response => response.json())
             .then((data) => {
               res({'data': data});
+              window.location.reload();
             });
         });
       },
       deleteAction: (info) => {
         console.log(info);
-        return;
         return new Promise((res, rej) => {
-          fetch('/api/action', {
+          fetch('/api/action/?action=' + info.action, {
             method: 'DELETE',
             headers: {
               'Accept': 'application/json',
@@ -61,8 +61,8 @@ export default compose(
           })
             .then(response => response.json())
             .then((data) => {
-              console.log(data);
               res({'data': data});
+              window.location.reload();
             });
         });
       },

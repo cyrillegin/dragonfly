@@ -62,7 +62,7 @@ class Actions:
 
     def PUT(self):
         logging.info('PUT request to actions.')
-    
+
         try:
             data = json.loads(cherrypy.request.body.read().decode('utf-8'))
         except ValueError:
@@ -84,21 +84,20 @@ class Actions:
                 return json.dumps({'Error': 'Error updating action.'}).encode('utf-8')
         payload = {}
         return json.dumps(payload).encode('utf-8')
-    # 
-    # def DELETE(self, *args, **kwargs):
-    #     logging.info('DELETE request to sensors')
-    #     if 'sensor' not in kwargs:
-    #         logging.error("No sensor given")
-    #         return json.dumps({'error': 'No sensor given.'}).encode('utf-8')
-    #     with sessionScope() as session:
-    #         sensor = session.query(Sensor).filter_by(uuid=kwargs['sensor']).one()
-    #         logging.info('Deleting all readings for sensor')
-    #         session.query(Reading).filter_by(sensor=kwargs['sensor']).delete()
-    #         logging.info('Deleting sensor')
-    #         session.delete(sensor)
-    #         session.commit()
-    #         logging.info('Delete successful')
-    #         return json.dumps({'success': 'delete successful.'}).encode('utf-8')
+
+    def DELETE(self, *args, **kwargs):
+        logging.info('DELETE request to sensors')
+
+        if 'action' not in kwargs:
+            logging.error("No acion given")
+            return json.dumps({'error': 'No action given.'}).encode('utf-8')
+        with sessionScope() as session:
+            action = session.query(Action).filter_by(uuid=kwargs['action']).one()
+            logging.info('Deleting action')
+            session.delete(action)
+            session.commit()
+            logging.info('Delete successful')
+            return json.dumps({'success': 'delete successful.'}).encode('utf-8')
 
 
 def updateAction(session, DbAction, data):
