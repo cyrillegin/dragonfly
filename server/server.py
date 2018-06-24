@@ -8,8 +8,8 @@ import json
 from api import ResourceApi
 from cherrypy.lib.static import serve_file
 
-import sensorPlugins
-import actionPlugins
+import sensorPlugins  # noqa: F401
+import actionPlugins  # noqa: F401
 
 PATH = os.path.abspath(os.path.dirname(__file__))
 STATIC = os.path.join(PATH, '../dist')

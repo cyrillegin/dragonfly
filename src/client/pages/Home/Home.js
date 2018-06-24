@@ -48,7 +48,10 @@ export class HomePage extends Component {
 
   componentDidUpdate(prev) {
     const search = queryString.parse(location.search);
-    if ((search.sensor && this.state.sensor === null) || (this.state.sensor && search.sensor !== this.state.sensor.uuid)) {
+    if (
+      (search.sensor && this.state.sensor === null) ||
+      (this.state.sensor && search.sensor !== this.state.sensor.uuid)
+    ) {
       this.props.getSensor().then((data) => {
         this.setState({
           sensor: data[0],

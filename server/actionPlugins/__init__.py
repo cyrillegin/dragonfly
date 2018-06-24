@@ -3,8 +3,6 @@ import logging
 import time
 from multiprocessing import Process
 import importlib
-import requests
-import json
 
 from sessionManager import sessionScope
 from models import Action, Reading, Sensor
