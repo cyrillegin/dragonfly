@@ -135,10 +135,6 @@ def createAction(session, data):
     }
 
     # Fields with defaults
-    if 'pollRate' in data:
-        action['poll_rate'] = data['pollRate']
-    else:
-        action['poll_rate'] = 5 * 60
     if 'notificationRate' in data:
         action['notification_rate'] = data['notificationRate']
     else:
