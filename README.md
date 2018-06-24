@@ -168,7 +168,9 @@ Action Plugins
 Slack plugin
 to use the slack plugin, you must create a slack app here: https://api.slack.com/incoming-webhooks#advanced_message_formatting
 Once done, add the slack hook url to your config for SLACK_URL
-
+Once triggered, the alarm will send a message stating that it has gone out of bounds and give the rule that
+triggered the alarm. Once the sensor has returned within its bounds, another slack message will be sent stating so.
+If you want to add a custom message to the alarm, you can add it in the meta field.
 
 
 TroubleShooting
