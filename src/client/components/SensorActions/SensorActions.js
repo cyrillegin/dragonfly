@@ -4,13 +4,18 @@ import {withStyles} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
+import ClearIcon from '@material-ui/icons/Clear';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Switch from '@material-ui/core/Switch';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import WifiIcon from '@material-ui/icons/Wifi';
+import ActionDialog from './ActionDialog';
 
 const styles = {
   root: {
@@ -20,10 +25,7 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
   },
-  textField: {
-    margin: '20px',
-    width: '250px',
-  },
+
   paper: {
     padding: '20px',
   },
@@ -40,6 +42,8 @@ export class SensorActions extends Component {
     }),
     getActions: PropTypes.func.isRequired,
     addAction: PropTypes.func.isRequired,
+    updateAction: PropTypes.func.isRequired,
+    deleteAction: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -50,13 +54,10 @@ export class SensorActions extends Component {
     uuid: '',
     loading: true,
     addActionDialogIsOpen: false,
+    updateActionDialogIsOpen: false,
 
-    plugin: '',
-    meta: '',
-    pollRate: '',
-    notificationRate: '',
-    operator: '',
-    value: '',
+    checked: ['wifi'],
+    action: null,
   }
 
 
@@ -98,99 +99,53 @@ export class SensorActions extends Component {
       });
     };
 
-    const closeAddActionDialog = () => {
+    const closeActionDialog = () => {
       this.setState({
         addActionDialogIsOpen: false,
+        updateActionDialogIsOpen: false,
       });
     };
 
-    const handleAddActionSubmit = () => {
-      this.props.addAction({
-        sensor: this.state.uuid,
-        plugin: this.state.plugin,
-        meta: this.state.meta,
-        pollRate: this.state.pollRate,
-        notificationRate: this.state.notificationRate,
-        operator: this.state.operator,
-        value: this.state.value,
+    const handleToggle = value => () => {
+      const {checked} = this.state;
+      const currentIndex = checked.indexOf(value);
+      const newChecked = [...checked];
 
+      if (currentIndex === -1) {
+        newChecked.push(value);
+      } else {
+        newChecked.splice(currentIndex, 1);
+      }
+
+      this.setState({
+        checked: newChecked,
       });
     };
 
     return (
       <div className={this.props.classes.root}>
 
-        <Dialog
-          open={this.state.addActionDialogIsOpen}
-          onClose={closeAddActionDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{'Add Action'}</DialogTitle>
+        {/* Add Action Dialog */}
+        <ActionDialog
+          dialogIsOpen={this.state.addActionDialogIsOpen}
+          actionCancel={closeActionDialog}
+          actionSubmit={this.props.addAction}
+          title={'Add Sensor'}
+          update={false}
+          sensor={this.state.uuid}
+        />
 
-          <DialogContent>
-            <form className={this.props.classes.container} noValidate autoComplete="off">
-              <TextField
-                id="plugin"
-                label="Plugin"
-                onChange={this.handleChange('plugin')}
-                className={this.props.classes.textField}
-                value={this.state.plugin}
-                margin="normal"
-              />
-              <TextField
-                id="meta"
-                label="Meta"
-                onChange={this.handleChange('meta')}
-                className={this.props.classes.textField}
-                value={this.state.meta}
-                margin="normal"
-              />
-              <TextField
-                id="pollRate"
-                label="Poll Rate"
-                onChange={this.handleChange('pollRate')}
-                className={this.props.classes.textField}
-                value={this.state.pollRate}
-                margin="normal"
-              />
-              <TextField
-                id="notificationRate"
-                label="Notification Rate"
-                onChange={this.handleChange('notificationRate')}
-                className={this.props.classes.textField}
-                value={this.state.notificationRate}
-                margin="normal"
-              />
-              <TextField
-                id="operator"
-                label="Operator"
-                onChange={this.handleChange('operator')}
-                className={this.props.classes.textField}
-                value={this.state.operator}
-                margin="normal"
-              />
-              <TextField
-                id="value"
-                label="Value"
-                onChange={this.handleChange('value')}
-                className={this.props.classes.textField}
-                value={this.state.value}
-                margin="normal"
-              />
-
-            </form>
-          </DialogContent>
-
-          <DialogActions>
-            <Button onClick={handleAddActionSubmit} color="primary">
-            Submit
-            </Button>
-            <Button onClick={closeAddActionDialog} color="primary" autoFocus>
-            Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/* Update Action Dialog */}
+        <ActionDialog
+          dialogIsOpen={this.state.updateActionDialogIsOpen}
+          actionCancel={closeActionDialog}
+          actionSubmit={this.props.updateAction}
+          actionDelete={this.props.deleteAction}
+          title={'Update Sensor'}
+          update={true}
+          sensor={this.state.uuid}
+          action={this.state.action}
+        />
 
         <Paper className={this.props.classes.paper} elevation={4}>
           <Typography variant="headline" component="h3">
@@ -203,9 +158,31 @@ export class SensorActions extends Component {
             </Typography>
           }
           {this.state.actions.length > 0 &&
-            <div>
-            have an action
-            </div>
+
+            <List subheader={<ListSubheader>Actions</ListSubheader>}>
+              {this.state.actions.map((action) => (
+                <ListItem key={action.uuid}>
+                  <ListItemIcon>
+                    <WifiIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={action.plugin} />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      onChange={handleToggle('wifi')}
+                      checked={this.state.checked.indexOf('wifi') !== -1}
+                    />
+                    <Button className={this.props.classes.button} onClick={() => {
+                      this.setState({
+                        updateActionDialogIsOpen: true,
+                        action: action,
+                      });
+                    }}>
+                      Update
+                    </Button>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
           }
           <Button className={this.props.classes.button} onClick={openAddActionDialog}>
             <AddIcon />

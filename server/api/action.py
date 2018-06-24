@@ -60,29 +60,30 @@ class Actions:
             }
         return json.dumps(payload).encode('utf-8')
 
-    # def PUT(self):
-    #     logging.info('PUT request to sensors.')
-    # 
-    #     try:
-    #         data = json.loads(cherrypy.request.body.read().decode('utf-8'))
-    #     except ValueError:
-    #         logging.error('Json data could not be read.')
-    #         return json.dumps({"error": "Data could not be read."}).encode('utf-8')
-    #     if 'uuid' not in data:
-    #         logging.error('No sensor ID found.')
-    #         return json.dumps({"Error": "Sensor id not provided."}).encode('utf-8')
-    #     with sessionScope() as session:
-    #         try:
-    #             sensor = session.query(Sensor).filter_by(uuid=data['uuid']).one()
-    #             logging.info('Sensor found.')
-    #             payload = {
-    #                 "sensor": updateSensor(session, sensor, data)
-    #             }
-    #         except Exception as e:
-    #             logging.error('Error updating sensor.')
-    #             logging.error(e)
-    #             return json.dumps({'Error': 'Error updating sensor.'}).encode('utf-8')
-    #     return json.dumps(payload).encode('utf-8')
+    def PUT(self):
+        logging.info('PUT request to actions.')
+    
+        try:
+            data = json.loads(cherrypy.request.body.read().decode('utf-8'))
+        except ValueError:
+            logging.error('Json data could not be read.')
+            return json.dumps({"error": "Data could not be read."}).encode('utf-8')
+        if 'uuid' not in data:
+            logging.error('No action ID found.')
+            return json.dumps({"Error": "Action id not provided."}).encode('utf-8')
+        with sessionScope() as session:
+            try:
+                action = session.query(Action).filter_by(uuid=data['uuid']).one()
+                logging.info('Action found.')
+                payload = {
+                    "action": updateAction(session, action, data)
+                }
+            except Exception as e:
+                logging.error('Error updating action.')
+                logging.error(e)
+                return json.dumps({'Error': 'Error updating action.'}).encode('utf-8')
+        payload = {}
+        return json.dumps(payload).encode('utf-8')
     # 
     # def DELETE(self, *args, **kwargs):
     #     logging.info('DELETE request to sensors')
@@ -100,20 +101,25 @@ class Actions:
     #         return json.dumps({'success': 'delete successful.'}).encode('utf-8')
 
 
-# def updateSensor(session, DbSensor, data):
-#     updates = False
-#     for i in data:
-#         if i not in ['uuid', 'created', 'modified'] and data[i] != DbSensor.toDict()[i]:
-#             if data[i] == '':
-#                 data[i] = None
-#             updates = True
-#             setattr(DbSensor, i, data[i])
-#     if updates:
-#         setattr(DbSensor, 'modified', time.time() * 1000)
-#         logging.info('Sensor has changed, updating.')
-#         session.add(DbSensor)
-#         session.commit()
-#     return session.query(Sensor).filter_by(uuid=data['uuid']).one().toDict()
+def updateAction(session, DbAction, data):
+    updates = False
+    for i in data:
+        if i not in ['uuid', 'sensor', 'created', 'modified'] and data[i] != DbAction.toDict()[i]:
+            if data[i] == '':
+                data[i] = None
+            updates = True
+            setattr(DbAction, i, data[i])
+    if updates:
+        try:
+            setattr(DbAction, 'modified', time.time() * 1000)
+            logging.info('Action has changed, updating.')
+            session.add(DbAction)
+            session.commit()
+        except Exception as e:
+            logging.error('Unknown Field found')
+            logging.error(e)
+            return {'error': 'Unknown field'}
+    return session.query(Action).filter_by(uuid=data['uuid']).one().toDict()
 
 
 def createAction(session, data):

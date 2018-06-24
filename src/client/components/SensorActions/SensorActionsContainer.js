@@ -31,6 +31,41 @@ export default compose(
             });
         });
       },
+      updateAction: (info) => {
+        return new Promise((res, rej) => {
+          fetch('/api/action', {
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({...info}),
+          })
+            .then(response => response.json())
+            .then((data) => {
+              res({'data': data});
+            });
+        });
+      },
+      deleteAction: (info) => {
+        console.log(info);
+        return;
+        return new Promise((res, rej) => {
+          fetch('/api/action', {
+            method: 'DELETE',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({...info}),
+          })
+            .then(response => response.json())
+            .then((data) => {
+              console.log(data);
+              res({'data': data});
+            });
+        });
+      },
     };
   }),
 )(SensorActions);
