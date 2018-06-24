@@ -44,7 +44,7 @@ export class Graph extends Component {
       top: 10,
       right: 20,
       bottom: 10,
-      left: this.props.sensor.units ? this.props.sensor.units.length * 10 : 60,
+      left: this.props.sensor.units ? 40 + this.props.sensor.units.length * 10 : 60,
     };
     width = width - margin.left - margin.right;
     height = height - margin.top - margin.bottom;
