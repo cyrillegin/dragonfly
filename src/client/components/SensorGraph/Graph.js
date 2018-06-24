@@ -32,6 +32,7 @@ export class Graph extends Component {
   }
 
   drawGraph() {
+    console.log('draw');
     const data = this.props.readings;
     // Initialization.
     const container = document.querySelector('#graph-container');
@@ -44,7 +45,7 @@ export class Graph extends Component {
       top: 10,
       right: 20,
       bottom: 10,
-      left: this.props.sensor.units ? this.props.sensor.units.length * 10 : 60,
+      left: this.props.sensor.units ? 40 + this.props.sensor.units.length * 10 : 60,
     };
     width = width - margin.left - margin.right;
     height = height - margin.top - margin.bottom;
@@ -58,12 +59,15 @@ export class Graph extends Component {
     };
 
     const dataObject = [];
+
     for (i = data.length - 1; i > 0; i --) {
       dataObject.push({
         created: data[i].timestamp,
         value: data[i].value * coef.x + coef.y,
       });
     }
+
+
     if (dataObject.length === 0) {
       container.innerHTML = 'There arnt enough readings for this sensor to display anything.';
       return;
@@ -92,6 +96,9 @@ export class Graph extends Component {
         max = dataObject[i].value;
       }
     }
+    // Adds margins within the graph
+    min = min - ((max - min) * 0.05);
+    max = max + ((max - min) * 0.05);
 
     // Create the svg.
     const newChart = d3.select('#graph-container')
@@ -318,19 +325,31 @@ export class Graph extends Component {
       .attr('height', 100 * 0.4)
       .attr('fill', 'black');
     textElements.push(newText);
+
   } // End D3
 
   componentDidMount() {
-    const data = [];
-    for (let i = 0; i < 24 * 60; i++) {
-      data.push({
-        timestamp: Date.now() - (i * 60 * 1000),
-        value: Math.sin(i / 100),
-      });
-    }
-    this.drawGraph(data);
+    this.setState({
+      readings: this.props.readings,
+    });
+    this.drawGraph();
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      this.state &&
+      this.state.readings &&
+      (nextProps.readings[0].timestamp !== this.state.readings[0].timestamp ||
+        nextProps.readings.length !== this.state.readings.length
+      )
+    ) {
+      this.setState({
+        readings: this.props.readings,
+      });
+      this.drawGraph();
+    }
+    return true;
+  }
 
   render() {
     return (
