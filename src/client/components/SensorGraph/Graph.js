@@ -92,6 +92,9 @@ export class Graph extends Component {
         max = dataObject[i].value;
       }
     }
+    // Adds margins within the graph
+    min = min - ((max - min) * 0.05);
+    max = max + ((max - min) * 0.05);
 
     // Create the svg.
     const newChart = d3.select('#graph-container')
