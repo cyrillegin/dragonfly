@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, ForeignKey, Float, BigInteger, String
+from sqlalchemy import Column, Integer, Text, ForeignKey, Float, BigInteger, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -24,6 +24,7 @@ class Sensor(Base):
     # disabled, online, error
     status = Column(Text)
     meta = Column(Text)
+    alarm = Column(Boolean)
 
     def toDict(self):
         return {
@@ -40,7 +41,8 @@ class Sensor(Base):
             "pin": self.pin,
             "endpoint": self.endpoint,
             "status": self.status,
-            "meta": self.meta
+            "meta": self.meta,
+            "alarm": self.alarm
         }
 
 
@@ -59,4 +61,36 @@ class Reading(Base):
             "timestamp": self.timestamp,
             "sensor": self.sensor,
             "value": self.value
+        }
+
+
+class Action(Base):
+
+    __tablename__ = 'action'
+
+    uuid = Column(String, index=True, primary_key=True)
+    created = Column(BigInteger)
+    modified = Column(BigInteger)
+    status = Column(String)
+    sensor = Column(String)
+    plugin = Column(String)
+    meta = Column(String)
+    notification_rate = Column(String)
+    value = Column(String)
+    operator = Column(String)
+    lastNotification = Column(BigInteger)
+
+    def toDict(self):
+        return {
+            "uuid": self.uuid,
+            "created": self.created,
+            "modified": self.modified,
+            "status": self.status,
+            "sensor": self.sensor,
+            "plugin": self.plugin,
+            "meta": self.meta,
+            "notificationRate": self.notification_rate,
+            "value": self.value,
+            "operator": self.operator,
+            "lastNotification": self.lastNotification
         }

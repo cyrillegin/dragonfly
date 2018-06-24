@@ -25,7 +25,7 @@ def query(sensor):
     if sensor['status'] == 'disabled':
         return
     try:
-        module = importlib.import_module('plugins.{}'.format(sensor['poller']))
+        module = importlib.import_module('sensorPlugins.{}'.format(sensor['poller']))
     except Exception as e:
         logging.error('Error importing plugin. Quiting')
         logging.error(e)
