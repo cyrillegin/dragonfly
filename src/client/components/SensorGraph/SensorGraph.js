@@ -29,12 +29,18 @@ const styles = {
   },
   timeControls: {
     textAlign: 'right',
-    width: '100%',
+    flexGrow: '1',
     display: 'inline-block',
     margin: '10px',
   },
   textField: {
     margin: '12px',
+  },
+  statsContianer: {
+    textAlign: 'left',
+  },
+  extras: {
+    display: 'flex',
   },
 };
 
@@ -57,6 +63,7 @@ export class SensorGraph extends Component {
     readings: [],
     startTime: null,
     endTime: null,
+    status: null,
   }
 
   constructor(props) {
@@ -68,9 +75,34 @@ export class SensorGraph extends Component {
 
   loadData() {
     this.props.getReadings().then((readings) => {
+      const stats = {
+        max: readings[0].value,
+        min: readings[0].value,
+        avg: 0,
+        count: readings.length,
+        last: readings[readings.length - 1].value,
+      };
+      readings.forEach((reading) => {
+        stats.avg += reading.value;
+        if (stats.max < reading.value) {
+          stats.max = reading.value;
+        }
+        if (stats.min > reading.value) {
+          stats.min = reading.value;
+        }
+      });
+      const coef = {
+        x: 1,
+        y: 0,
+      };
+      stats.avg = ((stats.avg / readings.length) * coef.x + coef.y).toFixed(2);
+      stats.max = stats.max * coef.x + coef.y;
+      stats.min = stats.min * coef.x + coef.y;
+
       this.setState({
         loading: false,
         readings: readings,
+        stats: stats,
       });
     });
   }
@@ -142,19 +174,47 @@ export class SensorGraph extends Component {
             sensor={this.props.sensor}
             readings={this.state.readings}
           />
+          <div className={this.props.classes.extras}>
+            <div className={this.props.classes.statsContianer}>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Min: </td>
+                    <td>{this.state.stats.min}</td>
+                  </tr>
+                  <tr>
+                    <td>Max:</td>
+                    <td>{this.state.stats.max}</td>
+                  </tr>
+                  <tr>
+                    <td>Avg:</td>
+                    <td>{this.state.stats.avg}</td>
+                  </tr>
+                  <tr>
+                    <td>Last:</td>
+                    <td> {this.state.stats.last}</td>
+                  </tr>
+                  <tr>
+                    <td>Count:</td>
+                    <td> {this.state.stats.count}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-          <div className={this.props.classes.timeControls}>
+            <div className={this.props.classes.timeControls}>
             Start Time
-            <Datetime
-              onChange={setStartTime}
-              value={this.state.startTime}
-              inputProps={{'aria-label': 'start time'}} />
+              <Datetime
+                onChange={setStartTime}
+                value={this.state.startTime}
+                inputProps={{'aria-label': 'start time'}} />
             End Time
-            <Datetime
-              onChange={setEndTime}
-              value={this.state.endTime}
-              inputProps={{'aria-label': 'end time'}} />
-            <Button onClick={submitTime}>Submit Changes</Button>
+              <Datetime
+                onChange={setEndTime}
+                value={this.state.endTime}
+                inputProps={{'aria-label': 'end time'}} />
+              <Button onClick={submitTime}>Submit Changes</Button>
+            </div>
           </div>
         </Paper>
       </div>

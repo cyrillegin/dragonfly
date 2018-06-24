@@ -58,12 +58,15 @@ export class Graph extends Component {
     };
 
     const dataObject = [];
+
     for (i = data.length - 1; i > 0; i --) {
       dataObject.push({
         created: data[i].timestamp,
         value: data[i].value * coef.x + coef.y,
       });
     }
+
+
     if (dataObject.length === 0) {
       container.innerHTML = 'There arnt enough readings for this sensor to display anything.';
       return;
@@ -321,6 +324,7 @@ export class Graph extends Component {
       .attr('height', 100 * 0.4)
       .attr('fill', 'black');
     textElements.push(newText);
+
   } // End D3
 
   componentDidMount() {
