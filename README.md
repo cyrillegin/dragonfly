@@ -107,3 +107,82 @@ VCC needs to be hooked up to 5v, both sensitivity and time delay pots should be 
 Certain sensors like the one wire temperature sensor have the ability to control other things.  
 
 The example config shows demonstrates how to set it up for controlling a wemo switch.
+
+
+
+
+
+V2!
+
+
+Setting up dragonfly on Raspberry Pi
+With monitor / keyboard / mouse
+
+menu - preferences - raspberry pi config
+setup name / password/ and enable any protocols you need
+right click on wifi and connect to internet
+
+update apt
+* `sudo apt-get update`
+* `sudo apt-get upgrade -y`
+* `sudo apt-get install screen vim -y`
+
+install node
+`sudo curl --silent --location https://deb.nodesource.com/setup_8.x | sudo bash -`
+`sudo apt-get install -y nodejs`  
+`sudo npm install`
+
+setup repo
+`git clone https://github.com/cyrillegin/dragonfly.git`
+
+Setting up postgres
+`sudo apt install postgresql libpq-dev postgresql-client`
+`sudo su postgres`
+`createuser pi -P --interactive`
+  superuser - no
+  databases - YES
+  roles - YES
+`psql`
+`create database test`
+exit back to pi user ( Ctrl + d)
+`psql test`
+
+
+Sensor PLUGINS
+
+Crypto Poller
+use name in the meta value
+
+GPIO Poller
+Once the poller has been setup, you need to activate it and get its device id.
+`sudo dtoverlay w1-gpio gpiopin=17 pullup=0`
+changing the gpiopin to whatever you have yours plugged into (run this command multiple times if you have multiple sensors plugged in).
+To list the active devices, run
+`ls /sys/bus/w1/devices/`
+You should see listed devices that look like `28-0416a47a0aff`. These will be added to the metadata field when adding the sensor.
+
+
+
+Action Plugins
+
+Slack plugin
+to use the slack plugin, you must create a slack app here: https://api.slack.com/incoming-webhooks#advanced_message_formatting
+Once done, add the slack hook url to your config for SLACK_URL
+
+
+
+TroubleShooting
+To check if node installed correctly, run `node -v`. Under some instances, node has trouble correctly detecting the pis architecture. This has happened on the raspberry pi zero wireless. To fix this, you can download and install a different architecture based node manually:
+`wget https://nodejs.org/dist/v8.10.0/node-v8.10.0-linux-armv6l.tar.gz`
+`tar -xzf node-v8.10.0-linux-armv6l.tar.gz`
+`cd node-v6.11.1-linux-armv6l/`
+`sudo cp -R * /usr/local/`
+To check to make sure everything worked, run `node -v`
+
+
+If you get a peer authentication failed for user pi error when starting the server, you need to edit the pg_hba.conf file.
+`vim /etc/postgresql/9.6/main/pg_hba.conf`
+and change lines 
+`local   all             postgres                                peer`
+to
+`local   all             postgres                                md5`

@@ -9,13 +9,36 @@ logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=loggin
 
 
 def TakeAction(action, value, sensor):
-    print(sensor)
     body = {
         "text": "Dragonfly Alarm",
         "attachments": [
             {
                 "title": sensor['name'],
-                "text": "Sensor is {} {} and is out of bounds, value is currently {}".format(action['operator'], action['value'], value)
+                "text": "Sensor is {} {} and is out of bounds, value is currently {}".format(action['operator'], action['value'], value),
+                "color": "#FF0000"
+            }
+        ]
+    }
+
+    if ENVIRONMENT is 'development':
+        body['text'] += ' Test'
+    if action['meta'] is not None and action['meta'] != '':
+        body['attachments'][0]['text'] += "\n{}".format(action['meta'])
+    body['text'] = "*{}*".format(body['text'])
+
+    logging.info('Sending message to Slack')
+    resp = requests.post(SLACK_URL, data=json.dumps(body))
+    logging.info(resp)
+
+
+def ResolveAction(sensor):
+    body = {
+        "text": "Dragonfly Alarm Resolved",
+        "attachments": [
+            {
+                "title": sensor['name'],
+                "text": "Sensor alarm has been resolved.",
+                "color": "#00FF00"
             }
         ]
     }

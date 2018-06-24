@@ -39,47 +39,48 @@ def query(action, session):
     timeout = notificationRate
 
     while True:
+        sensor = session.query(Sensor).filter_by(uuid=action['sensor']).one()
         lastReading = session.query(Reading).filter_by(sensor=action['sensor']).order_by('timestamp desc').first()
         lastValue = float(lastReading.toDict()['value'])
         checkValue = float(action['value'])
+        print("lastValue: {}".format(lastValue))
+        print("checkValue: {}".format(checkValue))
         if lastReading is not None:
             if action['operator'] == '>' and lastValue > checkValue:
                 logging.info('Reading out of bounds.')
-                notify(action, session, lastValue, module)
+                notify(action, session, lastValue, sensor, module)
             elif action['operator'] == '<' and lastValue < checkValue:
                 logging.info('Reading out of bounds.')
-                notify(action, session, lastValue, module)
+                notify(action, session, lastValue, sensor, module)
             else:
                 # Update sensor alarm
-                updateSensorAlaram(session, action['sensor'], False)
+                updateSensorAlarm(session, sensor, False, module)
         else:
             logging.info('No readings currently exist.')
-            
         time.sleep(timeout)
 
 
-def notify(action, session, lastValue, module):
+def notify(action, session, lastValue, sensor, module):
     updatedAction = session.query(Action).filter_by(uuid=action['uuid']).one()
 
     if updatedAction.toDict()['lastNotification'] is None or time.time() * 1000 - int(updatedAction.toDict()['notificationRate']) * 1000 > int(updatedAction.toDict()['lastNotification']):
-        sensor = session.query(Sensor).filter_by(uuid=action['sensor']).one()
-
         logging.info('Taking action.')
         module.TakeAction(updatedAction.toDict(), lastValue, sensor.toDict())
         # Update action time
         setattr(updatedAction, 'lastNotification', time.time() * 1000)
         session.add(updatedAction)
         # Update sensor alarm
-        updateSensorAlaram(session, action['sensor'], True)
+        updateSensorAlarm(session, sensor, True, module)
         session.commit()
 
 
-def updateSensorAlaram(session, sensorId, alarm):
-    sensor = session.query(Sensor).filter_by(uuid=sensorId).one()
+def updateSensorAlarm(session, sensor, alarm, module):
     if sensor.toDict()['alarm'] is not alarm:
-        print('updating sensor alarm')
         setattr(sensor, 'alarm', alarm)
         session.commit()
+        if not alarm:
+            logging.info("Alarm resolved for {}".format(sensor.toDict()['name']))
+            module.ResolveAction(sensor.toDict())
 
 
 def checkForActions():
