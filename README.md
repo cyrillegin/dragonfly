@@ -125,27 +125,31 @@ right click on wifi and connect to internet
 update apt
 * `sudo apt-get update`
 * `sudo apt-get upgrade -y`
-* `sudo apt-get install screen vim -y`
+* `sudo apt-get install screen vim postgresql libpq-dev postgresql-client -y`
+
+setup repo
+`git clone https://github.com/cyrillegin/dragonfly.git`
 
 install node
 `sudo curl --silent --location https://deb.nodesource.com/setup_8.x | sudo bash -`
 `sudo apt-get install -y nodejs`  
 `sudo npm install`
 
-setup repo
-`git clone https://github.com/cyrillegin/dragonfly.git`
+python
+`sudo pip3 install cherrypi sqlalchemy psycopg2`
+
 
 Setting up postgres
-`sudo apt install postgresql libpq-dev postgresql-client`
 `sudo su postgres`
 `createuser pi -P --interactive`
   superuser - no
   databases - YES
   roles - YES
 `psql`
-`create database test`
+`create database test;`
 exit back to pi user ( Ctrl + d)
 `psql test`
+
 
 
 Sensor PLUGINS
