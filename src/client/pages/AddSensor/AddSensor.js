@@ -11,6 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/Inbox';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import MessageDialog from './../../components/Dialogs/MessageDialog';
 
 const styles = theme => ({
   root: {
@@ -53,6 +54,8 @@ export class HomePage extends Component {
   state = {
     loading: true,
     plugins: null,
+    dialogIsOpen: false,
+    dialogMessage: '',
     selectedPlugin: '',
     name: '',
     description: '',
@@ -107,7 +110,13 @@ export class HomePage extends Component {
           endpoint: this.state.endpoint,
           meta: this.state.meta,
         },
-      );
+      ).then((res) => {
+        console.log(res);
+        this.setState({
+          dialogIsOpen: true,
+          dialogMessage: `${res.sensor.name} successfully added using the ${res.sensor.poller} poller.`,
+        });
+      });
     };
 
     const testSensor = () => {
@@ -131,8 +140,21 @@ export class HomePage extends Component {
       });
     };
 
+    const closeDialog = () => {
+      this.setState({
+        dialogIsOpen: false,
+      });
+    };
+
     return (
       <div className={this.props.classes.root}>
+
+        <MessageDialog
+          open={this.state.dialogIsOpen}
+          onAccept={closeDialog}
+          title={'Sensor Added.'}
+          contentText={this.state.dialogMessage} />
+
         <Paper className={
           this.state.selectedPlugin === '' ?
             this.props.classes.fullPaper :
