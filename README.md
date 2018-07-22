@@ -171,6 +171,10 @@ http://osoyoo.com/2017/07/06/bmp180_pressure-sensor/
 Dragonfly is also using their bmp180 class.
 In the meta field, you can enter either 'temperature', 'pressure', or 'altitude' to read those values
 
+DHT11 poller
+Tutorial from http://osoyoo.com/2017/07/06/dht11/
+In the meta field, you can enter either 'temperature' or 'humidity'.
+
 
 Action Plugins
 
