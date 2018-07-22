@@ -7,6 +7,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
+import ACUnitIcon from '@material-ui/icons/AcUnit';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -90,6 +91,10 @@ export class SensorNavMenu extends Component {
         case 'cryptoPoller':
           return (
             <MonetizationOnIcon />
+          );
+        case 'gpioPoller':
+          return (
+            <ACUnitIcon />
           );
         default:
           return (

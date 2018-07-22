@@ -8,9 +8,12 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/Inbox';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import ACUnitIcon from '@material-ui/icons/AcUnit';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import MessageDialog from './../../components/Dialogs/MessageDialog';
 
 const styles = theme => ({
   root: {
@@ -53,6 +56,8 @@ export class HomePage extends Component {
   state = {
     loading: true,
     plugins: null,
+    dialogIsOpen: false,
+    dialogMessage: '',
     selectedPlugin: '',
     name: '',
     description: '',
@@ -107,7 +112,12 @@ export class HomePage extends Component {
           endpoint: this.state.endpoint,
           meta: this.state.meta,
         },
-      );
+      ).then((res) => {
+        this.setState({
+          dialogIsOpen: true,
+          dialogMessage: `${res.sensor.name} successfully added using the ${res.sensor.poller} poller.`,
+        });
+      });
     };
 
     const testSensor = () => {
@@ -131,8 +141,39 @@ export class HomePage extends Component {
       });
     };
 
+    const closeDialog = () => {
+      this.setState({
+        dialogIsOpen: false,
+      });
+    };
+
+    const pollerIcon = (icon) => {
+      console.log(icon);
+      switch (icon) {
+        case 'cryptoPoller':
+          return (
+            <MonetizationOnIcon />
+          );
+        case 'gpioPoller':
+          return (
+            <ACUnitIcon />
+          );
+        default:
+          return (
+            <ShowChartIcon />
+          );
+      }
+    };
+
     return (
       <div className={this.props.classes.root}>
+
+        <MessageDialog
+          open={this.state.dialogIsOpen}
+          onAccept={closeDialog}
+          title={'Sensor Added.'}
+          contentText={this.state.dialogMessage} />
+
         <Paper className={
           this.state.selectedPlugin === '' ?
             this.props.classes.fullPaper :
@@ -149,7 +190,7 @@ export class HomePage extends Component {
                   this.handlePluginSelect(plugin);
                 }}>
                   <ListItemIcon>
-                    <InboxIcon />
+                    {pollerIcon(plugin)}
                   </ListItemIcon>
                   <ListItemText primary={plugin} />
                 </ListItem>
