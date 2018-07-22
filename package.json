@@ -61,7 +61,7 @@
     "runProd": "npm run buildProd && npm run startServer'",
     "setup": "npm install && npm run installGitHooks && npm run rebuildDb",
     "start": "npm run watchClient & npm run startServer",
-    "startServer": "python3 server/server.py",
+    "startServer": "python server/server.py",
     "test": "npm run jest",
     "tests": "npm run lint && npm run test",
     "watchClient": "webpack --mode development --watch --progress --config webpack.dev.config.js src/client",

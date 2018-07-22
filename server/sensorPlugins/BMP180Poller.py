@@ -8,10 +8,7 @@ BMP180.py
 import time
 import logging
 
-try:
-    import Adafruit_BMP.BMP085 as BMP085
-except Exception as e:
-    logging.info("error loading Adafruit plugin")
+from vendor import BMP180
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
@@ -20,12 +17,22 @@ def GetValues(params):
 
     logging.info("Starting presure poller.")
 
+    value = None
     try:
-        sensor = BMP085.BMP085()
-        logging.info('Temp = {0:0.2f} *C'.format(sensor.read_temperature()))
+        sensor = BMP180.BMP180()
+        print('reading value')
+        print(params)
+        if params['meta'] == 'temperature':
+            value = sensor.read_temperature() * 9.0 / 5.0 +32
+        elif params['meta'] == 'pressure':
+            value = sensor.read_pressure() / 100.0
+        elif params['meta'] == 'altitude':
+            value = sensor.read_altitude()
     except Exception as e:
         logging.error("Couldn't create sensor.")
         logging.error(e)
+        return {}
+    print('creating reading')
     newReading = {
         'sensor': {
             'uuid': params['uuid'],
@@ -33,6 +40,7 @@ def GetValues(params):
         },
         'readings': {
             'timestamp': time.time() * 1000,
+            'value': value
         }
     }
     if 'meta' in params:
