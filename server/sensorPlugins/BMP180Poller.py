@@ -7,7 +7,7 @@ BMP180.py
 
 import time
 import logging
-
+# This script came from http://osoyoo.com/2017/07/06/bmp180_pressure-sensor/
 from vendor import BMP180
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
@@ -20,8 +20,6 @@ def GetValues(params):
     value = None
     try:
         sensor = BMP180.BMP180()
-        print('reading value')
-        print(params)
         if params['meta'] == 'temperature':
             value = sensor.read_temperature() * 9.0 / 5.0 +32
         elif params['meta'] == 'pressure':
@@ -32,7 +30,6 @@ def GetValues(params):
         logging.error("Couldn't create sensor.")
         logging.error(e)
         return {}
-    print('creating reading')
     newReading = {
         'sensor': {
             'uuid': params['uuid'],

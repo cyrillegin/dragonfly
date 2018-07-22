@@ -155,7 +155,7 @@ exit back to pi user ( Ctrl + d)
 Sensor PLUGINS
 
 Crypto Poller
-use name in the meta value
+use name of cryptocurrency in the meta value
 
 GPIO Poller
 Once the poller has been setup, you need to activate it and get its device id.
@@ -165,6 +165,11 @@ To list the active devices, run
 `ls /sys/bus/w1/devices/`
 You should see listed devices that look like `28-0416a47a0aff`. These will be added to the metadata field when adding the sensor.
 
+BMP180 poller
+a nice tutorial on the sensor can be found here.
+http://osoyoo.com/2017/07/06/bmp180_pressure-sensor/
+Dragonfly is also using their bmp180 class.
+In the meta field, you can enter either 'temperature', 'pressure', or 'altitude' to read those values
 
 
 Action Plugins

@@ -59,6 +59,7 @@ export class HomePage extends Component {
     dialogIsOpen: false,
     dialogMessage: '',
     selectedPlugin: '',
+    pollRate: '',
     name: '',
     description: '',
     coefficients: '',
@@ -148,7 +149,6 @@ export class HomePage extends Component {
     };
 
     const pollerIcon = (icon) => {
-      console.log(icon);
       switch (icon) {
         case 'cryptoPoller':
           return (
