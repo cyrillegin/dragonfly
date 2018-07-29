@@ -58,6 +58,7 @@ export class HomePage extends Component {
     plugins: null,
     dialogIsOpen: false,
     dialogMessage: '',
+    dialogTitle: '',
     selectedPlugin: '',
     pollRate: '',
     name: '',
@@ -74,12 +75,14 @@ export class HomePage extends Component {
   handlePluginSelect(name) {
     this.setState({
       selectedPlugin: name,
+      testResult: {},
     });
   }
 
   handleChange = name => event => {
     this.setState({
       [name]: event.target.value,
+      testResult: {},
     });
   };
 
@@ -117,6 +120,7 @@ export class HomePage extends Component {
         this.setState({
           dialogIsOpen: true,
           dialogMessage: `${res.sensor.name} successfully added using the ${res.sensor.poller} poller.`,
+          dialogTitle: 'Sensor Added.',
         });
       });
     };
@@ -136,9 +140,20 @@ export class HomePage extends Component {
           meta: this.state.meta,
         },
       ).then((data) => {
-        this.setState({
-          testResult: data,
-        });
+        const newState = {
+          dialogIsOpen: true,
+        };
+        if (data.sensor) {
+          this.setState({
+            dialogMessage: `${this.state.name} returned a value of ${data.reading.value} and can be added.`,
+            dialogTitle: 'Test successful.',
+            testResult: data,
+          });
+        } else {
+          newState.dialogMessage = `Sensor couldn't be added: ${data.error}`;
+          newState.dialogTitle = 'Test Failed.';
+        }
+        this.setState(newState);
       });
     };
 
@@ -171,7 +186,7 @@ export class HomePage extends Component {
         <MessageDialog
           open={this.state.dialogIsOpen}
           onAccept={closeDialog}
-          title={'Sensor Added.'}
+          title={this.state.dialogTitle}
           contentText={this.state.dialogMessage} />
 
         <Paper className={
@@ -285,30 +300,6 @@ export class HomePage extends Component {
               Submit Sensor
             </Button>
           </form>
-          {this.state.testResult &&
-            <div>
-              {this.state.testResult.error &&
-              <div>
-                <Typography variant="headline" component="h3" className={this.props.classes.title}>
-                An Error has occured while testing the sensor
-                </Typography>
-                <Typography variant="headline" component="h5" className={this.props.classes.title}>
-                  {this.state.testResult.error}
-                </Typography>
-              </div>
-              }
-              {this.state.testResult.sensor &&
-                <div>
-                  <Typography variant="headline" component="h3" className={this.props.classes.title}>
-                  Test succesful!
-                  </Typography>
-                  <Typography variant="headline" component="h5" className={this.props.classes.title}>
-                    {JSON.stringify(this.state.testResult)}
-                  </Typography>
-                </div>
-              }
-            </div>
-          }
         </Paper>
         }
       </div>
