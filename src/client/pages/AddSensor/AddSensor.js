@@ -42,6 +42,9 @@ const styles = theme => ({
     width: '100%',
   },
   title: {},
+  selectedPlugin: {
+    background: '#dcffdc',
+  },
 });
 
 export class HomePage extends Component {
@@ -201,7 +204,7 @@ export class HomePage extends Component {
           <List component="nav" className={this.props.classes.pluginsList}>
             {this.state.plugins.map((plugin, index) => {
               return (
-                <ListItem key={index} button onClick={() => {
+                <ListItem className={plugin === this.state.selectedPlugin ? this.props.classes.selectedPlugin : null} key={index} button onClick={() => {
                   this.handlePluginSelect(plugin);
                 }}>
                   <ListItemIcon>
