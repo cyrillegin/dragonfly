@@ -48,12 +48,15 @@ def query(sensor):
 
 
 def checkForSensors():
+    return
     while True:
         logging.info('Checking for new sensors and restarting child processes.')
         with sessionScope() as session:
             sensors = session.query(Sensor)
             index = 0
             for i in sensors:
+                if i.toDict()['poller'] == 'customEntry':
+                    continue
                 if len(runningSensors) < index + 1:
                     runningSensors.append(None)
                 if runningSensors[index] is not None and runningSensors[index].is_alive():

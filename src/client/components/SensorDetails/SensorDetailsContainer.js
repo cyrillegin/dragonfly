@@ -40,6 +40,27 @@ export default compose(
             });
         });
       },
+      addEntry: (value) => {
+        console.log(ownProps);
+        return new Promise((res, rej) => {
+          fetch('/api/reading', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({uuid: ownProps.sensor.uuid, value: value, sensor: ownProps.sensor.name}),
+          })
+            .then(response => response.json())
+            .then((data) => {
+              console.log('asdf');
+              console.log(data);
+            // ownProps.history.push('/');
+            // res({'data': data});
+            // window.location.reload();
+            });
+        });
+      },
     };
   }),
 )(SensorDetails);

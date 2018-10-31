@@ -33,6 +33,7 @@ export class SensorDetails extends Component {
     classes: PropTypes.object.isRequired,
     updateSensor: PropTypes.func.isRequired,
     deleteSensor: PropTypes.func.isRequired,
+    addEntry: PropTypes.func.isRequired,
     sensor: PropTypes.shape({
       uuid: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
@@ -71,6 +72,7 @@ export class SensorDetails extends Component {
     meta: '',
     loading: true,
     deleteDialogIsOpen: false,
+    newValue: '',
   }
 
   handleChange = name => event => {
@@ -148,11 +150,16 @@ export class SensorDetails extends Component {
       });
     };
 
+    const addEntry = () => {
+      this.props.addEntry(parseInt(this.state.newValue));
+    };
+
     if (this.state.loading) {
       return (<div />);
     } else if (this.props.sensor.uuid === '' || this.props.sensor.uuid === null) {
       return (<div />);
     }
+
     return (
       <div className={this.props.classes.root}>
 
@@ -236,14 +243,16 @@ export class SensorDetails extends Component {
               value={this.state.description}
               margin="normal"
             />
-            <TextField
-              id="coefficients"
-              label="Coefficients"
-              onChange={this.handleChange('coefficients')}
-              className={this.props.classes.textField}
-              value={this.state.coefficients}
-              margin="normal"
-            />
+            {this.props.sensor.poller !== 'customEntry' &&
+              <TextField
+                id="coefficients"
+                label="Coefficients"
+                onChange={this.handleChange('coefficients')}
+                className={this.props.classes.textField}
+                value={this.state.coefficients}
+                margin="normal"
+              />
+            }
             <TextField
               id="station"
               label="Station"
@@ -252,14 +261,16 @@ export class SensorDetails extends Component {
               value={this.state.station}
               margin="normal"
             />
-            <TextField
-              id="pollRate"
-              label="Poll Rate"
-              onChange={this.handleChange('pollRate')}
-              className={this.props.classes.textField}
-              value={this.state.pollRate}
-              margin="normal"
-            />
+            {this.props.sensor.poller !== 'customEntry' &&
+              <TextField
+                id="pollRate"
+                label="Poll Rate"
+                onChange={this.handleChange('pollRate')}
+                className={this.props.classes.textField}
+                value={this.state.pollRate}
+                margin="normal"
+              />
+            }
             <TextField
               id="poller"
               label="Poller"
@@ -268,14 +279,16 @@ export class SensorDetails extends Component {
               value={this.state.poller}
               margin="normal"
             />
-            <TextField
-              id="pin"
-              label="Pin"
-              onChange={this.handleChange('pin')}
-              className={this.props.classes.textField}
-              value={this.state.pin}
-              margin="normal"
-            />
+            {this.props.sensor.poller !== 'customEntry' &&
+              <TextField
+                id="pin"
+                label="Pin"
+                onChange={this.handleChange('pin')}
+                className={this.props.classes.textField}
+                value={this.state.pin}
+                margin="normal"
+              />
+            }
             <TextField
               id="units"
               label="Units"
@@ -313,6 +326,19 @@ export class SensorDetails extends Component {
             </Button>
             <Button className={this.props.classes.button} onClick={openDeleteSensorDialog}>
               Delete Sensor
+            </Button>
+          </form>
+          <form>
+            <TextField
+              id="newValue"
+              label={'newValue'}
+              onChange={this.handleChange('newValue')}
+              className={this.props.classes.textField}
+              value={this.state.newValue}
+              margin="normal"
+            />
+            <Button className={this.props.classes.button} onClick={addEntry}>
+              Add Entry
             </Button>
           </form>
         </Paper>
