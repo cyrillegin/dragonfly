@@ -7,6 +7,8 @@ const SnackbarContext = React.createContext();
 
 const messages = {
   'reading-added': 'Reading added to sensor.',
+  'sensor-update': 'Sensor has been updated',
+  'sensor-delete': 'Sensor has been deleted',
 };
 
 export class SharedSnackbarProvider extends Component {

@@ -14,7 +14,7 @@ export default class App extends Component {
         <SharedSnackbarProvider>
           <NavBar />
           <Route exact path="/addsensors" component={AddSensorContainer} />
-          <Route component={HomeContainer} />
+          <Route exact path="/" component={HomeContainer} />
         </SharedSnackbarProvider>
       </Router>
     );

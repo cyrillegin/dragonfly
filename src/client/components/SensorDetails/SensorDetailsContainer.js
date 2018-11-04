@@ -7,7 +7,6 @@ export default compose(
   mapProps(ownProps => {
     return {
       ...ownProps,
-      sensor: ownProps.sensor,
       updateSensor: sensor => {
         return new Promise((res, rej) => {
           fetch('/api/sensor', {
@@ -20,8 +19,7 @@ export default compose(
           })
             .then(response => response.json())
             .then(data => {
-              res({ data: 'data' });
-              window.location.reload();
+              res({ data });
             });
         });
       },
@@ -37,8 +35,7 @@ export default compose(
           })
             .then(response => response.json())
             .then(data => {
-              ownProps.history.push('/');
-              res({ data: data });
+              res(data);
               window.location.reload();
             });
         });
