@@ -40,6 +40,16 @@ export default compose(
             });
         });
       },
+      addEntry: (value) => {
+        return fetch('/api/reading', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({uuid: ownProps.sensor.uuid, value: value, sensor: ownProps.sensor.name}),
+        });
+      },
     };
   }),
 )(SensorDetails);
