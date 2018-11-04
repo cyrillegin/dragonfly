@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
-import {Link} from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -38,38 +38,29 @@ export class NavBar extends Component {
 
   state = {
     version: '',
-  }
+  };
 
   componentDidMount() {
-    this.props.getVersion().then(res => this.setState({version: res}));
+    this.props.getVersion().then(res => this.setState({ version: res }));
   }
 
   render() {
-
     return (
       <div className={this.props.classes.root}>
         <AppBar position="static" color="default">
           <Toolbar>
-
             <Typography variant="title" color="inherit" className={this.props.classes.flex}>
               <Link to="/" className={this.props.classes.link}>
                 Dragonfly
               </Link>
-              <div className={this.props.classes.versionNumber}>
-                {this.state.version}
-              </div>
+              <div className={this.props.classes.versionNumber}>{this.state.version}</div>
             </Typography>
 
-
             <Link to="/" className={this.props.classes.link}>
-              <Button>
-              Home
-              </Button>
+              <Button>Home</Button>
             </Link>
             <Link to="/addsensors" className={this.props.classes.link}>
-              <Button>
-              Add Sensor
-              </Button>
+              <Button>Add Sensor</Button>
             </Link>
           </Toolbar>
         </AppBar>

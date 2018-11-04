@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -54,7 +54,7 @@ export class SensorDetails extends Component {
 
   static defaultProps = {
     sensor: null,
-  }
+  };
 
   state = {
     uuid: '',
@@ -73,7 +73,7 @@ export class SensorDetails extends Component {
     loading: true,
     deleteDialogIsOpen: false,
     newValue: '',
-  }
+  };
 
   handleChange = name => event => {
     this.setState({
@@ -82,8 +82,10 @@ export class SensorDetails extends Component {
   };
 
   componentDidUpdate(prev) {
-    if ((prev.sensor === null && this.props.sensor !== null) ||
-    (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)) {
+    if (
+      (prev.sensor === null && this.props.sensor !== null) ||
+      (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)
+    ) {
       this.setState({
         loading: false,
         uuid: this.props.sensor.uuid || '',
@@ -107,7 +109,7 @@ export class SensorDetails extends Component {
   componentDidMount() {
     fetch('/getIP')
       .then(response => response.json())
-      .then((data) => {
+      .then(data => {
         this.setState({
           localIP: data.localIP,
         });
@@ -145,26 +147,26 @@ export class SensorDetails extends Component {
     };
 
     const handleDeleteSensor = () => {
-      this.props.deleteSensor().then((res) => {
+      this.props.deleteSensor().then(res => {
         closeDeleteSensorDialog();
       });
     };
 
     const addEntry = () => {
-      this.props.addEntry(parseInt(this.state.newValue))
+      this.props
+        .addEntry(parseInt(this.state.newValue))
         .then(response => response.json())
         .then(data => alert('Added value to sensor.'));
     };
 
     if (this.state.loading) {
-      return (<div />);
+      return <div />;
     } else if (this.props.sensor.uuid === '' || this.props.sensor.uuid === null) {
-      return (<div />);
+      return <div />;
     }
 
     return (
       <div className={this.props.classes.root}>
-
         <Dialog
           open={this.state.deleteDialogIsOpen}
           onClose={closeDeleteSensorDialog}
@@ -186,7 +188,6 @@ export class SensorDetails extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-
 
         <Paper className={this.props.classes.paper} elevation={4}>
           <Typography variant="headline" component="h3">
@@ -245,7 +246,7 @@ export class SensorDetails extends Component {
               value={this.state.description}
               margin="normal"
             />
-            {this.props.sensor.poller !== 'customEntry' &&
+            {this.props.sensor.poller !== 'customEntry' && (
               <TextField
                 id="coefficients"
                 label="Coefficients"
@@ -254,7 +255,7 @@ export class SensorDetails extends Component {
                 value={this.state.coefficients}
                 margin="normal"
               />
-            }
+            )}
             <TextField
               id="station"
               label="Station"
@@ -263,7 +264,7 @@ export class SensorDetails extends Component {
               value={this.state.station}
               margin="normal"
             />
-            {this.props.sensor.poller !== 'customEntry' &&
+            {this.props.sensor.poller !== 'customEntry' && (
               <TextField
                 id="pollRate"
                 label="Poll Rate"
@@ -272,7 +273,7 @@ export class SensorDetails extends Component {
                 value={this.state.pollRate}
                 margin="normal"
               />
-            }
+            )}
             <TextField
               id="poller"
               label="Poller"
@@ -281,7 +282,7 @@ export class SensorDetails extends Component {
               value={this.state.poller}
               margin="normal"
             />
-            {this.props.sensor.poller !== 'customEntry' &&
+            {this.props.sensor.poller !== 'customEntry' && (
               <TextField
                 id="pin"
                 label="Pin"
@@ -290,7 +291,7 @@ export class SensorDetails extends Component {
                 value={this.state.pin}
                 margin="normal"
               />
-            }
+            )}
             <TextField
               id="units"
               label="Units"

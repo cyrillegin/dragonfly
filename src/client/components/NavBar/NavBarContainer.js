@@ -1,10 +1,9 @@
-import {compose, mapProps} from 'recompose';
+import { compose, mapProps } from 'recompose';
 import NavBar from './NavBar';
 
 export default compose(
-  mapProps((ownProps) => {
+  mapProps(ownProps => {
     const version = '0.0.0';
-
 
     return {
       version,

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import queryString from 'query-string';
 import './graph-styles.css';
 
@@ -10,7 +10,7 @@ const d3 = {
   ...require('d3-axis'), // eslint-disable-line
   ...require('d3-format'), // eslint-disable-line
   ...require('d3-shape'), // eslint-disable-line
-  ...require('d3-array') // eslint-disable-line
+  ...require('d3-array'), // eslint-disable-line
 };
 
 const styles = theme => ({
@@ -21,15 +21,17 @@ export class Graph extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     sensor: PropTypes.object,
-    readings: PropTypes.arrayOf(PropTypes.shape({
-      timestamp: PropTypes.number.isRequired,
-      value: PropTypes.number.isRequired,
-    })).isRequired,
-  }
+    readings: PropTypes.arrayOf(
+      PropTypes.shape({
+        timestamp: PropTypes.number.isRequired,
+        value: PropTypes.number.isRequired,
+      }),
+    ).isRequired,
+  };
 
   static defaultProps = {
     sensor: null,
-  }
+  };
 
   drawGraph() {
     console.log('draw');
@@ -60,13 +62,12 @@ export class Graph extends Component {
 
     const dataObject = [];
 
-    for (i = data.length - 1; i > 0; i --) {
+    for (i = data.length - 1; i > 0; i--) {
       dataObject.push({
         created: data[i].timestamp,
         value: data[i].value * coef.x + coef.y,
       });
     }
-
 
     if (dataObject.length === 0) {
       container.innerHTML = 'There arnt enough readings for this sensor to display anything.';
@@ -88,7 +89,7 @@ export class Graph extends Component {
     let max = dataObject[0].value;
 
     // Set min and max values
-    for (i = 0; i < dataObject.length; i ++) {
+    for (i = 0; i < dataObject.length; i++) {
       if (min > dataObject[i].value) {
         min = dataObject[i].value;
       }
@@ -97,11 +98,12 @@ export class Graph extends Component {
       }
     }
     // Adds margins within the graph
-    min = min - ((max - min) * 0.05);
-    max = max + ((max - min) * 0.05);
+    min = min - (max - min) * 0.05;
+    max = max + (max - min) * 0.05;
 
     // Create the svg.
-    const newChart = d3.select('#graph-container')
+    const newChart = d3
+      .select('#graph-container')
       .append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
@@ -110,16 +112,18 @@ export class Graph extends Component {
       .classed('svg-content-responsive', true);
 
     // Scale
-    const xScale = d3.scaleTime()
+    const xScale = d3
+      .scaleTime()
       .domain([new Date(start), new Date(end)])
       .rangeRound([0, width]);
 
-    const yScale = d3.scaleLinear()
+    const yScale = d3
+      .scaleLinear()
       .domain([min, max])
       .rangeRound([height - margin.bottom, margin.top]);
 
     // Formats text for units display
-    const getFormattedText = (d) => {
+    const getFormattedText = d => {
       const f = d3.format('.1f');
       const units = this.props.sensor.units;
 
@@ -128,14 +132,14 @@ export class Graph extends Component {
 
     // TOOL-TIPS
     // Tooltip container
-    const tooltip = newChart.append('g')
-      .style('display', 'none');
+    const tooltip = newChart.append('g').style('display', 'none');
 
     // Tooltip helper
-    const bisectDate = d3.bisector((d) => d.created).left;
+    const bisectDate = d3.bisector(d => d.created).left;
 
     // Y-axis line for tooltip
-    const yLine = tooltip.append('g')
+    const yLine = tooltip
+      .append('g')
       .append('line')
       .attr('class', 'tooltip-line')
       .style('stroke', 'blue')
@@ -145,7 +149,8 @@ export class Graph extends Component {
       .attr('y2', height);
 
     // Date text
-    const timeText = tooltip.append('text')
+    const timeText = tooltip
+      .append('text')
       .attr('x', 0)
       .attr('y', margin.top - 5)
       .attr('width', 100)
@@ -205,11 +210,12 @@ export class Graph extends Component {
 
       textElements[0]
         .text(getFormattedText(d.value))
-        .attr('transform', `translate(${(xScale(d.created) + 10)},${(yScale(d.value) - 10)})`);
+        .attr('transform', `translate(${xScale(d.created) + 10},${yScale(d.value) - 10})`);
     }
 
     // Selection box
-    const selectionBox = newChart.append('rect')
+    const selectionBox = newChart
+      .append('rect')
       .attr('fill', 'none')
       .attr('opacity', 0.5)
       .attr('x', 0)
@@ -218,7 +224,8 @@ export class Graph extends Component {
       .attr('height', height - margin.top);
 
     // Hit area for selection box
-    newChart.append('rect')
+    newChart
+      .append('rect')
       .attr('width', width)
       .attr('height', height)
       .style('fill', 'none')
@@ -248,39 +255,44 @@ export class Graph extends Component {
     function getTic() {
       const Ticks = [];
       const ratio = (max - min) / 6;
-      for (let q = 0; q < 7; q ++) {
-        Ticks.push(min + (ratio * q));
+      for (let q = 0; q < 7; q++) {
+        Ticks.push(min + ratio * q);
       }
       return Ticks;
     }
 
-    const yAxis = d3.axisLeft(yScale)
-      .tickSizeInner(- width)
+    const yAxis = d3
+      .axisLeft(yScale)
+      .tickSizeInner(-width)
       .tickSizeOuter(0)
       .tickValues(getTic())
-      .tickFormat((d) => {
+      .tickFormat(d => {
         const f = d3.format('.1f');
         return `${f(d)} ${this.props.sensor.units}`;
       });
 
-    newChart.append('g')
+    newChart
+      .append('g')
       .attr('class', 'chart-axis-shape')
       .call(yAxis);
 
     // X Axis
-    const xAxis = d3.axisBottom(xScale)
-      .tickSizeInner(- height + margin.bottom + margin.top)
+    const xAxis = d3
+      .axisBottom(xScale)
+      .tickSizeInner(-height + margin.bottom + margin.top)
       .tickSizeOuter(0)
       .tickPadding(10)
       .ticks(10);
 
-    newChart.append('g')
+    newChart
+      .append('g')
       .attr('class', 'chart-axis-shape')
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(xAxis);
 
     // Top border
-    newChart.append('g')
+    newChart
+      .append('g')
       .append('line')
       .attr('class', 'chart-axis-shape')
       .attr('x1', 0)
@@ -289,7 +301,8 @@ export class Graph extends Component {
       .attr('y2', margin.bottom);
 
     // Right border
-    newChart.append('g')
+    newChart
+      .append('g')
       .append('line')
       .attr('class', 'chart-axis-shape')
       .attr('x1', width)
@@ -298,34 +311,37 @@ export class Graph extends Component {
       .attr('y2', height - margin.bottom);
 
     // Graph lines
-    const lineFunction = d3.line()
+    const lineFunction = d3
+      .line()
       // .defined(() => {
       //     // TODO: add linebreak behaivor
       //     return true;
       // })
-      .x((d) => xScale(d.created))
-      .y((d) => yScale(d.value));
+      .x(d => xScale(d.created))
+      .y(d => yScale(d.value));
 
-    newChart.append('path')
+    newChart
+      .append('path')
       .attr('d', lineFunction(dataObject))
       .attr('stroke', 'rgba(45, 100, 255, 0.87)')
       .attr('stroke-width', 2)
       .attr('fill', 'none');
 
     // // Tooltip circle
-    const newCircle = tooltip.append('circle')
+    const newCircle = tooltip
+      .append('circle')
       .style('fill', 'none')
       .style('stroke', 'blue')
       .attr('r', 4);
     circleElements.push(newCircle);
 
     // Tooltip text
-    newText = tooltip.append('text')
+    newText = tooltip
+      .append('text')
       .attr('width', 100 * 2)
       .attr('height', 100 * 0.4)
       .attr('fill', 'black');
     textElements.push(newText);
-
   } // End D3
 
   componentDidMount() {
@@ -340,8 +356,7 @@ export class Graph extends Component {
       this.state &&
       this.state.readings &&
       (nextProps.readings[0].timestamp !== this.state.readings[0].timestamp ||
-        nextProps.readings.length !== this.state.readings.length
-      )
+        nextProps.readings.length !== this.state.readings.length)
     ) {
       this.setState({
         readings: this.props.readings,

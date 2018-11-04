@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
@@ -46,7 +46,7 @@ export class SensorActions extends Component {
 
   static defaultProps = {
     sensor: null,
-  }
+  };
 
   state = {
     uuid: '',
@@ -56,12 +56,13 @@ export class SensorActions extends Component {
 
     checked: ['wifi'],
     action: null,
-  }
-
+  };
 
   componentDidUpdate(prev) {
-    if ((prev.sensor === null && this.props.sensor !== null) ||
-    (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)) {
+    if (
+      (prev.sensor === null && this.props.sensor !== null) ||
+      (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)
+    ) {
       this.setState({
         uuid: this.props.sensor.uuid || '',
       });
@@ -69,7 +70,7 @@ export class SensorActions extends Component {
   }
 
   loadData() {
-    this.props.getActions().then((actions) => {
+    this.props.getActions().then(actions => {
       this.setState({
         actions: actions,
         loading: false,
@@ -84,11 +85,15 @@ export class SensorActions extends Component {
   };
 
   render() {
-    if (this.props.sensor === null || this.props.sensor.uuid === '' || this.props.sensor.uuid === null) {
-      return (<div />);
+    if (
+      this.props.sensor === null ||
+      this.props.sensor.uuid === '' ||
+      this.props.sensor.uuid === null
+    ) {
+      return <div />;
     } else if (this.state.loading) {
       this.loadData();
-      return (<div />);
+      return <div />;
     }
 
     const openAddActionDialog = () => {
@@ -105,7 +110,7 @@ export class SensorActions extends Component {
     };
 
     const handleToggle = value => () => {
-      const {checked} = this.state;
+      const { checked } = this.state;
       const currentIndex = checked.indexOf(value);
       const newChecked = [...checked];
 
@@ -122,7 +127,6 @@ export class SensorActions extends Component {
 
     return (
       <div className={this.props.classes.root}>
-
         {/* Add Action Dialog */}
         <ActionDialog
           dialogIsOpen={this.state.addActionDialogIsOpen}
@@ -150,15 +154,14 @@ export class SensorActions extends Component {
             Sensor Actions
           </Typography>
           <hr />
-          {this.state.actions.length === 0 &&
+          {this.state.actions.length === 0 && (
             <Typography variant="headline" component="h4" className={this.props.classes.centered}>
-            No actions currently exist for this sensor.
+              No actions currently exist for this sensor.
             </Typography>
-          }
-          {this.state.actions.length > 0 &&
-
+          )}
+          {this.state.actions.length > 0 && (
             <List subheader={<ListSubheader>Actions</ListSubheader>}>
-              {this.state.actions.map((action) => (
+              {this.state.actions.map(action => (
                 <ListItem key={action.uuid}>
                   <ListItemIcon>
                     <WifiIcon />
@@ -169,23 +172,25 @@ export class SensorActions extends Component {
                       onChange={handleToggle('wifi')}
                       checked={this.state.checked.indexOf('wifi') !== -1}
                     />
-                    <Button className={this.props.classes.button} onClick={() => {
-                      this.setState({
-                        updateActionDialogIsOpen: true,
-                        action: action,
-                      });
-                    }}>
+                    <Button
+                      className={this.props.classes.button}
+                      onClick={() => {
+                        this.setState({
+                          updateActionDialogIsOpen: true,
+                          action: action,
+                        });
+                      }}
+                    >
                       Update
                     </Button>
                   </ListItemSecondaryAction>
                 </ListItem>
               ))}
             </List>
-          }
+          )}
           <Button className={this.props.classes.button} onClick={openAddActionDialog}>
             <AddIcon />
             Add Action
-
           </Button>
         </Paper>
       </div>

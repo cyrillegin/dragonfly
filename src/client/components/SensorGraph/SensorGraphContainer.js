@@ -1,9 +1,9 @@
-import {compose, mapProps} from 'recompose';
+import { compose, mapProps } from 'recompose';
 import queryString from 'query-string';
 import SensorGraph from './SensorGraph';
 
 export default compose(
-  mapProps((ownProps) => {
+  mapProps(ownProps => {
     const current = queryString.parse(location.search);
     const currentStartTime = current.start ? parseInt(current.start) : null;
     const currentEndTime = current.end ? parseInt(current.end) : null;
@@ -26,7 +26,7 @@ export default compose(
         return new Promise((res, rej) => {
           fetch(`/api/reading${location.search}`)
             .then(response => response.json())
-            .then((data) => {
+            .then(data => {
               res(data);
             });
         });

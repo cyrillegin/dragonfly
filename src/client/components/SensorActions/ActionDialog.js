@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -33,7 +33,7 @@ export class ActionDialog extends Component {
       operator: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
     }),
-  }
+  };
 
   state = {
     plugin: '',
@@ -41,7 +41,7 @@ export class ActionDialog extends Component {
     notificationRate: '',
     operator: '',
     value: '',
-  }
+  };
 
   handleChange = name => event => {
     this.setState({
@@ -62,7 +62,6 @@ export class ActionDialog extends Component {
     }
     return true;
   }
-
 
   render() {
     const handleActionSubmit = () => {
@@ -135,26 +134,25 @@ export class ActionDialog extends Component {
               value={this.state.value}
               margin="normal"
             />
-
           </form>
         </DialogContent>
 
         <DialogActions>
-          {this.props.update === false &&
-          <Button onClick={handleActionSubmit} color="primary">
-            Submit
-          </Button>
-          }
-          {this.props.update &&
+          {this.props.update === false && (
+            <Button onClick={handleActionSubmit} color="primary">
+              Submit
+            </Button>
+          )}
+          {this.props.update && (
             <div>
               <Button onClick={handleActionSubmit} color="primary">
-              Update
+                Update
               </Button>
               <Button onClick={handleActionDelete} color="primary" autoFocus>
-              Delete
+                Delete
               </Button>
             </div>
-          }
+          )}
           <Button onClick={this.props.actionCancel} color="primary" autoFocus>
             Cancel
           </Button>

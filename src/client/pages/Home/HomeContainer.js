@@ -1,8 +1,8 @@
-import {compose, mapProps} from 'recompose';
+import { compose, mapProps } from 'recompose';
 import Home from './Home';
 
 export default compose(
-  mapProps((ownProps) => {
+  mapProps(ownProps => {
     return {
       history: ownProps.history,
       getSensor: () => {
@@ -12,7 +12,7 @@ export default compose(
           }
           fetch(`/api/sensor${ownProps.history.location.search}`)
             .then(response => response.json())
-            .then((data) => {
+            .then(data => {
               res(data);
             });
         });

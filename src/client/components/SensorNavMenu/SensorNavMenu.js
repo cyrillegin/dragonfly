@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -57,7 +57,7 @@ export class SensorNavMenu extends Component {
   state = {
     loading: true,
     tree: {},
-  }
+  };
 
   handleSensorChange(name) {
     const search = queryString.parse(location.search);
@@ -69,37 +69,25 @@ export class SensorNavMenu extends Component {
 
   render() {
     if (this.state.loading) {
-      this.props.getTree().then((tree) => {
+      this.props.getTree().then(tree => {
         this.setState({
           loading: false,
           tree: tree.sensors,
         });
       });
-      return (
-        <MDSpinner
-          className={this.props.classes.spinner}
-          size={52} />
-      );
+      return <MDSpinner className={this.props.classes.spinner} size={52} />;
     }
     if (this.state.loading === false && Object.keys(this.state.tree).length === 0) {
-      return (
-        <div />
-      );
+      return <div />;
     }
-    const pollerIcon = (icon) => {
+    const pollerIcon = icon => {
       switch (icon) {
         case 'cryptoPoller':
-          return (
-            <MonetizationOnIcon />
-          );
+          return <MonetizationOnIcon />;
         case 'gpioPoller':
-          return (
-            <ACUnitIcon />
-          );
+          return <ACUnitIcon />;
         default:
-          return (
-            <ShowChartIcon />
-          );
+          return <ShowChartIcon />;
       }
     };
     return (
@@ -107,52 +95,45 @@ export class SensorNavMenu extends Component {
         {Object.keys(this.state.tree).map((station, outerIndex) => {
           return (
             <div key={outerIndex}>
-              {this.state.tree[station].length > 0 &&
+              {this.state.tree[station].length > 0 && (
                 <ExpansionPanel>
                   <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className={this.props.classes.heading}>
-                      {station}
-                    </Typography>
+                    <Typography className={this.props.classes.heading}>{station}</Typography>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>
                     <List component="nav" className={this.props.classes.sensorListItem}>
                       {this.state.tree[station].map((sensor, innerIndex) => {
                         return (
-                          <ListItem key={innerIndex} button onClick={() => {
-                            this.handleSensorChange(sensor.uuid);
-                          }}>
-
-                            <ListItemIcon>
-                              {pollerIcon(sensor.poller)}
-                            </ListItemIcon>
+                          <ListItem
+                            key={innerIndex}
+                            button
+                            onClick={() => {
+                              this.handleSensorChange(sensor.uuid);
+                            }}
+                          >
+                            <ListItemIcon>{pollerIcon(sensor.poller)}</ListItemIcon>
                             <ListItemText primary={sensor.name} />
 
-                            {sensor.status === 'online' &&
+                            {sensor.status === 'online' && (
                               <div className={this.props.classes.sensorStatusOnline} />
-                            }
-                            {sensor.status === 'disabled' &&
+                            )}
+                            {sensor.status === 'disabled' && (
                               <div className={this.props.classes.sensorStatusDisabled} />
-                            }
-                            {sensor.status === 'error' &&
+                            )}
+                            {sensor.status === 'error' && (
                               <div className={this.props.classes.sensorStatusError} />
-                            }
-
+                            )}
                           </ListItem>
                         );
-
-
                       })}
                     </List>
-
                   </ExpansionPanelDetails>
                 </ExpansionPanel>
-              }
+              )}
             </div>
           );
         })}
-
       </div>
-
     );
   }
 }
