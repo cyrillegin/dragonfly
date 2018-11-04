@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { IconButton, Snackbar } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
-const SharedSnackbarContext = React.createContext();
+const SnackbarContext = React.createContext();
 
-const messages = {};
+const messages = {
+  'reading-added': 'Reading added to sensor.',
+};
 
 export class SharedSnackbarProvider extends Component {
   static propTypes = {
@@ -49,7 +51,7 @@ export class SharedSnackbarProvider extends Component {
     const { children } = this.props;
 
     return (
-      <SharedSnackbarContext.Provider
+      <SnackbarContext.Provider
         value={{
           openSnackbar: this.openSnackbar,
           closeSnackbar: this.closeSnackbar,
@@ -57,7 +59,7 @@ export class SharedSnackbarProvider extends Component {
           message: this.state.message,
         }}
       >
-        <SharedSnackbarConsumer>
+        <SnackbarConsumer>
           {({ snackbarIsOpen, message, closeSnackbar }) => (
             <Snackbar
               anchorOrigin={{
@@ -75,12 +77,12 @@ export class SharedSnackbarProvider extends Component {
               ]}
             />
           )}
-        </SharedSnackbarConsumer>
+        </SnackbarConsumer>
 
         {children}
-      </SharedSnackbarContext.Provider>
+      </SnackbarContext.Provider>
     );
   }
 }
 
-export const SharedSnackbarConsumer = SharedSnackbarContext.Consumer;
+export const SnackbarConsumer = SnackbarContext.Consumer;

@@ -1,9 +1,12 @@
 import { compose, mapProps } from 'recompose';
+import withSnackbar from '../../hoc/withSnackbar';
 import SensorDetails from './SensorDetails';
 
 export default compose(
+  withSnackbar,
   mapProps(ownProps => {
     return {
+      ...ownProps,
       sensor: ownProps.sensor,
       updateSensor: sensor => {
         return new Promise((res, rej) => {

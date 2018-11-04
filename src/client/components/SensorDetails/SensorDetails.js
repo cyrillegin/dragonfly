@@ -31,6 +31,7 @@ const styles = {
 export class SensorDetails extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    openSnackbar: PropTypes.func.isRequired,
     updateSensor: PropTypes.func.isRequired,
     deleteSensor: PropTypes.func.isRequired,
     addEntry: PropTypes.func.isRequired,
@@ -156,7 +157,7 @@ export class SensorDetails extends Component {
       this.props
         .addEntry(parseInt(this.state.newValue))
         .then(response => response.json())
-        .then(data => alert('Added value to sensor.'));
+        .then(data => this.props.openSnackbar('reading-added'));
     };
 
     if (this.state.loading) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SharedSnackbarConsumer } from '../components/snackbar/sharedSnackbar';
+import { SnackbarConsumer } from '../components/snackbar/snackbar';
 
 export default function withSnackbar(Comp, selectData) {
   return class snacks extends Component {
@@ -8,9 +8,9 @@ export default function withSnackbar(Comp, selectData) {
     }
     render() {
       return (
-        <SharedSnackbarConsumer>
+        <SnackbarConsumer>
           {({ openSnackbar }) => <Comp openSnackbar={openSnackbar} {...this.props} />}
-        </SharedSnackbarConsumer>
+        </SnackbarConsumer>
       );
     }
   };
