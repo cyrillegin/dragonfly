@@ -38,6 +38,10 @@ def get_cp_config():
 
 class Root(object):
     api = ResourceApi()
+    
+    @cherrypy.expose
+    def version(self):
+        return json.dumps({"version": VERSION})
 
     @cherrypy.expose
     def getIP(self):

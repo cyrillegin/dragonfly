@@ -18,6 +18,12 @@ const styles = {
   flex: {
     flex: 1,
   },
+  versionNumber: {
+    display: 'inline-block',
+    marginLeft: '8px',
+    fontSize: '0.6em',
+    fontWeight: 200,
+  },
   link: {
     textDecoration: 'none',
     color: 'rgba(0, 0, 0, 0.87)',
@@ -27,7 +33,16 @@ const styles = {
 export class NavBar extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    getVersion: PropTypes.func.isRequired,
   };
+
+  state = {
+    version: '',
+  }
+
+  componentDidMount() {
+    this.props.getVersion().then(res => this.setState({version: res}));
+  }
 
   render() {
 
@@ -37,10 +52,12 @@ export class NavBar extends Component {
           <Toolbar>
 
             <Typography variant="title" color="inherit" className={this.props.classes.flex}>
-
               <Link to="/" className={this.props.classes.link}>
                 Dragonfly
               </Link>
+              <div className={this.props.classes.versionNumber}>
+                {this.state.version}
+              </div>
             </Typography>
 
 
