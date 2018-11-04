@@ -46,15 +46,14 @@ class Readings:
         except ValueError:
             logging.error('Json data could not be read.')
             return json.dumps({"error": "Data could not be read."}).encode('utf-8')
-        print(data)
     
         with sessionScope() as session:
             newId = short_uuid()
-            
-            newReading = Reading(uuid=newId, timestamp=time.time(), value=data['value'], sensor=data['uuid'])
+            newReading = Reading(uuid=newId, timestamp=time.time() * 1000, value=data['value'], sensor=data['uuid'])
             session.add(newReading)
             session.commit()
-            return session.query(Reading).filter_by(uuid=newId).one().toDict()
+            enteredReading = session.query(Reading).filter_by(uuid=newId).one().toDict()
+            return json.dumps(enteredReading)
         return json.dumps('success')
 
 

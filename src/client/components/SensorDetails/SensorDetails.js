@@ -151,7 +151,9 @@ export class SensorDetails extends Component {
     };
 
     const addEntry = () => {
-      this.props.addEntry(parseInt(this.state.newValue));
+      this.props.addEntry(parseInt(this.state.newValue))
+        .then(response => response.json())
+        .then(data => alert('Added value to sensor.'));
     };
 
     if (this.state.loading) {
@@ -335,6 +337,7 @@ export class SensorDetails extends Component {
               onChange={this.handleChange('newValue')}
               className={this.props.classes.textField}
               value={this.state.newValue}
+              type="number"
               margin="normal"
             />
             <Button className={this.props.classes.button} onClick={addEntry}>
