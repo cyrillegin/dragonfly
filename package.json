@@ -60,6 +60,7 @@
     "rebuild:db": "python3 server/dbUtils.py rebuild",
     "run:prod": "npm run build:prod && npm run start:server'",
     "setup": "npm install && npm run install:gitHooks && npm run rebuild:db",
+    "prettier": "prettier --list-different \"**/*.{js,md}\"",
     "start": "npm run watch:client & npm run start:server",
     "start:server": "python3 server/server.py",
     "test": "npm run jest",
