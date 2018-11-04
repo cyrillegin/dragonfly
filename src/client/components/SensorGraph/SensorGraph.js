@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import MDSpinner from 'react-md-spinner';
@@ -73,8 +73,7 @@ export class SensorGraph extends Component {
   constructor(props) {
     super(props);
 
-    this.state.startTime =
-      props.currentStartTime || moment().unix() * 1000 - 24 * 60 * 60 * 1000;
+    this.state.startTime = props.currentStartTime || moment().unix() * 1000 - 24 * 60 * 60 * 1000;
     this.state.endTime = props.currentEndTime || moment().unix() * 1000;
   }
 
@@ -138,11 +137,7 @@ export class SensorGraph extends Component {
       return (
         <div className={this.props.classes.root}>
           <Paper className={this.props.classes.paper} elevation={4}>
-            <Typography
-              variant="headline"
-              component="h3"
-              className={this.props.classes.graphTitle}
-            >
+            <Typography variant="headline" component="h3" className={this.props.classes.graphTitle}>
               Please select a sensor.
             </Typography>
           </Paper>
@@ -164,9 +159,7 @@ export class SensorGraph extends Component {
       return (
         <div className={this.props.classes.root}>
           <Paper className={this.props.classes.paper} elevation={4}>
-            <Typography varient="title">
-              {this.state.warningMessage}
-            </Typography>
+            <Typography varient="title">{this.state.warningMessage}</Typography>
           </Paper>
         </div>
       );
@@ -212,11 +205,7 @@ export class SensorGraph extends Component {
     return (
       <div className={this.props.classes.root}>
         <Paper className={this.props.classes.paper} elevation={4}>
-          <Typography
-            variant="headline"
-            component="h3"
-            className={this.props.classes.graphTitle}
-          >
+          <Typography variant="headline" component="h3" className={this.props.classes.graphTitle}>
             {this.props.sensor.name}
           </Typography>
           <Graph sensor={this.props.sensor} readings={this.state.readings} />
@@ -255,22 +244,19 @@ export class SensorGraph extends Component {
                   <Datetime
                     onChange={setStartTime}
                     value={this.state.startTime}
-                    inputProps={{'aria-label': 'start time'}}
+                    inputProps={{ 'aria-label': 'start time' }}
                   />
                   End Time
                   <Datetime
                     onChange={setEndTime}
                     value={this.state.endTime}
-                    inputProps={{'aria-label': 'end time'}}
+                    inputProps={{ 'aria-label': 'end time' }}
                   />
                   <Button onClick={submitTime}>Submit Changes</Button>
                 </li>
                 <li>
                   AutoRefresh
-                  <Switch
-                    value={this.state.autoRefresh}
-                    onChange={handleAutoRefresh}
-                  />
+                  <Switch value={this.state.autoRefresh} onChange={handleAutoRefresh} />
                   <Button
                     onClick={() => {
                       this.loadData();

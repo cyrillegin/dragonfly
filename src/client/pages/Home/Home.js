@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import queryString from 'query-string';
 import SensorNavMenuContainer from './../../components/SensorNavMenu/SensorNavMenuContainer';
@@ -29,7 +29,6 @@ const styles = theme => ({
 });
 
 export class HomePage extends Component {
-
   static propTypes = {
     classes: PropTypes.object.isRequired,
     history: PropTypes.shape({
@@ -40,11 +39,11 @@ export class HomePage extends Component {
       }).isRequired,
     }).isRequired,
     getSensor: PropTypes.func.isRequired,
-  }
+  };
 
   state = {
     sensor: null,
-  }
+  };
 
   componentDidUpdate(prev) {
     const search = queryString.parse(location.search);
@@ -52,7 +51,7 @@ export class HomePage extends Component {
       (search.sensor && this.state.sensor === null) ||
       (this.state.sensor && search.sensor !== this.state.sensor.uuid)
     ) {
-      this.props.getSensor().then((data) => {
+      this.props.getSensor().then(data => {
         this.setState({
           sensor: data[0],
         });
@@ -62,7 +61,7 @@ export class HomePage extends Component {
 
   componentDidMount() {
     if (queryString.parse(location.search).sensor) {
-      this.props.getSensor().then((data) => {
+      this.props.getSensor().then(data => {
         this.setState({
           sensor: data[0],
         });
@@ -71,37 +70,24 @@ export class HomePage extends Component {
   }
 
   render() {
-
     return (
       <div className={this.props.classes.root}>
         <Drawer
           variant="permanent"
           className={this.props.classes.drawerRoot}
-          classes={{paper: this.props.classes.drawerPaper}}
+          classes={{ paper: this.props.classes.drawerPaper }}
         >
-          <SensorNavMenuContainer
-            history={this.props.history}
-            sensor={this.state.sensor}
-          />
+          <SensorNavMenuContainer history={this.props.history} sensor={this.state.sensor} />
         </Drawer>
 
         <main className={this.props.classes.content}>
-          <SensorGraphContainer
-            sensor={this.state.sensor}
-            history={this.props.history}
-          />
-          <SensorDetailsContainer
-            sensor={this.state.sensor}
-            history={this.props.history}
-          />
-          <SensorActionsContainer
-            sensor={this.state.sensor}
-          />
+          <SensorGraphContainer sensor={this.state.sensor} history={this.props.history} />
+          <SensorDetailsContainer sensor={this.state.sensor} history={this.props.history} />
+          <SensorActionsContainer sensor={this.state.sensor} />
         </main>
       </div>
     );
   }
 }
-
 
 export default withStyles(styles)(HomePage);

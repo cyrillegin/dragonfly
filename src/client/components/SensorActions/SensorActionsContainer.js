@@ -1,67 +1,67 @@
-import {compose, mapProps} from 'recompose';
+import { compose, mapProps } from 'recompose';
 import SensorActions from './SensorActions';
 
 export default compose(
-  mapProps((ownProps) => {
+  mapProps(ownProps => {
     return {
       sensor: ownProps.sensor,
       getActions: () => {
         return new Promise((res, rej) => {
           fetch(`/api/action${location.search}`)
             .then(response => response.json())
-            .then((data) => {
+            .then(data => {
               res(data);
             });
         });
       },
-      addAction: (info) => {
+      addAction: info => {
         return new Promise((res, rej) => {
           fetch('/api/action', {
             method: 'POST',
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({...info}),
+            body: JSON.stringify({ ...info }),
           })
             .then(response => response.json())
-            .then((data) => {
+            .then(data => {
               console.log(data);
-              res({'data': data});
+              res({ data: data });
             });
         });
       },
-      updateAction: (info) => {
+      updateAction: info => {
         return new Promise((res, rej) => {
           fetch('/api/action', {
             method: 'PUT',
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({...info}),
+            body: JSON.stringify({ ...info }),
           })
             .then(response => response.json())
-            .then((data) => {
-              res({'data': data});
+            .then(data => {
+              res({ data: data });
               window.location.reload();
             });
         });
       },
-      deleteAction: (info) => {
+      deleteAction: info => {
         console.log(info);
         return new Promise((res, rej) => {
           fetch('/api/action/?action=' + info.action, {
             method: 'DELETE',
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({...info}),
+            body: JSON.stringify({ ...info }),
           })
             .then(response => response.json())
-            .then((data) => {
-              res({'data': data});
+            .then(data => {
+              res({ data: data });
               window.location.reload();
             });
         });

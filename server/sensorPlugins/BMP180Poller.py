@@ -21,7 +21,7 @@ def GetValues(params):
     try:
         sensor = BMP180.BMP180()
         if params['meta'] == 'temperature':
-            value = sensor.read_temperature() * 9.0 / 5.0 +32
+            value = sensor.read_temperature() * 9.0 / 5.0 + 32
         elif params['meta'] == 'pressure':
             value = sensor.read_pressure() / 100.0
         elif params['meta'] == 'altitude':

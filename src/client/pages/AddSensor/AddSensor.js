@@ -1,50 +1,50 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import MDSpinner from "react-md-spinner";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
-import ACUnitIcon from "@material-ui/icons/AcUnit";
-import ShowChartIcon from "@material-ui/icons/ShowChart";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import MessageDialog from "./../../components/Dialogs/MessageDialog";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import MDSpinner from 'react-md-spinner';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import ACUnitIcon from '@material-ui/icons/AcUnit';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import MessageDialog from './../../components/Dialogs/MessageDialog';
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    display: "flex"
+    display: 'flex',
   },
   fullPaper: {
-    width: "100%",
-    margin: "32px 64px",
-    padding: "16px",
-    transition: "500ms"
+    width: '100%',
+    margin: '32px 64px',
+    padding: '16px',
+    transition: '500ms',
   },
   leftPaper: {
-    width: "33%",
-    margin: "32px 0 32px 32px",
-    padding: "16px",
-    transition: "500ms"
+    width: '33%',
+    margin: '32px 0 32px 32px',
+    padding: '16px',
+    transition: '500ms',
   },
   rightPaper: {
-    width: "100%",
-    margin: "32px 32px",
-    padding: "16px",
-    transition: "500ms"
+    width: '100%',
+    margin: '32px 32px',
+    padding: '16px',
+    transition: '500ms',
   },
   textField: {
-    width: "100%"
+    width: '100%',
   },
   title: {},
   selectedPlugin: {
-    background: "#dcffdc"
-  }
+    background: '#dcffdc',
+  },
 });
 
 export class HomePage extends Component {
@@ -52,39 +52,39 @@ export class HomePage extends Component {
     classes: PropTypes.object.isRequired,
     getPlugins: PropTypes.func.isRequired,
     testPlugin: PropTypes.func.isRequired,
-    submitPlugin: PropTypes.func.isRequired
+    submitPlugin: PropTypes.func.isRequired,
   };
 
   state = {
     loading: true,
     plugins: null,
     dialogIsOpen: false,
-    dialogMessage: "",
-    dialogTitle: "",
-    selectedPlugin: "",
-    pollRate: "",
-    name: "",
-    description: "",
-    coefficients: "",
-    station: "",
-    poller: "",
-    pin: "",
-    units: "",
-    endpoint: "",
-    meta: ""
+    dialogMessage: '',
+    dialogTitle: '',
+    selectedPlugin: '',
+    pollRate: '',
+    name: '',
+    description: '',
+    coefficients: '',
+    station: '',
+    poller: '',
+    pin: '',
+    units: '',
+    endpoint: '',
+    meta: '',
   };
 
   handlePluginSelect(name) {
     this.setState({
       selectedPlugin: name,
-      testResult: {}
+      testResult: {},
     });
   }
 
   handleChange = name => event => {
     this.setState({
       [name]: event.target.value,
-      testResult: {}
+      testResult: {},
     });
   };
 
@@ -93,7 +93,7 @@ export class HomePage extends Component {
       this.props.getPlugins().then(data => {
         this.setState({
           loading: false,
-          plugins: data.plugins
+          plugins: data.plugins,
         });
       });
       return <MDSpinner className={this.props.classes.spinner} size={52} />;
@@ -110,7 +110,7 @@ export class HomePage extends Component {
           pin: this.state.pin,
           units: this.state.units,
           endpoint: this.state.endpoint,
-          meta: this.state.meta
+          meta: this.state.meta,
         })
         .then(res => {
           this.setState({
@@ -118,7 +118,7 @@ export class HomePage extends Component {
             dialogMessage: `${res.sensor.name} successfully added using the ${
               res.sensor.poller
             } poller.`,
-            dialogTitle: "Sensor Added."
+            dialogTitle: 'Sensor Added.',
           });
         });
     };
@@ -134,23 +134,23 @@ export class HomePage extends Component {
           pin: this.state.pin,
           units: this.state.units,
           endpoint: this.state.endpoint,
-          meta: this.state.meta
+          meta: this.state.meta,
         })
         .then(data => {
           const newState = {
-            dialogIsOpen: true
+            dialogIsOpen: true,
           };
           if (data.sensor) {
             this.setState({
               dialogMessage: `${this.state.name} returned a value of ${
                 data.reading.value
               } and can be added.`,
-              dialogTitle: "Test successful.",
-              testResult: data
+              dialogTitle: 'Test successful.',
+              testResult: data,
             });
           } else {
             newState.dialogMessage = `Sensor couldn't be added: ${data.error}`;
-            newState.dialogTitle = "Test Failed.";
+            newState.dialogTitle = 'Test Failed.';
           }
           this.setState(newState);
         });
@@ -158,15 +158,15 @@ export class HomePage extends Component {
 
     const closeDialog = () => {
       this.setState({
-        dialogIsOpen: false
+        dialogIsOpen: false,
       });
     };
 
     const pollerIcon = icon => {
       switch (icon) {
-        case "cryptoPoller":
+        case 'cryptoPoller':
           return <MonetizationOnIcon />;
-        case "gpioPoller":
+        case 'gpioPoller':
           return <ACUnitIcon />;
         default:
           return <ShowChartIcon />;
@@ -184,17 +184,13 @@ export class HomePage extends Component {
 
         <Paper
           className={
-            this.state.selectedPlugin === ""
+            this.state.selectedPlugin === ''
               ? this.props.classes.fullPaper
               : this.props.classes.leftPaper
           }
           elevation={4}
         >
-          <Typography
-            variant="headline"
-            component="h3"
-            className={this.props.classes.title}
-          >
+          <Typography variant="headline" component="h3" className={this.props.classes.title}>
             Plugins
           </Typography>
 
@@ -203,9 +199,7 @@ export class HomePage extends Component {
               return (
                 <ListItem
                   className={
-                    plugin === this.state.selectedPlugin
-                      ? this.props.classes.selectedPlugin
-                      : null
+                    plugin === this.state.selectedPlugin ? this.props.classes.selectedPlugin : null
                   }
                   key={index}
                   button
@@ -220,24 +214,16 @@ export class HomePage extends Component {
             })}
           </List>
         </Paper>
-        {this.state.selectedPlugin !== "" && (
+        {this.state.selectedPlugin !== '' && (
           <Paper className={this.props.classes.rightPaper}>
-            <Typography
-              variant="headline"
-              component="h3"
-              className={this.props.classes.title}
-            >
+            <Typography variant="headline" component="h3" className={this.props.classes.title}>
               Details
             </Typography>
-            <form
-              className={this.props.classes.container}
-              noValidate
-              autoComplete="off"
-            >
+            <form className={this.props.classes.container} noValidate autoComplete="off">
               <TextField
                 id="name"
                 label="Name"
-                onChange={this.handleChange("name")}
+                onChange={this.handleChange('name')}
                 className={this.props.classes.textField}
                 value={this.state.name}
                 margin="normal"
@@ -245,7 +231,7 @@ export class HomePage extends Component {
               <TextField
                 id="description"
                 label="Description"
-                onChange={this.handleChange("description")}
+                onChange={this.handleChange('description')}
                 className={this.props.classes.textField}
                 value={this.state.description}
                 margin="normal"
@@ -253,7 +239,7 @@ export class HomePage extends Component {
               <TextField
                 id="coefficients"
                 label="Coefficients"
-                onChange={this.handleChange("coefficients")}
+                onChange={this.handleChange('coefficients')}
                 className={this.props.classes.textField}
                 value={this.state.coefficients}
                 margin="normal"
@@ -261,7 +247,7 @@ export class HomePage extends Component {
               <TextField
                 id="station"
                 label="Station"
-                onChange={this.handleChange("station")}
+                onChange={this.handleChange('station')}
                 className={this.props.classes.textField}
                 value={this.state.station}
                 margin="normal"
@@ -269,7 +255,7 @@ export class HomePage extends Component {
               <TextField
                 id="pollRate"
                 label="Poll Rate"
-                onChange={this.handleChange("pollRate")}
+                onChange={this.handleChange('pollRate')}
                 className={this.props.classes.textField}
                 value={this.state.pollRate}
                 type="number"
@@ -278,7 +264,7 @@ export class HomePage extends Component {
               <TextField
                 id="pin"
                 label="Pin"
-                onChange={this.handleChange("pin")}
+                onChange={this.handleChange('pin')}
                 className={this.props.classes.textField}
                 value={this.state.pin}
                 type="number"
@@ -287,37 +273,32 @@ export class HomePage extends Component {
               <TextField
                 id="units"
                 label="Units"
-                onChange={this.handleChange("units")}
+                onChange={this.handleChange('units')}
                 className={this.props.classes.textField}
                 value={this.state.units}
                 margin="normal"
               />
               <TextField
                 id="endpoint"
-                label={"Endpoint"}
-                onChange={this.handleChange("endpoint")}
+                label={'Endpoint'}
+                onChange={this.handleChange('endpoint')}
                 className={this.props.classes.textField}
                 value={this.state.endpoint}
                 margin="normal"
               />
               <TextField
                 id="meta"
-                label={"Meta"}
-                onChange={this.handleChange("meta")}
+                label={'Meta'}
+                onChange={this.handleChange('meta')}
                 className={this.props.classes.textField}
                 value={this.state.meta}
                 margin="normal"
               />
-              <Button
-                className={this.props.classes.button}
-                onClick={testSensor}
-              >
+              <Button className={this.props.classes.button} onClick={testSensor}>
                 Test Sensor
               </Button>
               <Button
-                disabled={
-                  !(this.state.testResult && this.state.testResult.sensor)
-                }
+                disabled={!(this.state.testResult && this.state.testResult.sensor)}
                 className={this.props.classes.button}
                 onClick={submitSensor}
               >

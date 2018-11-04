@@ -12,6 +12,7 @@ STATE_DATA_FIRST_PULL_DOWN = 3
 STATE_DATA_PULL_UP = 4
 STATE_DATA_PULL_DOWN = 5
 
+
 def read_dht11_dat(params):
     GPIO.setup(params.pin, GPIO.OUT)
     GPIO.output(params.pin, GPIO.HIGH)
@@ -85,21 +86,22 @@ def read_dht11_dat(params):
             bit = 1
         bits.append(bit)
     for i in range(0, len(bits)):
-        byte = byte << 1 
-        if (bits[i]): 
-            byte = byte | 1 
-        else: 
-            byte = byte | 0 
-        if ((i + 1) % 8 == 0): 
-            the_bytes.append(byte) 
-            byte = 0 
+        byte = byte << 1
+        if (bits[i]):
+            byte = byte | 1
+        else:
+            byte = byte | 0
+        if ((i + 1) % 8 == 0):
+            the_bytes.append(byte)
+            byte = 0
     checksum = (the_bytes[0] + the_bytes[1] + the_bytes[2] + the_bytes[3]) & 0xFF
-    if the_bytes[4] != checksum: 
-        return False 
-    return the_bytes[0], the_bytes[2] 
-    
-def GetValues(params): 
-    result = read_dht11_dat(params) 
+    if the_bytes[4] != checksum:
+        return False
+    return the_bytes[0], the_bytes[2]
+
+
+def GetValues(params):
+    result = read_dht11_dat(params)
     humidity, temperature = result
     newReading = {
         'sensor': {
