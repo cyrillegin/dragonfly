@@ -21,7 +21,7 @@ for filename in os.listdir(os.path.abspath(os.path.dirname(__file__))):
 
 
 def query(sensor):
-    logging.info('Starting polling for {}'.format(sensor['name']))
+    logging.debug('Starting polling for {}'.format(sensor['name']))
     if sensor['status'] == 'disabled':
         return
     try:
@@ -41,16 +41,16 @@ def query(sensor):
             if sensor['status'] == 'error' and payload['sensor']['status'] != 'error':
                 sensor['sensor']['status'] = 'online'
             resp = requests.post('http://{}/api/sensor'.format(sensor['endpoint']), data=json.dumps(payload))
-            logging.info(resp)
+            logging.debug(resp)
             time.sleep(timeout)
     else:
-        logging.info('Sensor needs endpoint')
+        logging.error('Sensor needs endpoint')
 
 
 def checkForSensors():
     return
     while True:
-        logging.info('Checking for new sensors and restarting child processes.')
+        logging.debug('Checking for new sensors and restarting child processes.')
         with sessionScope() as session:
             sensors = session.query(Sensor)
             index = 0

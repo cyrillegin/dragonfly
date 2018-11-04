@@ -11,14 +11,14 @@ class Plugins:
     exposed = True
 
     def GET(self, **kwargs):
-        logging.info('GET request to plugins.')
+        logging.debug('GET request to plugins.')
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
         return json.dumps({'plugins': sensorPlugins.PLUGINS}).encode('utf-8')
 
     def POST(self):
-        logging.info('POST request to plugins')
+        logging.debug('POST request to plugins')
 
         try:
             data = json.loads(cherrypy.request.body.read().decode('utf-8'))

@@ -13,7 +13,7 @@ class Readings:
     exposed = True
 
     def GET(self, **kwargs):
-        logging.info('GET request to readings.')
+        logging.debug('GET request to readings.')
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
@@ -40,7 +40,7 @@ class Readings:
             return json.dumps(payload).encode('utf-8')
 
     def POST(self):
-        logging.info('POST request to readings.')
+        logging.debug('POST request to readings.')
         try:
             data = json.loads(cherrypy.request.body.read().decode('utf-8'))
         except ValueError:
@@ -60,7 +60,7 @@ class Readings:
 def addReading(session, sensor, reading):
     newId = short_uuid()
     newReading = Reading(uuid=newId, timestamp=reading['timestamp'], value=reading['value'], sensor=sensor['uuid'])
-    logging.info('Adding new reading')
+    logging.debug('Adding new reading')
     session.add(newReading)
     session.commit()
     return session.query(Reading).filter_by(uuid=newId).one().toDict()

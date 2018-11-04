@@ -24,7 +24,7 @@ def GetValues(params):
                         'value': i['price_usd']
                     }
                 }
-                logging.info('Got reading: {}'.format(newReading))
+                logging.debug('Got reading: {}'.format(newReading))
     except Exception as e:
         logging.error('Error pulling data.')
         logging.error(e)

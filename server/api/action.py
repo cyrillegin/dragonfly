@@ -13,7 +13,7 @@ class Actions:
     exposed = True
 
     def GET(self, **kwargs):
-        logging.info('GET request to actions.')
+        logging.debug('GET request to actions.')
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
@@ -28,7 +28,7 @@ class Actions:
 
     def POST(self):
         # Save in database
-        logging.info('POST request to actions')
+        logging.debug('POST request to actions')
 
         try:
             data = json.loads(cherrypy.request.body.read().decode('utf-8'))
@@ -38,20 +38,20 @@ class Actions:
 
         print (data)
         if 'sensor' not in data:
-            logging.info('error: no sensor information in data')
+            logging.error('error: no sensor information in data')
             return json.dumps({'error': 'No sensor information in data.'}).encode('utf-8')
 
         if 'plugin' not in data:
-            logging.info('Error: No plugin information given.')
-            return json.dumps({'Error': 'No plugin information in data.'}).encode('utf-8')
+            logging.error('Error: No plugin information given.')
+            return json.dumps({'error': 'No plugin information in data.'}).encode('utf-8')
 
         if 'operator' not in data:
-            logging.info('Error: No operator information given.')
-            return json.dumps({'Error': 'No operator information in data.'}).encode('utf-8')
+            logging.error('Error: No operator information given.')
+            return json.dumps({'error': 'No operator information in data.'}).encode('utf-8')
 
         if 'value' not in data:
-            logging.info('Error: No value information given.')
-            return json.dumps({'Error': 'No value information in data.'}).encode('utf-8')
+            logging.debug('error: No value information given.')
+            return json.dumps({'error': 'No value information in data.'}).encode('utf-8')
 
         with sessionScope() as session:
             action = createAction(session, data)
@@ -61,7 +61,7 @@ class Actions:
         return json.dumps(payload).encode('utf-8')
 
     def PUT(self):
-        logging.info('PUT request to actions.')
+        logging.debug('PUT request to actions.')
 
         try:
             data = json.loads(cherrypy.request.body.read().decode('utf-8'))
@@ -70,33 +70,33 @@ class Actions:
             return json.dumps({"error": "Data could not be read."}).encode('utf-8')
         if 'uuid' not in data:
             logging.error('No action ID found.')
-            return json.dumps({"Error": "Action id not provided."}).encode('utf-8')
+            return json.dumps({"error": "Action id not provided."}).encode('utf-8')
         with sessionScope() as session:
             try:
                 action = session.query(Action).filter_by(uuid=data['uuid']).one()
-                logging.info('Action found.')
+                logging.debug('Action found.')
                 payload = {
                     "action": updateAction(session, action, data)
                 }
             except Exception as e:
                 logging.error('Error updating action.')
                 logging.error(e)
-                return json.dumps({'Error': 'Error updating action.'}).encode('utf-8')
+                return json.dumps({'error': 'Error updating action.'}).encode('utf-8')
         payload = {}
         return json.dumps(payload).encode('utf-8')
 
     def DELETE(self, *args, **kwargs):
-        logging.info('DELETE request to sensors')
+        logging.debug('DELETE request to sensors')
 
         if 'action' not in kwargs:
             logging.error("No acion given")
             return json.dumps({'error': 'No action given.'}).encode('utf-8')
         with sessionScope() as session:
             action = session.query(Action).filter_by(uuid=kwargs['action']).one()
-            logging.info('Deleting action')
+            logging.debug('Deleting action')
             session.delete(action)
             session.commit()
-            logging.info('Delete successful')
+            logging.debug('Delete successful')
             return json.dumps({'success': 'delete successful.'}).encode('utf-8')
 
 
@@ -111,7 +111,7 @@ def updateAction(session, DbAction, data):
     if updates:
         try:
             setattr(DbAction, 'modified', time.time() * 1000)
-            logging.info('Action has changed, updating.')
+            logging.debug('Action has changed, updating.')
             session.add(DbAction)
             session.commit()
         except Exception as e:

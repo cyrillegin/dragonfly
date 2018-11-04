@@ -15,7 +15,7 @@ logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=loggin
 
 def GetValues(params):
 
-    logging.info("Starting presure poller.")
+    logging.debug("Starting presure poller.")
 
     value = None
     try:
@@ -49,5 +49,5 @@ def GetValues(params):
             newReading['readings']['value'] = sensor.read_sealevel_pressure()
         elif params['meta'] == 'temperature':
             newReading['readings']['value'] = sensor.read_temperature() * 1.8 + 32
-    logging.info("reading is: {}".format(newReading['readings']['value']))
+    logging.debug("reading is: {}".format(newReading['readings']['value']))
     return newReading
