@@ -1,8 +1,9 @@
 /* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
-const Jarvis = require('webpack-jarvis'); // eslint-disable-line
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line
+const Jarvis = require("webpack-jarvis"); // eslint-disable-line
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer") // eslint-disable-line
+  .BundleAnalyzerPlugin; // eslint-disable-line
 
 module.exports = {
   devtool: 'inline-source-map',
@@ -16,29 +17,30 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: [
-          path.resolve(__dirname, 'src'),
-        ],
+        include: [path.resolve(__dirname, 'src')],
         use: {
           loader: 'babel-loader',
           options: {
             presets: [
-              'react',
-              ['env', {
-                targets: {
-                  browsers: ['> 5%'],
-                  forceAllTransforms: true,
+              '@babel/react',
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    browsers: ['> 5%'],
+                  },
                 },
-              }],
+              ],
             ],
             plugins: [
-              'transform-class-properties',
-              'transform-object-rest-spread',
-              'transform-runtime',
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-proposal-object-rest-spread',
+              '@babel/plugin-transform-runtime',
             ],
           },
         },
-      }, {
+      },
+      {
         test: /\.css$/,
         loader: 'style-loader!css-loader',
       },
@@ -47,7 +49,9 @@ module.exports = {
   plugins: [
     // new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'development',
+      ),
     }),
     // new Jarvis({
     //   port: 1337,
