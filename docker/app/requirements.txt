@@ -1,0 +1,6 @@
+sqlalchemy==1.2.8
+cherrypy==15.0.0
+requests==2.19.1
+psycopg2==2.7.4
+pep8==1.7.1
+flake8==3.5.0

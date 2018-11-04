@@ -1,26 +1,16 @@
-# OSX files
-.DS_Store
+# OSX
+*.DS_Store
 
-# folders
-hackadayFiles/
-node_modules/
-bower_components/
-static/images/fishcam/
-dbBackups/
-
-# Database files
-*.db
-*.sqlite3
-
-#compile files
+# Python
 *.pyc
 
-# webpack
-webpack-stats.json
-static/dist/
-
-# config
+# Config
 config.py
 
-# assess
+# Node
+node_modules/
+bundle.js
 cdp.pid
+
+# misc
+uploaded_images/

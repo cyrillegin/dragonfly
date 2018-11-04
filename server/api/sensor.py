@@ -1,113 +1,180 @@
-'''
-Dragonfly
-Cyrille Gindreau
-2017
-
-sensor.py
-API endpoint for sensors.
-
-GET
-/api/sensor
-returns an array of all of the sensors in database.
-
-POST
-preconditions: 'name' of sensor.
-optional arguments: 'created', 'description', 'coefficients', 'sensor_type'
-    'units', 'lastReading', 'min_value', 'max_value'
-Queries database for sensor with 'name'
-If sensor doesn't exist, a new one is created.
-If sensor does exist, will update sensor with any of the optional arguments.
-
-'''
 import json
 import cherrypy
-import time
 import logging
-
+import time
 from sessionManager import sessionScope
-from models import Sensor
+from models import Sensor, Reading
+from api.reading import addReading
+from api.short_uuid import short_uuid
+
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
 
 class Sensors:
-    logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
     exposed = True
 
-    def GET(self, sensor_name=None):
+    def GET(self, **kwargs):
         logging.info('GET request to sensors.')
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
         with sessionScope() as session:
-            if sensor_name is None:
-                data = {
-                    "sensor_list": []
-                }
-                objs = session.query(Sensor)
-                for i in objs:
-                    data['sensor_list'].append(i.toDict())
-            else:
-                try:
-                    sensor = session.query(Sensor).filter_by(name=sensor_name).one()
-                    data = sensor.toDict()
-                except Exception as e:
-                    data = {
-                        "error": e,
-                        "note": "No sensors currently exist in data base."
-                    }
-                    logging.error('No sensors exist in the database.')
-            return json.dumps(data)
+            data = session.query(Sensor)
+            if 'sensor' in kwargs:
+                data = data.filter_by(uuid=kwargs['sensor'])
+            payload = []
+            for i in data:
+                payload.append(i.toDict())
+            return json.dumps(payload).encode('utf-8')
 
     def POST(self):
-        logging.info("POST request to sensor.")
-
-        cherrypy.response.headers['Content-Type'] = 'application/json'
+        # Save in database
+        logging.info('POST request to sensors')
 
         try:
-            data = json.loads(cherrypy.request.body.read())
+            data = json.loads(cherrypy.request.body.read().decode('utf-8'))
         except ValueError:
             logging.error('Json data could not be read.')
-            return {"error": "Data could not be read."}
+            return json.dumps({"error": "Data could not be read."}).encode('utf-8')
 
-        if "name" not in data:
-            logging.info('Sensor name not found.')
-            return {"error": "You must provide a sensor name."}
+        if 'sensor' not in data:
+            logging.info('error: no sensor information in data')
+            return json.dumps({'error': 'No sensor information in data.'}).encode('utf-8')
+
+        if 'poller' not in data['sensor']:
+            logging.info('Error: No poller information given.')
+            return json.dumps({'Error': 'No poller information in data.'}).encode('utf-8')
+
+        if 'uuid' not in data['sensor']:
+            data['sensor']['uuid'] = short_uuid()
 
         with sessionScope() as session:
             try:
-                sensor = session.query(Sensor).filter_by(name=data['name']).one()
-                logging.info("Sensor found. Checking for updates.")
-                data = UpdateSensor(sensor, data, session).toDict()
+                DbSensor = session.query(Sensor).filter_by(uuid=data['sensor']['uuid']).one()
+                logging.info('Sensor found, checking for updates')
+                sensor = updateSensor(session, DbSensor, data['sensor'])
             except Exception:
-                logging.info("Sensor not found. Creating new one.")
-                data = CreateSensor(data, session).toDict()
-        return json.dumps(data)
+                logging.error('Sensor not found, creating new one.')
+                sensor = createSensor(session, data['sensor'])
+
+            payload = {
+                'sensor': sensor
+            }
+
+            if 'reading' in data:
+                try:
+                    res = addReading(session, sensor, data['reading'])
+                    payload['reading'] = res
+                except Exception as e:
+                    logging.info('Error adding reading to db.')
+                    logging.error(e)
+                    payload['error'] = str(e)
+
+        return json.dumps(payload).encode('utf-8')
+
+    def PUT(self):
+        logging.info('PUT request to sensors.')
+
+        try:
+            data = json.loads(cherrypy.request.body.read().decode('utf-8'))
+        except ValueError:
+            logging.error('Json data could not be read.')
+            return json.dumps({"error": "Data could not be read."}).encode('utf-8')
+        if 'uuid' not in data:
+            logging.error('No sensor ID found.')
+            return json.dumps({"Error": "Sensor id not provided."}).encode('utf-8')
+        with sessionScope() as session:
+            try:
+                sensor = session.query(Sensor).filter_by(uuid=data['uuid']).one()
+                logging.info('Sensor found.')
+                payload = {
+                    "sensor": updateSensor(session, sensor, data)
+                }
+            except Exception as e:
+                logging.error('Error updating sensor.')
+                logging.error(e)
+                return json.dumps({'Error': 'Error updating sensor.'}).encode('utf-8')
+        return json.dumps(payload).encode('utf-8')
+
+    def DELETE(self, *args, **kwargs):
+        logging.info('DELETE request to sensors')
+        if 'sensor' not in kwargs:
+            logging.error("No sensor given")
+            return json.dumps({'error': 'No sensor given.'}).encode('utf-8')
+        with sessionScope() as session:
+            sensor = session.query(Sensor).filter_by(uuid=kwargs['sensor']).one()
+            logging.info('Deleting all readings for sensor')
+            session.query(Reading).filter_by(sensor=kwargs['sensor']).delete()
+            logging.info('Deleting sensor')
+            session.delete(sensor)
+            session.commit()
+            logging.info('Delete successful')
+            return json.dumps({'success': 'delete successful.'}).encode('utf-8')
 
 
-ATTRIBUTES = ['created', 'name', 'description', 'coefficients', 'sensor_type', 'units', 'lastReading', 'min_value', 'max_value', 'station']
-DEFAULTS = [time.time(), None, "", '1,0', None, None, 0, 0, 1024, 'not set']
-
-
-def CreateSensor(data, session):
-    sensor = Sensor(name=data['name'])
-    for i in range(0, len(ATTRIBUTES)):
-        if ATTRIBUTES[i] in data:
-            setattr(sensor, ATTRIBUTES[i], data[ATTRIBUTES[i]])
-        else:
-
-            setattr(sensor, ATTRIBUTES[i], DEFAULTS[i])
-    session.add(sensor)
-    session.commit()
-    logging.info("Sensor created.")
-    return sensor
-
-
-def UpdateSensor(sensor, data, session):
-    for i in range(0, len(ATTRIBUTES)):
-        if ATTRIBUTES[i] == 'name':
-            continue
-        if ATTRIBUTES[i] in data:
-            setattr(sensor, ATTRIBUTES[i], data[ATTRIBUTES[i]])
-        session.add(sensor)
+def updateSensor(session, DbSensor, data):
+    updates = False
+    for i in data:
+        if i not in ['uuid', 'created', 'modified'] and data[i] != DbSensor.toDict()[i]:
+            if data[i] == '':
+                data[i] = None
+            updates = True
+            setattr(DbSensor, i, data[i])
+    if updates:
+        setattr(DbSensor, 'modified', time.time() * 1000)
+        logging.info('Sensor has changed, updating.')
+        session.add(DbSensor)
         session.commit()
-    logging.info("Sensor updated")
-    return sensor
+    return session.query(Sensor).filter_by(uuid=data['uuid']).one().toDict()
+
+
+def createSensor(session, data):
+    # Required Fields
+    sensor = {
+        'uuid': data['uuid'],
+        'poller': data['poller'],
+        'status': 'online'
+    }
+
+    # Fields with defaults
+    if 'timestamp' in data:
+        sensor['created'] = data['timestamp']
+    else:
+        sensor['created'] = time.time() * 1000
+    sensor['modified'] = time.time() * 1000
+
+    if 'name' in data:
+        sensor['name'] = data['name']
+    else:
+        sensor['name'] = 'newSensor'
+
+    if 'pollRate' in data:
+        sensor['pollRate'] = int(data['pollRate'])
+    else:
+        sensor['pollRate'] = 60 * 5
+
+    if 'station' in data:
+        sensor['station'] = data['station']
+    else:
+        sensor['station'] = 'newStation'
+
+    # Optional fields.
+    if 'coefficients' in data:
+        sensor['coefficients'] = data['coefficients']
+    if 'description' in data:
+        sensor['description'] = data['description']
+    if 'endpoint' in data:
+        sensor['endpoint'] = data['endpoint']
+    if 'pin' in data:
+        sensor['pin'] = data['pin']
+    if 'station' in data:
+        sensor['station'] = data['station']
+    if 'units' in data:
+        sensor['units'] = data['units']
+    if 'meta' in data:
+        sensor['meta'] = data['meta']
+    newSensor = Sensor(**sensor)
+
+    session.add(newSensor)
+    session.commit()
+    return session.query(Sensor).filter_by(uuid=sensor['uuid']).one().toDict()

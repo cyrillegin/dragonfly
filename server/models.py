@@ -1,10 +1,6 @@
-from sqlalchemy import Column, Integer, Text, BigInteger, ForeignKey, Float
+from sqlalchemy import Column, Integer, Text, ForeignKey, Float, BigInteger, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-# possible sensor types:
-# temperature: displays a gauge graph
-# cleanliness: shows a beaker with varying degrees of water color
-# lightsensor: shows a sun animation
-# lightswitch: shows a lightbulb
+
 Base = declarative_base()
 
 
@@ -12,29 +8,41 @@ class Sensor(Base):
 
     __tablename__ = "sensor"
 
-    created = Column(BigInteger, index=True)
-    name = Column(Text, primary_key=True)
+    uuid = Column(String, index=True, primary_key=True)
+    created = Column(BigInteger)
+    modified = Column(BigInteger)
+    name = Column(Text)
     description = Column(Text)
     coefficients = Column(Text)
-    sensor_type = Column(Text)
     units = Column(Text)
-    last_reading = Column(Float)
-    min_value = Column(Integer)
-    max_value = Column(Integer)
-    station = Column(Text, default="none")
+    station = Column(Text)
+    poller = Column(Text)
+    pollRate = Column(Integer)
+    pin = Column(Text)
+    endpoint = Column(Text)
+    # TODO: make this an enum
+    # disabled, online, error
+    status = Column(Text)
+    meta = Column(Text)
+    alarm = Column(Boolean)
 
     def toDict(self):
         return {
+            "uuid": self.uuid,
             "created": self.created,
+            "modified": self.modified,
             "name": self.name,
             "description": self.description,
             "coefficients": self.coefficients,
-            "self_type": self.sensor_type,
             "units": self.units,
-            "lastReading": self.last_reading,
-            "min_value": self.min_value,
-            "max_value": self.max_value,
-            "station": self.station
+            "station": self.station,
+            "poller": self.poller,
+            "pollRate": self.pollRate,
+            "pin": self.pin,
+            "endpoint": self.endpoint,
+            "status": self.status,
+            "meta": self.meta,
+            "alarm": self.alarm
         }
 
 
@@ -42,29 +50,47 @@ class Reading(Base):
 
     __tablename__ = "reading"
 
-    created = Column(BigInteger, primary_key=True)
-    sensor = Column(Text, ForeignKey('sensor.name'), index=True)
-    value = Column(Integer)
+    uuid = Column(String, index=True, primary_key=True)
+    timestamp = Column(BigInteger)
+    sensor = Column(Text, ForeignKey('sensor.uuid'))
+    value = Column(Float)
 
     def toDict(self):
         return {
-            "created": self.created,
+            "uuid": self.uuid,
+            "timestamp": self.timestamp,
             "sensor": self.sensor,
             "value": self.value
         }
 
 
-class Log(Base):
+class Action(Base):
 
-    __tablename__ = "log"
+    __tablename__ = 'action'
 
-    created = Column(BigInteger, index=True, primary_key=True)
-    title = Column(Text)
-    description = Column(Text)
+    uuid = Column(String, index=True, primary_key=True)
+    created = Column(BigInteger)
+    modified = Column(BigInteger)
+    status = Column(String)
+    sensor = Column(String)
+    plugin = Column(String)
+    meta = Column(String)
+    notification_rate = Column(String)
+    value = Column(String)
+    operator = Column(String)
+    lastNotification = Column(BigInteger)
 
     def toDict(self):
         return {
-            'created': self.created,
-            'title': self.title,
-            'description': self.description
+            "uuid": self.uuid,
+            "created": self.created,
+            "modified": self.modified,
+            "status": self.status,
+            "sensor": self.sensor,
+            "plugin": self.plugin,
+            "meta": self.meta,
+            "notificationRate": self.notification_rate,
+            "value": self.value,
+            "operator": self.operator,
+            "lastNotification": self.lastNotification
         }

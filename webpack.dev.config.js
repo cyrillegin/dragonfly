@@ -1,76 +1,60 @@
+/* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin'); // eslint-disable-line
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line
+const Jarvis = require("webpack-jarvis"); // eslint-disable-line
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer") // eslint-disable-line
+  .BundleAnalyzerPlugin; // eslint-disable-line
 
 module.exports = {
-    entry: {
-        app: './src/app.js',
-        vendor: [
-            'angular',
-            'angular-route',
-            'd3',
-            'jquery',
-            'angular-material',
-            './node_modules/angular-material/angular-material.min.css',
-        ],
-    },
-    output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'static/dist'),
-    },
-    devtool: 'eval-cheap-module-source-map',
-    module: {
-        rules: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: 'babel-loader',
-            options: {
-                presets: ['babel-preset-env'],
-                plugins: ['angularjs-annotate'],
-            },
-        }, {
-            test: /\.html$/,
-            loader: 'html-loader',
-        }, {
-            test: /\.css$/,
-            loader: 'style-loader!css-loader',
-        }, {
-            test: /\.scss$/,
-            use: [{
-                loader: 'style-loader',
-            }, {
-                loader: 'css-loader',
-            }, {
-                loader: 'sass-loader',
-            }],
-        }, {
-            test: /\.png$|\?|\.gif($|\?)/,
-            loader: 'url-loader?publicPath=/static/dist/&limit=100000',
-        }, {
-            test: /\.jpg$/,
-            loader: 'file-loader',
-        }, {
-            test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
-            loader: 'url-loader',
-        }],
-    },
-    plugins: [
-        // new BundleAnalyzerPlugin(),
-        new webpack.ProvidePlugin({
-            jQuery: 'jquery',
-            $: 'jquery',
-            jquery: 'jquery',
-        }),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true,
-            debug: false,
-        }),
-        new webpack.optimize.ModuleConcatenationPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            filename: 'vendor.bundle.js',
-        }),
-        new webpack.NamedModulesPlugin(),
+  devtool: 'inline-source-map',
+  entry: './src/client/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist/'),
+    publicPath: '/',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: [path.resolve(__dirname, 'src')],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/react',
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    browsers: ['> 5%'],
+                  },
+                },
+              ],
+            ],
+            plugins: [
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-proposal-object-rest-spread',
+              '@babel/plugin-transform-runtime',
+            ],
+          },
+        },
+      },
+      {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader',
+      },
     ],
+  },
+  plugins: [
+    // new BundleAnalyzerPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'development',
+      ),
+    }),
+    // new Jarvis({
+    //   port: 1337,
+    // }),
+  ],
 };
