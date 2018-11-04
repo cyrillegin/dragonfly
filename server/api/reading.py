@@ -46,7 +46,7 @@ class Readings:
         except ValueError:
             logging.error('Json data could not be read.')
             return json.dumps({"error": "Data could not be read."}).encode('utf-8')
-    
+
         with sessionScope() as session:
             newId = short_uuid()
             newReading = Reading(uuid=newId, timestamp=time.time() * 1000, value=data['value'], sensor=data['uuid'])
