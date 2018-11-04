@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-// import PropTypes from 'prop-types';
+import { SharedSnackbarProvider } from '../components/snackbar/snackbar';
 import HomeContainer from './../pages/Home/HomeContainer';
 import AddSensorContainer from './../pages/AddSensor/AddSensorContainer';
-// Nav
 import NavBar from './../components/NavBar/NavBarContainer';
 
 export default class App extends Component {
@@ -12,11 +11,11 @@ export default class App extends Component {
   render() {
     return (
       <Router>
-        <div>
+        <SharedSnackbarProvider>
           <NavBar />
           <Route exact path="/addsensors" component={AddSensorContainer} />
-          <Route component={HomeContainer} />
-        </div>
+          <Route exact path="/" component={HomeContainer} />
+        </SharedSnackbarProvider>
       </Router>
     );
   }

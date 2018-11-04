@@ -31,6 +31,7 @@ const styles = {
 export class SensorDetails extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    openSnackbar: PropTypes.func.isRequired,
     updateSensor: PropTypes.func.isRequired,
     deleteSensor: PropTypes.func.isRequired,
     addEntry: PropTypes.func.isRequired,
@@ -82,10 +83,13 @@ export class SensorDetails extends Component {
   };
 
   componentDidUpdate(prev) {
+    // console.log(prev);
+    // console.log(this.props);
     if (
       (prev.sensor === null && this.props.sensor !== null) ||
       (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)
     ) {
+      console.log('set');
       this.setState({
         loading: false,
         uuid: this.props.sensor.uuid || '',
@@ -118,20 +122,22 @@ export class SensorDetails extends Component {
 
   render() {
     const updateSensor = () => {
-      this.props.updateSensor({
-        uuid: this.state.uuid,
-        name: this.state.name,
-        description: this.state.description,
-        coefficients: this.state.coefficients,
-        station: this.state.station,
-        poller: this.state.poller,
-        pin: this.state.pin,
-        units: this.state.units,
-        endpoint: this.state.endpoint,
-        pollRate: this.state.pollRate,
-        status: this.state.status,
-        meta: this.state.meta,
-      });
+      this.props
+        .updateSensor({
+          uuid: this.state.uuid,
+          name: this.state.name,
+          description: this.state.description,
+          coefficients: this.state.coefficients,
+          station: this.state.station,
+          poller: this.state.poller,
+          pin: this.state.pin,
+          units: this.state.units,
+          endpoint: this.state.endpoint,
+          pollRate: this.state.pollRate,
+          status: this.state.status,
+          meta: this.state.meta,
+        })
+        .then(res => this.props.openSnackbar('sensor-update'));
     };
 
     const openDeleteSensorDialog = () => {
@@ -149,6 +155,23 @@ export class SensorDetails extends Component {
     const handleDeleteSensor = () => {
       this.props.deleteSensor().then(res => {
         closeDeleteSensorDialog();
+        this.props.openSnackbar('sensor-delete');
+        this.setState({
+          uuid: '',
+          created: '',
+          modified: '',
+          name: '',
+          description: '',
+          coefficients: '',
+          station: '',
+          poller: '',
+          pin: '',
+          units: '',
+          endpoint: '',
+          pollRate: '',
+          status: '',
+          meta: '',
+        });
       });
     };
 
@@ -156,12 +179,12 @@ export class SensorDetails extends Component {
       this.props
         .addEntry(parseInt(this.state.newValue))
         .then(response => response.json())
-        .then(data => alert('Added value to sensor.'));
+        .then(data => this.props.openSnackbar('reading-added'));
     };
 
     if (this.state.loading) {
       return <div />;
-    } else if (this.props.sensor.uuid === '' || this.props.sensor.uuid === null) {
+    } else if (this.props.sensor.uuid === '' || !this.props.sensor.uuid) {
       return <div />;
     }
 

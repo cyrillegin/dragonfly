@@ -77,7 +77,7 @@ export class SensorNavMenu extends Component {
       });
       return <MDSpinner className={this.props.classes.spinner} size={52} />;
     }
-    if (this.state.loading === false && Object.keys(this.state.tree).length === 0) {
+    if (Object.keys(this.state.tree).length === 0) {
       return <div />;
     }
     const pollerIcon = icon => {

@@ -86,6 +86,13 @@ export class SensorGraph extends Component {
         });
         return;
       }
+      if (readings.error) {
+        this.setState({
+          warningMessage: readings.error,
+          loading: false,
+        });
+        return;
+      }
       const stats = {
         max: readings[0].value,
         min: readings[0].value,
