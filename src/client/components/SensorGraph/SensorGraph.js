@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
-import Datetime from 'react-datetime';
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import Graph from './Graph';
 import './timepicker.css';
 
@@ -62,11 +62,12 @@ export class SensorGraph extends Component {
   state = {
     loading: true,
     readings: [],
-    startTime: null,
-    endTime: null,
+    // startTime: null,
+    // endTime: null,
     status: null,
     autoRefresh: 'false',
     warningMessage: '',
+    dateRange: [new Date(), new Date()],
   };
 
   constructor(props) {
@@ -171,20 +172,14 @@ export class SensorGraph extends Component {
       );
     }
 
-    const setStartTime = event => {
+    const updateDateRange = e => {
       this.setState({
-        startTime: event.unix() * 1000,
-      });
-    };
-
-    const setEndTime = event => {
-      this.setState({
-        endTime: event.unix() * 1000,
+        dateRange: e,
       });
     };
 
     const submitTime = () => {
-      this.props.submitTime(this.state.startTime, this.state.endTime);
+      this.props.submitTime(this.state.dateRange[0].getTime(), this.state.dateRange[1].getTime());
       this.setState({
         loading: true,
         readings: [],
@@ -246,6 +241,7 @@ export class SensorGraph extends Component {
             <div className={this.props.classes.timeControls}>
               <ul className={this.props.classes.list}>
                 <li>
+                  {/*
                   Start Time
                   <Datetime
                     onChange={setStartTime}
@@ -258,6 +254,8 @@ export class SensorGraph extends Component {
                     value={this.state.endTime}
                     inputProps={{ 'aria-label': 'end time' }}
                   />
+                  */}
+                  <DateRangePicker onChange={updateDateRange} value={this.state.dateRange} />
                   <Button onClick={submitTime}>Submit Changes</Button>
                 </li>
                 <li>
