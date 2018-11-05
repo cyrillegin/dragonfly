@@ -4,7 +4,7 @@ The primary focus of Dragonfly is for allow a plug-n-play framework for sensor d
 
 ### Concepts
 
-Dragonfly can run using only a single pi. It will poll whatever sensors you add and store the data on a local postgres database. It can also be used with multiple pis working together sending data to each other. A typical setup would be to have a few pis all transmitting data to a centralized server. In this configuration, the pis would be called "satalites".
+Dragonfly can run using only a single pi. It will poll whatever sensors you add and store the data on a local postgres database. It can also be used with multiple pis working together sending data to each other. A typical setup would be to have a few pis all transmitting data to a centralized server. In this configuration, the pis would be called "satellites".
 
 ### Dependencies
 
@@ -105,7 +105,7 @@ In the meta field, you can enter either 'temperature' or 'humidity'.
 
 ##### Custom Entry
 
-This is a pseudo sensor. When created, no fields actually need to be filled out (although this is not recomended!). This sensor is just ment to graph things you would like to input yourself.
+This is a pseudo sensor. When created, no fields actually need to be filled out (although this is not recommended!). This sensor is just meant to graph things you would like to input yourself.
 
 ### Action Plugins
 
@@ -132,3 +132,43 @@ and change lines
 `local all postgres peer`
 to
 `local all postgres md5`
+
+### Development
+
+Docker is used for development, this allows us to mimic the same OS as a pi as well as the postgres server for the home base. To get started, make sure docker is installed on your machine and run the following commands:
+
+- `cd docker/postgres`
+- `./run.sh` - This will build the postgres container
+- `cd ../app/`
+- `./build.sh` - This will build a container based off of debian stretch
+
+Once the containers have been built you can use these commands to interact with them:
+
+- `./run.sh` - This will drop you into debian container.
+- `run-app.sh` - This will start the webapp in watch mode from the container.
+
+Make sure that you run any commands pertaining to development from within the container, for example `npm install` needs to be done within the container because some of the dependencies relay on the architecture to work.
+
+##### NPM Commands
+
+The following commands have been added to aid in development:
+
+- `build:prod` - Builds the front end in production mode
+- `clean` - Removes node modules, pyc files, and bundle.js
+- `clean:all` - Runs above clean, then wipes and rebuilds database and reinstalls node modules
+- `inc:minor` - increment the minor version
+- `inc:patch` - increment the major version
+- `install:git-hooks` - installs a pre push hook to lint code base
+- `jest` - Runs jest on front end (Not yet implemented)
+- `lint` - eslint and flake8 over code base
+- `load:fixtures` - Creates a new sensor and adds a days worth of readings to it (Note: The server must be running because this makes use of the api)
+- `prettier` - Runs prettier over code base
+- `rebuild:db` - Drops all tables and re-adds them.
+- `run:prod` - Builds the front end in production and runs the python server
+- `setup` - installs node modules, git hooks, and rebuilds the database
+- `start` - builds the front end in watch mode and starts the python server
+- `start:server` - starts the python server
+- `test` - Runs jest (Not yet implemented)
+- `tests` - Runs jest and linters (Not yet implemented)
+- `watch:client` - Builds the front end in watch mode
+- `watch:prod` - Builds the front end in production mode
