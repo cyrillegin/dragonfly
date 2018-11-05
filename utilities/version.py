@@ -4,8 +4,8 @@ import sys
 import os
 import time
 
-VERSION = '0.9.1'
-BUILD_DATE = 1541361322.613001
+VERSION = '0.9.3'
+BUILD_DATE = 1541377226.596517
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 

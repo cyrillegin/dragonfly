@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import MDSpinner from 'react-md-spinner';
@@ -11,11 +11,9 @@ import Datetime from 'react-datetime';
 import Graph from './Graph';
 import './timepicker.css';
 
-
 const styles = {
   root: {
     margin: '16px',
-
   },
   paper: {
     padding: '20px',
@@ -60,7 +58,7 @@ export class SensorGraph extends Component {
 
   static defaultProps = {
     sensor: null,
-  }
+  };
 
   state = {
     loading: true,
@@ -69,7 +67,8 @@ export class SensorGraph extends Component {
     endTime: null,
     status: null,
     autoRefresh: 'false',
-  }
+    warningMessage: '',
+  };
 
   constructor(props) {
     super(props);
@@ -79,7 +78,21 @@ export class SensorGraph extends Component {
   }
 
   loadData() {
-    this.props.getReadings().then((readings) => {
+    this.props.getReadings().then(readings => {
+      if (readings.length === 0) {
+        this.setState({
+          warningMessage: 'Not enough data to draw.',
+          loading: false,
+        });
+        return;
+      }
+      if (readings.error) {
+        this.setState({
+          warningMessage: readings.error,
+          loading: false,
+        });
+        return;
+      }
       const stats = {
         max: readings[0].value,
         min: readings[0].value,
@@ -87,7 +100,7 @@ export class SensorGraph extends Component {
         count: readings.length,
         last: readings[readings.length - 1].value,
       };
-      readings.forEach((reading) => {
+      readings.forEach(reading => {
         stats.avg += reading.value;
         if (stats.max < reading.value) {
           stats.max = reading.value;
@@ -108,12 +121,14 @@ export class SensorGraph extends Component {
         loading: false,
         readings: readings,
         stats: stats,
+        warningMessage: '',
       });
     });
   }
 
   componentDidUpdate(prev) {
-    if (this.state.loading === false &&
+    if (
+      this.state.loading === false &&
       this.props.sensor !== null &&
       this.props.sensor.uuid !== '' &&
       prev.sensor.uuid !== this.props.sensor.uuid
@@ -130,7 +145,7 @@ export class SensorGraph extends Component {
         <div className={this.props.classes.root}>
           <Paper className={this.props.classes.paper} elevation={4}>
             <Typography variant="headline" component="h3" className={this.props.classes.graphTitle}>
-            Please select a sensor.
+              Please select a sensor.
             </Typography>
           </Paper>
         </div>
@@ -141,9 +156,17 @@ export class SensorGraph extends Component {
       return (
         <div className={this.props.classes.root}>
           <Paper className={this.props.classes.paper} elevation={4}>
-            <MDSpinner
-              className={this.props.classes.spinner}
-              size={52} />
+            <MDSpinner className={this.props.classes.spinner} size={52} />
+          </Paper>
+        </div>
+      );
+    }
+
+    if (!this.state.loading && this.state.warningMessage !== '') {
+      return (
+        <div className={this.props.classes.root}>
+          <Paper className={this.props.classes.paper} elevation={4}>
+            <Typography varient="title">{this.state.warningMessage}</Typography>
           </Paper>
         </div>
       );
@@ -192,10 +215,7 @@ export class SensorGraph extends Component {
           <Typography variant="headline" component="h3" className={this.props.classes.graphTitle}>
             {this.props.sensor.name}
           </Typography>
-          <Graph
-            sensor={this.props.sensor}
-            readings={this.state.readings}
-          />
+          <Graph sensor={this.props.sensor} readings={this.state.readings} />
           <div className={this.props.classes.extras}>
             <div className={this.props.classes.statsContianer}>
               <table>
@@ -227,24 +247,30 @@ export class SensorGraph extends Component {
             <div className={this.props.classes.timeControls}>
               <ul className={this.props.classes.list}>
                 <li>
-              Start Time
+                  Start Time
                   <Datetime
                     onChange={setStartTime}
                     value={this.state.startTime}
-                    inputProps={{'aria-label': 'start time'}} />
-                End Time
+                    inputProps={{ 'aria-label': 'start time' }}
+                  />
+                  End Time
                   <Datetime
                     onChange={setEndTime}
                     value={this.state.endTime}
-                    inputProps={{'aria-label': 'end time'}} />
+                    inputProps={{ 'aria-label': 'end time' }}
+                  />
                   <Button onClick={submitTime}>Submit Changes</Button>
                 </li>
                 <li>
                   AutoRefresh
                   <Switch value={this.state.autoRefresh} onChange={handleAutoRefresh} />
-                  <Button onClick={() => {
-                    this.loadData();
-                  }}>Refresh Now</Button>
+                  <Button
+                    onClick={() => {
+                      this.loadData();
+                    }}
+                  >
+                    Refresh Now
+                  </Button>
                 </li>
               </ul>
             </div>

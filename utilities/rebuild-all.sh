@@ -1,8 +1,7 @@
 echo "Removing docker images."
 docker stop dragon_pg
-docker stop dragon_mq
 docker rm dragon_pg
-docker rm dragon_mq
+
 echo "Running clean"
 npm run clean
 

@@ -26,7 +26,7 @@ def GetValues(params):
         temp_c = float(temp_string) / 1000.0
         temp_f = temp_c * 9.0 / 5.0 + 32.0
 
-        logging.info('Temperature is currently: {}'.format(temp_f))
+        logging.debug('Temperature is currently: {}'.format(temp_f))
         newReading = {
             'sensor': {
                 'uuid': params['uuid'],

@@ -14,7 +14,7 @@ class Sensors:
     exposed = True
 
     def GET(self, **kwargs):
-        logging.info('GET request to sensors.')
+        logging.debug('GET request to sensors.')
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
@@ -29,7 +29,7 @@ class Sensors:
 
     def POST(self):
         # Save in database
-        logging.info('POST request to sensors')
+        logging.debug('POST request to sensors')
 
         try:
             data = json.loads(cherrypy.request.body.read().decode('utf-8'))
@@ -38,11 +38,11 @@ class Sensors:
             return json.dumps({"error": "Data could not be read."}).encode('utf-8')
 
         if 'sensor' not in data:
-            logging.info('error: no sensor information in data')
+            logging.error('error: no sensor information in data')
             return json.dumps({'error': 'No sensor information in data.'}).encode('utf-8')
 
         if 'poller' not in data['sensor']:
-            logging.info('Error: No poller information given.')
+            logging.error('Error: No poller information given.')
             return json.dumps({'Error': 'No poller information in data.'}).encode('utf-8')
 
         if 'uuid' not in data['sensor']:
@@ -51,10 +51,10 @@ class Sensors:
         with sessionScope() as session:
             try:
                 DbSensor = session.query(Sensor).filter_by(uuid=data['sensor']['uuid']).one()
-                logging.info('Sensor found, checking for updates')
+                logging.debug('Sensor found, checking for updates')
                 sensor = updateSensor(session, DbSensor, data['sensor'])
             except Exception:
-                logging.error('Sensor not found, creating new one.')
+                logging.debug('Sensor not found, creating new one.')
                 sensor = createSensor(session, data['sensor'])
 
             payload = {
@@ -66,14 +66,14 @@ class Sensors:
                     res = addReading(session, sensor, data['reading'])
                     payload['reading'] = res
                 except Exception as e:
-                    logging.info('Error adding reading to db.')
+                    logging.error('Error adding reading to db.')
                     logging.error(e)
                     payload['error'] = str(e)
 
         return json.dumps(payload).encode('utf-8')
 
     def PUT(self):
-        logging.info('PUT request to sensors.')
+        logging.debug('PUT request to sensors.')
 
         try:
             data = json.loads(cherrypy.request.body.read().decode('utf-8'))
@@ -86,7 +86,7 @@ class Sensors:
         with sessionScope() as session:
             try:
                 sensor = session.query(Sensor).filter_by(uuid=data['uuid']).one()
-                logging.info('Sensor found.')
+                logging.debug('Sensor found.')
                 payload = {
                     "sensor": updateSensor(session, sensor, data)
                 }
@@ -103,12 +103,12 @@ class Sensors:
             return json.dumps({'error': 'No sensor given.'}).encode('utf-8')
         with sessionScope() as session:
             sensor = session.query(Sensor).filter_by(uuid=kwargs['sensor']).one()
-            logging.info('Deleting all readings for sensor')
+            logging.debug('Deleting all readings for sensor')
             session.query(Reading).filter_by(sensor=kwargs['sensor']).delete()
-            logging.info('Deleting sensor')
+            logging.debug('Deleting sensor')
             session.delete(sensor)
             session.commit()
-            logging.info('Delete successful')
+            logging.debug('Delete successful')
             return json.dumps({'success': 'delete successful.'}).encode('utf-8')
 
 
@@ -122,7 +122,7 @@ def updateSensor(session, DbSensor, data):
             setattr(DbSensor, i, data[i])
     if updates:
         setattr(DbSensor, 'modified', time.time() * 1000)
-        logging.info('Sensor has changed, updating.')
+        logging.debug('Sensor has changed, updating.')
         session.add(DbSensor)
         session.commit()
     return session.query(Sensor).filter_by(uuid=data['uuid']).one().toDict()

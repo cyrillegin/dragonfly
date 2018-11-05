@@ -1,8 +1,8 @@
-import {compose, mapProps} from 'recompose';
+import { compose, mapProps } from 'recompose';
 import AddSensor from './AddSensor';
 
 export default compose(
-  mapProps((ownProps) => {
+  mapProps(ownProps => {
     return {
       history: ownProps.history,
       getPlugins: () => {
@@ -12,7 +12,7 @@ export default compose(
           }
           fetch('/api/plugin')
             .then(response => response.json())
-            .then((data) => {
+            .then(data => {
               res(data);
             });
         });
@@ -22,13 +22,13 @@ export default compose(
           fetch('/api/plugin', {
             method: 'POST',
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({'plugin': plugin, 'details': details}),
+            body: JSON.stringify({ plugin: plugin, details: details }),
           })
             .then(response => response.json())
-            .then((data) => {
+            .then(data => {
               res(data);
             });
         });
@@ -45,13 +45,13 @@ export default compose(
           fetch('/api/sensor', {
             method: 'POST',
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(payload),
           })
             .then(response => response.json())
-            .then((data) => {
+            .then(data => {
               res(data);
             });
         });

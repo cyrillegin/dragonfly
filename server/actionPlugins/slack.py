@@ -26,9 +26,9 @@ def TakeAction(action, value, sensor):
         body['attachments'][0]['text'] += "\n{}".format(action['meta'])
     body['text'] = "*{}*".format(body['text'])
 
-    logging.info('Sending message to Slack')
+    logging.debug('Sending message to Slack')
     resp = requests.post(SLACK_URL, data=json.dumps(body))
-    logging.info(resp)
+    logging.debug(resp)
 
 
 def ResolveAction(sensor):
@@ -45,6 +45,6 @@ def ResolveAction(sensor):
     if ENVIRONMENT is 'development':
         body['text'] += ' Test'
     body['text'] = "*{}*".format(body['text'])
-    logging.info('Sending message to Slack')
+    logging.debug('Sending message to Slack')
     resp = requests.post(SLACK_URL, data=json.dumps(body))
-    logging.info(resp)
+    logging.debug(resp)

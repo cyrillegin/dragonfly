@@ -17,8 +17,8 @@ STATIC = os.path.join(PATH, '../dist')
 sys.path.append(PATH)
 
 # NOTE: Do not update this manually, use `npm run incMajor` or `npm  run incMinor`
-VERSION = '0.9.1'
-BUILD_DATE = 1541361322.613001
+VERSION = '0.9.3'
+BUILD_DATE = 1541377226.596517
 
 
 def get_cp_config():
@@ -38,6 +38,10 @@ def get_cp_config():
 
 class Root(object):
     api = ResourceApi()
+
+    @cherrypy.expose
+    def version(self):
+        return json.dumps({"version": VERSION})
 
     @cherrypy.expose
     def getIP(self):

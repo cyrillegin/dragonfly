@@ -13,7 +13,7 @@ class Readings:
     exposed = True
 
     def GET(self, **kwargs):
-        logging.info('GET request to readings.')
+        logging.debug('GET request to readings.')
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
@@ -39,27 +39,28 @@ class Readings:
                 payload.append(i.toDict())
             return json.dumps(payload).encode('utf-8')
 
-    # def POST(self):
-    #
-    #     id = short_uuid()
-    #     # Save in database
-    #     logging.info('saving reading in database')
-    #
-    #     with sessionScope() as session:
-    #         readingModel = Reading(
-    #             uuid=id,
-    #             created=datetime.datetime.now(),
-    #         )
-    #         session.add(readingModel)
-    #         session.commit()
-    #
-    #     return json.dumps('success')
+    def POST(self):
+        logging.debug('POST request to readings.')
+        try:
+            data = json.loads(cherrypy.request.body.read().decode('utf-8'))
+        except ValueError:
+            logging.error('Json data could not be read.')
+            return json.dumps({"error": "Data could not be read."}).encode('utf-8')
+
+        with sessionScope() as session:
+            newId = short_uuid()
+            newReading = Reading(uuid=newId, timestamp=time.time() * 1000, value=data['value'], sensor=data['uuid'])
+            session.add(newReading)
+            session.commit()
+            enteredReading = session.query(Reading).filter_by(uuid=newId).one().toDict()
+            return json.dumps(enteredReading)
+        return json.dumps('success')
 
 
 def addReading(session, sensor, reading):
     newId = short_uuid()
     newReading = Reading(uuid=newId, timestamp=reading['timestamp'], value=reading['value'], sensor=sensor['uuid'])
-    logging.info('Adding new reading')
+    logging.debug('Adding new reading')
     session.add(newReading)
     session.commit()
     return session.query(Reading).filter_by(uuid=newId).one().toDict()

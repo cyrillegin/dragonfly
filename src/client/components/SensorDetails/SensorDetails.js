@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -31,8 +31,10 @@ const styles = {
 export class SensorDetails extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    openSnackbar: PropTypes.func.isRequired,
     updateSensor: PropTypes.func.isRequired,
     deleteSensor: PropTypes.func.isRequired,
+    addEntry: PropTypes.func.isRequired,
     sensor: PropTypes.shape({
       uuid: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
@@ -53,7 +55,7 @@ export class SensorDetails extends Component {
 
   static defaultProps = {
     sensor: null,
-  }
+  };
 
   state = {
     uuid: '',
@@ -71,7 +73,8 @@ export class SensorDetails extends Component {
     meta: '',
     loading: true,
     deleteDialogIsOpen: false,
-  }
+    newValue: '',
+  };
 
   handleChange = name => event => {
     this.setState({
@@ -80,8 +83,13 @@ export class SensorDetails extends Component {
   };
 
   componentDidUpdate(prev) {
-    if ((prev.sensor === null && this.props.sensor !== null) ||
-    (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)) {
+    // console.log(prev);
+    // console.log(this.props);
+    if (
+      (prev.sensor === null && this.props.sensor !== null) ||
+      (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)
+    ) {
+      console.log('set');
       this.setState({
         loading: false,
         uuid: this.props.sensor.uuid || '',
@@ -105,7 +113,7 @@ export class SensorDetails extends Component {
   componentDidMount() {
     fetch('/getIP')
       .then(response => response.json())
-      .then((data) => {
+      .then(data => {
         this.setState({
           localIP: data.localIP,
         });
@@ -114,20 +122,22 @@ export class SensorDetails extends Component {
 
   render() {
     const updateSensor = () => {
-      this.props.updateSensor({
-        uuid: this.state.uuid,
-        name: this.state.name,
-        description: this.state.description,
-        coefficients: this.state.coefficients,
-        station: this.state.station,
-        poller: this.state.poller,
-        pin: this.state.pin,
-        units: this.state.units,
-        endpoint: this.state.endpoint,
-        pollRate: this.state.pollRate,
-        status: this.state.status,
-        meta: this.state.meta,
-      });
+      this.props
+        .updateSensor({
+          uuid: this.state.uuid,
+          name: this.state.name,
+          description: this.state.description,
+          coefficients: this.state.coefficients,
+          station: this.state.station,
+          poller: this.state.poller,
+          pin: this.state.pin,
+          units: this.state.units,
+          endpoint: this.state.endpoint,
+          pollRate: this.state.pollRate,
+          status: this.state.status,
+          meta: this.state.meta,
+        })
+        .then(res => this.props.openSnackbar('sensor-update'));
     };
 
     const openDeleteSensorDialog = () => {
@@ -143,19 +153,43 @@ export class SensorDetails extends Component {
     };
 
     const handleDeleteSensor = () => {
-      this.props.deleteSensor().then((res) => {
+      this.props.deleteSensor().then(res => {
         closeDeleteSensorDialog();
+        this.props.openSnackbar('sensor-delete');
+        this.setState({
+          uuid: '',
+          created: '',
+          modified: '',
+          name: '',
+          description: '',
+          coefficients: '',
+          station: '',
+          poller: '',
+          pin: '',
+          units: '',
+          endpoint: '',
+          pollRate: '',
+          status: '',
+          meta: '',
+        });
       });
     };
 
+    const addEntry = () => {
+      this.props
+        .addEntry(parseInt(this.state.newValue))
+        .then(response => response.json())
+        .then(data => this.props.openSnackbar('reading-added'));
+    };
+
     if (this.state.loading) {
-      return (<div />);
-    } else if (this.props.sensor.uuid === '' || this.props.sensor.uuid === null) {
-      return (<div />);
+      return <div />;
+    } else if (this.props.sensor.uuid === '' || !this.props.sensor.uuid) {
+      return <div />;
     }
+
     return (
       <div className={this.props.classes.root}>
-
         <Dialog
           open={this.state.deleteDialogIsOpen}
           onClose={closeDeleteSensorDialog}
@@ -177,7 +211,6 @@ export class SensorDetails extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-
 
         <Paper className={this.props.classes.paper} elevation={4}>
           <Typography variant="headline" component="h3">
@@ -236,14 +269,16 @@ export class SensorDetails extends Component {
               value={this.state.description}
               margin="normal"
             />
-            <TextField
-              id="coefficients"
-              label="Coefficients"
-              onChange={this.handleChange('coefficients')}
-              className={this.props.classes.textField}
-              value={this.state.coefficients}
-              margin="normal"
-            />
+            {this.props.sensor.poller !== 'customEntry' && (
+              <TextField
+                id="coefficients"
+                label="Coefficients"
+                onChange={this.handleChange('coefficients')}
+                className={this.props.classes.textField}
+                value={this.state.coefficients}
+                margin="normal"
+              />
+            )}
             <TextField
               id="station"
               label="Station"
@@ -252,14 +287,16 @@ export class SensorDetails extends Component {
               value={this.state.station}
               margin="normal"
             />
-            <TextField
-              id="pollRate"
-              label="Poll Rate"
-              onChange={this.handleChange('pollRate')}
-              className={this.props.classes.textField}
-              value={this.state.pollRate}
-              margin="normal"
-            />
+            {this.props.sensor.poller !== 'customEntry' && (
+              <TextField
+                id="pollRate"
+                label="Poll Rate"
+                onChange={this.handleChange('pollRate')}
+                className={this.props.classes.textField}
+                value={this.state.pollRate}
+                margin="normal"
+              />
+            )}
             <TextField
               id="poller"
               label="Poller"
@@ -268,14 +305,16 @@ export class SensorDetails extends Component {
               value={this.state.poller}
               margin="normal"
             />
-            <TextField
-              id="pin"
-              label="Pin"
-              onChange={this.handleChange('pin')}
-              className={this.props.classes.textField}
-              value={this.state.pin}
-              margin="normal"
-            />
+            {this.props.sensor.poller !== 'customEntry' && (
+              <TextField
+                id="pin"
+                label="Pin"
+                onChange={this.handleChange('pin')}
+                className={this.props.classes.textField}
+                value={this.state.pin}
+                margin="normal"
+              />
+            )}
             <TextField
               id="units"
               label="Units"
@@ -313,6 +352,20 @@ export class SensorDetails extends Component {
             </Button>
             <Button className={this.props.classes.button} onClick={openDeleteSensorDialog}>
               Delete Sensor
+            </Button>
+          </form>
+          <form>
+            <TextField
+              id="newValue"
+              label={'newValue'}
+              onChange={this.handleChange('newValue')}
+              className={this.props.classes.textField}
+              value={this.state.newValue}
+              type="number"
+              margin="normal"
+            />
+            <Button className={this.props.classes.button} onClick={addEntry}>
+              Add Entry
             </Button>
           </form>
         </Paper>

@@ -10,7 +10,6 @@ from sqlalchemy.schema import (
 )
 import logging
 import sys
-import platform
 
 from config import PGHOST, PGPORT, PGUSERNAME, PGPASSWORD, DBNAME, USE_PG_HOST
 import models
