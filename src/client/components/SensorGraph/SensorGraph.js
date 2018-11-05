@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import MDSpinner from 'react-md-spinner';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import MDSpinner from 'react-md-spinner';
-import moment from 'moment';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import Datetime from 'react-datetime';
@@ -73,8 +72,8 @@ export class SensorGraph extends Component {
   constructor(props) {
     super(props);
 
-    this.state.startTime = props.currentStartTime || moment().unix() * 1000 - 24 * 60 * 60 * 1000;
-    this.state.endTime = props.currentEndTime || moment().unix() * 1000;
+    this.state.startTime = props.currentStartTime || new Date().getTime() - 24 * 60 * 60 * 1000;
+    this.state.endTime = props.currentEndTime || new Date().getTime();
   }
 
   loadData() {

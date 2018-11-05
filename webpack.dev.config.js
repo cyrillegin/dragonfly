@@ -1,9 +1,8 @@
 /* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
-const Jarvis = require("webpack-jarvis"); // eslint-disable-line
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer") // eslint-disable-line
-  .BundleAnalyzerPlugin; // eslint-disable-line
+const Jarvis = require('webpack-jarvis'); // eslint-disable-line
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line // eslint-disable-line
 
 module.exports = {
   devtool: 'inline-source-map',
@@ -49,12 +48,10 @@ module.exports = {
   plugins: [
     // new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(
-        process.env.NODE_ENV || 'development',
-      ),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
     }),
-    // new Jarvis({
-    //   port: 1337,
-    // }),
+    new Jarvis({
+      port: 1337,
+    }),
   ],
 };

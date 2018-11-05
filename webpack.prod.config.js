@@ -1,63 +1,62 @@
 /* eslint-env node */
-const path = require("path");
-const webpack = require("webpack");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
-const Jarvis = require("webpack-jarvis");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin; // eslint-disable-line
+const path = require('path');
+const webpack = require('webpack');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const Jarvis = require('webpack-jarvis');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line
 
 module.exports = {
-  devtool: "cheap-module-source-map",
-  entry: "./src/client/index.js",
+  devtool: 'cheap-module-source-map',
+  entry: './src/client/index.js',
   output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist/"),
-    publicPath: "/"
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist/'),
+    publicPath: '/',
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        include: [path.resolve(__dirname, "src")],
+        include: [path.resolve(__dirname, 'src')],
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             presets: [
-              "@babel/react",
+              '@babel/react',
               [
-                "@babel/preset-env",
+                '@babel/preset-env',
                 {
                   targets: {
-                    browsers: ["> 5%"]
-                  }
-                }
-              ]
+                    browsers: ['> 5%'],
+                  },
+                },
+              ],
             ],
             plugins: [
-              "@babel/plugin-proposal-class-properties",
-              "@babel/plugin-proposal-object-rest-spread",
-              "@babel/plugin-transform-runtime"
-            ]
-          }
-        }
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-proposal-object-rest-spread',
+              '@babel/plugin-transform-runtime',
+            ],
+          },
+        },
       },
       {
         test: /\.css$/,
-        loader: "style-loader!css-loader"
-      }
-    ]
+        loader: 'style-loader!css-loader',
+      },
+    ],
   },
   plugins: [
-    // new BundleAnalyzerPlugin(),
-    // new Jarvis({
-    //   port: 1337,
-    // }),
+    new BundleAnalyzerPlugin(),
+    new Jarvis({
+      port: 1337,
+    }),
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("production")
+      'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
-      debug: false
+      debug: false,
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.NamedModulesPlugin(),
@@ -78,14 +77,14 @@ module.exports = {
           unsafe_regexp: true, // eslint-disable-line
           unsafe_undefined: true, // eslint-disable-line
           drop_console: true, // eslint-disable-line
-          passes: 2
+          passes: 2,
         },
         mangle: {
           eval: true,
-          toplevel: true
-        }
+          toplevel: true,
+        },
       },
-      exclude: /\/server/
-    })
-  ]
+      exclude: /\/server/,
+    }),
+  ],
 };

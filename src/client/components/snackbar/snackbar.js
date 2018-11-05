@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { IconButton, Snackbar } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import Close from '@material-ui/icons/Close';
 
 const SnackbarContext = React.createContext();
 
