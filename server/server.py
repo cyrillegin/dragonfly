@@ -17,8 +17,8 @@ STATIC = os.path.join(PATH, '../dist')
 sys.path.append(PATH)
 
 # NOTE: Do not update this manually, use `npm run incMajor` or `npm  run incMinor`
-VERSION = '0.9.2'
-BUILD_DATE = 1541367533.035486
+VERSION = '0.9.3'
+BUILD_DATE = 1541377226.596517
 
 
 def get_cp_config():
