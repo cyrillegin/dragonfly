@@ -1,6 +1,6 @@
 {
   "author": "Cyrille Gindreau",
-  "buildDate": 1541367533.035486,
+  "buildDate": 1541377226.596517,
   "dependencies": {
     "@material-ui/core": "3.3.2",
     "@material-ui/icons": "3.0.1",
@@ -48,13 +48,12 @@
   "private": true,
   "repository": "",
   "scripts": {
-    "assess": "babel-node node_modules/.bin/code-assess src",
     "build:prod": "webpack --mode production --progress --config webpack.prod.config.js src/client",
     "clean": "./utilities/clean.sh",
     "clean:all": "npm run clean && npm run rebuild:db && npm run setup",
     "inc:minor": "python3 utilities/version.py minor",
     "inc:patch": "python3 utilities/version.py patch",
-    "install:gitHooks": "printf '%s#!/bin/bash %s\n %s\necho \"running linter\" %s\nnpm run lint' > .git/hooks/pre-push && chmod +x .git/hooks/pre-push",
+    "install:git-hooks": "printf '%s#!/bin/bash %s\n %s\necho \"running linter\" %s\nnpm run lint' > .git/hooks/pre-push && chmod +x .git/hooks/pre-push",
     "jest": "jest src/client",
     "lint": "./node_modules/.bin/eslint src/ && flake8 server/",
     "load:fixtures": "python3 utilities/loadFixtures.py",
@@ -69,5 +68,5 @@
     "watch:client": "webpack --mode development --watch --progress --config webpack.dev.config.js src/client",
     "watch:prod": "webpack --mode production --watch --progress --config webpack.prod.config.js src/client"
   },
-  "version": "0.9.2"
+  "version": "0.9.3"
 }
