@@ -14,6 +14,15 @@ export default compose(
             });
         });
       },
+      getActionList: () => {
+        return new Promise((res, rej) => {
+          fetch('/api/action')
+            .then(response => response.json())
+            .then(data => {
+              res(data.plugins);
+            });
+        });
+      },
       addAction: info => {
         return new Promise((res, rej) => {
           fetch('/api/action', {
