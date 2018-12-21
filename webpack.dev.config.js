@@ -46,12 +46,12 @@ module.exports = {
     ],
   },
   plugins: [
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
     }),
-    new Jarvis({
-      port: 1337,
-    }),
+    // new Jarvis({
+    //   port: 1337,
+    // }),
   ],
 };
