@@ -27,7 +27,10 @@ def get_cp_config():
             'tools.staticdir.on': True,
             'tools.staticdir.dir': STATIC,
             'tools.staticdir.index': 'index.html',
-            'tools.sessions.on': True
+            'tools.sessions.on': True,
+            # 'tools.gzip.mime_types': ['text/*', 'application/*'],
+            # 'tools.gzip.on': True,
+            # "tools.gzip.debug": True,  
         },
         '/api': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher()

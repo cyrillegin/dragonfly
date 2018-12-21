@@ -83,13 +83,10 @@ export class SensorDetails extends Component {
   };
 
   componentDidUpdate(prev) {
-    // console.log(prev);
-    // console.log(this.props);
     if (
       (prev.sensor === null && this.props.sensor !== null) ||
       (prev.sensor !== null && prev.sensor.uuid !== this.props.sensor.uuid)
     ) {
-      console.log('set');
       this.setState({
         loading: false,
         uuid: this.props.sensor.uuid || '',

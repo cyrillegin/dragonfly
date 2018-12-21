@@ -7,6 +7,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const styles = {
   textField: {
@@ -33,6 +35,7 @@ export class ActionDialog extends Component {
       operator: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
     }),
+    actionList: PropTypes.arrayOf(PropTypes.string).isRequired,
   };
 
   state = {
@@ -58,6 +61,14 @@ export class ActionDialog extends Component {
         notificationRate: nextProps.action.notificationRate,
         operator: nextProps.action.operator,
         value: nextProps.action.value,
+      });
+    } else if (this.state.plugin === '') {
+      this.setState({
+        plugin: this.props.actionList[0],
+        meta: 'hello',
+        notificationRate: 60 * 60,
+        operator: '>',
+        value: 5,
       });
     }
     return true;
@@ -94,14 +105,19 @@ export class ActionDialog extends Component {
 
         <DialogContent>
           <form className={this.props.classes.container} noValidate autoComplete="off">
-            <TextField
+            <Select
               id="plugin"
               label="Plugin"
               onChange={this.handleChange('plugin')}
               className={this.props.classes.textField}
               value={this.state.plugin}
-              margin="normal"
-            />
+            >
+              {this.props.actionList.map(action => (
+                <MenuItem key={action} value={action}>
+                  {action}
+                </MenuItem>
+              ))}
+            </Select>
             <TextField
               id="meta"
               label="Meta"
