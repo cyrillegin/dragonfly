@@ -116,6 +116,20 @@ Once done, add the slack hook url to your config for SLACK_URL
 Once triggered, the alarm will send a message stating that it has gone out of bounds and give the rule that triggered the alarm. Once the sensor has returned within its bounds, another slack message will be sent stating so.
 If you want to add a custom message to the alarm, you can add it in the meta field.
 
+##### Wemo plugin
+
+To setup wemo control, clone and setup the ouimeaux project
+- `git clone https://github.com/iancmcc/ouimeaux.git`
+- `cd ouimeaux`
+- `python setup.py build`
+- `sudo python setup.py install`
+To see what devices are on the network via cli, use `wemo status`
+For testing, you can turn those devices on and off like so:
+- `wemo switch 'nameOfWemo' on`
+- `wemo switch 'nameOfWemo' off`
+
+
+
 ### TroubleShooting
 
 To check if node installed correctly, run `node -v`. Under some instances, node has trouble correctly detecting the pis architecture. This has happened on the raspberry pi zero wireless. To fix this, you can download and install a different architecture based node manually:

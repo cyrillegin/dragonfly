@@ -52,7 +52,7 @@ def query(action, session):
                 notify(action, session, lastValue, sensor, module)
             else:
                 # Update sensor alarm
-                updateSensorAlarm(session, sensor, False, module)
+                updateSensorAlarm(action, session, sensor, False, module)
         else:
             logging.info('No readings currently exist.')
         time.sleep(timeout)
@@ -72,13 +72,13 @@ def notify(action, session, lastValue, sensor, module):
         session.commit()
 
 
-def updateSensorAlarm(session, sensor, alarm, module):
+def updateSensorAlarm(action, session, sensor, alarm, module):
     if sensor.toDict()['alarm'] is not alarm:
         setattr(sensor, 'alarm', alarm)
         session.commit()
         if not alarm:
             logging.info("Alarm resolved for {}".format(sensor.toDict()['name']))
-            module.ResolveAction(sensor.toDict())
+            module.ResolveAction(sensor.toDict(), action)
 
 
 def checkForActions():
