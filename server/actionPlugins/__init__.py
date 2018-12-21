@@ -68,7 +68,7 @@ def notify(action, session, lastValue, sensor, module):
         setattr(updatedAction, 'lastNotification', time.time() * 1000)
         session.add(updatedAction)
         # Update sensor alarm
-        updateSensorAlarm(session, sensor, True, module)
+        updateSensorAlarm(action, session, sensor, True, module)
         session.commit()
 
 
