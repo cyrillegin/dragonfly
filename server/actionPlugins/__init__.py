@@ -43,6 +43,9 @@ def query(action, session):
         checkValue = float(action['value'])
         print("lastValue: {}".format(lastValue))
         print("checkValue: {}".format(checkValue))
+        if (action['plugin'] == 'servo'):
+            print("do action")
+            module.TakeAction(action, lastValue, sensor)
         if lastReading is not None:
             if action['operator'] == '>' and lastValue > checkValue:
                 logging.info('Reading out of bounds.')
