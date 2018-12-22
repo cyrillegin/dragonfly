@@ -85,7 +85,6 @@ export class SensorActions extends Component {
       });
     });
     this.props.getActionList().then(actions => {
-      console.log(actions);
       this.setState({
         actionList: actions,
       });
@@ -123,6 +122,17 @@ export class SensorActions extends Component {
       });
     };
 
+    const handleActionAccept = async info => {
+      await this.props.addAction(info);
+      const actions = await this.props.getActions();
+      this.setState({
+        actions: actions,
+        loading: false,
+        addActionDialogIsOpen: false,
+        updateActionDialogIsOpen: false,
+      });
+    };
+
     const handleToggle = value => () => {
       const { checked } = this.state;
       const currentIndex = checked.indexOf(value);
@@ -145,7 +155,7 @@ export class SensorActions extends Component {
         <ActionDialog
           dialogIsOpen={this.state.addActionDialogIsOpen}
           actionCancel={closeActionDialog}
-          actionSubmit={this.props.addAction}
+          actionSubmit={handleActionAccept}
           title={'Add Sensor'}
           update={false}
           sensor={this.state.uuid}

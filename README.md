@@ -128,7 +128,8 @@ For testing, you can turn those devices on and off like so:
 - `wemo switch 'nameOfWemo' on`
 - `wemo switch 'nameOfWemo' off`
 
-
+To setup in Dragonfly, click the add action and select 'Wemo'.
+In the meta field
 
 ### TroubleShooting
 
