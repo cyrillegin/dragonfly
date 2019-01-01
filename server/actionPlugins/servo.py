@@ -10,12 +10,19 @@ USBPREFIX = 'tty.usbmodem14101'
 
 
 def TakeAction(action, value, sensor):
+    
     logging.info("taking action")
+    device = ''
     for (dirpath, dirnames, filenames) in walk("/dev/"):
         for path in filenames:
             if path.startswith(action['meta']):
-                device = filenames
-    logging.info("device: " + device)
-    # ser = serial.Serial('/dev/ttyUSB0')
-    # ser.write(value)
-    # ser.close()
+                device = path
+    logging.info("device: ")
+    logging.info("/dev/{}".format(device))
+    ser = serial.Serial("/dev/{}".format(device))
+    print("conn made")
+    print(ser)
+    ser.write(bytes([int(value)]))
+    print("closing conn")
+    ser.close()
+    print("all done")
