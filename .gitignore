@@ -11,11 +11,8 @@ config.py
 node_modules/
 bundle.js
 cdp.pid
+*.bundle.*
 
 # misc
 uploaded_images/
 ouimeaux/
-
-
-
-

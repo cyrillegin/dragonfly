@@ -4,15 +4,20 @@ const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const Jarvis = require('webpack-jarvis');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: './src/client/index.js',
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist/'),
     publicPath: '/',
   },
+  // optimization: {
+  //   minimizer: [new UglifyJSPlugin()],
+  // },
   module: {
     rules: [
       {
@@ -36,6 +41,7 @@ module.exports = {
               '@babel/plugin-proposal-class-properties',
               '@babel/plugin-proposal-object-rest-spread',
               '@babel/plugin-transform-runtime',
+              '@babel/plugin-syntax-dynamic-import',
             ],
           },
         },
@@ -47,7 +53,7 @@ module.exports = {
     ],
   },
   plugins: [
-    // new BundleAnalyzerPlugin(),
+    new BundleAnalyzerPlugin(),
     // new Jarvis({
     //   port: 1337,
     // }),
@@ -60,31 +66,12 @@ module.exports = {
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.NamedModulesPlugin(),
-    new UglifyJSPlugin({
-      uglifyOptions: {
-        topLevel: true,
-        keep_classnames: false, // eslint-disable-line
-        compress: {
-          keep_fargs: false, // eslint-disable-line
-          keep_fnames: false, // eslint-disable-line
-          toplevel: true,
-          unsafe: true,
-          unsafe_arrows: true, // eslint-disable-line
-          unsafe_methods: true, // eslint-disable-line
-          unsafe_Function: true, // eslint-disable-line
-          unsafe_math: true, // eslint-disable-line
-          unsafe_proto: true, // eslint-disable-line
-          unsafe_regexp: true, // eslint-disable-line
-          unsafe_undefined: true, // eslint-disable-line
-          drop_console: true, // eslint-disable-line
-          passes: 2,
-        },
-        mangle: {
-          eval: true,
-          toplevel: true,
-        },
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new TerserPlugin({
+      parallel: true,
+      terserOptions: {
+        ecma: 6,
       },
-      exclude: /\/server/,
     }),
   ],
 };
