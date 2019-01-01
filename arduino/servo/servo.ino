@@ -13,21 +13,23 @@ void setup() {
    Serial.begin(9600);
 }
 
+int incoming = 1;
+
 void loop(){ 
   
-  String incoming = Serial.readString();
+  incoming = incoming * (Serial.read() - '0');
 
-  // Check if number has been recieved.
-  if (incoming.length() == 0) {
-    return;
-  }
-  for(int i = 0; i < incoming.length(); i++) {
-    if (isdigit(incoming[i]) == false) {
-      return;
-    }
-  }
+//  // Check if number has been recieved.
+//  if (incoming.length() == 0) {
+//    return;
+//  }
+//  for(int i = 0; i < incoming.length(); i++) {
+//    if (isdigit(incoming[i]) == false) {
+//      return;
+//    }
+//  }
  
-  currentAngle = incoming.toInt();
+  currentAngle = incoming;
 
   // Make sure that number is within the bounds of the servo
   if (currentAngle < minAngle) {
@@ -36,6 +38,6 @@ void loop(){
   if (currentAngle > maxAngle) {
     currentAngle = maxAngle;
   }
-
-  servo.write(currentAngle);
+  Serial.println(currentAngle);
+//  servo.write(currentAngle);
 }
