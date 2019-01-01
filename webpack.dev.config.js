@@ -1,17 +1,23 @@
 /* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
-const Jarvis = require('webpack-jarvis'); // eslint-disable-line
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const Jarvis = require('webpack-jarvis');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
   entry: './src/client/index.js',
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist/'),
     publicPath: '/',
   },
+  // optimization: {
+  //   minimizer: [new UglifyJSPlugin()],
+  // },
   module: {
     rules: [
       {
@@ -35,6 +41,7 @@ module.exports = {
               '@babel/plugin-proposal-class-properties',
               '@babel/plugin-proposal-object-rest-spread',
               '@babel/plugin-transform-runtime',
+              '@babel/plugin-syntax-dynamic-import',
             ],
           },
         },
@@ -46,12 +53,11 @@ module.exports = {
     ],
   },
   plugins: [
-    // new BundleAnalyzerPlugin(),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-    }),
+    new BundleAnalyzerPlugin(),
     // new Jarvis({
     //   port: 1337,
     // }),
+
+    new webpack.NamedModulesPlugin(),
   ],
 };
