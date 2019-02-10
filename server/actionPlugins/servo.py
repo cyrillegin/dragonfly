@@ -17,14 +17,6 @@ def TakeAction(action, value, sensor):
         for path in filenames:
             if path.startswith(action['meta']):
                 device = path
-<<<<<<< HEAD
-    logging.info("device: " + device)
-    i = (int) value
-    print i
-    # ser = serial.Serial('/dev/ttyUSB0')
-    # ser.write(value)
-    # ser.close()
-=======
     logging.info("device: ")
     logging.info("/dev/{}".format(device))
     ser = serial.Serial("/dev/{}".format(device))
@@ -34,4 +26,3 @@ def TakeAction(action, value, sensor):
     print("closing conn")
     ser.close()
     print("all done")
->>>>>>> afec2bd6fa5d1ca39c8239deec5e1b32579e3f56

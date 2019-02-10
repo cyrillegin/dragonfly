@@ -1,6 +1,6 @@
 {
   "author": "Cyrille Gindreau",
-  "buildDate": 1541377226.596517,
+  "buildDate": 1549809687.996694,
   "dependencies": {
     "@material-ui/core": "3.9.2",
     "@material-ui/icons": "3.0.2",
@@ -61,14 +61,14 @@
     "load:fixtures": "python3 utilities/loadFixtures.py",
     "prettier": "prettier --list-different \"**/*.{js,md}\"",
     "rebuild:db": "python3 server/dbUtils.py rebuild",
-    "start:prod": "npm run build:prod && npm run start:server",
     "setup": "npm install && npm run install:gitHooks && npm run rebuild:db",
     "start": "npm run watch:client & npm run start:server",
+    "start:prod": "npm run build:prod && npm run start:server",
     "start:server": "python3 server/server.py",
     "test": "npm run jest",
     "tests": "npm run lint && npm run test",
     "watch:client": "webpack --mode development --watch --progress --config webpack.dev.config.js src/client",
     "watch:prod": "webpack --mode production --watch --progress --config webpack.prod.config.js src/client"
   },
-  "version": "0.9.3"
+  "version": "0.9.4"
 }
