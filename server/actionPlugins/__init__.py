@@ -43,6 +43,9 @@ def query(action, session):
         checkValue = float(action['value'])
         print("lastValue: {}".format(lastValue))
         print("checkValue: {}".format(checkValue))
+        if (action['plugin'] == 'servo'):
+            print("do action")
+            module.TakeAction(action, lastValue, sensor)
         if lastReading is not None:
             if action['operator'] == '>' and lastValue > checkValue:
                 logging.info('Reading out of bounds.')
@@ -52,7 +55,7 @@ def query(action, session):
                 notify(action, session, lastValue, sensor, module)
             else:
                 # Update sensor alarm
-                updateSensorAlarm(session, sensor, False, module)
+                updateSensorAlarm(action, session, sensor, False, module)
         else:
             logging.info('No readings currently exist.')
         time.sleep(timeout)
@@ -68,17 +71,17 @@ def notify(action, session, lastValue, sensor, module):
         setattr(updatedAction, 'lastNotification', time.time() * 1000)
         session.add(updatedAction)
         # Update sensor alarm
-        updateSensorAlarm(session, sensor, True, module)
+        updateSensorAlarm(action, session, sensor, True, module)
         session.commit()
 
 
-def updateSensorAlarm(session, sensor, alarm, module):
+def updateSensorAlarm(action, session, sensor, alarm, module):
     if sensor.toDict()['alarm'] is not alarm:
         setattr(sensor, 'alarm', alarm)
         session.commit()
         if not alarm:
             logging.info("Alarm resolved for {}".format(sensor.toDict()['name']))
-            module.ResolveAction(sensor.toDict())
+            module.ResolveAction(sensor.toDict(), action)
 
 
 def checkForActions():

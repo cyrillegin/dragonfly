@@ -33,6 +33,8 @@ const styles = {
 };
 
 export class SensorActions extends Component {
+  loading = false;
+
   static propTypes = {
     classes: PropTypes.object.isRequired,
     sensor: PropTypes.shape({
@@ -42,6 +44,7 @@ export class SensorActions extends Component {
     addAction: PropTypes.func.isRequired,
     updateAction: PropTypes.func.isRequired,
     deleteAction: PropTypes.func.isRequired,
+    getActionList: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -56,6 +59,7 @@ export class SensorActions extends Component {
 
     checked: ['wifi'],
     action: null,
+    actionList: [],
   };
 
   componentDidUpdate(prev) {
@@ -70,10 +74,19 @@ export class SensorActions extends Component {
   }
 
   loadData() {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
     this.props.getActions().then(actions => {
       this.setState({
         actions: actions,
         loading: false,
+      });
+    });
+    this.props.getActionList().then(actions => {
+      this.setState({
+        actionList: actions,
       });
     });
   }
@@ -109,6 +122,17 @@ export class SensorActions extends Component {
       });
     };
 
+    const handleActionAccept = async info => {
+      await this.props.addAction(info);
+      const actions = await this.props.getActions();
+      this.setState({
+        actions: actions,
+        loading: false,
+        addActionDialogIsOpen: false,
+        updateActionDialogIsOpen: false,
+      });
+    };
+
     const handleToggle = value => () => {
       const { checked } = this.state;
       const currentIndex = checked.indexOf(value);
@@ -131,10 +155,11 @@ export class SensorActions extends Component {
         <ActionDialog
           dialogIsOpen={this.state.addActionDialogIsOpen}
           actionCancel={closeActionDialog}
-          actionSubmit={this.props.addAction}
+          actionSubmit={handleActionAccept}
           title={'Add Sensor'}
           update={false}
           sensor={this.state.uuid}
+          actionList={this.state.actionList}
         />
 
         {/* Update Action Dialog */}
@@ -147,6 +172,7 @@ export class SensorActions extends Component {
           update={true}
           sensor={this.state.uuid}
           action={this.state.action}
+          actionList={this.state.actionList}
         />
 
         <Paper className={this.props.classes.paper} elevation={4}>

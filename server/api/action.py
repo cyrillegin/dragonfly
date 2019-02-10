@@ -5,6 +5,7 @@ import time
 from sessionManager import sessionScope
 from models import Action
 from api.short_uuid import short_uuid
+from actionPlugins import PLUGINS
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
 
@@ -17,14 +18,16 @@ class Actions:
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
 
-        with sessionScope() as session:
-            data = session.query(Action)
-            if 'sensor' in kwargs:
-                data = data.filter_by(sensor=kwargs['sensor'])
-            payload = []
-            for i in data:
-                payload.append(i.toDict())
-            return json.dumps(payload).encode('utf-8')
+        if 'sensor' in kwargs:
+            with sessionScope() as session:
+                data = session.query(Action).filter_by(sensor=kwargs['sensor'])
+                payload = []
+                for i in data:
+                    payload.append(i.toDict())
+                return json.dumps(payload).encode('utf-8')
+        else:
+            print(PLUGINS)
+            return json.dumps({"plugins": PLUGINS}).encode('utf-8')
 
     def POST(self):
         # Save in database
