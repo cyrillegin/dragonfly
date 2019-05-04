@@ -1,10 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './routes/App';
+import { defineComponents } from './components';
+import app from './app.html';
+import './globals.scss';
 
-document.querySelector('.loader').parentElement.removeChild(document.querySelector('.loader'));
+(() => {
+  defineComponents();
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root'), // eslint-disable-line
-);
+  document.getElementById('root').innerHTML = app;
+
+  window.onhashchange = () => {
+    const event = new Event('urlChange');
+    window.dispatchEvent(event);
+  };
+})();

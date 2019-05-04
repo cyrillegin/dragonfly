@@ -1,18 +1,16 @@
-# OSX
-*.DS_Store
+# Compiled output
+/dist/
+bundle.*
 
-# Python
-*.pyc
-
-# Config
-config.py
-
-# Node
+# Dependencies
 node_modules/
-bundle.js
-cdp.pid
-*.bundle.*
+*/node_modules
 
-# misc
-uploaded_images/
-ouimeaux/
+# OSX
+.DS_Store
+
+# Env files
+.env
+
+# Images
+downloads/

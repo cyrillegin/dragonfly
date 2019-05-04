@@ -1,23 +1,19 @@
 /* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const Jarvis = require('webpack-jarvis');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line
-const TerserPlugin = require('terser-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  devtool: 'cheap-module-source-map',
-  entry: './src/client/index.js',
+  devtool: 'inline-source-map',
+  entry: ['@babel/polyfill', './src/client/index.js'],
+  mode: 'development',
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'dist/'),
+    path: path.resolve(__dirname, 'dist/server/public'),
     publicPath: '/',
   },
-  // optimization: {
-  //   minimizer: [new UglifyJSPlugin()],
-  // },
   module: {
     rules: [
       {
@@ -26,38 +22,44 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [
-              '@babel/react',
-              [
-                '@babel/preset-env',
-                {
-                  targets: {
-                    browsers: ['> 5%'],
-                  },
-                },
-              ],
-            ],
+            presets: ['@babel/preset-env'],
             plugins: [
               '@babel/plugin-proposal-class-properties',
               '@babel/plugin-proposal-object-rest-spread',
-              '@babel/plugin-transform-runtime',
               '@babel/plugin-syntax-dynamic-import',
             ],
           },
         },
       },
       {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        test: /\.html$/,
+        loader: 'html-loader',
+      },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
     ],
   },
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000,
+  },
   plugins: [
-    new BundleAnalyzerPlugin(),
-    // new Jarvis({
-    //   port: 1337,
-    // }),
-
-    new webpack.NamedModulesPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    }),
+    new CompressionPlugin({
+      algorithm: 'gzip',
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0.8,
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+      path: path.resolve(__dirname, 'dist/'),
+      publicPath: '/',
+    }),
   ],
 };

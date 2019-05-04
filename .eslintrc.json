@@ -1,6 +1,9 @@
 {
   "parser": "babel-eslint",
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended"],
+  "settings": {
+    "propWrapperFunctions": ["forbidExtraProps"]
+  },
   "parserOptions": {
     "ecmaVersion": 8,
     "sourceType": "module",
@@ -8,35 +11,29 @@
       "jsx": true
     }
   },
-  "plugins": ["react", "import"],
+  "plugins": ["import"],
   "env": {
+    "browser": true,
     "shared-node-browser": true,
     "es6": true,
-    "node": true,
-    "browser": true
+    "node": true
   },
-  "overrides": [{
-      "files": ["**/*.test.js", "**/*.spec.js", "__tests__/*.js"],
+  "overrides": [
+    {
+      "files": ["**/*.test.js"],
       "env": {
         "jest": true
       }
     }
   ],
-  "settings": {
-    "react": {
-      "createClass": "createReactClass",
-      "pragma": "React",
-      "version": "15.0",
-      "flowVersion": "0.53"
-    },
-    "propWrapperFunctions": [ "forbidExtraProps" ]
-  },
   "rules": {
     "no-console": "off",
+    "max-len": ["warn", 110, { "ignoreUrls": true, "ignoreRegExpLiterals": true }],
     "semi": "error",
     "semi-spacing": "error",
     "semi-style": "error",
     "quotes": ["error", "single", { "avoidEscape": true }],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
     "comma-spacing": "error",
     "space-infix-ops": "error",
     "key-spacing": "error",
@@ -84,9 +81,6 @@
     "no-use-before-define": "error",
     "new-cap": ["error", { "capIsNewExceptions": ["sendgrid.API"] }],
     "jsx-quotes": "error",
-    "react/jsx-curly-spacing": "error",
-    "react/jsx-equals-spacing": "error",
-    "react/jsx-tag-spacing": "error",
     "import/no-unresolved": "error",
     "import/first": "error",
     "import/no-duplicates": "error",
