@@ -119,12 +119,13 @@ If you want to add a custom message to the alarm, you can add it in the meta fie
 ##### Wemo plugin
 
 To setup wemo control, clone and setup the ouimeaux project
+
 - `git clone https://github.com/iancmcc/ouimeaux.git`
 - `cd ouimeaux`
 - `python setup.py build`
 - `sudo python setup.py install`
-To see what devices are on the network via cli, use `wemo status`
-For testing, you can turn those devices on and off like so:
+  To see what devices are on the network via cli, use `wemo status`
+  For testing, you can turn those devices on and off like so:
 - `wemo switch 'nameOfWemo' on`
 - `wemo switch 'nameOfWemo' off`
 

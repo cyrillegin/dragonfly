@@ -1,4 +1,4 @@
-import html from './docTree.html';
+import html from './docTree.html'; // eslint-disable-line
 import './docTree.scss';
 
 const showdown = require('showdown');
