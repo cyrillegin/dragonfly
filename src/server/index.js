@@ -41,6 +41,16 @@ import withRoutes from './routes';
 
   withRoutes(app);
 
+  app.get('/docs/:file', (req, res) => {
+    console.log(req.params);
+    res.sendFile(
+      path.join(
+        process.env.PWD,
+        `dist/server/public/documentation/${req.params.file.toUpperCase()}.md`,
+      ),
+    );
+  });
+
   // This will catch all incoming requests to the server
   // and redirect it to the index.html.
   // If new routes are needed, make sure to add them above this line.

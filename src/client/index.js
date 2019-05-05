@@ -4,15 +4,14 @@ import documentation from './documentation.html';
 import './globals.scss';
 
 (() => {
+  console.log('go');
   defineComponents();
 
   function setupRouting() {
-    switch (window.location.pathname) {
-      case '/documentation':
-        document.getElementById('root').innerHTML = documentation;
-        break;
-      default:
-        document.getElementById('root').innerHTML = app;
+    if (window.location.pathname.startsWith('/documentation')) {
+      document.getElementById('root').innerHTML = documentation;
+    } else {
+      document.getElementById('root').innerHTML = app;
     }
   }
 
