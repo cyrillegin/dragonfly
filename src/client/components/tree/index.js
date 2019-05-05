@@ -10,8 +10,8 @@ export default class tree extends HTMLElement {
   connectedCallback() {
     this.innerHTML = html;
 
-    // Get list of types enterend in the database so far.
-    fetch('/api/record')
+    // Get list of types entered in the database so far.
+    fetch('/api/station')
       .then(res => res.json())
       .then(res => {
         const root = document.getElementById('tree-root');
@@ -19,22 +19,15 @@ export default class tree extends HTMLElement {
         root.innerHTML = res
           .map(
             elem =>
-              `<div class="tree-item" id=${elem}> 
-                ${elem} <button id="${elem}-compare">Compare</button>
+              `<div class="tree-item" id=${elem._id}> 
+                ${elem.station.name}-${elem.name}
               </div>`,
           )
           .join('');
-        // Setup button listeners
-        res.forEach(elem =>
-          document.getElementById(`${elem}-compare`).addEventListener('click', e => {
-            event.stopImmediatePropagation();
-            updateUrl('compare', elem);
-          }),
-        );
         // Add click events to elements
         res.forEach(elem => {
-          document.getElementById(elem).addEventListener('click', () => {
-            updateUrl('type', elem);
+          document.getElementById(elem._id).addEventListener('click', () => {
+            updateUrl('sensor', elem._id);
           });
         });
       });

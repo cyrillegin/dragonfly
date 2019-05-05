@@ -8,6 +8,8 @@ const d3 = {
 };
 
 const buildD3 = readings => {
+  console.log('building');
+  console.log(readings);
   if (readings === undefined) {
     return;
   }
@@ -38,30 +40,14 @@ const buildD3 = readings => {
 
   for (let i = 0; i < readings.length; i++) {
     dataObject.push({
-      time: readings[i].time * 1000,
+      time: new Date(readings[i].timestamp),
       value: readings[i].value,
     });
   }
+  console.log(dataObject);
 
-  let end = Date.now();
-  let start = Date.now() - 24 * 60 * 60 * 7 * 1000;
-
-  if (window.location.hash.length > 1) {
-    const params = {};
-    window.location.hash
-      .split('#')[1]
-      .split('&')
-      .forEach(i => {
-        params[i.split('=')[0]] = i.split('=')[1];
-      });
-    if ('start-date' in params) {
-      start = params['start-date'];
-    }
-    if ('end-date' in params) {
-      end = params['end-date'];
-    }
-  }
-
+  let end = dataObject[0].time;
+  let start = dataObject[0].time;
   let min = dataObject[0].value;
   let max = dataObject[0].value;
 
@@ -73,10 +59,20 @@ const buildD3 = readings => {
     if (max < dataObject[i].value) {
       max = dataObject[i].value;
     }
+    if (end < dataObject[i].time) {
+      end = dataObject[i].time;
+    }
+    if (start > dataObject[i].time) {
+      start = dataObject[i].time;
+    }
   }
   // Adds margins within the graph
   min = min - (max - min) * 0.05;
   max = max + (max - min) * 0.05;
+  start = new Date(start);
+  end = new Date(end);
+
+  console.log(min, max, start, end);
 
   // Create the svg.
   const newChart = d3

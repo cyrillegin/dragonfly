@@ -25,9 +25,12 @@ export default class graph extends HTMLElement {
   }
 
   getGraphData() {
+    if (window.location.hash.length < 5) {
+      return;
+    }
     setTimeout(() => {
       // Convert path and hash to kwargs
-      const url = `api/record${window.location.hash.replace('#', '?')}`;
+      const url = `api/reading${window.location.hash.replace('#', '?')}`;
       fetch(url)
         .then(res => res.json())
         .then(res => this.buildGraph(res));
@@ -36,10 +39,6 @@ export default class graph extends HTMLElement {
 
   buildGraph(readings) {
     document.getElementById('graph-title').innerHTML = window.location.pathname.split('/')[1];
-    if (window.location.hash.includes('compare')) {
-      buildThree(readings);
-    } else {
-      buildD3(readings.readings);
-    }
+    buildD3(readings);
   }
 }

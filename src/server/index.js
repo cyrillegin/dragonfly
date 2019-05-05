@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import './dotenv';
 import DB from './db';
 import addModelsToContext from './models';
+import withRoutes from './routes';
 
 (async () => {
   // Wait for DB connection to complete before allowing HTTP connections
@@ -38,8 +39,10 @@ import addModelsToContext from './models';
   // This sets where all the public files can be served from.
   app.use(express.static(path.join(process.env.PWD, 'dist/server/public')));
 
+  withRoutes(app);
+
   // This will catch all incoming requests to the server
-  // and redirect it to the index.html created by angular.
+  // and redirect it to the index.html.
   // If new routes are needed, make sure to add them above this line.
   app.get('*', (req, res) => {
     res.sendFile(path.join(process.env.PWD, 'dist/server/public/index.html'));

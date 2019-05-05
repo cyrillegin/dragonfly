@@ -21,8 +21,16 @@ export default class BaseModel {
     await this.collection.createIndexes(this.indexes);
   }
 
+  async insert(doc) {
+    return await this.collection.insertOne(doc);
+  }
+
   async all() {
     return await this.collection.find().toArray();
+  }
+
+  async find(queryObject) {
+    return await this.collection.find(queryObject).toArray();
   }
 
   async findOneById(id) {
@@ -31,14 +39,6 @@ export default class BaseModel {
 
   async findManyByIds(ids) {
     return await this.collection.find({ _id: { $in: ids } }).toArray();
-  }
-
-  async findByQuery(query) {
-    return await this.collection.find(query).toArray();
-  }
-
-  async insertOne(doc) {
-    return await this.collection.insert(doc);
   }
 
   async updateOneById(id, mutation) {

@@ -1,3 +1,16 @@
-.title {
-  background: pink;
+.titlebar-container {
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  background: rgb(145, 255, 150);
+  align-items: baseline;
+
+  div:nth-child(1) {
+    font-size: 1.6em;
+    flex: 1;
+    margin: 12px 24px;
+  }
+
+  div:nth-child(2) {
+    margin-right: 24px;
+  }
 }

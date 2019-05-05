@@ -2,6 +2,14 @@ body {
   margin: 0;
 }
 
-.title {
-  background: red;
+.main {
+  display: flex;
+
+  .tree-container {
+    flex: 1;
+  }
+
+  .graph-container {
+    flex: 4;
+  }
 }

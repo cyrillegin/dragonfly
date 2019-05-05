@@ -1,7 +1,11 @@
-import Image from './Image';
+import Reading from './Reading';
+import Station from './Station';
+import Sensor from './Sensor';
 
 const models = {
-  Image,
+  Reading,
+  Station,
+  Sensor,
 };
 
 export default async function addModelsToContext(context, { applyValidatorsAndIndexes } = {}) {
