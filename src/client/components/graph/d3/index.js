@@ -8,8 +8,6 @@ const d3 = {
 };
 
 const buildD3 = readings => {
-  console.log('building');
-  console.log(readings);
   if (readings === undefined) {
     return;
   }
@@ -44,7 +42,6 @@ const buildD3 = readings => {
       value: readings[i].value,
     });
   }
-  console.log(dataObject);
 
   let end = dataObject[0].time;
   let start = dataObject[0].time;
@@ -71,8 +68,6 @@ const buildD3 = readings => {
   max = max + (max - min) * 0.05;
   start = new Date(start);
   end = new Date(end);
-
-  console.log(min, max, start, end);
 
   // Create the svg.
   const newChart = d3

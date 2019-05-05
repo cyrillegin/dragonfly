@@ -1,0 +1,49 @@
+.doc-tree-container {
+  .tree {
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+    padding: 24px;
+
+    .section {
+      color: rgb(170, 170, 170);
+
+      button {
+        color: rgb(130, 130, 130);
+        font-size: 1.4em;
+        display: flex;
+        width: 250px;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+        }
+
+        .icon {
+          width: 0;
+          height: 0;
+          border-top: 10px solid transparent;
+          border-bottom: 10px solid transparent;
+          border-left: 10px solid rgb(130, 130, 130);
+        }
+      }
+
+      .section-content {
+        .link {
+          font-size: 1.2em;
+          margin: 8px 24px;
+          width: 226px;
+          cursor: pointer;
+
+          &:hover {
+            background: rgb(235, 235, 235);
+          }
+        }
+      }
+    }
+  }
+
+  .content {
+  }
+}

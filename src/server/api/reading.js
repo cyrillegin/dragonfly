@@ -3,6 +3,7 @@ import { createStation, getStation } from './station';
 import { getSensor, createSensor } from './sensor';
 
 async function createReading(req, res) {
+  console.log('POST request to reading');
   let station = await getStation(req.context, {
     name: req.body.stationName,
   });
@@ -21,14 +22,15 @@ async function createReading(req, res) {
     });
   }
 
-  await req.context.Reading.insert({
+  const payload = {
     _id: uuidv4().replace(/-/g, ''),
     createdAt: new Date(),
     updatedAt: new Date(),
     sensor: sensor._id,
-    timestamp: new Date(req.body.timestamp),
-    value: req.body.value,
-  });
+    timestamp: new Date(parseFloat(req.body.timestamp)),
+    value: parseFloat(req.body.value),
+  };
+  await req.context.Reading.insert(payload);
   res.send('success');
 }
 

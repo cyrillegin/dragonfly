@@ -25,6 +25,7 @@
     "file-loader": "3.0.1",
     "fs-extra": "7.0.1",
     "html-loader": "^0.5.5",
+    "marked": "^0.6.2",
     "mini-css-extract-plugin": "^0.6.0",
     "mongodb": "2.2.23",
     "node-sass": "4.11.0",
