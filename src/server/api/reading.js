@@ -35,13 +35,31 @@ async function createReading(req, res) {
 }
 
 async function getReadings(req, res) {
-  const queryObject = {};
+  const queryParameters = {};
   req.url
     .split('?')[1]
     .split('&')
     .forEach(e => {
-      queryObject[e.split('=')[0]] = e.split('=')[1];
+      queryParameters[e.split('=')[0]] = e.split('=')[1];
     });
+
+  if (!('sensor' in queryParameters)) {
+    return;
+  }
+  const queryObject = {
+    sensor: queryParameters.sensor,
+    timestamp: {
+      $gte: new Date(
+        queryParameters['start-date']
+          ? queryParameters['start-date']
+          : new Date().getTime() - 60 * 60 * 24 * 1000,
+      ),
+      $lte: new Date(
+        queryParameters['end-date'] ? queryParameters['end-date'] : new Date().getTime(),
+      ),
+    },
+  };
+
   const readings = await req.context.Reading.find(queryObject);
   res.send(readings);
 }

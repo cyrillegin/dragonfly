@@ -15,13 +15,15 @@ export default class graph extends HTMLElement {
     });
     this.getGraphData();
 
-    ['start-date', 'end-date'].forEach(i =>
-      document.getElementById(i).addEventListener('change', e => {
+    ['start-date', 'end-date'].forEach(i => {
+      const elem = document.getElementById(i);
+      elem.addEventListener('change', e => {
         updateUrl(i, e.target.value, () => {
           this.getGraphData();
         });
-      }),
-    );
+      });
+      // elem.valueAsDate = locaation.includes(i) new Date(new Date().getTime() - 1000 * 60 * 60 * 24);
+    });
   }
 
   getGraphData() {
@@ -38,7 +40,23 @@ export default class graph extends HTMLElement {
   }
 
   buildGraph(readings) {
-    document.getElementById('graph-title').innerHTML = window.location.pathname.split('/')[1];
-    buildD3(readings);
+    const queryObject = {};
+    window.location.hash
+      .replace('#', '')
+      .split('&')
+      .forEach(e => {
+        queryObject[e.split('=')[0]] = e.split('=')[1];
+      });
+    if ('start-date' in queryObject) {
+      document.getElementById('start-date').valueAsDate = new Date(queryObject['start-date']);
+    } else {
+      queryObject['start-date'] = new Date((new Date() - 1000 * 60 * 60 * 24).getTime());
+    }
+    if ('end-date' in queryObject) {
+      document.getElementById('end-date').valueAsDate = new Date(queryObject['end-date']);
+    } else {
+      queryObject['end-date'] = new Date();
+    }
+    buildD3(readings, queryObject['start-date'], queryObject['end-date']);
   }
 }

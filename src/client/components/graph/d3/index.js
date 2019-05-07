@@ -7,7 +7,7 @@ const d3 = {
   ...require('d3-array'),
 };
 
-const buildD3 = readings => {
+const buildD3 = (readings, startDate, endDate) => {
   if (readings === undefined) {
     return;
   }
@@ -43,8 +43,9 @@ const buildD3 = readings => {
     });
   }
 
-  let end = dataObject[0].time;
-  let start = dataObject[0].time;
+  const end = new Date(endDate);
+  const start = new Date(startDate);
+
   let min = dataObject[0].value;
   let max = dataObject[0].value;
 
@@ -56,18 +57,10 @@ const buildD3 = readings => {
     if (max < dataObject[i].value) {
       max = dataObject[i].value;
     }
-    if (end < dataObject[i].time) {
-      end = dataObject[i].time;
-    }
-    if (start > dataObject[i].time) {
-      start = dataObject[i].time;
-    }
   }
   // Adds margins within the graph
   min = min - (max - min) * 0.05;
   max = max + (max - min) * 0.05;
-  start = new Date(start);
-  end = new Date(end);
 
   // Create the svg.
   const newChart = d3

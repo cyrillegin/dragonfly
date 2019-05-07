@@ -20,7 +20,7 @@ const makeRequest = (station, sensor, i) => {
     json: true,
     body: {
       value: Math.sin(i * 0.01),
-      timestamp: date,
+      timestamp: date.getTime(),
       sensorName: sensor,
       stationName: station,
     },
