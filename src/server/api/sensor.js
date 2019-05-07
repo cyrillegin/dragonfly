@@ -4,8 +4,21 @@ import { getStation, createStation } from './station';
 async function getSensors(req, res) {
   return await req.context.Sensor.all();
 }
-async function getSensor(context, sensor) {
+
+async function _getSensor(context, sensor) {
   return (await context.Sensor.find(sensor))[0];
+}
+
+async function getSensor(req, res) {
+  const queryParameters = {};
+  req.url
+    .split('?')[1]
+    .split('&')
+    .forEach(e => {
+      queryParameters[e.split('=')[0]] = e.split('=')[1];
+    });
+  const rest = await _getSensor(req.context, { _id: queryParameters.sensor });
+  res.send(rest);
 }
 
 async function createSensor(context, sensor) {
@@ -26,4 +39,4 @@ async function createSensor(context, sensor) {
   return (await context.Sensor.find({ name: sensor.sensorName }))[0];
 }
 
-export { getSensor, createSensor, getSensors };
+export { getSensor, _getSensor, createSensor, getSensors };

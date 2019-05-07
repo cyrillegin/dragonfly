@@ -31,15 +31,21 @@ export default class graph extends HTMLElement {
       return;
     }
     setTimeout(() => {
-      // Convert path and hash to kwargs
-      const url = `api/reading${window.location.hash.replace('#', '?')}`;
-      fetch(url)
+      fetch(`api/reading${window.location.hash.replace('#', '?')}`)
         .then(res => res.json())
         .then(res => this.buildGraph(res));
+
+      fetch(`api/sensor${window.location.hash.replace('#', '?')}`)
+        .then(res => res.json())
+        .then(res => {
+          console.log(res);
+          document.getElementById('graph-title').innerHTML = res.name;
+        });
     });
   }
 
   buildGraph(readings) {
+    // Get dates or set defaults
     const queryObject = {};
     window.location.hash
       .replace('#', '')
@@ -57,6 +63,8 @@ export default class graph extends HTMLElement {
     } else {
       queryObject['end-date'] = new Date();
     }
+
+    // Build graph
     buildD3(readings, queryObject['start-date'], queryObject['end-date']);
   }
 }

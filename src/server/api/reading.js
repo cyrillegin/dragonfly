@@ -1,6 +1,6 @@
 import uuidv4 from 'uuid/v4';
 import { createStation, getStation } from './station';
-import { getSensor, createSensor } from './sensor';
+import { _getSensor, createSensor } from './sensor';
 
 async function createReading(req, res) {
   console.log('POST request to reading');
@@ -11,7 +11,7 @@ async function createReading(req, res) {
     station = await createStation(req.context, { name: req.body.stationName });
   }
 
-  let sensor = await getSensor(req.context, {
+  let sensor = await _getSensor(req.context, {
     name: req.body.sensorName,
     station: station._id,
   });
