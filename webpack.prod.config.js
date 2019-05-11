@@ -2,13 +2,12 @@
 const path = require('path');
 const webpack = require('webpack');
 const CompressionPlugin = require('compression-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   devtool: 'cheap-module-source-map',
-  entry: './src/client/index.js',
+  entry: ['@babel/polyfill', './src/client/index.js'],
   mode: 'production',
   output: {
     filename: '[name].bundle.js',
@@ -17,7 +16,7 @@ module.exports = {
     publicPath: '/',
   },
   optimization: {
-    minimizer: [new UglifyJSPlugin()],
+    minimizer: [new TerserPlugin()],
   },
   module: {
     rules: [
@@ -49,6 +48,11 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+      path: path.resolve(__dirname, 'dist/'),
+      publicPath: '/',
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
