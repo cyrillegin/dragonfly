@@ -1,8 +1,14 @@
 import "regenerator-runtime/runtime";
+
 const express = require('express');
 const path = require('path')
-const app = express();
+
 const api = require('./api');
+
+const db = require('./db')
+
+
+const app = express();
 
 app.use(express.static(path.join(__dirname + '/public/')))
 
