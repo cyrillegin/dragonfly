@@ -1,10 +1,12 @@
-FROM node:lts
+FROM node:12-alpine
 
 WORKDIR /app
+
 COPY ./package*.json ./
-RUN npm ci
+RUN npm i
 COPY . .
-RUN chown -R node:node /app
+
+# RUN chown -R node:node /app
 USER node
 
 EXPOSE 3000
