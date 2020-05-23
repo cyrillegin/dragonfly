@@ -1,74 +1,20 @@
 {
   "author": "Cyrille Gindreau",
-  "buildDate": 1549809687.996694,
   "dependencies": {
-    "@material-ui/core": "3.9.2",
-    "@material-ui/icons": "3.0.2",
-    "@wojtekmaj/react-daterange-picker": "2.0.1",
-    "d3": "5.9.1",
-    "prop-types": "15.6.2",
-    "query-string": "6.2.0",
-    "react": "16.8.1",
-    "react-dom": "16.8.1",
-    "react-md-spinner": "0.3.0",
-    "react-router-dom": "4.3.1"
+
   },
   "description": "",
   "devDependencies": {
-    "@babel/cli": "7.2.3",
-    "@babel/core": "7.2.2",
-    "@babel/plugin-proposal-class-properties": "7.3.0",
-    "@babel/plugin-proposal-object-rest-spread": "7.3.2",
-    "@babel/plugin-syntax-dynamic-import": "7.2.0",
-    "@babel/plugin-transform-runtime": "7.2.0",
-    "@babel/preset-env": "7.3.1",
-    "@babel/preset-react": "7.0.0",
-    "babel-eslint": "10.0.1",
-    "babel-loader": "8.0.5",
-    "css-loader": "2.1.0",
-    "eslint": "5.13.0",
-    "eslint-plugin-import": "2.16.0",
-    "eslint-plugin-react": "7.12.4",
-    "jest": "24.1.0",
-    "prettier": "1.16.4",
-    "style-loader": "0.23.1",
-    "terser-webpack-plugin": "1.2.2",
-    "uglifyjs-webpack-plugin": "2.1.1",
-    "webpack": "4.29.3",
-    "webpack-bundle-analyzer": "3.0.3",
-    "webpack-cli": "3.2.3",
-    "webpack-jarvis": "0.3.2"
+
   },
-  "engines": {
-    "node": "8.6.2"
-  },
-  "jest": {
-    "testEnvironment": "node"
-  },
+
+
   "license": "",
   "name": "Dragonfly",
   "private": true,
   "repository": "",
   "scripts": {
-    "build:prod": "webpack --mode production --progress --config webpack.prod.config.js src/client",
-    "clean": "./utilities/clean.sh",
-    "clean:all": "npm run clean && npm run rebuild:db && npm run setup",
-    "inc:minor": "python3 utilities/version.py minor",
-    "inc:patch": "python3 utilities/version.py patch",
-    "install:git-hooks": "printf '%s#!/bin/bash %s\n %s\necho \"running linter\" %s\nnpm run lint' > .git/hooks/pre-push && chmod +x .git/hooks/pre-push",
-    "jest": "jest src/client",
-    "lint": "./node_modules/.bin/eslint src/ && flake8 server/",
-    "load:fixtures": "python3 utilities/loadFixtures.py",
-    "prettier": "prettier --list-different \"**/*.{js,md}\"",
-    "rebuild:db": "python3 server/dbUtils.py rebuild",
-    "setup": "npm install && npm run install:gitHooks && npm run rebuild:db",
-    "start": "npm run watch:client & npm run start:server",
-    "start:prod": "npm run build:prod && npm run start:server",
-    "start:server": "python3 server/server.py",
-    "test": "npm run jest",
-    "tests": "npm run lint && npm run test",
-    "watch:client": "webpack --mode development --watch --progress --config webpack.dev.config.js src/client",
-    "watch:prod": "webpack --mode production --watch --progress --config webpack.prod.config.js src/client"
+
   },
-  "version": "0.9.4"
+  "version": "0.0.1"
 }

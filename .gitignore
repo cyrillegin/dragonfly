@@ -1,18 +1,5 @@
 # OSX
 *.DS_Store
 
-# Python
-*.pyc
-
-# Config
-config.py
-
-# Node
+# NODE
 node_modules/
-bundle.js
-cdp.pid
-*.bundle.*
-
-# misc
-uploaded_images/
-ouimeaux/
