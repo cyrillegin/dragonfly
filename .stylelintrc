@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "ignoreFiles": [
+    "**/dist/**"
+  ],
+  "rules": {
+    "unit-whitelist":["rem", "s", "ms", "%", "em", "fr", "deg"],
+    "declaration-empty-line-before": "never",
+    "function-name-case": null,
+    "indentation": null,
+    "declaration-colon-newline-after": null,
+    "declaration-block-trailing-semicolon": null,
+    "value-keyword-case": null
+  }
+}
