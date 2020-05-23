@@ -4,3 +4,7 @@
 # NODE
 node_modules/
 dist/
+
+# Testing
+junit.xml
+coverage/
