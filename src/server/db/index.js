@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize';
-import Station from './Station';
-import Sensor from './Sensor';
-import Reading from './Reading';
-import Action from './Action';
+import { buildStationSchema } from './Station';
+import { buildSensorSchema } from './Sensor';
+import { buildReadingSchema } from './Reading';
+import { buildActionSchema } from './Action';
 
 const dbType = process.env.DATABASE_TYPE;
 const dbName = process.env.DATABASE_NAME;
@@ -15,9 +15,9 @@ const connectionString = `${dbType}://${dbUser}:${dbPassword}@${dbHost}:${dbPort
 
 const sequelize = new Sequelize(connectionString);
 
-Station.buildStationSchema(sequelize);
-Sensor.buildSensorSchema(sequelize);
-Reading.buildReadingSchema(sequelize);
-Action.buildActionSchema(sequelize);
+buildStationSchema(sequelize);
+buildSensorSchema(sequelize);
+buildReadingSchema(sequelize);
+buildActionSchema(sequelize);
 
 sequelize.sync();

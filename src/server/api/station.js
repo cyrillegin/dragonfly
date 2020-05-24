@@ -1,25 +1,149 @@
-const { Router } = require('express');
-
+import { Router } from 'express';
+import isIP from '../validators';
 const router = new Router();
+import { Station } from '../db/Station';
 
+/**
+ * GET
+ * Gets an array of all the stations and their sensors
+ *
+ * kwargs: none
+ *
+ * returns {
+ *   stations: [{
+ *     name: 'station name',
+ *     ipAdress: '123.123.123.123',
+ *     sensors: [{
+ *       name: 'sensor name',
+ *       id: 1,
+ *       description: 'A sensor',
+ *       health: 'healthy',
+ *       state: 'on, off, null',
+ *       coefficients: '9/5, 32',
+ *       type: 'temperature',
+ *       actions: [{
+ *         condition: 'condition',
+ *         action: 'action',
+ *         interval: '5h'
+ *       }],
+ *     }]
+ *   }]
+ * }
+ */
 router.get('/', async (req, res) => {
-  console.info('get station');
-  res.sendStatus(200);
+  console.info('GET request to station');
+  res.send(await Station.findAll());
 });
 
+/**
+ * POST
+ * Creates a new station
+ *
+ * params: {
+ *   name: 'station name',
+ *   ip: 'xxx.xxx.xxx.xxx'
+ * }
+ *
+ * returns: 200 success, 400 if validation fails
+ */
 router.post('/', async (req, res) => {
-  console.info('post station');
-  res.sendStatus(200);
+  console.info('POST request to station');
+  const { name, ip } = req.body;
+
+  const valid = validateStationParams(req.body);
+  if (valid.message) {
+    res.status(400).send({ error: valid.message });
+    return;
+  }
+
+  try {
+    const result = await Station.create({ name, ip });
+    console.info('new station added');
+    res.status(200).send({ message: 'success' });
+  } catch (e) {
+    console.error('an error occured!');
+    console.error(e);
+    res.status(400).send({ error: 'An unknown error has occured' });
+  }
 });
 
+/**
+ * PUT
+ * Updates an existing station
+ *
+ * params:  {
+ *   name: 'station name',
+ *   ip: 'xxx.xxx.xxx.xxx'
+ * }
+ *
+ * returns: 200 success, 400 if validation fails
+ */
 router.put('/', async (req, res) => {
-  console.info('put station');
-  res.sendStatus(200);
+  console.info('PUT request to station');
+  const valid = validateStationParams(req.body);
+  if (valid.error) {
+    res.status(400).send({ error: valid.error });
+    return;
+  }
+  try {
+    const result = await Station.update(
+      {
+        name: req.body.name,
+        ip: req.body.ip,
+      },
+      {
+        where: { id: req.body.id },
+      },
+    );
+    console.info('station updated');
+    res.status(200).send({ message: 'success' });
+  } catch (e) {
+    console.error('an error occured!');
+    console.error(e);
+    res.status(400).send({ error: 'An unknown error has occured' });
+  }
 });
 
+/**
+ * DELETE
+ * Deletes an existing station
+ *
+ * kwargs: id=stationId (int)
+ *
+ * returns: 200 - number of stations deleted, 400 if id doesn't exist
+ */
 router.delete('/', async (req, res) => {
-  console.info('delete station');
-  res.sendStatus(200);
+  console.info('DELETE request to station');
+  if (!req.query.id) {
+    res
+      .status(400)
+      .send({ error: 'You must provide the id of the station you would like to delete' });
+    return;
+  }
+  try {
+    const result = await Station.destroy({
+      where: { id: req.query.id },
+    });
+    console.info(`${result} stations deleted`);
+    res.status(200).send({ message: `${result} stations deleted` });
+  } catch (e) {
+    console.error('an error occured!');
+    console.error(e);
+    res.status(400).send({ error: 'An unknown error has occured' });
+  }
 });
+
+const validateStationParams = params => {
+  if (!params.name) {
+    return { error: 'Station name required' };
+  }
+  if (!params.ip) {
+    return { error: 'Station ip required' };
+  }
+  if (!isIP(params.ip)) {
+    return { error: 'IP Address must be valid' };
+  }
+  return {};
+};
 
 export default router;

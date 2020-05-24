@@ -1,7 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
 
+class Reading extends Model {}
+
 function buildReadingSchema(sequelize) {
-  class Reading extends Model {}
   Reading.init(
     {
       sensor_id: { type: DataTypes.UUID, allowNull: false },
@@ -12,4 +13,4 @@ function buildReadingSchema(sequelize) {
   );
 }
 
-export default { buildReadingSchema };
+export { buildReadingSchema, Reading };

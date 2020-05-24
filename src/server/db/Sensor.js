@@ -1,8 +1,9 @@
 import { Model, DataTypes } from 'sequelize';
 import SENSOR_TYPES from '../constants';
 
+class Sensor extends Model {}
+
 function buildSensorSchema(sequelize) {
-  class Sensor extends Model {}
   Sensor.init(
     {
       name: { type: DataTypes.STRING, allowNull: false },
@@ -16,4 +17,4 @@ function buildSensorSchema(sequelize) {
   );
 }
 
-export default { buildSensorSchema };
+export { Sensor, buildSensorSchema };

@@ -1,7 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
 
+class Station extends Model {}
+
 function buildStationSchema(sequelize) {
-  class Station extends Model {}
   Station.init(
     {
       name: { type: DataTypes.STRING, allowNull: false },
@@ -11,4 +12,4 @@ function buildStationSchema(sequelize) {
   );
 }
 
-export default { buildStationSchema };
+export { buildStationSchema, Station };

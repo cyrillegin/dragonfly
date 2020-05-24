@@ -1,9 +1,10 @@
-import './env'
+import './env';
 import 'regenerator-runtime/runtime';
 import path from 'path';
 import express from 'express';
 import api from './api';
 import './db';
+import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -14,8 +15,7 @@ app.get('/', (req, res) => {
 });
 app.get('/health', (req, res) => res.sendStatus(200));
 
-app.use(express.json());
-
+app.use(express.json({ type: ['application/*+json', 'application/json'] }));
 app.use(api);
 
 app.listen(3000, () => {

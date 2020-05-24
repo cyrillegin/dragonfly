@@ -1,4 +1,3 @@
-const SENSOR_TYPES = ['temperature', 'humidity', 'chemical', 'other', 'switch']
+const SENSOR_TYPES = ['temperature', 'humidity', 'chemical', 'other', 'switch'];
 
-
-export default SENSOR_TYPES
+export default SENSOR_TYPES;

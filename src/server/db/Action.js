@@ -1,7 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
 
+class Action extends Model {}
+
 function buildActionSchema(sequelize) {
-  class Action extends Model {}
   Action.init(
     {
       sensorId: { type: DataTypes.UUID, allowNull: false },
@@ -13,4 +14,4 @@ function buildActionSchema(sequelize) {
   );
 }
 
-export default { buildActionSchema };
+export { buildActionSchema, Action };
