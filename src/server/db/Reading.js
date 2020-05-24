@@ -4,7 +4,9 @@ function buildReadingSchema(sequelize) {
   class Reading extends Model {}
   Reading.init(
     {
-      name: DataTypes.STRING,
+      sensor_id: { type: DataTypes.UUID, allowNull: false },
+      value: { type: DataTypes.DOUBLE, allowNull: false },
+      timestamp: { type: DataTypes.DATE, allowNull: false },
     },
     { sequelize, modelName: 'reading' },
   );

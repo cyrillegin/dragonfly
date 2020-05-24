@@ -9,8 +9,9 @@ const dbName = process.env.DATABASE_NAME;
 const dbUser = process.env.DATABASE_USER;
 const dbPassword = process.env.DATABASE_PASSWORD;
 const dbPort = process.env.DATABASE_PORT;
+const dbHost = process.env.DATABASE_HOST;
 
-const connectionString = `${dbType}://${dbUser}:${dbPassword}@example.com:${dbPort}/${dbName}`;
+const connectionString = `${dbType}://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`;
 
 const sequelize = new Sequelize(connectionString);
 
