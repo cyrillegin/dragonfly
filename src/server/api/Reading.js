@@ -61,7 +61,9 @@ router.get('/', async (req, res) => {
  *
  * params: {
  *   name: 'station name',
- *   ip: 'xxx.xxx.xxx.xxx'
+ *   ip: 'xxx.xxx.xxx.xxx',
+ *   sensorId: 1,
+ *   stationId: 1
  * }
  *
  * returns: 200 success, 400 if validation fails
