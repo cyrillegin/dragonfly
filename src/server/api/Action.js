@@ -3,17 +3,12 @@ import { Router } from 'express';
 const router = new Router();
 
 router.post('/', async (req, res) => {
-  console.info('post sensor');
-  res.sendStatus(200);
-});
-
-router.put('/', async (req, res) => {
-  console.info('put sensor');
+  console.info('post action');
   res.sendStatus(200);
 });
 
 router.delete('/', async (req, res) => {
-  console.info('delete sensor');
+  console.info('delete action');
   res.sendStatus(200);
 });
 

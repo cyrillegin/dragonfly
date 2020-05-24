@@ -14,6 +14,8 @@ const App = () => (
   </div>
 );
 
-const styledApp = styled(App)``;
+const styledApp = styled(App)`
+  box-sizing: border-box;
+`;
 
 export default styledApp;

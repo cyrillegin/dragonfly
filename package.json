@@ -28,6 +28,7 @@
   },
   "description": "",
   "devDependencies": {
+    "@babel/polyfill": "7.8.7",
     "babel-eslint": "10.1.0",
     "babel-jest": "26.0.1",
     "enzyme": "3.11.0",
@@ -47,11 +48,12 @@
     "jest-emotion": "10.0.32",
     "jest-junit": "10.0.0",
     "nodemon": "2.0.4",
-    "react-test-renderer": "16.13.1",
     "prettier": "2.0.5",
+    "react-test-renderer": "16.13.1",
     "stylelint": "13.5.0",
     "stylelint-config-standard": "20.0.0",
     "stylelint-scss": "3.17.2",
+    "supertest": "4.0.2",
     "webpack-dev-server": "3.11.0"
   },
   "license": "",
@@ -66,10 +68,10 @@
     "coverageDirectory": "coverage",
     "coverageThreshold": {
       "global": {
-        "branches": 20,
-        "functions": 20,
-        "lines": 20,
-        "statements": 20
+        "branches": 50,
+        "functions": 50,
+        "lines": 50,
+        "statements": 50
       }
     },
     "moduleNameMapper": {},

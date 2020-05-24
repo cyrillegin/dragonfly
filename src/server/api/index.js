@@ -1,12 +1,14 @@
-const express = require('express');
+import { Router } from 'express';
+import Station from './Station';
+import Sensor from './Sensor';
+import Reading from './Reading';
+import Action from './Action';
 
-const { Router } = express;
 const router = new Router();
 
-const station = require('./station');
-const sensor = require('./sensor');
-
-router.use('/api/stations', station);
-router.use('/api/sensors', sensor);
+router.use('/api/stations', Station);
+router.use('/api/sensors', Sensor);
+router.use('/api/readings', Reading);
+router.use('/api/actions', Action);
 
 module.exports = router;

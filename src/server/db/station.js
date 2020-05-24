@@ -1,6 +1,6 @@
-const { Sequelize, Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 
-function buildSchema(sequelize) {
+function buildStationSchema(sequelize) {
   class Station extends Model {}
   Station.init(
     {
@@ -10,4 +10,4 @@ function buildSchema(sequelize) {
   );
 }
 
-export default { buildSchema };
+export default { buildStationSchema };
