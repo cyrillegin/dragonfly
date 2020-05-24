@@ -2,6 +2,8 @@ import { Router } from 'express';
 import isIP from '../validators';
 const router = new Router();
 import { Station } from '../db/Station';
+import { Sensor } from '../db/Sensor';
+import Sequelize from 'sequelize'
 
 /**
  * GET
@@ -32,7 +34,13 @@ import { Station } from '../db/Station';
  */
 router.get('/', async (req, res) => {
   console.info('GET request to station');
-  res.send(await Station.findAll());
+  const stations = await Station.findAll({
+    include: [{
+      model: Sensor,
+
+    }]
+  });
+  res.send(stations)
 });
 
 /**
@@ -51,8 +59,8 @@ router.post('/', async (req, res) => {
   const { name, ip } = req.body;
 
   const valid = validateStationParams(req.body);
-  if (valid.message) {
-    res.status(400).send({ error: valid.message });
+  if (valid.error) {
+    res.status(400).send({ error: valid.error });
     return;
   }
 
@@ -106,11 +114,12 @@ router.put('/', async (req, res) => {
 
 /**
  * DELETE
- * Deletes an existing station
+ * Deletes an existing station and all of its readings, actions, and sensors
  *
  * kwargs: id=stationId (int)
  *
- * returns: 200 - number of stations deleted, 400 if id doesn't exist
+ * returns: 200 - success and the number of actions, readings, sensors, and stations deleted
+ *          400 if id doesn't exist
  */
 router.delete('/', async (req, res) => {
   console.info('DELETE request to station');
@@ -121,11 +130,24 @@ router.delete('/', async (req, res) => {
     return;
   }
   try {
-    const result = await Station.destroy({
+
+    const actions = await Action.destroy({
+      where: {stationId: req.query.id}
+    })
+
+    const readings = await Reading.destroy({
+      where: { stationId: req.query.id },
+    });
+
+    const sensors = await Sensor.destroy({
+      where: {stationId: req.query.id}
+    })
+
+    const stations = await Station.destroy({
       where: { id: req.query.id },
     });
-    console.info(`${result} stations deleted`);
-    res.status(200).send({ message: `${result} stations deleted` });
+
+    res.status(200).send({ message: `success`, actions, sensors, stations, readings });
   } catch (e) {
     console.error('an error occured!');
     console.error(e);

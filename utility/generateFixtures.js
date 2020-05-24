@@ -5,11 +5,20 @@ const newStation = {
   ip: '123.123.123.123',
 };
 
-const addStation = async station => {
-  const res = await fetch('http://localhost:3000/api/stations', {
+const newSensor = {
+  name: 'new sensor',
+  stationId: 1,
+  type: 'temperature',
+  description: 'new sensor',
+  coefficients: '9/5, 32',
+  on: true,
+};
+
+const doPost = async (api, data) => {
+  const res = await fetch(`http://localhost:3000/api/${api}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newStation),
+    body: JSON.stringify(data),
   });
 
   const json = await res.json();
@@ -19,21 +28,21 @@ const addStation = async station => {
     console.info(json.error);
     process.exit(1);
   } else {
-    console.error('station added successfully');
+    console.error(`${api} added successfully`);
   }
 };
 
-const getStation = async () => {
-  const res = await fetch('http://localhost:3000/api/stations');
+const doGet = async api => {
+  const res = await fetch(`http://localhost:3000/api/${api}`);
   const json = await res.json();
   return json;
 };
 
-const updateStation = async updatedStation => {
-  const res = await fetch('http://localhost:3000/api/stations', {
+const doPut = async (api, updates) => {
+  const res = await fetch(`http://localhost:3000/api/${api}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newStation),
+    body: JSON.stringify(updates),
   });
 
   const json = await res.json();
@@ -42,7 +51,7 @@ const updateStation = async updatedStation => {
     console.info(json.error);
     process.exit(1);
   } else {
-    console.error('station updated successfully');
+    console.error(`${api} updated successfully`);
   }
 };
 
@@ -61,17 +70,12 @@ const deleteStation = async id => {
   }
 };
 
-const setupStation = async () => {
-  await addStation(newStation);
-  newStation.name = 'updatedStation';
-  newStation.ip = '123.123.123.124';
-  newStation.id = 1;
-
-  await getStation();
-  await updateStation(newStation);
-  const stations = await getStation();
-  await deleteStation(stations[0].id);
-  await getStation();
+const setupFixtures = async () => {
+  // doPost('stations', newStation);
+  const stations = await doGet('stations');
+  console.log(stations[0]);
+  // newSensor.stationId = stations[0].id;
+  // doPost('sensors', newSensor);
 };
 
-setupStation();
+setupFixtures();

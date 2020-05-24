@@ -29,6 +29,9 @@ Action.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
 Sensor.hasMany(Reading, { foreignKey: 'sensorId', sourceKey: 'id' });
 Reading.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
 
+Station.hasMany(Reading, { foreignKey: 'stationId', sourceKey: 'id' });
+Reading.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
+
 Station.hasMany(Action, { foreignKey: 'stationId', sourceKey: 'id' });
 Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
