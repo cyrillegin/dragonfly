@@ -4,6 +4,7 @@
 # NODE
 node_modules/
 dist/
+.env
 
 # Testing
 junit.xml
