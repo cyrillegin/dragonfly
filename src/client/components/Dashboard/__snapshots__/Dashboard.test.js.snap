@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dashboard should render a snap shot 1`] = `ReactWrapper {}`;

@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {Router} = express;
+const { Router } = express;
 const router = new Router();
 
 const station = require('./station');

@@ -1,10 +1,9 @@
-const {Router} = require('express');
+const { Router } = require('express');
 
 const router = new Router();
 
 router.post('/', async (req, res) => {
-  console.log('post sensor')
+  console.log('post sensor');
 });
-
 
 module.exports = router;
