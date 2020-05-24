@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize';
-import { buildStationSchema } from './Station';
-import { buildSensorSchema } from './Sensor';
-import { buildReadingSchema } from './Reading';
-import { buildActionSchema } from './Action';
+import { buildStationSchema, Station } from './Station';
+import { buildSensorSchema, Sensor } from './Sensor';
+import { buildReadingSchema, Reading } from './Reading';
+import { buildActionSchema, Action } from './Action';
 
 const dbType = process.env.DATABASE_TYPE;
 const dbName = process.env.DATABASE_NAME;
@@ -19,5 +19,17 @@ buildStationSchema(sequelize);
 buildSensorSchema(sequelize);
 buildReadingSchema(sequelize);
 buildActionSchema(sequelize);
+
+Station.hasMany(Sensor, { foreignKey: 'stationId', sourceKey: 'id' });
+Sensor.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
+
+Sensor.hasMany(Action, { foreignKey: 'sensorId', sourceKey: 'id' });
+Action.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
+
+Sensor.hasMany(Reading, { foreignKey: 'sensorId', sourceKey: 'id' });
+Reading.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
+
+Station.hasMany(Action, { foreignKey: 'stationId', sourceKey: 'id' });
+Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
 sequelize.sync();
