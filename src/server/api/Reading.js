@@ -70,6 +70,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   console.info('POST request to reading');
   const { value, timestamp, sensorId, stationId } = req.body;
+  console.log(value);
 
   const valid = validateReadingParams(req.body);
   if (valid.error) {
@@ -98,7 +99,7 @@ const validateReadingParams = params => {
   if (!params.timestamp) {
     return { error: 'Timestamp required' };
   }
-  if (!params.value) {
+  if (params.value === undefined || params.value === null) {
     return { error: 'Value required' };
   }
   return {};

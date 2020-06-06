@@ -1,25 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
 const TreeView = ({ className, stations }) => {
-  const selection = '1';
+  const [stationSelected, setStation] = useState('');
+  const [selection, setSelection] = useState('');
 
-  // selection based off of name wont work..
+  const handleSelection = (type, id) => {
+    if (type === 'station') {
+      setStation(id);
+    }
+    const select = `${type}-${id}`;
+    setSelection(select);
+    window.location.hash = select;
+  };
+
   return (
     <div className={className}>
       {stations.map(station => (
-        <div className={`station ${selection === station.name ? 'selected' : ''}`}>
-          <div className={`${station.health}`} />
-          <div className="station-title">{station.name}</div>
-          {selection === station.name &&
+        <>
+          <div
+            className={`station ${selection === `station-${station.id}` ? 'selected' : ''}`}
+            onClick={() => handleSelection('station', station.id)}
+          >
+            <div className={`${station.health}`} />
+            <div className="station-title">{station.name}</div>
+          </div>
+          {stationSelected === station.id &&
             station.sensors.map(sensor => (
-              <div className={`sensor ${selection === sensor.name ? 'selected' : ''}`}>
+              <div
+                className={`sensor ${selection === `sensor-${sensor.id}` ? 'selected' : ''}`}
+                onClick={() => handleSelection('sensor', sensor.id)}
+              >
                 <div className={`status ${sensor.health}`} />
                 <div className="sensor-title">{sensor.name}</div>
               </div>
             ))}
-        </div>
+        </>
       ))}
     </div>
   );
@@ -42,18 +59,7 @@ TreeView.propTypes = {
 };
 
 TreeView.defaultProps = {
-  stations: [
-    {
-      name: 'test',
-      health: 'healthy',
-      sensors: [
-        {
-          name: 'temperature',
-          health: 'unhealthy',
-        },
-      ],
-    },
-  ],
+  stations: [],
 };
 
 const styledTreeView = styled(TreeView)`

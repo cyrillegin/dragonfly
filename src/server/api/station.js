@@ -61,18 +61,18 @@ router.post('/', async (req, res) => {
 
   const valid = validateStationParams(req.body);
   if (valid.error) {
-    res.status(400).send({ error: valid.error });
+    res.status(400).send(JSON.stringify({ error: valid.error }));
     return;
   }
 
   try {
     const result = await Station.create({ name, ip });
     console.info('new station added');
-    res.status(200).send({ message: 'success' });
+    res.status(200).send(JSON.stringify({ message: 'success' }));
   } catch (e) {
     console.error('an error occured!');
     console.error(e);
-    res.status(400).send({ error: 'An unknown error has occured' });
+    res.status(400).send(JSON.stringify({ error: 'An unknown error has occured' }));
   }
 });
 
