@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { Reading } from '../db';
 
 const router = new Router();
 
@@ -19,11 +20,9 @@ const router = new Router();
  */
 router.get('/', async (req, res) => {
   console.info('GET request to reading');
-  let {sensorId, startTime, endTime} = req.query;
+  let { sensorId, startTime, endTime } = req.query;
   if (!sensorId) {
-    res
-      .status(400)
-      .send({ error: 'You must provide a sensor id' });
+    res.status(400).send({ error: 'You must provide a sensor id' });
     return;
   }
 
@@ -31,7 +30,7 @@ router.get('/', async (req, res) => {
   const tempDate = new Date();
 
   if (!startTime) {
-    tempDate.setDate(currentDate.getDate() - 7)
+    tempDate.setDate(currentDate.getDate() - 7);
     startTime = tempDate;
   }
 
@@ -40,7 +39,7 @@ router.get('/', async (req, res) => {
   }
 
   if (endTime < startTime) {
-    tempDate.setDate((new Date(endTime)).getDate() - 7)
+    tempDate.setDate(new Date(endTime).getDate() - 7);
     startTime = tempDate;
   }
 
@@ -48,11 +47,11 @@ router.get('/', async (req, res) => {
     where: {
       sensorId,
       from: {
-        $between: [startTime, endTime]
-      }
-    }
+        $between: [startTime, endTime],
+      },
+    },
   });
-  res.send(stations)
+  res.send(readings);
 });
 
 /**
@@ -90,19 +89,19 @@ router.post('/', async (req, res) => {
 });
 
 const validateReadingParams = params => {
-  if(!params.stationId) {
-    return { error: 'Station id required };
+  if (!params.stationId) {
+    return { error: 'Station id required' };
   }
-  if(!params.sensorId) {
-    return { error: 'Sensor id required };
+  if (!params.sensorId) {
+    return { error: 'Sensor id required' };
   }
-  if(!params.timestamp) {
-    return { error: 'Timestamp required };
+  if (!params.timestamp) {
+    return { error: 'Timestamp required' };
   }
-  if(!params.value) {
-    return { error: 'Value required };
+  if (!params.value) {
+    return { error: 'Value required' };
   }
-  return {}
-}
+  return {};
+};
 
 export default router;

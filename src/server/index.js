@@ -2,9 +2,9 @@ import './env';
 import 'regenerator-runtime/runtime';
 import path from 'path';
 import express from 'express';
+import bodyParser from 'body-parser';
 import api from './api';
 import './db';
-import bodyParser from 'body-parser';
 
 const app = express();
 

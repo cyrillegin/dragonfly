@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import SENSOR_TYPES from '../constants'
+import SENSOR_TYPES from '../constants';
+import { Sensor, Station, Action, Reading } from '../db';
+
 const router = new Router();
-import {Sensor} from '../db/Sensor';
-import {Station} from '../db/Station';
 /**
  * POST
  * Creates a new Sensor
@@ -27,21 +27,21 @@ router.post('/', async (req, res) => {
     return;
   }
   // POST specific validation
-  const {name, stationId, type, description, coefficients, on} = req.body
+  const { name, stationId, type, description, coefficients, on } = req.body;
   if (!stationId) {
-    res.status(400).send({ error: 'Station id required'});
-    return
+    res.status(400).send({ error: 'Station id required' });
+    return;
   }
 
-  const stationCount = await Station.count({where: {'id': stationId}});
+  const stationCount = await Station.count({ where: { id: stationId } });
   if (!stationCount) {
-    res.status(400).send({ error: 'Station not found'});
+    res.status(400).send({ error: 'Station not found' });
     return;
   }
 
   // Create the new Sensor
   try {
-    const result = await Sensor.create({name, stationId, type, description, coefficients, on});
+    const result = await Sensor.create({ name, stationId, type, description, coefficients, on });
     console.info('new sensor added');
     res.status(200).send({ message: 'success' });
   } catch (e) {
@@ -75,22 +75,22 @@ router.put('/', async (req, res) => {
   }
 
   // PUT specific validation
-  const {name, stationId, type, description, coefficients, on, id} = req.body
+  const { name, stationId, type, description, coefficients, on, id } = req.body;
   if (!id) {
-    res.status(400).send({ error: 'Sensor id required'});
-    return
+    res.status(400).send({ error: 'Sensor id required' });
+    return;
   }
 
-  const sensorCount = await Sensor.count({where: {id}});
+  const sensorCount = await Sensor.count({ where: { id } });
   if (!sensorCount) {
-    res.status(400).send({ error: 'Sensor not found'});
+    res.status(400).send({ error: 'Sensor not found' });
     return;
   }
 
   // Update sensor
   try {
     const result = await Sensor.update(
-      {name, type, description, coefficients, on},
+      { name, type, description, coefficients, on },
       {
         where: { id },
       },
@@ -104,7 +104,6 @@ router.put('/', async (req, res) => {
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });
-
 
 /**
  * DELETE
@@ -125,10 +124,9 @@ router.delete('/', async (req, res) => {
     return;
   }
   try {
-
     const actions = await Action.destroy({
-      where: {sensorId: req.query.id}
-    })
+      where: { sensorId: req.query.id },
+    });
 
     const readings = await Reading.destroy({
       where: { sensorId: req.query.id },
@@ -138,7 +136,7 @@ router.delete('/', async (req, res) => {
       where: { id: req.query.id },
     });
 
-    res.status(200).send({ message: `success`, actions, sensors, readings });
+    res.status(200).send({ message: 'success', actions, sensors, readings });
   } catch (e) {
     console.error('an error occured!');
     console.error(e);
@@ -157,10 +155,10 @@ const validateSensorParams = async params => {
     return { error: 'Sensor type required' };
   }
   if (!SENSOR_TYPES.includes(params.type)) {
-    return { error: 'Invalid sensor type'}
+    return { error: 'Invalid sensor type' };
   }
 
-  return {}
-}
+  return {};
+};
 
 export default router;

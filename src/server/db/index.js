@@ -36,3 +36,5 @@ Station.hasMany(Action, { foreignKey: 'stationId', sourceKey: 'id' });
 Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
 sequelize.sync();
+
+export { Sensor, Action, Reading, Station };

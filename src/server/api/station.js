@@ -1,9 +1,9 @@
 import { Router } from 'express';
+import Sequelize from 'sequelize';
 import isIP from '../validators';
+import { Station, Sensor, Action, Reading } from '../db';
+
 const router = new Router();
-import { Station } from '../db/Station';
-import { Sensor } from '../db/Sensor';
-import Sequelize from 'sequelize'
 
 /**
  * GET
@@ -35,12 +35,13 @@ import Sequelize from 'sequelize'
 router.get('/', async (req, res) => {
   console.info('GET request to station');
   const stations = await Station.findAll({
-    include: [{
-      model: Sensor,
-
-    }]
+    include: [
+      {
+        model: Sensor,
+      },
+    ],
   });
-  res.send(stations)
+  res.send(stations);
 });
 
 /**
@@ -130,24 +131,23 @@ router.delete('/', async (req, res) => {
     return;
   }
   try {
-
     const actions = await Action.destroy({
-      where: {stationId: req.query.id}
-    })
+      where: { stationId: req.query.id },
+    });
 
     const readings = await Reading.destroy({
       where: { stationId: req.query.id },
     });
 
     const sensors = await Sensor.destroy({
-      where: {stationId: req.query.id}
-    })
+      where: { stationId: req.query.id },
+    });
 
     const stations = await Station.destroy({
       where: { id: req.query.id },
     });
 
-    res.status(200).send({ message: `success`, actions, sensors, stations, readings });
+    res.status(200).send({ message: 'success', actions, sensors, stations, readings });
   } catch (e) {
     console.error('an error occured!');
     console.error(e);

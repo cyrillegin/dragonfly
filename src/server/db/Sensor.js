@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import SENSOR_TYPES from '../constants';
-import { Station } from './Station';
 
 class Sensor extends Model {}
 

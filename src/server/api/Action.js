@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { Action } from '../db';
 
 const router = new Router();
 
@@ -55,12 +56,11 @@ router.delete('/', async (req, res) => {
     return;
   }
   try {
-
     const actions = await Action.destroy({
-      where: {id: req.query.id}
-    })
+      where: { id: req.query.id },
+    });
 
-    res.status(200).send({ message: `success`, actions });
+    res.status(200).send({ message: 'success', actions });
   } catch (e) {
     console.error('an error occured!');
     console.error(e);
@@ -69,22 +69,22 @@ router.delete('/', async (req, res) => {
 });
 
 const validateActionParams = params => {
-  if(!params.stationId) {
-    return { error: 'Station id required };
+  if (!params.stationId) {
+    return { error: 'Station id required' };
   }
-  if(!params.sensorId) {
-    return { error: 'Sensor id required };
+  if (!params.sensorId) {
+    return { error: 'Sensor id required' };
   }
-  if(!params.condition) {
-    return { error: 'Condition required };
+  if (!params.condition) {
+    return { error: 'Condition required' };
   }
-  if(!params.action) {
-    return { error: 'Action required };
+  if (!params.action) {
+    return { error: 'Action required' };
   }
-  if(!params.interval) {
-    return { error: 'Interval required };
+  if (!params.interval) {
+    return { error: 'Interval required' };
   }
-  return {}
-}
+  return {};
+};
 
 export default router;
