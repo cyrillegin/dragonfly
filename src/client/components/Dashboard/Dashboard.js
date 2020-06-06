@@ -42,7 +42,22 @@ Dashboard.propTypes = {
 const styledDashboard = styled(Dashboard)`
   position: absolute;
   left: 400px;
-  padding: 2rem;
+  background: blue;
+  width: calc(100% - 400px - 4rem);
+
+  .station {
+    width: 100%;
+    height: 600px;
+    background: green;
+    display: flex;
+    margin: 2rem 0;
+
+    .sensor {
+      background: black;
+      margin: 0 2rem;
+      flex: 1;
+    }
+  }
 `;
 
 export default styledDashboard;

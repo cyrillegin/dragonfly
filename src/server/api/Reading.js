@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { Op } from 'sequelize';
 import { Reading } from '../db';
 
 const router = new Router();
@@ -46,8 +47,9 @@ router.get('/', async (req, res) => {
   const readings = await Reading.findAll({
     where: {
       sensorId,
-      from: {
-        $between: [startTime, endTime],
+      timestamp: {
+        [Op.lt]: endTime,
+        [Op.gt]: startTime,
       },
     },
   });

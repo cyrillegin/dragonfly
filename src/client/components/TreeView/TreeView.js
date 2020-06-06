@@ -18,7 +18,7 @@ const TreeView = ({ className, stations }) => {
   return (
     <div className={className}>
       {stations.map(station => (
-        <>
+        <div key={station.id}>
           <div
             className={`station ${selection === `station-${station.id}` ? 'selected' : ''}`}
             onClick={() => handleSelection('station', station.id)}
@@ -29,6 +29,7 @@ const TreeView = ({ className, stations }) => {
           {stationSelected === station.id &&
             station.sensors.map(sensor => (
               <div
+                key={sensor.id}
                 className={`sensor ${selection === `sensor-${sensor.id}` ? 'selected' : ''}`}
                 onClick={() => handleSelection('sensor', sensor.id)}
               >
@@ -36,7 +37,7 @@ const TreeView = ({ className, stations }) => {
                 <div className="sensor-title">{sensor.name}</div>
               </div>
             ))}
-        </>
+        </div>
       ))}
     </div>
   );
