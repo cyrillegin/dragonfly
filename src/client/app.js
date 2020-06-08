@@ -15,13 +15,17 @@ const App = ({ className }) => {
       });
   }, []);
 
+  console.log('render', stations);
+
   return (
     <div className={className}>
       <Header />
-      <div className="main-container">
-        <TreeView stations={stations} />
-        <Dashboard stations={stations} />
-      </div>
+      {stations.length && (
+        <div className="main-container">
+          <TreeView stations={stations} />
+          <Dashboard stations={stations} />
+        </div>
+      )}
     </div>
   );
 };

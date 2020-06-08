@@ -16,7 +16,6 @@ const TreeView = ({ className, stations }) => {
       removeFromHash('sensor');
       addOrUpdateHash('station', select);
     } else {
-      removeFromHash('station');
       addOrUpdateHash('sensor', select);
     }
   };

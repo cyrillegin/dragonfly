@@ -47,6 +47,7 @@ const removeFromHash = key => {
   delete obj[key];
   const newHash = objectToString(obj);
   window.history.replaceState(null, null, `?${newHash}`);
+  windowEmitter.emit('change');
 };
 
 export { searchToObject, addOrUpdateHash, removeFromHash, objectToString, windowEmitter };

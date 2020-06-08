@@ -10,12 +10,17 @@ const Graph = ({ className, station, sensor }) => {
 
   useEffect(() => {
     const getReadings = () => {
-      const search = searchToObject();
+      const { start, end } = searchToObject();
       const kwargs = {
-        start: search.start,
-        end: search.end,
         sensorId: sensor.id,
       };
+      if (start) {
+        kwargs.start = start;
+      }
+      if (end) {
+        kwargs.end = end;
+      }
+
       fetch(`/api/readings?${objectToString(kwargs)}`)
         .then(res => res.json())
         .then(newReadings => {

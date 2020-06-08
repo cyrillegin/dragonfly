@@ -1,19 +1,28 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-import { addOrUpdateHash } from '../../utilities/Window';
+import { addOrUpdateHash, removeFromHash } from '../../utilities/Window';
 
-const Header = ({ className }) => (
-  <div className={className}>
-    <div className="title">Dragonfly</div>
-    <div className="time-pickers">
-      <label>Start Date</label>
-      <input type="date" onChange={event => addOrUpdateHash('start', event.target.value)} />
-      <label>End Date</label>
-      <input type="date" onChange={event => addOrUpdateHash('end', event.target.value)} />
+const Header = ({ className }) => {
+  const goHome = () => {
+    removeFromHash('station');
+    removeFromHash('sensor');
+  };
+
+  return (
+    <div className={className}>
+      <div className="title" onClick={goHome}>
+        Dragonfly
+      </div>
+      <div className="time-pickers">
+        <label>Start Date</label>
+        <input type="date" onChange={event => addOrUpdateHash('start', event.target.value)} />
+        <label>End Date</label>
+        <input type="date" onChange={event => addOrUpdateHash('end', event.target.value)} />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 Header.propTypes = {
   className: PropTypes.string.isRequired,
 };

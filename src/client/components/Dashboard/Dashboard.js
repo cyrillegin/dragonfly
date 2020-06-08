@@ -1,21 +1,66 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import Graph from '../../charts/Graph';
+import { windowEmitter, searchToObject } from '../../utilities/Window';
 
-const Dashboard = ({ className, stations }) => (
-  <div className={className}>
-    {stations.map(station => (
-      <div className="station" key={station.id}>
-        {station.sensors.map(sensor => (
-          <div className="sensor" key={sensor.id}>
-            <Graph station={station} sensor={sensor} />
+const Dashboard = ({ className, stations }) => {
+  const [currentStations, changeStations] = useState([]);
+  const [currentSensor, changeSensor] = useState({});
+
+  useEffect(() => {
+    const setStations = () => {
+      const current = searchToObject();
+      if (current.station) {
+        const stationId = parseInt(current.station.replace('station-', ''), 10);
+        const currentStation = stations.filter(station => station.id === stationId)[0];
+        changeStations([currentStation]);
+        if (current.sensor) {
+          const sensorId = parseInt(current.sensor.replace('sensor-', ''), 10);
+          changeSensor(currentStation.sensors.filter(sensor => sensor.id === sensorId)[0]);
+        } else {
+          changeSensor({});
+        }
+      } else {
+        changeSensor({});
+        changeStations(stations);
+      }
+    };
+
+    setStations();
+    windowEmitter.listen('change', () => {
+      setStations();
+    });
+  }, []);
+
+  return (
+    <div className={className}>
+      {currentSensor.id && (
+        <div className="station">
+          <div className="sensor">
+            <Graph station={currentStations[0]} sensor={currentSensor} />
           </div>
-        ))}
-      </div>
-    ))}
-  </div>
-);
+        </div>
+      )}
+
+      {!currentSensor.id && currentStations.length && (
+        <>
+          {currentStations.map(station => (
+            <div className="station" key={station.id}>
+              {station.sensors.map(sensor => (
+                <div className="sensor" key={sensor.id}>
+                  <Graph station={station} sensor={sensor} />
+                </div>
+              ))}
+            </div>
+          ))}
+        </>
+      )}
+
+      {!currentSensor && !currentStations.length && <>Loading...</>}
+    </div>
+  );
+};
 
 Dashboard.propTypes = {
   className: PropTypes.string.isRequired,
