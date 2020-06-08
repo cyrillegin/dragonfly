@@ -2,27 +2,39 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import { searchToObject, objectToString, windowEmitter } from '../utilities/Window';
 
 const Graph = ({ className, station, sensor }) => {
   const graphElement = useRef(null);
   const [readings, setReadings] = useState([]);
-  useEffect(() => {
-    fetch(`/api/readings?sensorId=${sensor.id}`)
-      .then(res => res.json())
-      .then(newReadings => {
-        newReadings.forEach(reading => {
-          reading.timestamp = new Date(reading.timestamp);
-        });
 
-        setReadings(newReadings);
-      });
+  useEffect(() => {
+    const getReadings = () => {
+      const search = searchToObject();
+      const kwargs = {
+        start: search.start,
+        end: search.end,
+        sensorId: sensor.id,
+      };
+      fetch(`/api/readings?${objectToString(kwargs)}`)
+        .then(res => res.json())
+        .then(newReadings => {
+          setReadings(
+            newReadings.map(reading => ({ ...reading, timestamp: new Date(reading.timestamp) })),
+          );
+        });
+    };
+
+    getReadings();
+    windowEmitter.listen('change', () => {
+      getReadings();
+    });
   }, []);
 
   if (readings.length > 0 && graphElement.current) {
     const margin = { top: 50, right: 50, bottom: 50, left: 50 };
     const width = graphElement.current.clientWidth - margin.left - margin.right;
     const height = graphElement.current.clientHeight - margin.top - margin.bottom;
-    console.log(graphElement);
 
     const xScale = d3
       .scaleTime()
@@ -41,6 +53,7 @@ const Graph = ({ className, station, sensor }) => {
 
     const svg = d3
       .select(graphElement.current)
+      .html('')
       .append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)

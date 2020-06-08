@@ -21,7 +21,7 @@ const router = new Router();
  */
 router.get('/', async (req, res) => {
   console.info('GET request to reading');
-  let { sensorId, startTime, endTime } = req.query;
+  let { sensorId, start, end } = req.query;
   if (!sensorId) {
     res.status(400).send({ error: 'You must provide a sensor id' });
     return;
@@ -30,26 +30,26 @@ router.get('/', async (req, res) => {
   const currentDate = new Date();
   const tempDate = new Date();
 
-  if (!startTime) {
+  if (!start) {
     tempDate.setDate(currentDate.getDate() - 7);
-    startTime = tempDate;
+    start = tempDate;
   }
 
-  if (!endTime) {
-    endTime = currentDate;
+  if (!end) {
+    end = currentDate;
   }
 
-  if (endTime < startTime) {
-    tempDate.setDate(new Date(endTime).getDate() - 7);
-    startTime = tempDate;
+  if (end < start) {
+    tempDate.setDate(new Date(end).getDate() - 7);
+    start = tempDate;
   }
 
   const readings = await Reading.findAll({
     where: {
       sensorId,
       timestamp: {
-        [Op.lt]: endTime,
-        [Op.gt]: startTime,
+        [Op.lt]: end,
+        [Op.gt]: start,
       },
     },
   });

@@ -3,23 +3,19 @@ import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import Graph from '../../charts/Graph';
 
-const Dashboard = ({ className, stations }) => {
-  console.log('dash');
-
-  return (
-    <div className={className}>
-      {stations.map(station => (
-        <div className="station" key={station.id}>
-          {station.sensors.map(sensor => (
-            <div className="sensor" key={sensor.id}>
-              <Graph station={station} sensor={sensor} />
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-};
+const Dashboard = ({ className, stations }) => (
+  <div className={className}>
+    {stations.map(station => (
+      <div className="station" key={station.id}>
+        {station.sensors.map(sensor => (
+          <div className="sensor" key={sensor.id}>
+            <Graph station={station} sensor={sensor} />
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+);
 
 Dashboard.propTypes = {
   className: PropTypes.string.isRequired,

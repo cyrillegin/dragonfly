@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
+import { addOrUpdateHash, removeFromHash } from '../../utilities/Window';
 
 const TreeView = ({ className, stations }) => {
   const [stationSelected, setStation] = useState('');
   const [selection, setSelection] = useState('');
 
   const handleSelection = (type, id) => {
-    if (type === 'station') {
-      setStation(id);
-    }
     const select = `${type}-${id}`;
     setSelection(select);
-    window.location.hash = select;
+
+    if (type === 'station') {
+      setStation(id);
+      removeFromHash('sensor');
+      addOrUpdateHash('station', select);
+    } else {
+      removeFromHash('station');
+      addOrUpdateHash('sensor', select);
+    }
   };
 
   return (
