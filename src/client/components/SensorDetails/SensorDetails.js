@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
@@ -58,7 +58,7 @@ const SensorDetails = ({ className, sensor }) => {
         <span>Actions</span>
         {sensor.actions &&
           sensor.actions.map(action => (
-            <div className="action">
+            <div className="action" key={action.id}>
               <span>{action.condition}</span>
               <span>{action.interval}</span>
               <span>{action.action}</span>
