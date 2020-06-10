@@ -1,32 +1,32 @@
 import fetch from 'node-fetch';
 
 const kitchenStation = {
-  name: 'kitchen station',
+  name: 'FIXTURE - kitchen station',
   ip: '123.123.123.123',
 };
 
 const fishStation = {
-  name: 'fish station',
+  name: 'FIXTURE - fish station',
   ip: '123.123.123.124',
 };
 
 const ovenSensor = {
-  name: 'Oven',
+  name: 'FIXTURE - Oven',
   type: 'temperature',
 };
 
 const fridgeSensor = {
-  name: 'Fridge',
+  name: 'FIXTURE - Fridge',
   type: 'temperature',
 };
 
 const tankSensor = {
-  name: 'Fish tank',
+  name: 'FIXTURE - Fish tank',
   type: 'temperature',
 };
 
 const lightSwitch = {
-  name: 'Fish lights',
+  name: 'FIXTURE - Fish lights',
   type: 'switch',
 };
 

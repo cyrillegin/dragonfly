@@ -92,12 +92,20 @@ Graph.propTypes = {
   sensor: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
+    actions: PropTypes.arrayOf(
+      PropTypes.shape({
+        condition: PropTypes.string.isRequired,
+        interval: PropTypes.string.isRequired,
+        action: PropTypes.string.isRequired,
+        id: PropTypes.number.isRequired,
+      }),
+    ),
   }).isRequired,
 };
 
 const styledGraph = styled(Graph)`
   width: 100%;
-  height: 100%;
+  height: 600px;
   background: red;
 
   .line {

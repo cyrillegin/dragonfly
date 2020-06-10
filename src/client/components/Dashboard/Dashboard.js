@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import Graph from '../../charts/Graph';
 import { windowEmitter, searchToObject } from '../../utilities/Window';
+import SensorDetails from '../SensorDetails';
 
 const Dashboard = ({ className, stations }) => {
   const [currentStations, changeStations] = useState([]);
@@ -39,6 +40,7 @@ const Dashboard = ({ className, stations }) => {
         <div className="station">
           <div className="sensor">
             <Graph station={currentStations[0]} sensor={currentSensor} />
+            <SensorDetails sensor={currentSensor} />
           </div>
         </div>
       )}
@@ -88,13 +90,11 @@ const styledDashboard = styled(Dashboard)`
 
   .station {
     width: 100%;
-    height: 600px;
     background: green;
     display: flex;
     margin: 2rem 0;
 
     .sensor {
-      background: black;
       margin: 0 2rem;
       flex: 1;
     }

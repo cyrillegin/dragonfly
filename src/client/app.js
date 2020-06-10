@@ -15,8 +15,6 @@ const App = ({ className }) => {
       });
   }, []);
 
-  console.log('render', stations);
-
   return (
     <div className={className}>
       <Header />
