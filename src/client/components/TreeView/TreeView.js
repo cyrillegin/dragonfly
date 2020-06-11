@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { addOrUpdateHash, removeFromHash } from '../../utilities/Window';
+import Modal from '../Modal';
 
 const TreeView = ({ className, stations }) => {
   const [stationSelected, setStation] = useState('');
   const [selection, setSelection] = useState('');
+  const [modal, toggleModal] = useState('');
 
   const handleSelection = (type, id) => {
     const select = `${type}-${id}`;
@@ -20,8 +22,13 @@ const TreeView = ({ className, stations }) => {
     }
   };
 
+  const handleAdd = type => {
+    toggleModal(type);
+  };
+
   return (
     <div className={className}>
+      {modal !== '' && <Modal type={modal} close={() => toggleModal('')} />}
       {stations.map(station => (
         <div key={station.id}>
           <div
@@ -31,19 +38,28 @@ const TreeView = ({ className, stations }) => {
             <div className={`${station.health}`} />
             <div className="station-title">{station.name}</div>
           </div>
-          {stationSelected === station.id &&
-            station.sensors.map(sensor => (
-              <div
-                key={sensor.id}
-                className={`sensor ${selection === `sensor-${sensor.id}` ? 'selected' : ''}`}
-                onClick={() => handleSelection('sensor', sensor.id)}
-              >
-                <div className={`status ${sensor.health}`} />
-                <div className="sensor-title">{sensor.name}</div>
+          {stationSelected === station.id && (
+            <>
+              {station.sensors.map(sensor => (
+                <div
+                  key={sensor.id}
+                  className={`sensor ${selection === `sensor-${sensor.id}` ? 'selected' : ''}`}
+                  onClick={() => handleSelection('sensor', sensor.id)}
+                >
+                  <div className={`status ${sensor.health}`} />
+                  <div className="sensor-title">{sensor.name}</div>
+                </div>
+              ))}
+              <div className="sensor" onClick={() => handleAdd('sensor')}>
+                <div className="sensor-title">+ Add Sensor</div>
               </div>
-            ))}
+            </>
+          )}
         </div>
       ))}
+      <div className="station" onClick={() => handleAdd('station')}>
+        <div className="station-title">+ Add Station </div>
+      </div>
     </div>
   );
 };

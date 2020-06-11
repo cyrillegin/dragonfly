@@ -144,6 +144,21 @@ router.delete('/', async (req, res) => {
   }
 });
 
+router.post('/test', async (req, res) => {
+  console.info('TEST request to sensor');
+  const { ipaddress } = req.body;
+  console.log(req.body);
+  res.send({ message: 'success' });
+
+  // fetch(`http://${ipaddress}/sensor/health`)
+  //   .then(result => {
+  //     res.send({ message: 'success' });
+  //   })
+  //   .catch(error => {
+  //     res.send({ error });
+  //   });
+});
+
 const validateSensorParams = async params => {
   if (!params.name) {
     return { error: 'Sensor name required' };

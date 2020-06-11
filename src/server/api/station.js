@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Sequelize from 'sequelize';
+import fetch from 'node-fetch';
 import isIP from '../validators';
 import { Station, Sensor, Action, Reading } from '../db';
 
@@ -38,6 +39,7 @@ router.get('/', async (req, res) => {
     include: [
       {
         model: Sensor,
+        include: [Action],
       },
     ],
   });
@@ -148,11 +150,32 @@ router.delete('/', async (req, res) => {
     });
 
     res.status(200).send({ message: 'success', actions, sensors, stations, readings });
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send({ error: 'An unknown error has occured' });
   }
+});
+
+router.post('/test', async (req, res) => {
+  console.info('TEST request to station');
+  const { ipaddress } = req.body;
+  if (!ipaddress) {
+    res.status(400).send({ error: 'An IP must be provided' });
+    return;
+  }
+  if (!isIP(ipaddress)) {
+    res.status(400).send({ error: 'IP must be valid' });
+    return;
+  }
+
+  fetch(`http://${ipaddress}/health`)
+    .then(result => {
+      res.send({ message: 'success' });
+    })
+    .catch(error => {
+      res.send({ error });
+    });
 });
 
 const validateStationParams = params => {

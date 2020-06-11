@@ -30,6 +30,12 @@ const lightSwitch = {
   type: 'switch',
 };
 
+const slackAction = {
+  condition: '>',
+  action: 'slack',
+  interval: '5m',
+};
+
 const doPost = async (api, data) => {
   const res = await fetch(`http://localhost:3000/api/${api}`, {
     method: 'POST',
@@ -93,6 +99,22 @@ const setupFixtures = async () => {
   await doPost('sensors', lightSwitch);
 
   stations = await doGet('stations');
+
+  // add actions
+  slackAction.stationId = stations[0].id;
+  slackAction.sensorId = stations[0].sensors[0].id;
+  await doPost('actions', slackAction);
+
+  slackAction.sensorId = stations[0].sensors[1].id;
+  await doPost('actions', slackAction);
+
+  slackAction.stationId = stations[1].id;
+  slackAction.sensorId = stations[1].sensors[0].id;
+  await doPost('actions', slackAction);
+
+  slackAction.stationId = stations[1].id;
+  slackAction.sensorId = stations[1].sensors[1].id;
+  await doPost('actions', slackAction);
 
   // create readings
   const date = new Date();
