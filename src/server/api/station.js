@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import Sequelize from 'sequelize';
 import fetch from 'node-fetch';
-import isIP from '../validators';
 import { Station, Sensor, Action, Reading } from '../db';
 
 const router = new Router();
@@ -177,18 +175,5 @@ router.post('/test', async (req, res) => {
       res.send(error);
     });
 });
-
-const validateStationParams = params => {
-  if (!params.name) {
-    return { error: 'Station name required' };
-  }
-  if (!params.ip) {
-    return { error: 'Station ip required' };
-  }
-  if (!isIP(params.ip)) {
-    return { error: 'IP Address must be valid' };
-  }
-  return {};
-};
 
 export default router;

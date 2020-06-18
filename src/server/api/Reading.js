@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Op } from 'sequelize';
 import { Reading } from '../db';
+import { validateReadingParams } from '../utilities/Validators';
 
 const router = new Router();
 
@@ -72,7 +73,6 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   console.info('POST request to reading');
   const { value, timestamp, sensorId, stationId } = req.body;
-  console.log(value);
 
   const valid = validateReadingParams(req.body);
   if (valid.error) {
@@ -90,21 +90,5 @@ router.post('/', async (req, res) => {
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });
-
-const validateReadingParams = params => {
-  if (!params.stationId) {
-    return { error: 'Station id required' };
-  }
-  if (!params.sensorId) {
-    return { error: 'Sensor id required' };
-  }
-  if (!params.timestamp) {
-    return { error: 'Timestamp required' };
-  }
-  if (params.value === undefined || params.value === null) {
-    return { error: 'Value required' };
-  }
-  return {};
-};
 
 export default router;

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { Action } from '../db';
+import { validateActionParams } from '../utilities/Validators';
 
 const router = new Router();
 
@@ -67,24 +68,5 @@ router.delete('/', async (req, res) => {
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });
-
-const validateActionParams = params => {
-  if (!params.stationId) {
-    return { error: 'Station id required' };
-  }
-  if (!params.sensorId) {
-    return { error: 'Sensor id required' };
-  }
-  if (!params.condition) {
-    return { error: 'Condition required' };
-  }
-  if (!params.action) {
-    return { error: 'Action required' };
-  }
-  if (!params.interval) {
-    return { error: 'Interval required' };
-  }
-  return {};
-};
 
 export default router;

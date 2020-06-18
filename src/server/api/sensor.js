@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import SENSOR_TYPES from '../constants';
 import { Sensor, Station, Action, Reading } from '../db';
+import { validateSensorParams } from '../utilities/Validators';
 
 const router = new Router();
 /**
@@ -159,22 +159,5 @@ router.post('/test', async (req, res) => {
       res.send({ error });
     });
 });
-
-const validateSensorParams = async params => {
-  if (!params.name) {
-    return { error: 'Sensor name required' };
-  }
-  if (!params.stationId) {
-    return { error: 'Station id required' };
-  }
-  if (!params.type) {
-    return { error: 'Sensor type required' };
-  }
-  if (!SENSOR_TYPES.includes(params.type)) {
-    return { error: 'Invalid sensor type' };
-  }
-
-  return {};
-};
 
 export default router;
