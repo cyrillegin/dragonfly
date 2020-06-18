@@ -11,7 +11,6 @@ const App = ({ className }) => {
     fetch('/api/stations')
       .then(res => res.json())
       .then(res => {
-        console.log(res[0]);
         setStations(res);
       });
   }, []);

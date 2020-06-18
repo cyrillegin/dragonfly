@@ -4,19 +4,19 @@ import PropTypes from 'prop-types';
 
 const SensorDetails = ({ className, sensor }) => {
   const changeType = e => {
-    console.log('change');
+    // console.log('change');
   };
 
   const editAction = id => {
-    console.log('editing');
+    // console.log('editing');
   };
 
   const handleTest = () => {
-    console.log('test');
+    // console.log('test');
   };
 
   const addAction = () => {
-    console.log('adding actions');
+    // console.log('adding actions');
   };
 
   return (

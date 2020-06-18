@@ -44,8 +44,8 @@ describe('TreeView', () => {
         ]}
       />,
     );
-    wrapper.find('.station').simulate('click');
+    wrapper.find('.station').forEach(station => station.simulate('click'));
 
-    wrapper.find('.sensor').simulate('click');
+    wrapper.find('.sensor').forEach(sensor => sensor.simulate('click'));
   });
 });
