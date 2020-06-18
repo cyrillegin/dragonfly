@@ -5,6 +5,13 @@ from cherrypy.lib.static import serve_file
 class Root(object):
 
     @cherrypy.expose
+    def sensorCheck(self, *args, **kwargs):
+        print('Checking sensor')
+        print("type = ")
+        print(kwargs)
+
+
+    @cherrypy.expose
     def health(self, *args, **kwargs):
         print('Got health check')
         return 'healthy'
