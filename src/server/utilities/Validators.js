@@ -39,7 +39,7 @@ const validateActionParams = params => {
   return {};
 };
 
-const validateSensorParams = async params => {
+const validateSensorParams = params => {
   if (!params.name) {
     return { error: 'Sensor name required' };
   }
@@ -69,4 +69,10 @@ const validateStationParams = params => {
   return {};
 };
 
-export { validateReadingParams, validateActionParams, validateSensorParams, validateStationParams };
+export {
+  validateReadingParams,
+  validateActionParams,
+  validateSensorParams,
+  validateStationParams,
+  isIP,
+};
