@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 import cherrypy
 from cherrypy.lib.static import serve_file
+from SensorManager import SensorManager
 
 class Root(object):
 
+    # Check if sensor can be created
     @cherrypy.expose
     def sensorCheck(self, *args, **kwargs):
         print('Checking sensor')
@@ -11,18 +13,35 @@ class Root(object):
         print(kwargs)
         if kwargs['sensorType'] == 'manual':
             return 'healthy'
+        elif kwargs['sensorType'] == 'temperature':
+            # Actually check
+            return 'healthy'
         else:
             return 'unhealthy'
 
-
+    # Check if station exists
     @cherrypy.expose
     def health(self, *args, **kwargs):
         print('Got health check')
         return 'healthy'
 
+    # Check if sensor is currently running
     @cherrypy.expose
-    def default(self, *args, **kwargs):
-        return 'hello satellite'
+    def sensorHealth(self, *args, **kwargs):
+        print('Checking sensor health')
+        sensorManager.checkSensor()
+
+    # Start a sensor
+    @cherrypy.expose
+    def health(self, *args, **kwargs):
+        print('Starting a sensor')
+        sensorManager.startSensor()
+
+    # Stop a sensor
+    @cherrypy.expose
+    def health(self, *args, **kwargs):
+        print('stoping a sensor')
+        sensorManager.stopSensor()
 
 
 def RunServer():
@@ -35,4 +54,6 @@ def RunServer():
 
 if __name__ == "__main__":
     print("starting server!")
+    print(SensorManager)
+    sensorManager = SensorManager()
     RunServer()
