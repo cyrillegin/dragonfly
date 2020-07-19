@@ -8,39 +8,32 @@ class Root(object):
     # Check if sensor can be created
     @cherrypy.expose
     def sensorCheck(self, *args, **kwargs):
-        print('Checking sensor')
-        print("type = ")
-        print(kwargs)
         if kwargs['sensorType'] == 'manual':
             return 'healthy'
         elif kwargs['sensorType'] == 'temperature':
             # Actually check
-            return 'healthy'
+            return sensorManager.testSensor()
         else:
             return 'unhealthy'
 
     # Check if station exists
     @cherrypy.expose
     def health(self, *args, **kwargs):
-        print('Got health check')
         return 'healthy'
 
     # Check if sensor is currently running
     @cherrypy.expose
     def sensorHealth(self, *args, **kwargs):
-        print('Checking sensor health')
-        sensorManager.checkSensor()
+        sensorManager.checkSensor(kwargs)
 
     # Start a sensor
     @cherrypy.expose
     def startSensor(self, *args, **kwargs):
-        print('Starting a sensor')
         sensorManager.startSensor()
 
     # Stop a sensor
     @cherrypy.expose
     def stopSensor(self, *args, **kwargs):
-        print('stoping a sensor')
         sensorManager.stopSensor()
 
 
