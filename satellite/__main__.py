@@ -33,13 +33,13 @@ class Root(object):
 
     # Start a sensor
     @cherrypy.expose
-    def health(self, *args, **kwargs):
+    def startSensor(self, *args, **kwargs):
         print('Starting a sensor')
         sensorManager.startSensor()
 
     # Stop a sensor
     @cherrypy.expose
-    def health(self, *args, **kwargs):
+    def stopSensor(self, *args, **kwargs):
         print('stoping a sensor')
         sensorManager.stopSensor()
 

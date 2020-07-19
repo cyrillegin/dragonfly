@@ -173,10 +173,10 @@ router.post('/test', async (req, res) => {
 
   let address = ipaddress
   if(address === 'self') {
-    address = '127.0.0.1:3001'
+    address = '127.0.0.1'
   }
 
-  fetch(`http://${address}/health`)
+  fetch(`http://${address}:3001/health`)
     .then(result => {
       res.send({ message: 'success' });
     })
