@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Sensor, Station, Action, Reading } from '../db';
 import { validateSensorParams } from '../utilities/Validators';
+import fetch from 'node-fetch';
 
 const router = new Router();
 /**
@@ -20,24 +21,22 @@ const router = new Router();
 
 router.post('/', async (req, res) => {
   console.info('POST request to sensor');
-  // General validation
-  const valid = await validateSensorParams(req.body);
-  if (valid.error) {
-    res.status(400).send({ error: valid.error });
-    return;
-  }
-  // POST specific validation
-  const { name, stationId, type, description, coefficients, on } = req.body;
-  if (!stationId) {
-    res.status(400).send({ error: 'Station id required' });
+
+  const { stationId, sensorType, name, description, coefficients, on } = req.body;
+
+  const type = sensorType
+
+  const isValid = validateSensorParams({name, stationId, type})
+  if(isValid.error) {
+    res
+      .status(400)
+      .send({ error: isValid.error  });
     return;
   }
 
-  const stationCount = await Station.count({ where: { id: stationId } });
-  if (!stationCount) {
-    res.status(400).send({ error: 'Station not found' });
-    return;
-  }
+  const station = await Station.findAll({where: {id: stationId}})
+  const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : station[0].ip;
+
 
   // Create the new Sensor
   try {
@@ -68,7 +67,7 @@ router.post('/', async (req, res) => {
 router.put('/', async (req, res) => {
   console.info('PUT request to sensor');
   // General validation
-  const valid = await validateSensorParams(req.body);
+  const valid = validateSensorParams(req.body);
   if (valid.error) {
     res.status(400).send({ error: valid.error });
     return;
@@ -146,16 +145,34 @@ router.delete('/', async (req, res) => {
 
 router.post('/test', async (req, res) => {
   console.info('TEST request to sensor');
-  const { ipaddress } = req.body;
-  res.send({ message: 'success' });
 
-  const sensorType = 'DS18B20';
+  const { stationId, sensorType, name } = req.body;
+
+  const isValid = validateSensorParams({name, stationId, type: sensorType})
+  if(isValid.error) {
+    res
+      .status(400)
+      .send({ error: isValid.error  });
+    return;
+  }
+
+  const station = await Station.findAll({where: {id: stationId}})
+  const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : station[0].ip;
+
 
   fetch(`http://${ipaddress}/sensorCheck?sensorType=${sensorType}`)
+    .then(result => result.text())
     .then(result => {
+      if(result === 'unhealthy') {
+        console.info('Sensor test failed!');
+        res.send({ error: 'Sensor failed' });
+        return;
+      }
+      console.info('Sensor test successful!')
       res.send({ message: 'success' });
     })
     .catch(error => {
+      console.info('Sensor test failed!')
       res.send({ error });
     });
 });

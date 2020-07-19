@@ -28,6 +28,10 @@ const Modal = ({ className, type, close }) => {
       return;
     }
 
+    if (type === 'sensor') {
+      params.stationId = window.location.search.split('=')[1].split('-')[1]
+    }
+
     fetch(`/api/${type}/test`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -52,6 +56,9 @@ const Modal = ({ className, type, close }) => {
     const params = {
       ...input,
     };
+    if (type === 'sensor') {
+      params.stationId = window.location.search.split('=')[1].split('-')[1]
+    }
     fetch(`/api/${type}/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -93,7 +100,7 @@ const Modal = ({ className, type, close }) => {
 
                 <div className="group">
                   Sensor Type:
-                  <input type="text" name="sensorType" />
+                  <input type="text" name="sensorType" onChange={handleInputChange} />
                 </div>
               </>
             )}

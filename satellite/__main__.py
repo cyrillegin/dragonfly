@@ -9,6 +9,10 @@ class Root(object):
         print('Checking sensor')
         print("type = ")
         print(kwargs)
+        if kwargs['sensorType'] == 'manual':
+            return 'healthy'
+        else:
+            return 'unhealthy'
 
 
     @cherrypy.expose
