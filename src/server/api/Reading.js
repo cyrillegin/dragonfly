@@ -72,7 +72,9 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   console.info('POST request to reading');
+  console.log(req.body)
   const { value, timestamp, sensorId, stationId } = req.body;
+
 
   const valid = validateReadingParams(req.body);
   if (valid.error) {
