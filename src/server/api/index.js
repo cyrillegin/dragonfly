@@ -6,9 +6,9 @@ import Action from './Action';
 
 const router = new Router();
 
-router.use('/api/stations', Station);
-router.use('/api/sensors', Sensor);
-router.use('/api/readings', Reading);
-router.use('/api/actions', Action);
+router.use('/api/station', Station);
+router.use('/api/sensor', Sensor);
+router.use('/api/reading', Reading);
+router.use('/api/action', Action);
 
 module.exports = router;

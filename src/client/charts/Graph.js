@@ -21,7 +21,7 @@ const Graph = ({ className, station, sensor }) => {
         kwargs.end = end;
       }
 
-      fetch(`/api/readings?${objectToString(kwargs)}`)
+      fetch(`/api/reading?${objectToString(kwargs)}`)
         .then(res => res.json())
         .then(newReadings => {
           setReadings(

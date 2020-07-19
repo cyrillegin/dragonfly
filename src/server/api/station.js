@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
 import { Station, Sensor, Action, Reading } from '../db';
-
+import {validateStationParams, isIP} from '../utilities/Validators'
 const router = new Router();
 
 /**
@@ -57,16 +57,18 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   console.info('POST request to station');
-  const { name, ip } = req.body;
-
-  const valid = validateStationParams(req.body);
+  const { name, ipaddress } = req.body;
+console.info(ipaddress)
+  const valid = ipaddress === 'self' ? true : validateStationParams(req.body);
   if (valid.error) {
     res.status(400).send(JSON.stringify({ error: valid.error }));
     return;
   }
 
+
+
   try {
-    const result = await Station.create({ name, ip });
+    const result = await Station.create({ name, ip: ipaddress === 'self' ? '127.0.0.1' : ipaddress });
     console.info('new station added');
     res.status(200).send(JSON.stringify({ message: 'success' }));
   } catch (e) {
@@ -158,16 +160,23 @@ router.delete('/', async (req, res) => {
 router.post('/test', async (req, res) => {
   console.info('TEST request to station');
   const { ipaddress } = req.body;
+
   if (!ipaddress) {
     res.status(400).send({ error: 'An IP must be provided' });
     return;
   }
-  if (!isIP(ipaddress)) {
+
+  if (!(isIP(ipaddress) || ipaddress === 'self')) {
     res.status(400).send({ error: 'IP must be valid' });
     return;
   }
 
-  fetch(`http://${ipaddress}/health`)
+  let address = ipaddress
+  if(address === 'self') {
+    address = '127.0.0.1:3001'
+  }
+
+  fetch(`http://${address}/health`)
     .then(result => {
       res.send({ message: 'success' });
     })

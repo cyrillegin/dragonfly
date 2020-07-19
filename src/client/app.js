@@ -8,7 +8,7 @@ import Dashboard from './components/Dashboard';
 const App = ({ className }) => {
   const [stations, setStations] = useState([]);
   useEffect(() => {
-    fetch('/api/stations')
+    fetch('/api/station')
       .then(res => res.json())
       .then(res => {
         setStations(res);

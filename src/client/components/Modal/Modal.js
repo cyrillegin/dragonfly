@@ -12,6 +12,7 @@ const modalDetails = {
 };
 const Modal = ({ className, type, close }) => {
   const [input, setInput] = useState({});
+  const [testSuccessfull, setSuccess] = useState(false);
 
   const handleInputChange = event =>
     setInput({
@@ -22,8 +23,12 @@ const Modal = ({ className, type, close }) => {
     const params = {
       ...input,
     };
+    console.log(params)
+    if (!params.name) {
+      return;
+    }
 
-    fetch(`/api/${type}s/test`, {
+    fetch(`/api/${type}/test`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params),
@@ -32,8 +37,31 @@ const Modal = ({ className, type, close }) => {
       .then(res => {
         console.log('got res');
         console.log(res);
+        if(res.message === "success") {
+          console.log('set true')
+          setSuccess(true)
+        } else {
+          console.log('set false')
+          setSuccess(false);
+        }
       });
   };
+
+  const handleAdd = () => {
+    console.log('adding');
+    const params = {
+      ...input,
+    };
+    fetch(`/api/${type}/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log('did add?')
+      })
+  }
 
   const preventClose = e => {
     e.preventDefault();
@@ -48,7 +76,7 @@ const Modal = ({ className, type, close }) => {
           <div className="column">
             <div className="group">
               Name:
-              <input type="text" ame="name" />
+              <input type="text" name="name" onChange={handleInputChange} />
             </div>
             {type === 'station' && (
               <div className="group">
@@ -79,6 +107,9 @@ const Modal = ({ className, type, close }) => {
               <button type="button" onClick={handleTest}>
                 Test
               </button>
+              <span className={`${testSuccessfull ? 'green' : "red"}`}></span>
+              <br />
+              {testSuccessfull && <button type="button" onClick={handleAdd}>Add</button>}
             </div>
           </div>
         </div>
@@ -119,6 +150,21 @@ const styledModal = styled(Modal)`
         flex: 1;
 
         .group {
+          span {
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
+            margin: 0 20px;
+            display: inline-block;
+
+            &.red {
+              background: red;
+            }
+
+            &.green {
+              background: green;
+            }
+          }
         }
       }
     }

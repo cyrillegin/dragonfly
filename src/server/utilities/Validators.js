@@ -60,10 +60,10 @@ const validateStationParams = params => {
   if (!params.name) {
     return { error: 'Station name required' };
   }
-  if (!params.ip) {
+  if (!params.ipaddress) {
     return { error: 'Station ip required' };
   }
-  if (!isIP(params.ip)) {
+  if (!isIP(params.ipaddress)) {
     return { error: 'IP Address must be valid' };
   }
   return {};
