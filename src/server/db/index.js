@@ -14,7 +14,7 @@ const dbHost = process.env.DATABASE_HOST;
 const connectionString = `${dbType}://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`;
 
 const sequelize = new Sequelize(connectionString);
-console.log('setting up')
+console.log('setting up');
 buildStationSchema(sequelize);
 buildSensorSchema(sequelize);
 buildReadingSchema(sequelize);
@@ -34,7 +34,7 @@ Reading.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
 Station.hasMany(Action, { foreignKey: 'stationId', sourceKey: 'id' });
 Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
-console.log('syncing')
+console.log('syncing');
 sequelize.sync();
-console.log('all set')
+console.log('all set');
 export { Sensor, Action, Reading, Station };

@@ -24,19 +24,16 @@ router.post('/', async (req, res) => {
 
   const { stationId, sensorType, name, description, coefficients, on } = req.body;
 
-  const type = sensorType
+  const type = sensorType;
 
-  const isValid = validateSensorParams({name, stationId, type})
-  if(isValid.error) {
-    res
-      .status(400)
-      .send({ error: isValid.error  });
+  const isValid = validateSensorParams({ name, stationId, type });
+  if (isValid.error) {
+    res.status(400).send({ error: isValid.error });
     return;
   }
 
-  const station = await Station.findAll({where: {id: stationId}})
+  const station = await Station.findAll({ where: { id: stationId } });
   const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : station[0].ip;
-
 
   // Create the new Sensor
   try {
@@ -148,31 +145,28 @@ router.post('/test', async (req, res) => {
 
   const { stationId, sensorType, name } = req.body;
 
-  const isValid = validateSensorParams({name, stationId, type: sensorType})
-  if(isValid.error) {
-    res
-      .status(400)
-      .send({ error: isValid.error  });
+  const isValid = validateSensorParams({ name, stationId, type: sensorType });
+  if (isValid.error) {
+    res.status(400).send({ error: isValid.error });
     return;
   }
 
-  const station = await Station.findAll({where: {id: stationId}})
+  const station = await Station.findAll({ where: { id: stationId } });
   const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : station[0].ip + ':3001';
-
 
   fetch(`http://${ipaddress}/sensorCheck?sensorType=${sensorType}`)
     .then(result => result.text())
     .then(result => {
-      if(result === 'unhealthy') {
+      if (result === 'unhealthy') {
         console.info('Sensor test failed!');
         res.send({ error: 'Sensor failed' });
         return;
       }
-      console.info('Sensor test successful!')
+      console.info('Sensor test successful!');
       res.send({ message: 'success' });
     })
     .catch(error => {
-      console.info('Sensor test failed!')
+      console.info('Sensor test failed!');
       res.send({ error });
     });
 });

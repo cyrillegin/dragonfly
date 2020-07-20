@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
 import { Station, Sensor, Action, Reading } from '../db';
-import {validateStationParams, isIP} from '../utilities/Validators'
+import { validateStationParams, isIP } from '../utilities/Validators';
 const router = new Router();
 
 /**
@@ -58,17 +58,18 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   console.info('POST request to station');
   const { name, ipaddress } = req.body;
-console.info(ipaddress)
+  console.info(ipaddress);
   const valid = ipaddress === 'self' ? true : validateStationParams(req.body);
   if (valid.error) {
     res.status(400).send(JSON.stringify({ error: valid.error }));
     return;
   }
 
-
-
   try {
-    const result = await Station.create({ name, ip: ipaddress === 'self' ? '127.0.0.1' : ipaddress });
+    const result = await Station.create({
+      name,
+      ip: ipaddress === 'self' ? '127.0.0.1' : ipaddress,
+    });
     console.info('new station added');
     res.status(200).send(JSON.stringify({ message: 'success' }));
   } catch (e) {
@@ -171,9 +172,9 @@ router.post('/test', async (req, res) => {
     return;
   }
 
-  let address = ipaddress
-  if(address === 'self') {
-    address = '127.0.0.1'
+  let address = ipaddress;
+  if (address === 'self') {
+    address = '127.0.0.1';
   }
 
   fetch(`http://${address}:3001/health`)

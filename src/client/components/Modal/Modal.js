@@ -23,13 +23,13 @@ const Modal = ({ className, type, close }) => {
     const params = {
       ...input,
     };
-    console.log(params)
+    console.log(params);
     if (!params.name) {
       return;
     }
 
     if (type === 'sensor') {
-      params.stationId = window.location.search.split('=')[1].split('-')[1]
+      params.stationId = window.location.search.split('=')[1].split('-')[1];
     }
 
     fetch(`/api/${type}/test`, {
@@ -41,11 +41,11 @@ const Modal = ({ className, type, close }) => {
       .then(res => {
         console.log('got res');
         console.log(res);
-        if(res.message === "success") {
-          console.log('set true')
-          setSuccess(true)
+        if (res.message === 'success') {
+          console.log('set true');
+          setSuccess(true);
         } else {
-          console.log('set false')
+          console.log('set false');
           setSuccess(false);
         }
       });
@@ -57,7 +57,7 @@ const Modal = ({ className, type, close }) => {
       ...input,
     };
     if (type === 'sensor') {
-      params.stationId = window.location.search.split('=')[1].split('-')[1]
+      params.stationId = window.location.search.split('=')[1].split('-')[1];
     }
     fetch(`/api/${type}/`, {
       method: 'POST',
@@ -66,9 +66,9 @@ const Modal = ({ className, type, close }) => {
     })
       .then(res => res.json())
       .then(res => {
-        console.log('did add?')
-      })
-  }
+        console.log('did add?');
+      });
+  };
 
   const preventClose = e => {
     e.preventDefault();
@@ -114,9 +114,13 @@ const Modal = ({ className, type, close }) => {
               <button type="button" onClick={handleTest}>
                 Test
               </button>
-              <span className={`${testSuccessfull ? 'green' : "red"}`}></span>
+              <span className={`${testSuccessfull ? 'green' : 'red'}`}></span>
               <br />
-              {testSuccessfull && <button type="button" onClick={handleAdd}>Add</button>}
+              {testSuccessfull && (
+                <button type="button" onClick={handleAdd}>
+                  Add
+                </button>
+              )}
             </div>
           </div>
         </div>
