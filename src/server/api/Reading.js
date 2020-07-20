@@ -72,7 +72,6 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   console.info('POST request to reading');
-  console.log(req.body);
   const { value, timestamp, sensorId, stationId } = req.body;
 
   const valid = validateReadingParams(req.body);
@@ -82,12 +81,12 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const result = await Reading.create({ value, timestamp, sensorId, stationId });
+    await Reading.create({ value, timestamp, sensorId, stationId });
     console.info('new reading added');
     res.status(200).send({ message: 'success' });
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });

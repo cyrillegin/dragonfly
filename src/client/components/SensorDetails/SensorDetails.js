@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
 const SensorDetails = ({ className, sensor }) => {
-  const changeType = e => {
+  const changeType = type => {
     // console.log('change');
   };
 

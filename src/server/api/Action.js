@@ -29,12 +29,12 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const result = await Action.create({ stationId, sensorId, condition, action, interval });
+    await Action.create({ stationId, sensorId, condition, action, interval });
     console.info('new action added');
     res.status(200).send({ message: 'success' });
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });
@@ -62,9 +62,9 @@ router.delete('/', async (req, res) => {
     });
 
     res.status(200).send({ message: 'success', actions });
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });

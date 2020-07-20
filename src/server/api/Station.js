@@ -2,6 +2,7 @@ import { Router } from 'express';
 import fetch from 'node-fetch';
 import { Station, Sensor, Action, Reading } from '../db';
 import { validateStationParams, isIP } from '../utilities/Validators';
+
 const router = new Router();
 
 /**
@@ -66,15 +67,15 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const result = await Station.create({
+    await Station.create({
       name,
       ip: ipaddress === 'self' ? '127.0.0.1' : ipaddress,
     });
     console.info('new station added');
     res.status(200).send(JSON.stringify({ message: 'success' }));
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send(JSON.stringify({ error: 'An unknown error has occured' }));
   }
 });
@@ -98,7 +99,7 @@ router.put('/', async (req, res) => {
     return;
   }
   try {
-    const result = await Station.update(
+    await Station.update(
       {
         name: req.body.name,
         ip: req.body.ip,
@@ -109,9 +110,9 @@ router.put('/', async (req, res) => {
     );
     console.info('station updated');
     res.status(200).send({ message: 'success' });
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });

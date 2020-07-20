@@ -1,13 +1,12 @@
 import 'regenerator-runtime/runtime';
-import { Station, Sensor, Action, Reading } from './db';
 import fetch from 'node-fetch';
+import { Station, Sensor, Action } from './db';
 
 const testSensor = (ip, sensorId, stationId) => {
   fetch(
     `http://${ip}/sensorHealth?sensorId=${sensorId}&type=temperature&stationId=${stationId}`,
   ).then(res => {
-    console.log('here we are');
-    console.log(res);
+    console.info('test complete');
   });
 };
 
@@ -26,7 +25,7 @@ const runHealthCheck = async () => {
       station.sensors.forEach(sensor => {
         if (sensor.name === 'My Temp') {
           // console.log(station.dataValues)
-          testSensor(station.ip + ':3001', sensor.id, station.id);
+          testSensor(`${station.ip}:3001`, sensor.id, station.id);
         }
       });
     }
@@ -35,7 +34,6 @@ const runHealthCheck = async () => {
 
 setTimeout(() => {
   setInterval(() => {
-    console.log('checking');
     runHealthCheck();
   }, process.env.HEALTH_CHECK_INTERVAL * 1000);
 }, 1000);

@@ -44,17 +44,20 @@ const Graph = ({ className, station, sensor }) => {
     const xScale = d3
       .scaleTime()
       .range([0, width])
-      .domain(d3.extent(readings, d => d.timestamp));
+      .domain(d3.extent(readings, datum => datum.timestamp));
 
     const yScale = d3
       .scaleLinear()
       .range([height, 0])
-      .domain([d3.min(readings, d => d.value) - 5, d3.max(readings, d => d.value) + 5]);
+      .domain([
+        d3.min(readings, datum => datum.value) - 5,
+        d3.max(readings, datum => datum.value) + 5,
+      ]);
 
     const valueline = d3
       .line()
-      .x(d => xScale(d.timestamp))
-      .y(d => yScale(d.value));
+      .x(datum => xScale(datum.timestamp))
+      .y(datum => yScale(datum.value));
 
     const svg = d3
       .select(graphElement.current)

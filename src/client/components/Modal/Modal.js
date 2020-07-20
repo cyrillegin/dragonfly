@@ -10,6 +10,8 @@ const modalDetails = {
     title: 'Add Sensor',
   },
 };
+
+/* eslint-disable prefer-destructuring */
 const Modal = ({ className, type, close }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
@@ -23,7 +25,7 @@ const Modal = ({ className, type, close }) => {
     const params = {
       ...input,
     };
-    console.log(params);
+
     if (!params.name) {
       return;
     }
@@ -39,20 +41,15 @@ const Modal = ({ className, type, close }) => {
     })
       .then(res => res.json())
       .then(res => {
-        console.log('got res');
-        console.log(res);
         if (res.message === 'success') {
-          console.log('set true');
           setSuccess(true);
         } else {
-          console.log('set false');
           setSuccess(false);
         }
       });
   };
 
   const handleAdd = () => {
-    console.log('adding');
     const params = {
       ...input,
     };
@@ -65,14 +62,12 @@ const Modal = ({ className, type, close }) => {
       body: JSON.stringify(params),
     })
       .then(res => res.json())
-      .then(res => {
-        console.log('did add?');
-      });
+      .then(res => {});
   };
 
-  const preventClose = e => {
-    e.preventDefault();
-    e.stopPropagation();
+  const preventClose = event => {
+    event.preventDefault();
+    event.stopPropagation();
   };
 
   return (
@@ -114,7 +109,7 @@ const Modal = ({ className, type, close }) => {
               <button type="button" onClick={handleTest}>
                 Test
               </button>
-              <span className={`${testSuccessfull ? 'green' : 'red'}`}></span>
+              <span className={`${testSuccessfull ? 'green' : 'red'}`} />
               <br />
               {testSuccessfull && (
                 <button type="button" onClick={handleAdd}>

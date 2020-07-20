@@ -1,7 +1,7 @@
 import { Router } from 'express';
+import fetch from 'node-fetch';
 import { Sensor, Station, Action, Reading } from '../db';
 import { validateSensorParams } from '../utilities/Validators';
-import fetch from 'node-fetch';
 
 const router = new Router();
 /**
@@ -32,17 +32,14 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  const station = await Station.findAll({ where: { id: stationId } });
-  const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : station[0].ip;
-
   // Create the new Sensor
   try {
-    const result = await Sensor.create({ name, stationId, type, description, coefficients, on });
+    await Sensor.create({ name, stationId, type, description, coefficients, on });
     console.info('new sensor added');
     res.status(200).send({ message: 'success' });
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });
@@ -71,7 +68,7 @@ router.put('/', async (req, res) => {
   }
 
   // PUT specific validation
-  const { name, stationId, type, description, coefficients, on, id } = req.body;
+  const { name, type, description, coefficients, on, id } = req.body;
   if (!id) {
     res.status(400).send({ error: 'Sensor id required' });
     return;
@@ -85,7 +82,7 @@ router.put('/', async (req, res) => {
 
   // Update sensor
   try {
-    const result = await Sensor.update(
+    await Sensor.update(
       { name, type, description, coefficients, on },
       {
         where: { id },
@@ -94,9 +91,9 @@ router.put('/', async (req, res) => {
 
     console.info('sensor updated');
     res.status(200).send({ message: 'success' });
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });
@@ -133,9 +130,9 @@ router.delete('/', async (req, res) => {
     });
 
     res.status(200).send({ message: 'success', actions, sensors, readings });
-  } catch (e) {
+  } catch (error) {
     console.error('an error occured!');
-    console.error(e);
+    console.error(error);
     res.status(400).send({ error: 'An unknown error has occured' });
   }
 });
@@ -152,7 +149,7 @@ router.post('/test', async (req, res) => {
   }
 
   const station = await Station.findAll({ where: { id: stationId } });
-  const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : station[0].ip + ':3001';
+  const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : `${station[0].ip}:3001`;
 
   fetch(`http://${ipaddress}/sensorCheck?sensorType=${sensorType}`)
     .then(result => result.text())
