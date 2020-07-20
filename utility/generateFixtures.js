@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 const kitchenStation = {
   name: 'FIXTURE - kitchen station',
-  ip: '123.123.123.123',
+  ipaddress: '123.123.123.123',
 };
 
 const fishStation = {
@@ -78,43 +78,44 @@ const doPut = async (api, updates) => {
 
 const setupFixtures = async () => {
   // create kitchenStation
-  await doPost('stations', kitchenStation);
+  await doPost('station', kitchenStation);
+  return;
   // create fish station
-  await doPost('stations', fishStation);
+  await doPost('station', fishStation);
   // Get stations
   let stations = await doGet('stations');
 
   // create oven sensor
   ovenSensor.stationId = stations[0].id;
-  await doPost('sensors', ovenSensor);
+  await doPost('sensor', ovenSensor);
   // create fridge sensor
   fridgeSensor.stationId = stations[0].id;
-  await doPost('sensors', fridgeSensor);
+  await doPost('sensor', fridgeSensor);
 
   // create tank sensor
   tankSensor.stationId = stations[1].id;
-  await doPost('sensors', tankSensor);
+  await doPost('sensor', tankSensor);
   // create light switch
   lightSwitch.stationId = stations[1].id;
-  await doPost('sensors', lightSwitch);
+  await doPost('sensor', lightSwitch);
 
-  stations = await doGet('stations');
+  stations = await doGet('station');
 
   // add actions
   slackAction.stationId = stations[0].id;
   slackAction.sensorId = stations[0].sensors[0].id;
-  await doPost('actions', slackAction);
+  await doPost('action', slackAction);
 
   slackAction.sensorId = stations[0].sensors[1].id;
-  await doPost('actions', slackAction);
+  await doPost('action', slackAction);
 
   slackAction.stationId = stations[1].id;
   slackAction.sensorId = stations[1].sensors[0].id;
-  await doPost('actions', slackAction);
+  await doPost('action', slackAction);
 
   slackAction.stationId = stations[1].id;
   slackAction.sensorId = stations[1].sensors[1].id;
-  await doPost('actions', slackAction);
+  await doPost('action', slackAction);
 
   // create readings
   const date = new Date();

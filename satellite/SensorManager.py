@@ -17,7 +17,7 @@ def query(sensor):
                 'sensorId': sensor['sensorId'],
                 'stationId': sensor['stationId']
             }
-            resp = requests.post('http://192.168.1.176:3000/api/reading', json=payload)
+            resp = requests.post('http://127.0.0.1:3000/api/reading', json=payload)
             time.sleep(5)
 
 
