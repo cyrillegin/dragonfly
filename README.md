@@ -29,10 +29,14 @@ The 'sensor' view is a single graph detailing the particular sensor that is sele
 
  To setup postgres, ensure that docker is installed and run `docker-compose up`. This will download the postgres image and run with the logs outputting to your console.
 
- #### Development
+###### Raspberry Pi basic setup
+Get the latest pi image from the raspberry pi website and flash it to an ssd.
+
+#### Development
 `npm run start` will build the front and back end and run them in watch mode. The site will be running at `localhost:3000`. From here you can add stations and sensors from the ui. If you would like dummy data added to work with, you can run `npm run generate:fixtures` while the server is running. This will create two stations with two sensors each with readings in all of the graphs. A few npm scripts have also been added:
 * `npm run watch:client` - runs only the front end in watch mode
 * `npm run watch:server` - runs only the back end in watch mode
+* `npm run db:shell` - This will drop you into an interactive postgres shell. (TODO: hardcoded database and user)
 
 ## Server deployment
 For deployment instructions, I will be assuming that this is being deployed on a raspberry pi on a local network. I am also assuming that `node`, `npm`, and `postgress` have been installed. For more details on setting up a raspberry pi, see: (TODO: how to set up a raspberry pi)
