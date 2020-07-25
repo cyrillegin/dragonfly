@@ -59,9 +59,9 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   console.info('POST request to station');
   const { name, ipaddress } = req.body;
-  console.info(ipaddress);
   const valid = ipaddress === 'self' ? true : validateStationParams(req.body);
   if (valid.error) {
+    console.error('POST Failed - Invalid IP');
     res.status(400).send(JSON.stringify({ error: valid.error }));
     return;
   }
@@ -71,10 +71,10 @@ router.post('/', async (req, res) => {
       name,
       ip: ipaddress === 'self' ? '127.0.0.1' : ipaddress,
     });
-    console.info('new station added');
+    console.info('POST Successfull - New station added');
     res.status(200).send(JSON.stringify({ message: 'success' }));
   } catch (error) {
-    console.error('an error occured!');
+    console.error('POST Failed - An error occured!');
     console.error(error);
     res.status(400).send(JSON.stringify({ error: 'An unknown error has occured' }));
   }

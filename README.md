@@ -38,6 +38,12 @@ Get the latest pi image from the raspberry pi website and flash it to an ssd.
 * `npm run watch:server` - runs only the back end in watch mode
 * `npm run db:shell` - This will drop you into an interactive postgres shell. (TODO: hardcoded database and user)
 
+#### Handy postgres commands
+These assume you used the `npm run db:shell` script and are in the postgres docker container.
+* `\l` - List databases
+* `\dt` - list tables
+* `\c db` - switch to database 'db'
+
 ## Server deployment
 For deployment instructions, I will be assuming that this is being deployed on a raspberry pi on a local network. I am also assuming that `node`, `npm`, and `postgress` have been installed. For more details on setting up a raspberry pi, see: (TODO: how to set up a raspberry pi)
 

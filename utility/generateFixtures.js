@@ -7,27 +7,27 @@ const kitchenStation = {
 
 const fishStation = {
   name: 'FIXTURE - fish station',
-  ip: '123.123.123.124',
+  ipaddress: '123.123.123.124',
 };
 
 const ovenSensor = {
   name: 'FIXTURE - Oven',
-  type: 'temperature',
+  sensorType: 'temperature',
 };
 
 const fridgeSensor = {
   name: 'FIXTURE - Fridge',
-  type: 'temperature',
+  sensorType: 'temperature',
 };
 
 const tankSensor = {
   name: 'FIXTURE - Fish tank',
-  type: 'temperature',
+  sensorType: 'temperature',
 };
 
 const lightSwitch = {
   name: 'FIXTURE - Fish lights',
-  type: 'switch',
+  sensorType: 'switch',
 };
 
 const slackAction = {
@@ -48,8 +48,6 @@ const doPost = async (api, data) => {
     console.error('got error');
     console.error(json.error);
     process.exit(1);
-  } else {
-    console.info(`${api} added successfully`);
   }
 };
 
@@ -79,15 +77,17 @@ const doPut = async (api, updates) => {
 const setupFixtures = async () => {
   // create kitchenStation
   await doPost('station', kitchenStation);
-  return;
+
   // create fish station
   await doPost('station', fishStation);
+
   // Get stations
-  let stations = await doGet('stations');
+  let stations = await doGet('station');
 
   // create oven sensor
   ovenSensor.stationId = stations[0].id;
   await doPost('sensor', ovenSensor);
+
   // create fridge sensor
   fridgeSensor.stationId = stations[0].id;
   await doPost('sensor', fridgeSensor);
@@ -95,6 +95,7 @@ const setupFixtures = async () => {
   // create tank sensor
   tankSensor.stationId = stations[1].id;
   await doPost('sensor', tankSensor);
+
   // create light switch
   lightSwitch.stationId = stations[1].id;
   await doPost('sensor', lightSwitch);
@@ -118,33 +119,41 @@ const setupFixtures = async () => {
   await doPost('action', slackAction);
 
   // create readings
-  const date = new Date();
-  for (let i = 0; i < 100; i++) {
-    date.setDate(date.getDate() - 1);
-    // over sensor
+  const points = 1440;
+  for (let index = 0; index < points; index++) {
+    // Breaks up a the period of a sin curve over 1440 points (1 day)
+    const seed = Math.PI * index * 0.001388;
+
+    // base reading
     const reading = {
       stationId: stations[0].id,
       sensorId: stations[0].sensors[0].id,
-      timestamp: date,
-      value: Math.sin(i) * 100,
+      timestamp: new Date(Date.now() - 1000 * index),
+      value: Math.sin(seed) * 100,
     };
-    await doPost('readings', reading);
+
+    // oven sensor
+    await doPost('reading', reading);
 
     // fridge sensor
     reading.sensorId = stations[0].sensors[1].id;
-    reading.value = Math.cos(i) * 100;
-    await doPost('readings', reading);
+    reading.value = Math.cos(seed) * 100;
+    await doPost('reading', reading);
 
     // tank sensor
     reading.stationID = stations[1].id;
     reading.sensorId = stations[1].sensors[0].id;
-    reading.value = Math.sin(i) * 50;
-    await doPost('readings', reading);
+    reading.value = Math.sin(seed) * 50;
+    await doPost('reading', reading);
 
     // light sensor
     reading.sensorId = stations[1].sensors[1].id;
-    reading.value = Math.sin(i) * 100 + 50 > 50 ? 1 : 0;
-    await doPost('readings', reading);
+    reading.value = Math.sin(seed * 10) * 100 > 0 ? 1 : 0;
+    await doPost('reading', reading);
+
+    if (index % 100 === 0) {
+      console.info(`${index} / ${points} readings have been added`);
+    }
   }
 };
 
