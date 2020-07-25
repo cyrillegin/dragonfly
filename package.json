@@ -13,11 +13,10 @@
     "clean-webpack-plugin": "3.0.0",
     "compression-webpack-plugin": "4.0.0",
     "concurrently": "5.2.0",
-    "d3": "^5.16.0",
+    "d3": "5.16.0",
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "node-fetch": "2.6.0",
-    "npm": "^6.14.6",
     "pg": "8.2.1",
     "pg-hstore": "2.3.3",
     "prop-types": "15.7.2",
@@ -108,7 +107,14 @@
     "test:update": "jest src/ -u",
     "watch:tests": "jest src/ --watch  --coverage",
     "generate:fixtures": "babel-node utility/generateFixtures.js",
-    "db:shell": "docker exec -it dragonfly_postgres_1 psql db -U user"
+    "db:shell": "docker exec -it dragonfly_postgres_1 psql db -U user",
+
+    "setup:prod:server": "npm i && cp .env-template .env",
+    "setup:prod:satellite": "pip install -r satellite/requirements.txt",
+    "build:prod:server": "",
+    "build:prod:satellite": "",
+    "start:prod:server": "",
+    "start:prod:satellite": ""
   },
   "version": "0.0.1"
 }

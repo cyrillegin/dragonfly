@@ -1,7 +1,10 @@
 #!/usr/bin/env python
+import os
+from dotenv import load_dotenv
 import cherrypy
 from cherrypy.lib.static import serve_file
 from SensorManager import SensorManager
+
 
 class Root(object):
 
@@ -40,13 +43,13 @@ class Root(object):
 def RunServer():
     cherrypy.tree.mount(Root(), '/')
     cherrypy.server.socket_host = "0.0.0.0"
-    cherrypy.server.socket_port = 3001
+    cherrypy.server.socket_port = os.getenv('PORT')
     cherrypy.engine.start()
     cherrypy.engine.block()
 
 
 if __name__ == "__main__":
     print("starting server!")
-    print(SensorManager)
+    load_dotenv()
     sensorManager = SensorManager()
     RunServer()

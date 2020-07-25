@@ -1,47 +1,54 @@
 from multiprocessing import Process
-from pollers import gpioPoller
+import os
 import time
 import requests
 import json
+from pollers import gpioPoller
 
+
+# {
+#     sensorId - number
+#     stationId - number
+#     pollRate - number
+#     ip - ip address
+# }
 def query(sensor):
-    print(sensor)
     if sensor['type'] != 'temperature':
         return
     while True:
         if sensor['type'] == 'temperature':
-            values = gpioPoller.GetValues({'uuid':'asdf', 'meta': '28-0516a49158ff'})
+            values = gpioPoller.GetValues(os.getenv('SENSOR_A_META'))
             payload = {
-                'value': values['reading']['value'],
-                'timestamp': values['reading']['timestamp'],
+                'value': values['value'],
+                'timestamp': values['timestamp'],
                 'sensorId': sensor['sensorId'],
                 'stationId': sensor['stationId']
             }
-            resp = requests.post('http://127.0.0.1:3000/api/reading', json=payload)
-            time.sleep(5)
+            resp = requests.post('http://{}/api/reading'.format(sensor['ip']), json=payload)
+            time.sleep(sensor['pollRate'])
 
 
 class SensorManager:
     class __SensorManager:
         def __init__(self):
             self.sensorsBeingPolled = {}
-        
+
         def startSensor(self, sensor):
             p = Process(target=query, args=(sensor, ))
             p.start()
             self.sensorsBeingPolled[sensor['sensorId']] = p
-        
+
         def stopSensor(self):
             print('stopping sensor')
 
-        def checkSensor(self, kwargs):
+        def checkSensor(self, sensor):
             if kwargs['sensorId'] in self.sensorsBeingPolled and self.sensorsBeingPolled[kwargs['sensorId']].is_alive():
                 return 'healthy'
-            self.startSensor(kwargs)
+            self.startSensor(sensor)
             return ' unhealthy'
-        
+
         def testSensor(self):
-            result = gpioPoller.GetValues({'uuid': 'asdf','meta': '28-0516a49158ff'})
+            result = gpioPoller.GetValues(os.getenv('SENSOR_A_META'))
             return 'healthy'
     instance = None
 
