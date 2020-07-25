@@ -3,6 +3,18 @@ import React from 'react';
 import TreeView from './TreeView';
 
 describe('TreeView', () => {
+  let originalFetch;
+  beforeAll(() => {
+    originalFetch = global.fetch;
+    global.fetch = jest.fn(
+      () => new Promise(res => res({ json: () => new Promise(inner => inner([])) })),
+    );
+  });
+
+  afterAll(() => {
+    global.fetch = originalFetch;
+  });
+
   it('should render a snap shot', () => {
     const wrapper = mount(
       <TreeView
@@ -11,6 +23,7 @@ describe('TreeView', () => {
             id: 1,
             name: 'test',
             health: 'healthy',
+            ip: '123.123.123.123',
             sensors: [
               {
                 id: 1,
@@ -33,6 +46,7 @@ describe('TreeView', () => {
             id: 1,
             name: 'test',
             health: 'healthy',
+            ip: '123.123.123.123',
             sensors: [
               {
                 id: 1,

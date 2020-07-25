@@ -61,12 +61,9 @@ describe('validators', () => {
     expect(validateSensorParams(sensor).error).toEqual('Station id required');
 
     sensor.stationId = 'test';
-    expect(validateSensorParams(sensor).error).toEqual('Sensor type required');
+    expect(validateSensorParams(sensor).error).toEqual('Hardware name required');
 
-    sensor.type = 'test';
-    expect(validateSensorParams(sensor).error).toEqual('Invalid sensor type');
-
-    sensor.type = 'temperature';
+    sensor.hardwareName = 'test';
     expect(validateSensorParams(sensor).error).toBeFalsy();
   });
 
@@ -78,10 +75,10 @@ describe('validators', () => {
     station.name = 'test';
     expect(validateStationParams(station).error).toEqual('Station ip required');
 
-    station.ip = 'test';
+    station.ipaddress = 'test';
     expect(validateStationParams(station).error).toEqual('IP Address must be valid');
 
-    station.ip = '123.123.123.123';
+    station.ipaddress = '123.123.123.123';
     expect(validateStationParams(station).error).toBeFalsy();
   });
 });

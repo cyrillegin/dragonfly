@@ -12,6 +12,8 @@ const AddSensor = ({ className, close, stationIp }) => {
     fetch(`/list?ip=${stationIp}`)
       .then(res => res.json())
       .then(res => {
+        console.log('jere');
+        console.log(res);
         setSensors(res);
         setInput({ hardwareName: res[0] });
       });
