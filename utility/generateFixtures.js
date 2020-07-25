@@ -132,7 +132,7 @@ const setupFixtures = async () => {
     const reading = {
       stationId: stations[0].id,
       sensorId: stations[0].sensors[0].id,
-      timestamp: new Date(Date.now() - 1000 * index),
+      timestamp: new Date(Date.now() - 1000 * index * 60),
       value: Math.sin(seed) * 100,
     };
 

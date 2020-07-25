@@ -35,8 +35,19 @@ const objectToString = obj =>
     .substr(1);
 
 const addOrUpdateHash = (key, value) => {
-  const obj = searchToObject();
-  obj[key] = value;
+  let obj;
+  if (typeof key === 'object') {
+    obj = {
+      ...searchToObject(),
+      ...key,
+    };
+  } else {
+    obj = {
+      ...searchToObject(),
+      [key]: value,
+    };
+  }
+
   const newHash = objectToString(obj);
   window.history.replaceState(null, null, `?${newHash}`);
   windowEmitter.emit('change');

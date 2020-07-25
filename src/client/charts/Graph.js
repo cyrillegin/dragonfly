@@ -3,10 +3,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import { searchToObject, objectToString, windowEmitter } from '../utilities/Window';
+import {
+  searchToObject,
+  objectToString,
+  windowEmitter,
+  addOrUpdateHash,
+} from '../utilities/Window';
 
 const getReadings = (sensor, setReadings) => {
   const { start, end } = searchToObject();
+  console.log(sensor);
   const kwargs = {
     sensorId: sensor.id,
   };
@@ -35,7 +41,7 @@ const Graph = ({ className, station, sensor }) => {
   useEffect(() => {
     getReadings(sensor, setReadings);
     windowEmitter.listen('change', () => {
-      getReadings();
+      getReadings(sensor, setReadings);
     });
   }, []);
 
@@ -115,6 +121,76 @@ const Graph = ({ className, station, sensor }) => {
           )})`,
         );
     });
+
+    // Drag functions
+    const selectionBox = svg
+      .append('rect')
+      .attr('fill', 'none')
+      .attr('opacity', 0.5)
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', 14)
+      .attr('height', height);
+
+    let dragStart = 0;
+    let dragStartPos = 0;
+    let dragEnd = 0;
+    const drag = d3
+      .drag()
+      .on('drag', function (d, i) {
+        const x0 = xScale.invert(d3.mouse(this)[0]);
+        let index = d3.bisector(datum => datum.timestamp).right(readings, x0, 1);
+        // Prevents out of bounds exception
+        if (i > readings.length - 1) {
+          index = readings.length - 1;
+        }
+
+        if (xScale(readings[index].timestamp) - margin.left > dragStartPos + margin.right) {
+          selectionBox.attr(
+            'width',
+            xScale(readings[index].timestamp) - dragStartPos - margin.left,
+          );
+        } else {
+          selectionBox.attr(
+            'width',
+            dragStartPos + margin.left - xScale(readings[index].timestamp),
+          );
+          selectionBox.attr(
+            'transform',
+            `translate(${xScale(readings[index].timestamp) - margin.left},0)`,
+          );
+        }
+      })
+      .on('end', function (d, i) {
+        dragEnd = d3.mouse(this)[0] - margin.right;
+        if (Math.abs(dragStart - dragEnd) < 10) return;
+
+        const x0 = xScale.invert(dragStart);
+        const x1 = xScale.invert(dragEnd);
+
+        if (x1 > x0) {
+          addOrUpdateHash({ start: x0.toISOString(), end: x1.toISOString() });
+        } else {
+          addOrUpdateHash({ start: x1.toISOString(), end: x0.toISOString() });
+        }
+      });
+
+    d3.select('svg')
+      .on('mousedown', function () {
+        selectionBox.attr('fill', '#b7ff64');
+        dragStart = d3.mouse(this)[0] - margin.right;
+
+        let index = d3
+          .bisector(datum => datum.timestamp)
+          .right(readings, xScale.invert(dragStart), 1);
+        // Prevents out of bounds exception
+        if (index > readings.length - 1) {
+          index = readings.length - 1;
+        }
+        selectionBox.attr('transform', `translate(${xScale(readings[index].timestamp)},0)`);
+        dragStartPos = xScale(readings[index].timestamp);
+      })
+      .call(drag);
 
     // Bottom axis
     svg
