@@ -119,7 +119,11 @@ const setupFixtures = async () => {
   await doPost('action', slackAction);
 
   // create readings
-  const points = 1440;
+  let points = 1440;
+  const singleGraph = true;
+  if (singleGraph) {
+    points *= 10;
+  }
   for (let index = 0; index < points; index++) {
     // Breaks up a the period of a sin curve over 1440 points (1 day)
     const seed = Math.PI * index * 0.001388;
@@ -134,6 +138,13 @@ const setupFixtures = async () => {
 
     // oven sensor
     await doPost('reading', reading);
+
+    if (singleGraph) {
+      if (index % 100 === 0) {
+        console.info(`${index} / ${points} readings have been added`);
+      }
+      continue;
+    }
 
     // fridge sensor
     reading.sensorId = stations[0].sensors[1].id;

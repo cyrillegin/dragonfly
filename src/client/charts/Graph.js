@@ -1,36 +1,39 @@
+/* eslint-disable id-length */
 import React, { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { searchToObject, objectToString, windowEmitter } from '../utilities/Window';
 
+const getReadings = (sensor, setReadings) => {
+  const { start, end } = searchToObject();
+  const kwargs = {
+    sensorId: sensor.id,
+  };
+  if (start) {
+    kwargs.start = start;
+  }
+  if (end) {
+    kwargs.end = end;
+  }
+
+  fetch(`/api/reading?${objectToString(kwargs)}`)
+    .then(res => res.json())
+    .then(newReadings => {
+      setReadings(
+        newReadings
+          .map(reading => ({ ...reading, timestamp: new Date(reading.timestamp) }))
+          .sort((a, b) => a.timestamp - b.timestamp),
+      );
+    });
+};
+
 const Graph = ({ className, station, sensor }) => {
   const graphElement = useRef(null);
   const [readings, setReadings] = useState([]);
 
   useEffect(() => {
-    const getReadings = () => {
-      const { start, end } = searchToObject();
-      const kwargs = {
-        sensorId: sensor.id,
-      };
-      if (start) {
-        kwargs.start = start;
-      }
-      if (end) {
-        kwargs.end = end;
-      }
-
-      fetch(`/api/reading?${objectToString(kwargs)}`)
-        .then(res => res.json())
-        .then(newReadings => {
-          setReadings(
-            newReadings.map(reading => ({ ...reading, timestamp: new Date(reading.timestamp) })),
-          );
-        });
-    };
-
-    getReadings();
+    getReadings(sensor, setReadings);
     windowEmitter.listen('change', () => {
       getReadings();
     });
@@ -44,20 +47,17 @@ const Graph = ({ className, station, sensor }) => {
     const xScale = d3
       .scaleTime()
       .range([0, width])
-      .domain(d3.extent(readings, datum => datum.timestamp));
+      .domain(d3.extent(readings, d => d.timestamp));
 
     const yScale = d3
       .scaleLinear()
       .range([height, 0])
-      .domain([
-        d3.min(readings, datum => datum.value) - 5,
-        d3.max(readings, datum => datum.value) + 5,
-      ]);
+      .domain([d3.min(readings, d => d.value) - 5, d3.max(readings, d => d.value) + 5]);
 
     const valueline = d3
       .line()
-      .x(datum => xScale(datum.timestamp))
-      .y(datum => yScale(datum.value));
+      .x(d => xScale(d.timestamp))
+      .y(d => yScale(d.value));
 
     const svg = d3
       .select(graphElement.current)
@@ -68,14 +68,98 @@ const Graph = ({ className, station, sensor }) => {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    const tooltip = svg
+      .append('g')
+      .attr('class', 'tooltip')
+      .attr('transform', `translate(${margin.left}, 0)`);
+
+    // Tooltip line
+    tooltip.append('line').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', height);
+
+    // Tooltip circle
+    tooltip.append('circle').attr('cx', 0).attr('cy', 0).attr('r', 5);
+
+    // Tooltip text
+    tooltip.append('text');
+
+    // Handle tooltip movement
+    // non arrow function required here for 'this' scope
+    d3.select('svg').on('mousemove', function () {
+      const x0 = xScale.invert(d3.mouse(this)[0] - margin.left);
+      let i = d3.bisector(d => d.timestamp).right(readings, x0, 1);
+      // Prevents out of bounds exception
+      if (i > readings.length - 1) {
+        i = readings.length - 1;
+      }
+
+      tooltip
+        .select('circle')
+        .attr(
+          'transform',
+          `translate(${xScale(readings[i].timestamp) - margin.right}, ${yScale(
+            readings[i].value,
+          )})`,
+        );
+
+      tooltip
+        .select('line')
+        .attr('transform', `translate(${xScale(readings[i].timestamp) - margin.right}, 0)`);
+
+      tooltip
+        .select('text')
+        .text(readings[i].value.toFixed(2))
+        .attr(
+          'transform',
+          `translate(${xScale(readings[i].timestamp) - margin.right + 10}, ${yScale(
+            readings[i].value,
+          )})`,
+        );
+    });
+
+    // Bottom axis
     svg
       .append('g')
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%Y-%m-%d')));
 
-    svg.append('g').attr('class', 'y-axis').call(d3.axisLeft(yScale));
+    // Left axis
+    svg
+      .append('line')
+      .attr('x1', 0.5)
+      .attr('y1', 0)
+      .attr('x2', 0.5)
+      .attr('y2', height)
+      .attr('stroke', 'currentcolor');
 
+    // Left axis ticks
+    svg
+      .append('g')
+      .attr('class', 'y-axis')
+      .call(d3.axisLeft(yScale).tickSize(width - margin.left - margin.right))
+      .call(g => g.select('.domain').remove())
+      .call(g => g.selectAll('.tick line').attr('x2', width).attr('class', 'tick-line'))
+      .call(g => g.selectAll('.tick text').attr('x', -4));
+
+    // Right axis
+    svg
+      .append('line')
+      .attr('x1', width + 0.5)
+      .attr('y1', 0)
+      .attr('x2', width + 0.5)
+      .attr('y2', height)
+      .attr('stroke', 'currentcolor');
+
+    // Top axis
+    svg
+      .append('line')
+      .attr('x1', 0)
+      .attr('y1', 0.5)
+      .attr('x2', width + 0.5)
+      .attr('y2', 0.5)
+      .attr('stroke', 'currentcolor');
+
+    // Line graph
     svg.append('path').data([readings]).attr('class', 'line').attr('d', valueline);
   }
 
@@ -101,12 +185,31 @@ Graph.propTypes = {
 const styledGraph = styled(Graph)`
   width: 100%;
   height: 600px;
-  background: red;
+  background: white;
 
   .line {
     fill: none;
     stroke: #ffab00;
-    stroke-width: 3;
+    stroke-width: 1.5px;
+  }
+
+  .tick-line {
+    color: grey;
+  }
+
+  .tooltip {
+    line {
+      stroke: #3f94ff;
+    }
+
+    circle {
+      stroke: #3f94ff;
+      fill: none;
+      stroke-width: 1;
+    }
+    text {
+      stroke: #3f94ff;
+    }
   }
 `;
 

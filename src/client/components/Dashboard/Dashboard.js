@@ -85,12 +85,12 @@ Dashboard.propTypes = {
 const styledDashboard = styled(Dashboard)`
   position: absolute;
   left: 400px;
-  background: blue;
+  background: white;
   width: calc(100% - 400px - 4rem);
 
   .station {
     width: 100%;
-    background: green;
+    background: white;
     display: flex;
     margin: 2rem 0;
 
