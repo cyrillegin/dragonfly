@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import json
 from dotenv import load_dotenv
 import cherrypy
 from cherrypy.lib.static import serve_file
@@ -10,14 +11,21 @@ class Root(object):
 
     # Check if sensor can be created
     @cherrypy.expose
+    @cherrypy.tools.json_out()
     def sensorCheck(self, *args, **kwargs):
-        if kwargs['sensorType'] == 'manual':
-            return 'healthy'
-        elif kwargs['sensorType'] == 'temperature':
-            # Actually check
-            return sensorManager.testSensor()
-        else:
-            return 'unhealthy'
+        i = 0
+        while True:
+            sensor = os.getenv('SENSOR_{}_HARDWARE_NAME'.format(i))
+            if sensor is None:
+                return 'unhealthy'
+                break
+            if sensor == kwargs['hardwareSensor']:
+                break
+        cherrypy.response.headers['Content-Type'] = "application/json"
+        test = sensorManager.testSensor(i)
+        print(test)
+        return json.dumps(test)
+
 
     # Check if station exists
     @cherrypy.expose
@@ -39,11 +47,27 @@ class Root(object):
     def stopSensor(self, *args, **kwargs):
         sensorManager.stopSensor()
 
+    # Get list of available sensors
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def list(self, *args, **kwargs):
+        i = 0
+        sensors = []
+        while True:
+            sensor = os.getenv('SENSOR_{}_HARDWARE_NAME'.format(i))
+            if sensor is None:
+                break
+            sensors.append(sensor)
+            i += 1
+
+        cherrypy.response.headers['Content-Type'] = "application/json"
+        return json.dumps(sensors)
+
 
 def RunServer():
     cherrypy.tree.mount(Root(), '/')
     cherrypy.server.socket_host = "0.0.0.0"
-    cherrypy.server.socket_port = os.getenv('PORT')
+    cherrypy.server.socket_port = int(os.getenv('PORT'))
     cherrypy.engine.start()
     cherrypy.engine.block()
 

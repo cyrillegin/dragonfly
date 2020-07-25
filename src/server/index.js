@@ -2,6 +2,7 @@ import './env';
 import 'regenerator-runtime/runtime';
 import path from 'path';
 import { fork } from 'child_process';
+import fetch from 'node-fetch';
 import express from 'express';
 import bodyParser from 'body-parser';
 import api from './api';
@@ -16,6 +17,13 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 app.get('/health', (req, res) => res.sendStatus(200));
+
+app.get('/list', (req, res) => {
+  console.log(req.query);
+  fetch(`http://${req.query.ip}:3001/list`)
+    .then(response => response.json())
+    .then(response => res.send(response));
+});
 
 app.use(express.json({ type: ['application/*+json', 'application/json'] }));
 app.use(api);

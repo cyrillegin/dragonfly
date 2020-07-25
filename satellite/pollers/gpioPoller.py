@@ -1,5 +1,5 @@
 import time
-
+import os
 def readTemperature(deviceLocation):
     f = open(deviceLocation, 'r')
     lines = f.readlines()
@@ -7,7 +7,13 @@ def readTemperature(deviceLocation):
     return lines
 
 
-def GetValues(device):
+def GetValues(sensor):
+    device = os.getenv('SENSOR_{}_META'.format(sensor))
+    if device == 'fake':
+        return {
+            'timestamp': time.time() * 1000,
+            'value': 1.0
+        }
     deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(device)
 
     lines = readTemperature(deviceLocation)

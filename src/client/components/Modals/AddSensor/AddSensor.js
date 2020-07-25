@@ -1,25 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
 /* eslint-disable prefer-destructuring */
-const AddSensor = ({ className, close }) => {
+const AddSensor = ({ className, close, stationIp }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
+  const [availableSensors, setSensors] = useState([]);
+
+  useEffect(() => {
+    fetch(`/list?ip=${stationIp}`)
+      .then(res => res.json())
+      .then(res => {
+        setSensors(res);
+        setInput({ hardwareSensor: res[0] });
+      });
+  }, []);
 
   const handleInputChange = event =>
     setInput({
       ...input,
       [event.currentTarget.name]: event.currentTarget.value,
     });
+
+  const handleSelectChange = event => {
+    setInput({
+      ...input,
+      hardwareSensor: event.target.value,
+    });
+  };
+
   const handleTest = () => {
     const params = {
       ...input,
     };
-
-    if (!params.name) {
-      return;
-    }
 
     params.stationId = window.location.search.split('=')[1].split('-')[1];
 
@@ -30,10 +44,10 @@ const AddSensor = ({ className, close }) => {
     })
       .then(res => res.json())
       .then(res => {
-        if (res.message === 'success') {
-          setSuccess(true);
-        } else {
+        if (res.error) {
           setSuccess(false);
+        } else {
+          setSuccess(true);
         }
       });
   };
@@ -82,8 +96,18 @@ const AddSensor = ({ className, close }) => {
           </div>
           <div className="column">
             <div className="group">
+              Hardware sensor:
+              <select value={input.hardwareSensor} onChange={handleSelectChange}>
+                {availableSensors.map(sensor => (
+                  <option value={sensor} key={sensor}>
+                    {sensor}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="group">
               Description:
-              <input type="text" ame="description" />
+              <input type="text" name="description" />
             </div>
             <div className="group">
               <button type="button" onClick={handleTest}>
@@ -107,6 +131,7 @@ const AddSensor = ({ className, close }) => {
 AddSensor.propTypes = {
   className: PropTypes.string.isRequired,
   close: PropTypes.func.isRequired,
+  stationIp: PropTypes.string.isRequired,
 };
 
 const styledAddSensor = styled(AddSensor)`

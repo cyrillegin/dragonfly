@@ -140,19 +140,13 @@ router.delete('/', async (req, res) => {
 router.post('/test', async (req, res) => {
   console.info('TEST request to sensor');
 
-  const { stationId, sensorType, name } = req.body;
-
-  const isValid = validateSensorParams({ name, stationId, type: sensorType });
-  if (isValid.error) {
-    res.status(400).send({ error: isValid.error });
-    return;
-  }
+  const { stationId, hardwareSensor } = req.body;
 
   const station = await Station.findAll({ where: { id: stationId } });
   const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : `${station[0].ip}:3001`;
 
-  fetch(`http://${ipaddress}/sensorCheck?sensorType=${sensorType}`)
-    .then(result => result.text())
+  fetch(`http://${ipaddress}/sensorCheck?hardwareSensor=${hardwareSensor}`)
+    .then(result => result.json())
     .then(result => {
       if (result === 'unhealthy') {
         console.info('Sensor test failed!');
@@ -160,9 +154,10 @@ router.post('/test', async (req, res) => {
         return;
       }
       console.info('Sensor test successful!');
-      res.send({ message: 'success' });
+      res.send({ message: result });
     })
     .catch(error => {
+      console.log(error);
       console.info('Sensor test failed!');
       res.send({ error });
     });

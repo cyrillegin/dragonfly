@@ -29,7 +29,12 @@ const TreeView = ({ className, stations }) => {
   return (
     <div className={className}>
       {modal === 'AddStation' && <AddStation close={() => toggleModal('')} />}
-      {modal === 'AddSensor' && <AddSensor close={() => toggleModal('')} />}
+      {modal === 'AddSensor' && (
+        <AddSensor
+          close={() => toggleModal('')}
+          stationIp={stations.filter(station => station.id === stationSelected)[0].ip}
+        />
+      )}
       {stations.map(station => (
         <div key={station.id}>
           <div
@@ -71,6 +76,7 @@ TreeView.propTypes = {
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       health: PropTypes.oneOf(['healthy', 'unhealthy']),
+      ip: PropTypes.string.isRequired,
       sensors: PropTypes.arrayOf(
         PropTypes.shape({
           name: PropTypes.string.isRequired,

@@ -3,6 +3,7 @@ import os
 import time
 import requests
 import json
+import importlib
 from pollers import gpioPoller
 
 
@@ -47,9 +48,13 @@ class SensorManager:
             self.startSensor(sensor)
             return ' unhealthy'
 
-        def testSensor(self):
-            result = gpioPoller.GetValues(os.getenv('SENSOR_A_META'))
-            return 'healthy'
+        def testSensor(self, sensor):
+            poller = os.getenv('SENSOR_{}_POLLER'.format(sensor))
+            module = importlib.import_module('pollers.{}'.format(poller))
+            result = module.GetValues(sensor)
+            print(result)
+            return result
+
     instance = None
 
     def __init__(self):
@@ -58,3 +63,8 @@ class SensorManager:
 
     def __getattr__(self, name):
         return getattr(self.instance, name)
+
+
+SensorMap = {
+
+}
