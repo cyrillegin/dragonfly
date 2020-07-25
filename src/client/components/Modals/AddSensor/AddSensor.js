@@ -13,7 +13,7 @@ const AddSensor = ({ className, close, stationIp }) => {
       .then(res => res.json())
       .then(res => {
         setSensors(res);
-        setInput({ hardwareSensor: res[0] });
+        setInput({ hardwareName: res[0] });
       });
   }, []);
 
@@ -26,7 +26,7 @@ const AddSensor = ({ className, close, stationIp }) => {
   const handleSelectChange = event => {
     setInput({
       ...input,
-      hardwareSensor: event.target.value,
+      hardwareName: event.target.value,
     });
   };
 
@@ -87,11 +87,6 @@ const AddSensor = ({ className, close, stationIp }) => {
             <div className="group">
               Coeffecients:
               <input type="text" name="coeffecients" />
-            </div>
-
-            <div className="group">
-              Sensor Type:
-              <input type="text" name="sensorType" onChange={handleInputChange} />
             </div>
           </div>
           <div className="column">

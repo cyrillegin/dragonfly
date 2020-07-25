@@ -22,11 +22,9 @@ const router = new Router();
 router.post('/', async (req, res) => {
   console.info('POST request to sensor');
 
-  const { stationId, sensorType, name, description, coefficients, on } = req.body;
+  const { stationId, hardwareName, name, description, coefficients } = req.body;
 
-  const type = sensorType;
-
-  const isValid = validateSensorParams({ name, stationId, type });
+  const isValid = validateSensorParams({ name, stationId, hardwareName });
   if (isValid.error) {
     res.status(400).send({ error: isValid.error });
     return;
@@ -34,7 +32,7 @@ router.post('/', async (req, res) => {
 
   // Create the new Sensor
   try {
-    await Sensor.create({ name, stationId, type, description, coefficients, on });
+    await Sensor.create({ name, stationId, hardwareName, description, coefficients });
     console.info('new sensor added');
     res.status(200).send({ message: 'success' });
   } catch (error) {
@@ -140,12 +138,12 @@ router.delete('/', async (req, res) => {
 router.post('/test', async (req, res) => {
   console.info('TEST request to sensor');
 
-  const { stationId, hardwareSensor } = req.body;
+  const { stationId, hardwareName } = req.body;
 
   const station = await Station.findAll({ where: { id: stationId } });
   const ipaddress = station[0].ip === '127.0.0.1' ? '127.0.0.1:3001' : `${station[0].ip}:3001`;
 
-  fetch(`http://${ipaddress}/sensorCheck?hardwareSensor=${hardwareSensor}`)
+  fetch(`http://${ipaddress}/sensorCheck?hardwareSensor=${hardwareName}`)
     .then(result => result.json())
     .then(result => {
       if (result === 'unhealthy') {
@@ -157,8 +155,8 @@ router.post('/test', async (req, res) => {
       res.send({ message: result });
     })
     .catch(error => {
-      console.log(error);
-      console.info('Sensor test failed!');
+      console.error('Sensor test failed!');
+      console.error(error);
       res.send({ error });
     });
 });

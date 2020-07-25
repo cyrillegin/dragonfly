@@ -2,32 +2,32 @@ import fetch from 'node-fetch';
 
 const kitchenStation = {
   name: 'FIXTURE - kitchen station',
-  ipaddress: '123.123.123.123',
+  ipaddress: '127.0.0.1',
 };
 
 const fishStation = {
   name: 'FIXTURE - fish station',
-  ipaddress: '123.123.123.124',
+  ipaddress: '127.0.0.1',
 };
 
 const ovenSensor = {
   name: 'FIXTURE - Oven',
-  sensorType: 'temperature',
+  hardwareName: 'temperature',
 };
 
 const fridgeSensor = {
   name: 'FIXTURE - Fridge',
-  sensorType: 'temperature',
+  hardwareName: 'temperature',
 };
 
 const tankSensor = {
   name: 'FIXTURE - Fish tank',
-  sensorType: 'temperature',
+  hardwareName: 'temperature',
 };
 
 const lightSwitch = {
   name: 'FIXTURE - Fish lights',
-  sensorType: 'switch',
+  hardwareName: 'switch',
 };
 
 const slackAction = {

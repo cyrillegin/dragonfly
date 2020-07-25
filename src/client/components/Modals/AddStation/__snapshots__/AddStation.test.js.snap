@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddStation should render a snap shot 1`] = `"<div class=\\"css-1d88wt0\\"><div class=\\"modal\\"><div class=\\"title\\">Add Station</div><div class=\\"body\\"><div class=\\"column\\"><div class=\\"group\\">Name:<input type=\\"text\\" name=\\"name\\"></div><div class=\\"group\\">IP Adress:<input type=\\"text\\" name=\\"ipaddress\\"></div></div><div class=\\"column\\"><div class=\\"group\\">Description:<input type=\\"text\\" ame=\\"description\\"></div><div class=\\"group\\"><button type=\\"button\\">Test</button><span class=\\"red\\"></span><br></div></div></div></div></div>"`;

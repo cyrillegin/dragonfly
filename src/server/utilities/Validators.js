@@ -1,5 +1,3 @@
-import SENSOR_TYPES from '../constants';
-
 /* eslint-disable-next-line max-len */
 const ipAddress = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 const isIP = ip => ipAddress.test(ip);
@@ -46,11 +44,8 @@ const validateSensorParams = params => {
   if (!params.stationId) {
     return { error: 'Station id required' };
   }
-  if (!params.type) {
-    return { error: 'Sensor type required' };
-  }
-  if (!SENSOR_TYPES.includes(params.type)) {
-    return { error: 'Invalid sensor type' };
+  if (!params.hardwareName) {
+    return { error: 'Hardware name required' };
   }
 
   return {};

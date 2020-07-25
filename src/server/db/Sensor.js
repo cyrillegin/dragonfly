@@ -1,5 +1,4 @@
 import { Model, DataTypes } from 'sequelize';
-import SENSOR_TYPES from '../constants';
 
 class Sensor extends Model {}
 
@@ -10,8 +9,7 @@ function buildSensorSchema(sequelize) {
       stationId: { type: DataTypes.INTEGER, allowNull: false },
       coefficients: { type: DataTypes.STRING, allowNull: true },
       description: { type: DataTypes.STRING, allowNull: true },
-      on: { type: DataTypes.BOOLEAN, allowNull: true },
-      type: { type: DataTypes.ENUM, values: SENSOR_TYPES, allowNull: false },
+      hardwareName: { type: DataTypes.STRING, allowNull: false },
     },
     { sequelize, modelName: 'sensor' },
   );

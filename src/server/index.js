@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => res.sendStatus(200));
 
 app.get('/list', (req, res) => {
-  console.log(req.query);
   fetch(`http://${req.query.ip}:3001/list`)
     .then(response => response.json())
     .then(response => res.send(response));
