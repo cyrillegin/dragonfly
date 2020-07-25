@@ -1,10 +1,10 @@
 import { mount } from 'enzyme';
 import React from 'react';
-import Modal from './Modal';
+import AddSensor from './AddSensor';
 
-describe('Modal', () => {
+describe('AddSensor', () => {
   it('should render a snap shot', () => {
-    const wrapper = mount(<Modal />);
+    const wrapper = mount(<AddSensor />);
     expect(wrapper.html()).toMatchSnapshot();
   });
 });

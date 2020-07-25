@@ -2,17 +2,8 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
-const modalDetails = {
-  station: {
-    title: 'Add Station',
-  },
-  sensor: {
-    title: 'Add Sensor',
-  },
-};
-
 /* eslint-disable prefer-destructuring */
-const Modal = ({ className, type, close }) => {
+const AddSensor = ({ className, close }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
 
@@ -30,11 +21,9 @@ const Modal = ({ className, type, close }) => {
       return;
     }
 
-    if (type === 'sensor') {
-      params.stationId = window.location.search.split('=')[1].split('-')[1];
-    }
+    params.stationId = window.location.search.split('=')[1].split('-')[1];
 
-    fetch(`/api/${type}/test`, {
+    fetch('/api/sensor/test', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params),
@@ -53,10 +42,10 @@ const Modal = ({ className, type, close }) => {
     const params = {
       ...input,
     };
-    if (type === 'sensor') {
-      params.stationId = window.location.search.split('=')[1].split('-')[1];
-    }
-    fetch(`/api/${type}/`, {
+
+    params.stationId = window.location.search.split('=')[1].split('-')[1];
+
+    fetch('/api/sensor/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params),
@@ -73,32 +62,23 @@ const Modal = ({ className, type, close }) => {
   return (
     <div className={className} onClick={close}>
       <div className="modal" onClick={preventClose}>
-        <div className="title">{modalDetails[type].title}</div>
+        <div className="title">Add Sensor</div>
         <div className="body">
           <div className="column">
             <div className="group">
               Name:
               <input type="text" name="name" onChange={handleInputChange} />
             </div>
-            {type === 'station' && (
-              <div className="group">
-                IP Adress:
-                <input type="text" name="ipaddress" onChange={handleInputChange} />
-              </div>
-            )}
-            {type === 'sensor' && (
-              <>
-                <div className="group">
-                  Coeffecients:
-                  <input type="text" name="coeffecients" />
-                </div>
 
-                <div className="group">
-                  Sensor Type:
-                  <input type="text" name="sensorType" onChange={handleInputChange} />
-                </div>
-              </>
-            )}
+            <div className="group">
+              Coeffecients:
+              <input type="text" name="coeffecients" />
+            </div>
+
+            <div className="group">
+              Sensor Type:
+              <input type="text" name="sensorType" onChange={handleInputChange} />
+            </div>
           </div>
           <div className="column">
             <div className="group">
@@ -123,15 +103,13 @@ const Modal = ({ className, type, close }) => {
     </div>
   );
 };
-Modal.propTypes = {
+
+AddSensor.propTypes = {
   className: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['station', 'sensor']).isRequired,
   close: PropTypes.func.isRequired,
 };
 
-Modal.defaultProps = {};
-
-const styledModal = styled(Modal)`
+const styledAddSensor = styled(AddSensor)`
   position: fixed;
   width: 100%;
   height: 100%;
@@ -177,4 +155,4 @@ const styledModal = styled(Modal)`
   }
 `;
 
-export default styledModal;
+export default styledAddSensor;

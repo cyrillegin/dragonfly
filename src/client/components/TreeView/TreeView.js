@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { addOrUpdateHash, removeFromHash } from '../../utilities/Window';
-import Modal from '../Modal';
+import { AddStation, AddSensor } from '../Modals';
 
 const TreeView = ({ className, stations }) => {
   const [stationSelected, setStation] = useState('');
@@ -28,7 +28,8 @@ const TreeView = ({ className, stations }) => {
 
   return (
     <div className={className}>
-      {modal !== '' && <Modal type={modal} close={() => toggleModal('')} />}
+      {modal === 'AddStation' && <AddStation close={() => toggleModal('')} />}
+      {modal === 'AddSensor' && <AddSensor close={() => toggleModal('')} />}
       {stations.map(station => (
         <div key={station.id}>
           <div
@@ -50,14 +51,14 @@ const TreeView = ({ className, stations }) => {
                   <div className="sensor-title">{sensor.name}</div>
                 </div>
               ))}
-              <div className="sensor" onClick={() => handleAdd('sensor')}>
+              <div className="sensor" onClick={() => handleAdd('AddSensor')}>
                 <div className="sensor-title">+ Add Sensor</div>
               </div>
             </>
           )}
         </div>
       ))}
-      <div className="station" onClick={() => handleAdd('station')}>
+      <div className="station" onClick={() => handleAdd('AddStation')}>
         <div className="station-title">+ Add Station </div>
       </div>
     </div>
