@@ -12,7 +12,6 @@ import {
 
 const getReadings = (sensor, setReadings) => {
   const { start, end } = searchToObject();
-  console.log(sensor);
   const kwargs = {
     sensorId: sensor.id,
   };
@@ -58,7 +57,7 @@ const Graph = ({ className, station, sensor }) => {
     const yScale = d3
       .scaleLinear()
       .range([height, 0])
-      .domain([d3.min(readings, d => d.value) - 5, d3.max(readings, d => d.value) + 5]);
+      .domain([d3.min(readings, d => d.value), d3.max(readings, d => d.value)]);
 
     const valueline = d3
       .line()

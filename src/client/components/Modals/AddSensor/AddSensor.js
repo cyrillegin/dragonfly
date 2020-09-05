@@ -12,8 +12,6 @@ const AddSensor = ({ className, close, stationIp }) => {
     fetch(`/list?ip=${stationIp}`)
       .then(res => res.json())
       .then(res => {
-        console.log('jere');
-        console.log(res);
         setSensors(res);
         setInput({ hardwareName: res[0] });
       });
@@ -37,6 +35,7 @@ const AddSensor = ({ className, close, stationIp }) => {
       ...input,
     };
 
+    console.log(window.location.search);
     params.stationId = window.location.search.split('=')[1].split('-')[1];
 
     fetch('/api/sensor/test', {
