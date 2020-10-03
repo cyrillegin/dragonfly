@@ -91,3 +91,7 @@ Satellites can be deployed anywhere, including where the server is deployed, aws
 Once the poller has been wired to the pi, you will need to activate it and get its device id. Run `sudo dtoverlay w1-gpio gpiopin=17 pullup=0`, changing the gpiopin to whatever you have yours plugged into (run this command multiple times if you have multiple sensors plugged in).
 To list the active devices, run `ls /sys/bus/w1/devices/`
 You should see listed devices that look like `28-0416a47a0aff`. These will be added to the metadata field when adding the sensor in the UI.
+
+Method 2:
+Ensure `dtoverlay=w1-gpio` is in your `/boot/config.txt`. Restart the pi with `sudo reboot now`.
+Enter: `sudo modprobe w1-gpio` and `sudo modprobe w1-therm`. Now when you `ls /sys/bus/w1/devices/`, your device id should appear.

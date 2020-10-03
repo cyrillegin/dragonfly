@@ -32,7 +32,7 @@ const TreeView = ({ className, stations }) => {
       {modal === 'AddSensor' && (
         <AddSensor
           close={() => toggleModal('')}
-          stationIp={stations.filter(station => station.id === stationSelected)[0].ip}
+          stationIp={stations.filter(station => station.id === stationSelected)[0].address}
         />
       )}
       {stations.map(station => (
