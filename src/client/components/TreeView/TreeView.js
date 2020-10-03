@@ -93,12 +93,14 @@ TreeView.defaultProps = {
 
 const styledTreeView = styled(TreeView)`
   width: 400px;
-  box-shadow: 14px 0px 10px -10px rgba(0, 0, 0, 0.1);
-  position: absolute;
+  box-shadow: 14px 0 10px -10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  height: 100%;
   top: 70px;
   bottom: -10;
   padding-left: 32px;
   padding-top: 32px;
+  box-sizing: border-box;
 
   .station {
     &.selected {

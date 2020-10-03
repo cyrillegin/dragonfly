@@ -86,7 +86,9 @@ const styledDashboard = styled(Dashboard)`
   position: absolute;
   left: 400px;
   background: white;
-  width: calc(100% - 400px - 4rem);
+  width: calc(100% - 400px);
+  margin-top: 5rem;
+  margin-left: 8px;
 
   .station {
     width: 100%;

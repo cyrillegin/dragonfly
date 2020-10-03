@@ -120,7 +120,7 @@ const setupFixtures = async () => {
 
   // create readings
   let points = 1440;
-  const singleGraph = true;
+  const singleGraph = false;
   if (singleGraph) {
     points *= 10;
   }

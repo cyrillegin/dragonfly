@@ -34,6 +34,8 @@ const styledHeader = styled(Header)`
   align-items: center;
   z-index: 1;
   background: white;
+  position: fixed;
+  width: 100%;
 
   .title {
     font-size: 32px;
