@@ -6,7 +6,7 @@ function buildStationSchema(sequelize) {
   Station.init(
     {
       name: { type: DataTypes.STRING, allowNull: false },
-      ip: { type: DataTypes.INET, allowNull: false },
+      address: { type: DataTypes.STRING, allowNull: false },
     },
     { sequelize, modelName: 'station' },
   );

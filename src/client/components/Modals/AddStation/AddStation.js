@@ -6,20 +6,31 @@ import PropTypes from 'prop-types';
 const AddStation = ({ className, close }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
+  const [errorMessage, setError] = useState('');
 
-  const handleInputChange = event =>
+  const handleInputChange = event => {
+    setSuccess(false);
     setInput({
       ...input,
       [event.currentTarget.name]: event.currentTarget.value,
     });
+  };
+
   const handleTest = () => {
     const params = {
       ...input,
     };
 
     if (!params.name) {
+      setError('A station name must be provided.');
       return;
     }
+
+    if (!params.ipaddress) {
+      setError('A station address must be provided.');
+      return;
+    }
+    setError('Testing...');
 
     fetch('/api/station/test', {
       method: 'POST',
@@ -28,9 +39,16 @@ const AddStation = ({ className, close }) => {
     })
       .then(res => res.json())
       .then(res => {
+        if (res.error) {
+          setSuccess(false);
+          setError(res.error);
+          return;
+        }
         if (res.message === 'success') {
           setSuccess(true);
+          setError('');
         } else {
+          setError('An unknown error occured.');
           setSuccess(false);
         }
       });
@@ -40,14 +58,22 @@ const AddStation = ({ className, close }) => {
     const params = {
       ...input,
     };
-
+    setError('Adding...');
     fetch('/api/station/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params),
     })
       .then(res => res.json())
-      .then(res => {});
+      .then(res => {
+        if (res.message === 'success') {
+          setError('Station Added!');
+        } else if (res.error) {
+          setError(res.error);
+        } else {
+          setError('An unknow error occured.');
+        }
+      });
   };
 
   const preventClose = event => {
@@ -90,6 +116,7 @@ const AddStation = ({ className, close }) => {
             </div>
           </div>
         </div>
+        {errorMessage !== '' && <div className="error">{errorMessage}</div>}
       </div>
     </div>
   );
@@ -142,6 +169,11 @@ const styledAddStation = styled(AddStation)`
           }
         }
       }
+    }
+
+    .error {
+      color: red;
+      margin-top: 8px;
     }
   }
 `;

@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
+
 app.get('/health', (req, res) => res.sendStatus(200));
 
 app.get('/list', (req, res) => {
@@ -30,6 +31,6 @@ app.use(api);
 // TODO: Import error of db
 fork('./dist/health-check.js');
 
-app.listen(3000, () => {
-  console.info(`App started on port ${3000}`);
+app.listen(process.env.SERVER_PORT, () => {
+  console.info(`App started on port ${process.env.SERVER_PORT}`);
 });

@@ -52,16 +52,30 @@ const validateSensorParams = params => {
 };
 
 const validateStationParams = params => {
-  if (!params.name) {
+  const { name, ipaddress } = params;
+  if (!name) {
     return { error: 'Station name required' };
   }
-  if (!params.ipaddress) {
+  if (!ipaddress) {
     return { error: 'Station ip required' };
   }
-  if (!isIP(params.ipaddress)) {
+  let address;
+  let port = 80;
+  if (ipaddress === 'self') {
+    address = '127.0.0.1';
+    port = process.env.SERVER_PORT;
+  } else if (ipaddress.indexOf(':') > 0) {
+    [address, port] = ipaddress.split(':');
+  } else {
+    address = ipaddress;
+  }
+  if (!isIP(address)) {
     return { error: 'IP Address must be valid' };
   }
-  return {};
+  return {
+    name,
+    ipaddress: `${address}${port === 80 ? '' : `:${port}`}`,
+  };
 };
 
 export {

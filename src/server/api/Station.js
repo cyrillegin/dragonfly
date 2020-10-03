@@ -14,7 +14,7 @@ const router = new Router();
  * returns {
  *   stations: [{
  *     name: 'station name',
- *     ipAdress: '123.123.123.123',
+ *     address: '123.123.123.123:3000',
  *     sensors: [{
  *       name: 'sensor name',
  *       id: 1,
@@ -58,24 +58,23 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   console.info('POST request to station');
-  const { name, ipaddress } = req.body;
-  const valid = ipaddress === 'self' ? true : validateStationParams(req.body);
-  if (valid.error) {
+  const { name, ipaddress, error } = validateStationParams(req.body);
+  if (error) {
     console.error('POST Failed - Invalid IP');
-    res.status(400).send(JSON.stringify({ error: valid.error }));
+    res.status(400).send(JSON.stringify({ error }));
     return;
   }
 
   try {
     await Station.create({
       name,
-      ip: ipaddress === 'self' ? '127.0.0.1' : ipaddress,
+      address: ipaddress,
     });
     console.info('POST Successfull - New station added');
     res.status(200).send(JSON.stringify({ message: 'success' }));
-  } catch (error) {
+  } catch (err) {
     console.error('POST Failed - An error occured!');
-    console.error(error);
+    console.error(err);
     res.status(400).send(JSON.stringify({ error: 'An unknown error has occured' }));
   }
 });
@@ -102,7 +101,7 @@ router.put('/', async (req, res) => {
     await Station.update(
       {
         name: req.body.name,
-        ip: req.body.ip,
+        address: req.body.ip,
       },
       {
         where: { id: req.body.id },
@@ -168,22 +167,40 @@ router.post('/test', async (req, res) => {
     return;
   }
 
-  if (!(isIP(ipaddress) || ipaddress === 'self')) {
+  let address;
+  let port = 80;
+  if (ipaddress === 'self') {
+    address = '127.0.0.1';
+    port = process.env.SERVER_PORT;
+  } else if (ipaddress.indexOf(':') > 0) {
+    [address, port] = ipaddress.split(':');
+  } else {
+    address = ipaddress;
+  }
+
+  if (!isIP(address)) {
     res.status(400).send({ error: 'IP must be valid' });
     return;
   }
 
-  let address = ipaddress;
-  if (address === 'self') {
-    address = '127.0.0.1';
-  }
+  const fqdn = `http://${address}${port === 80 ? '' : `:${port}`}`;
+  const healthEndpoint = `${fqdn}/health`;
 
-  fetch(`http://${address}:3001/health`)
+  fetch(healthEndpoint)
     .then(result => {
+      console.log(result);
+      if (result.status !== 200) {
+        res.status(400).send({ error: 'Address not found.' });
+        return;
+      }
       res.send({ message: 'success' });
     })
     .catch(error => {
-      res.send(error);
+      if (error.message) {
+        res.status(400).send({ error: error.message });
+      } else {
+        res.send(error);
+      }
     });
 });
 
