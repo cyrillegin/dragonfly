@@ -2,9 +2,9 @@ import 'regenerator-runtime/runtime';
 import fetch from 'node-fetch';
 import { Station, Sensor, Action } from './db';
 
-const testSensor = (ip, sensorId, stationId, hardwareName) => {
+const testSensor = (address, sensorId, stationId, hardwareName) => {
   fetch(
-    `http://${ip}/sensorHealth?sensorId=${sensorId}&type=temperature&stationId=${stationId}&ip=${process.env.IP}&pollRate=10&hardwareName=${hardwareName}`,
+    `http://${address}/sensorHealth?sensorId=${sensorId}&type=temperature&stationId=${stationId}&ip=${process.env.IP}&pollRate=300&hardwareName=${hardwareName}`,
   ).then(res => {
     console.info('test complete');
     // console.log(res);
@@ -27,9 +27,7 @@ const runHealthCheck = async () => {
       if (sensor.dataValues.name.includes('FIXTURE')) {
         return;
       }
-      console.log(station.dataValues);
-      console.log(sensor.dataValues);
-      testSensor(station.address, sensor.id, station.id, sensor.hardwareName);
+      testSensor(station.address + ':' + station.port, sensor.id, station.id, sensor.hardwareName);
     });
   });
 };
