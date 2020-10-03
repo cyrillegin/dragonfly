@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { addOrUpdateHash, removeFromHash } from '../../utilities/Window';
+import BulkAdd from '../Modals/BulkAdd';
 
-const Header = ({ className }) => {
+const Header = ({ className, stations }) => {
+  const [addModalIsOpen, toggleAddModalIsOpen] = useState(false);
   const goHome = () => {
     removeFromHash('station');
     removeFromHash('sensor');
   };
 
+  const toggleModal = (open = !addModalIsOpen) => {
+    toggleAddModalIsOpen(open);
+  };
+
   return (
     <div className={className}>
+      {addModalIsOpen && <BulkAdd close={() => toggleModal(false)} stations={stations} />}
       <div className="title" onClick={goHome}>
         Dragonfly
+      </div>
+      <div className="bulk-add">
+        <button onClick={() => toggleModal(true)} type="button">
+          Bulk Add
+        </button>
       </div>
       <div className="time-pickers">
         <label>Start Date</label>
@@ -23,8 +35,27 @@ const Header = ({ className }) => {
     </div>
   );
 };
+
 Header.propTypes = {
   className: PropTypes.string.isRequired,
+  stations: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      health: PropTypes.oneOf(['healthy', 'unhealthy']),
+      address: PropTypes.string.isRequired,
+      port: PropTypes.string.isRequired,
+      sensors: PropTypes.arrayOf(
+        PropTypes.shape({
+          name: PropTypes.string.isRequired,
+          health: PropTypes.oneOf(['healthy', 'unhealthy']),
+        }),
+      ),
+    }),
+  ),
+};
+
+Header.defaultProps = {
+  stations: [],
 };
 
 const styledHeader = styled(Header)`
@@ -41,8 +72,17 @@ const styledHeader = styled(Header)`
     font-size: 32px;
   }
 
-  .time-pickers {
+  .bulk-add {
     margin-left: auto;
+
+    button {
+      background: none;
+      border: 1px solid #a2a2a2;
+      padding: 8px;
+    }
+  }
+
+  .time-pickers {
     font-size: 16px;
 
     label {

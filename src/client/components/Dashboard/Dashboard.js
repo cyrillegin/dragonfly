@@ -86,7 +86,7 @@ const styledDashboard = styled(Dashboard)`
   position: absolute;
   left: 400px;
   background: white;
-  width: calc(100% - 400px);
+  width: calc(100% - 408px);
   margin-top: 5rem;
   margin-left: 8px;
 
@@ -97,8 +97,8 @@ const styledDashboard = styled(Dashboard)`
     margin: 2rem 0;
 
     .sensor {
-      margin: 0 2rem;
       flex: 1;
+      width: 100%;
     }
   }
 `;

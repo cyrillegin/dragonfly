@@ -17,7 +17,7 @@ const App = ({ className }) => {
 
   return (
     <div className={className}>
-      <Header />
+      <Header stations={stations} />
       {stations.length && (
         <div className="main-container">
           <TreeView stations={stations} />

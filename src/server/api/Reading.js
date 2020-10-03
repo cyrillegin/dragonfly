@@ -91,4 +91,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/bulk', async (req, res) => {
+  console.info('POST request to bulk reading');
+
+  try {
+    req.body.readings.forEach(async reading => {
+      await Reading.create(reading);
+    });
+  } catch (error) {
+    console.error('Error bulk adding entries');
+    console.error(error);
+    res.statues(400).send({ error });
+  }
+
+  res.status(200).send({ message: 'success' });
+});
+
 export default router;
