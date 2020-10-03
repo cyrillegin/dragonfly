@@ -35,7 +35,6 @@ const AddSensor = ({ className, close, stationIp }) => {
       ...input,
     };
 
-    console.log(window.location.search);
     params.stationId = window.location.search.split('=')[1].split('-')[1];
 
     fetch('/api/sensor/test', {
