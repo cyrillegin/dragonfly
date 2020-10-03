@@ -11,14 +11,16 @@ from pollers import gpioPoller
 #     sensorId - number
 #     stationId - number
 #     pollRate - number
-#     ip - ip address
+#     ip - adress to send readings to
+#     type - enum (so far just temperature
 # }
 def query(sensor):
     if sensor['type'] != 'temperature':
         return
     while True:
         if sensor['type'] == 'temperature':
-            values = gpioPoller.GetValues(os.getenv('SENSOR_A_META'))
+            print(sensor)
+            values = gpioPoller.GetValues(sensor['meta'])
             payload = {
                 'value': values['value'],
                 'timestamp': values['timestamp'],
@@ -26,7 +28,7 @@ def query(sensor):
                 'stationId': sensor['stationId']
             }
             resp = requests.post('http://{}/api/reading'.format(sensor['ip']), json=payload)
-            time.sleep(sensor['pollRate'])
+            time.sleep(int(sensor['pollRate']))
 
 
 class SensorManager:
@@ -35,6 +37,19 @@ class SensorManager:
             self.sensorsBeingPolled = {}
 
         def startSensor(self, sensor):
+            i = 0
+            print(sensor)
+            sensorMeta = -1
+            while True:
+                envSensor = os.getenv('SENSOR_{}_HARDWARE_NAME'.format(i))
+                if envSensor is None:
+                    break
+                if envSensor == sensor['hardwareName']:
+                    sensorMeta = i
+                    break
+            if sensorMeta == -1:
+                return
+            sensor['meta'] = sensorMeta
             p = Process(target=query, args=(sensor, ))
             p.start()
             self.sensorsBeingPolled[sensor['sensorId']] = p
@@ -43,9 +58,11 @@ class SensorManager:
             print('stopping sensor')
 
         def checkSensor(self, sensor):
-            if kwargs['sensorId'] in self.sensorsBeingPolled and self.sensorsBeingPolled[kwargs['sensorId']].is_alive():
+            if sensor['sensorId'] in self.sensorsBeingPolled and self.sensorsBeingPolled[sensor['sensorId']].is_alive():
+                print('sensor already exists and is healthy')
                 return 'healthy'
             self.startSensor(sensor)
+            print('sensor is unhealthy')
             return ' unhealthy'
 
         def testSensor(self, sensor):
