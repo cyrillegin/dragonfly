@@ -32,9 +32,12 @@ App.propTypes = {
 };
 
 const styledApp = styled(App)`
-  box-sizing: border-box;
   margin: -8px;
   font-family: 'Muli', sans-serif;
+
+  * {
+    box-sizing: border-box;
+  }
 
   .main-container {
     display: flex;

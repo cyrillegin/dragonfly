@@ -103,11 +103,15 @@ const styledTreeView = styled(TreeView)`
   box-sizing: border-box;
 
   .station {
+    transition: 0.2s;
+    margin-right: 32px;
+
     &.selected {
+      background: #dcffd6;
     }
 
     &:hover {
-      background: blue;
+      background: #d6f4ff;
     }
 
     .healthy {
@@ -131,32 +135,41 @@ const styledTreeView = styled(TreeView)`
       margin-left: 16px;
       display: inline-block;
     }
+  }
 
-    .sensor {
-      &.selected {
-      }
+  .sensor {
+    margin-left: 32px;
+    margin-right: 32px;
+    transition: 0.2s;
 
-      .healthy {
-        width: 15px;
-        height: 15px;
-        background: green;
-        border-radius: 10px;
-        display: inline-block;
-      }
+    &.selected {
+      background: #dcffd6;
+    }
 
-      .unhealthy {
-        width: 15px;
-        height: 15px;
-        background: red;
-        border-radius: 10px;
-        display: inline-block;
-      }
+    &:hover {
+      background: #d6f4ff;
+    }
 
-      .sensor-title {
-        font-size: 16px;
-        margin-left: 16px;
-        display: inline-block;
-      }
+    .healthy {
+      width: 15px;
+      height: 15px;
+      background: green;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .unhealthy {
+      width: 15px;
+      height: 15px;
+      background: red;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .sensor-title {
+      font-size: 16px;
+      margin-left: 16px;
+      display: inline-block;
     }
   }
 `;
