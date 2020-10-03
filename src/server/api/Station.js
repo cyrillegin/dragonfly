@@ -58,7 +58,7 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   console.info('POST request to station');
-  const { name, ipaddress, error } = validateStationParams(req.body);
+  const { name, address, port, error } = validateStationParams(req.body);
   if (error) {
     console.error('POST Failed - Invalid IP');
     res.status(400).send(JSON.stringify({ error }));
@@ -68,7 +68,8 @@ router.post('/', async (req, res) => {
   try {
     await Station.create({
       name,
-      address: ipaddress,
+      address,
+      port,
     });
     console.info('POST Successfull - New station added');
     res.status(200).send(JSON.stringify({ message: 'success' }));
@@ -160,26 +161,11 @@ router.delete('/', async (req, res) => {
 
 router.post('/test', async (req, res) => {
   console.info('TEST request to station');
-  const { ipaddress } = req.body;
 
-  if (!ipaddress) {
-    res.status(400).send({ error: 'An IP must be provided' });
-    return;
-  }
+  const { address, port, error } = validateStationParams(req.body);
 
-  let address;
-  let port = 80;
-  if (ipaddress === 'self') {
-    address = '127.0.0.1';
-    port = process.env.SERVER_PORT;
-  } else if (ipaddress.indexOf(':') > 0) {
-    [address, port] = ipaddress.split(':');
-  } else {
-    address = ipaddress;
-  }
-
-  if (!isIP(address)) {
-    res.status(400).send({ error: 'IP must be valid' });
+  if (error) {
+    res.status(400).send(error);
     return;
   }
 
@@ -188,18 +174,17 @@ router.post('/test', async (req, res) => {
 
   fetch(healthEndpoint)
     .then(result => {
-      console.log(result);
       if (result.status !== 200) {
         res.status(400).send({ error: 'Address not found.' });
         return;
       }
       res.send({ message: 'success' });
     })
-    .catch(error => {
-      if (error.message) {
-        res.status(400).send({ error: error.message });
+    .catch(err => {
+      if (err.message) {
+        res.status(400).send({ error: err.message });
       } else {
-        res.send(error);
+        res.send(err);
       }
     });
 });

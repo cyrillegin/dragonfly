@@ -2,12 +2,14 @@ import fetch from 'node-fetch';
 
 const kitchenStation = {
   name: 'FIXTURE - kitchen station',
-  ipaddress: '127.0.0.1',
+  address: '127.0.0.1',
+  port: '3001',
 };
 
 const fishStation = {
   name: 'FIXTURE - fish station',
-  ipaddress: '127.0.0.1',
+  address: '127.0.0.1',
+  port: '3001',
 };
 
 const ovenSensor = {

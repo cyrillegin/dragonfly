@@ -3,13 +3,13 @@ import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
 /* eslint-disable prefer-destructuring */
-const AddSensor = ({ className, close, stationIp }) => {
+const AddSensor = ({ className, close, address, port }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
   const [availableSensors, setSensors] = useState([]);
 
   useEffect(() => {
-    fetch(`/list?ip=${stationIp}`)
+    fetch(`/list?ip=${address}:${port}`)
       .then(res => res.json())
       .then(res => {
         setSensors(res);
@@ -126,7 +126,8 @@ const AddSensor = ({ className, close, stationIp }) => {
 AddSensor.propTypes = {
   className: PropTypes.string.isRequired,
   close: PropTypes.func.isRequired,
-  stationIp: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  port: PropTypes.string.isRequired,
 };
 
 const styledAddSensor = styled(AddSensor)`

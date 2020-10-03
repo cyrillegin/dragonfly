@@ -26,7 +26,7 @@ const AddStation = ({ className, close }) => {
       return;
     }
 
-    if (!params.ipaddress) {
+    if (!params.address) {
       setError('A station address must be provided.');
       return;
     }
@@ -93,14 +93,18 @@ const AddStation = ({ className, close }) => {
             </div>
 
             <div className="group">
-              IP Adress:
-              <input type="text" name="ipaddress" onChange={handleInputChange} />
+              Adress:
+              <input type="text" name="address" onChange={handleInputChange} />
             </div>
           </div>
           <div className="column">
             <div className="group">
               Description:
               <input type="text" ame="description" />
+            </div>
+            <div className="group">
+              Port:
+              <input type="text" name="port" onChange={handleInputChange} />
             </div>
             <div className="group">
               <button type="button" onClick={handleTest}>

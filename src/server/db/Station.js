@@ -7,6 +7,7 @@ function buildStationSchema(sequelize) {
     {
       name: { type: DataTypes.STRING, allowNull: false },
       address: { type: DataTypes.STRING, allowNull: false },
+      port: { type: DataTypes.STRING, allowNull: false },
     },
     { sequelize, modelName: 'station' },
   );
