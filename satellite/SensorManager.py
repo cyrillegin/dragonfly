@@ -47,6 +47,7 @@ class SensorManager:
                 if envSensor == sensor['hardwareName']:
                     sensorMeta = i
                     break
+                i = i + 1
             if sensorMeta == -1:
                 return
             sensor['meta'] = sensorMeta

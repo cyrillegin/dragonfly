@@ -141,7 +141,9 @@ router.post('/test', async (req, res) => {
   const { stationId, hardwareName } = req.body;
 
   const station = await Station.findAll({ where: { id: stationId } });
-  const ipaddress = station[0].address === '127.0.0.1' ? '127.0.0.1:3001' : `${station[0].address}`;
+  const ipaddress = station[0].address + ':' + station[0].port;
+  console.log('ipaddress');
+	console.log(ipaddress);
 
   fetch(`http://${ipaddress}/sensorCheck?hardwareSensor=${hardwareName}`)
     .then(result => result.json())

@@ -13,6 +13,7 @@ class Root(object):
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def sensorCheck(self, *args, **kwargs):
+        print('checking sensor')
         i = 0
         while True:
             sensor = os.getenv('SENSOR_{}_HARDWARE_NAME'.format(i))
@@ -21,6 +22,7 @@ class Root(object):
                 break
             if sensor == kwargs['hardwareSensor']:
                 break
+            i = i + 1
         cherrypy.response.headers['Content-Type'] = "application/json"
         test = sensorManager.testSensor(i)
         print(test)
