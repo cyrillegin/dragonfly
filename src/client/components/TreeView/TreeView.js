@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-import { addOrUpdateHash, removeFromHash } from '../../utilities/Window';
+import { addOrUpdateHash, removeFromHash, searchToObject } from '../../utilities/Window';
 import { AddStation, AddSensor } from '../Modals';
 
 const TreeView = ({ className, stations }) => {
   const [stationSelected, setStation] = useState('');
   const [selection, setSelection] = useState('');
   const [modal, toggleModal] = useState('');
+
+  useEffect(() => {
+    const { station, sensor } = searchToObject();
+    if (station) {
+      setStation(parseInt(station.split('-')[1], 10));
+      setSelection(station);
+    }
+    if (sensor) {
+      setSelection(sensor);
+    }
+  }, [setStation, setSelection]);
 
   const handleSelection = (type, id) => {
     const select = `${type}-${id}`;
