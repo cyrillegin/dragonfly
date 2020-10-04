@@ -30,7 +30,6 @@ const Dashboard = ({ className, stations }) => {
 
     setStations();
     windowEmitter.listen('change', () => {
-      console.log('asdf');
       setStations();
     });
   }, [stations]);
@@ -38,11 +37,9 @@ const Dashboard = ({ className, stations }) => {
   return (
     <div className={className}>
       {currentSensor.id && (
-        <div className="station">
-          <div className="sensor">
-            <Graph station={currentStations[0]} sensor={currentSensor} renderTrigger={new Date()} />
-            <SensorDetails sensor={currentSensor} />
-          </div>
+        <div className="sensor tall">
+          <Graph station={currentStations[0]} sensor={currentSensor} renderTrigger={new Date()} />
+          <SensorDetails sensor={currentSensor} />
         </div>
       )}
 
@@ -94,12 +91,16 @@ const styledDashboard = styled(Dashboard)`
   .station {
     width: 100%;
     background: white;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     margin: 2rem 0;
+  }
+  .sensor {
+    width: 100%;
+    height: 300px;
 
-    .sensor {
-      flex: 1;
-      width: 100%;
+    &.tall {
+      height: 600px;
     }
   }
 `;

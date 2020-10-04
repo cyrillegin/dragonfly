@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
+import { searchToObject } from '../../../utilities/Window';
 
 /* eslint-disable prefer-destructuring */
 const AddSensor = ({ className, close, address, port }) => {
@@ -44,7 +45,7 @@ const AddSensor = ({ className, close, address, port }) => {
       ...input,
     };
 
-    params.stationId = window.location.search.split('=')[1].split('-')[1];
+    params.stationId = parseInt(searchToObject().station.split('-')[1], 10);
 
     fetch('/api/sensor/test', {
       method: 'POST',
@@ -66,7 +67,7 @@ const AddSensor = ({ className, close, address, port }) => {
       ...input,
     };
 
-    params.stationId = window.location.search.split('=')[1].split('-')[1];
+    params.stationId = parseInt(searchToObject().station.split('-')[1], 10);
 
     fetch('/api/sensor/', {
       method: 'POST',

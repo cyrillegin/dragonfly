@@ -3,12 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import {
-  searchToObject,
-  objectToString,
-  windowEmitter,
-  addOrUpdateHash,
-} from '../utilities/Window';
+import { searchToObject, objectToString, addOrUpdateHash } from '../utilities/Window';
 
 const getReadings = (sensor, setReadings) => {
   const search = searchToObject();
@@ -80,7 +75,12 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
       .append('g')
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%Y-%m-%d')));
+      .call(
+        d3
+          .axisBottom(xScale)
+          .ticks(width > 700 ? 10 : 5)
+          .tickFormat(d3.timeFormat('%Y-%m-%d')),
+      );
 
     // Left axis
     svg
@@ -282,7 +282,7 @@ Graph.propTypes = {
 
 const styledGraph = styled(Graph)`
   width: 100%;
-  height: 600px;
+  height: 100%;
   background: white;
 
   .graph-title {
