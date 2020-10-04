@@ -28,6 +28,8 @@ const getReadings = (sensor, setReadings) => {
       setReadings(
         newReadings
           .map(reading => ({ ...reading, timestamp: new Date(reading.timestamp) }))
+          // Sorting is redundant as it takes place in the db,
+          // leaving here though just in case :)
           .sort((a, b) => a.timestamp - b.timestamp),
       );
     });

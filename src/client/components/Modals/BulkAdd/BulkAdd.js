@@ -19,7 +19,7 @@ const BulkAdd = ({ className, close, stations }) => {
         usedNames.reduce(
           (acc, cur) => ({
             ...acc,
-            [cur]: 0,
+            [cur]: { value: 0, date: new Date() },
           }),
           {},
         ),
@@ -39,25 +39,19 @@ const BulkAdd = ({ className, close, stations }) => {
       [],
     );
     setAvaliableSensors(sensors);
+    // Mock initial select option.
+    handleSelectChange({ target: { value: sensors[0].name } });
   }, [stations]);
 
   const preventClose = event => {
-    event.preventDefault();
     event.stopPropagation();
-  };
-
-  const handleInputChange = event => {
-    setInput({
-      ...input,
-      [event.currentTarget.name]: event.currentTarget.value,
-    });
   };
 
   const handleNewField = () => {
     setAvaliableSensors(availableSensors.filter(sensor => sensor.name !== selectedNewSensor));
     setInput({
       ...input,
-      [selectedNewSensor]: 0,
+      [selectedNewSensor]: { value: 0, date: new Date() },
     });
   };
 
@@ -80,8 +74,8 @@ const BulkAdd = ({ className, close, stations }) => {
       const sensor = station.sensors.filter(sense => sense.name === sensorName)[0];
 
       return {
-        value: input[sensorName],
-        timestamp: new Date(),
+        value: input[sensorName].value,
+        timestamp: input[sensorName].date,
         sensorId: sensor.id,
         stationId: station.id,
       };
@@ -113,15 +107,35 @@ const BulkAdd = ({ className, close, stations }) => {
     });
   };
 
+  const handleInputChange = event => {
+    setInput({
+      ...input,
+      [event.target.name]: {
+        value: event.target.value,
+        date: input[event.target.name].date,
+      },
+    });
+  };
+  const handleDateChange = event => {
+    setInput({
+      ...input,
+      [event.target.name]: {
+        value: input[event.target.name].value,
+        date: event.target.value,
+      },
+    });
+  };
+
   return (
     <div className={className} onClick={close}>
       <div className="modal" onClick={preventClose}>
         <div className="title">Bulk Add</div>
         <div className="body">
           {Object.entries(input).map(([key, value]) => (
-            <div>
+            <div key={key}>
               {key}
-              <input type="number" value={value} onChange={handleInputChange} name={key} />
+              <input type="number" value={value.value} onChange={handleInputChange} name={key} />
+              <input type="date" value={value.date} onChange={handleDateChange} name={key} />
               <button type="button" onClick={handleRemove} name={key}>
                 -
               </button>

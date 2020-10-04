@@ -53,6 +53,7 @@ router.get('/', async (req, res) => {
         [Op.gt]: start,
       },
     },
+    order: [['timestamp', 'ASC']],
   });
   res.send(readings);
 });
