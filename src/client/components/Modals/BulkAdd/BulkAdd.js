@@ -57,7 +57,7 @@ const BulkAdd = ({ className, close, stations }) => {
     setAvaliableSensors(availableSensors.filter(sensor => sensor.name !== selectedNewSensor));
     setInput({
       ...input,
-      [selectedNewSensor]: 'a',
+      [selectedNewSensor]: 0,
     });
   };
 
@@ -98,6 +98,21 @@ const BulkAdd = ({ className, close, stations }) => {
     });
   };
 
+  const handleRemove = event => {
+    const { name } = event.target;
+
+    const { id } = stations
+      .find(station => station.sensors.map(sensor => sensor.name).includes(name))
+      .sensors.find(sensor => sensor.name === name);
+
+    setAvaliableSensors([...availableSensors, { id, name }]);
+
+    delete input[name];
+    setInput({
+      ...input,
+    });
+  };
+
   return (
     <div className={className} onClick={close}>
       <div className="modal" onClick={preventClose}>
@@ -107,6 +122,9 @@ const BulkAdd = ({ className, close, stations }) => {
             <div>
               {key}
               <input type="number" value={value} onChange={handleInputChange} name={key} />
+              <button type="button" onClick={handleRemove} name={key}>
+                -
+              </button>
             </div>
           ))}
           <div className="add-entry">

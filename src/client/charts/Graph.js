@@ -74,7 +74,7 @@ const Graph = ({ className, station, sensor }) => {
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Title
-    svg.append('text').text(station.name).attr('class', 'graph-title');
+    svg.append('text').text(`${station.name} - ${sensor.name}`).attr('class', 'graph-title');
 
     const tooltip = svg
       .append('g')

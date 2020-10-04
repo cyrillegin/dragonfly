@@ -38,6 +38,11 @@ const runHealthCheck = async () => {
       if (sensor.dataValues.name.includes('FIXTURE')) {
         return;
       }
+      // Skip self entry sensors
+      if (sensor.hardwareName === 'self-entry') {
+        return;
+      }
+      console.info(`sending check to ${sensor.hardwareName} at station ${station.id}`);
       testSensor(`${station.address}:${station.port}`, sensor.id, station.id, sensor.hardwareName);
     });
   });

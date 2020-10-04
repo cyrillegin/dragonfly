@@ -12,18 +12,24 @@ const AddSensor = ({ className, close, address, port }) => {
     fetch(`/list?ip=${address}:${port}`)
       .then(res => res.json())
       .then(res => {
-        setSensors(res);
+        setSensors([...res, 'self-entry']);
         setInput({ hardwareName: res[0] });
       });
-  }, []);
+  }, [address, port]);
 
-  const handleInputChange = event =>
+  const handleInputChange = event => {
     setInput({
       ...input,
       [event.currentTarget.name]: event.currentTarget.value,
     });
+  };
 
   const handleSelectChange = event => {
+    if (event.target.value === 'self-entry') {
+      setSuccess(true);
+    } else {
+      setSuccess(false);
+    }
     setInput({
       ...input,
       hardwareName: event.target.value,
@@ -31,6 +37,9 @@ const AddSensor = ({ className, close, address, port }) => {
   };
 
   const handleTest = () => {
+    if (input.hardwareName === 'self-entry') {
+      return;
+    }
     const params = {
       ...input,
     };
