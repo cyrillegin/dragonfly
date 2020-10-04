@@ -13,7 +13,7 @@ import {
 const getReadings = (sensor, setReadings) => {
   const search = searchToObject();
   const kwargs = {
-    sensorId: search.sensor.split('-')[1],
+    sensorId: sensor.id,
   };
   if (search.start) {
     kwargs.start = search.start;
@@ -35,18 +35,15 @@ const getReadings = (sensor, setReadings) => {
     });
 };
 
-const Graph = ({ className, station, sensor }) => {
+const Graph = ({ className, station, sensor, renderTrigger }) => {
   const graphElement = useRef(null);
   const [readings, setReadings] = useState([]);
 
   useEffect(() => {
     getReadings(sensor, setReadings);
-    windowEmitter.listen('change', () => {
-      getReadings(sensor, setReadings);
-    });
-  }, [sensor]);
+  }, [sensor, renderTrigger]);
 
-  if (readings.length > 0 && graphElement.current) {
+  if (graphElement.current) {
     const margin = { top: 50, right: 50, bottom: 50, left: 50 };
     const width = graphElement.current.clientWidth - margin.left - margin.right;
     const height = graphElement.current.clientHeight - margin.top - margin.bottom;
@@ -78,6 +75,65 @@ const Graph = ({ className, station, sensor }) => {
     // Title
     svg.append('text').text(`${station.name} - ${sensor.name}`).attr('class', 'graph-title');
 
+    // Bottom axis
+    svg
+      .append('g')
+      .attr('class', 'x-axis')
+      .attr('transform', `translate(0,${height})`)
+      .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%Y-%m-%d')));
+
+    // Left axis
+    svg
+      .append('line')
+      .attr('x1', 0.5)
+      .attr('y1', 0)
+      .attr('x2', 0.5)
+      .attr('y2', height)
+      .attr('stroke', 'currentcolor');
+
+    // Left axis ticks
+    svg
+      .append('g')
+      .attr('class', 'y-axis')
+      .call(d3.axisLeft(yScale).tickSize(width - margin.left - margin.right))
+      .call(g => g.select('.domain').remove())
+      .call(g => g.selectAll('.tick line').attr('x2', width).attr('class', 'tick-line'))
+      .call(g => g.selectAll('.tick text').attr('x', -4));
+
+    // Right axis
+    svg
+      .append('line')
+      .attr('x1', width + 0.5)
+      .attr('y1', 0)
+      .attr('x2', width + 0.5)
+      .attr('y2', height)
+      .attr('stroke', 'currentcolor');
+
+    // Top axis
+    svg
+      .append('line')
+      .attr('x1', 0)
+      .attr('y1', 0.5)
+      .attr('x2', width + 0.5)
+      .attr('y2', 0.5)
+      .attr('stroke', 'currentcolor');
+
+    // Line graph
+    svg.append('path').data([readings]).attr('class', 'line').attr('d', valueline);
+
+    if (readings.length === 0) {
+      // No readings text
+      svg
+        .append('text')
+        .text('No readings exist in this range :(')
+        .attr('transform', `translate(${width / 2 - 80},${height / 2})`);
+
+      return (
+        <div ref={graphElement} className={className}>
+          <div id="my-svg"> </div>
+        </div>
+      );
+    }
     const tooltip = svg
       .append('g')
       .attr('class', 'tooltip')
@@ -195,52 +251,6 @@ const Graph = ({ className, station, sensor }) => {
         dragStartPos = xScale(readings[index].timestamp);
       })
       .call(drag);
-
-    // Bottom axis
-    svg
-      .append('g')
-      .attr('class', 'x-axis')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%Y-%m-%d')));
-
-    // Left axis
-    svg
-      .append('line')
-      .attr('x1', 0.5)
-      .attr('y1', 0)
-      .attr('x2', 0.5)
-      .attr('y2', height)
-      .attr('stroke', 'currentcolor');
-
-    // Left axis ticks
-    svg
-      .append('g')
-      .attr('class', 'y-axis')
-      .call(d3.axisLeft(yScale).tickSize(width - margin.left - margin.right))
-      .call(g => g.select('.domain').remove())
-      .call(g => g.selectAll('.tick line').attr('x2', width).attr('class', 'tick-line'))
-      .call(g => g.selectAll('.tick text').attr('x', -4));
-
-    // Right axis
-    svg
-      .append('line')
-      .attr('x1', width + 0.5)
-      .attr('y1', 0)
-      .attr('x2', width + 0.5)
-      .attr('y2', height)
-      .attr('stroke', 'currentcolor');
-
-    // Top axis
-    svg
-      .append('line')
-      .attr('x1', 0)
-      .attr('y1', 0.5)
-      .attr('x2', width + 0.5)
-      .attr('y2', 0.5)
-      .attr('stroke', 'currentcolor');
-
-    // Line graph
-    svg.append('path').data([readings]).attr('class', 'line').attr('d', valueline);
   }
 
   return (
@@ -260,6 +270,14 @@ Graph.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
   }).isRequired,
+  /* This is used for the dashboard component to cause a
+   * re-fetching of readings. Possible reasons are:
+   * - new sensor
+   * - new start time
+   * - new end time
+   */
+
+  renderTrigger: PropTypes.instanceOf(Date).isRequired,
 };
 
 const styledGraph = styled(Graph)`
