@@ -73,6 +73,9 @@ const Graph = ({ className, station, sensor }) => {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    // Title
+    svg.append('text').text(station.name).attr('class', 'graph-title');
+
     const tooltip = svg
       .append('g')
       .attr('class', 'tooltip')
@@ -261,6 +264,10 @@ const styledGraph = styled(Graph)`
   width: 100%;
   height: 600px;
   background: white;
+
+  .graph-title {
+    transform: translate(0px, -8px);
+  }
 
   .line {
     fill: none;

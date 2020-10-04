@@ -32,7 +32,7 @@ const Dashboard = ({ className, stations }) => {
     windowEmitter.listen('change', () => {
       setStations();
     });
-  }, []);
+  }, [stations]);
 
   return (
     <div className={className}>
