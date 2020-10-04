@@ -7,7 +7,7 @@ const testSensor = (address, sensorId, stationId, hardwareName) => {
     sensorId,
     type: 'temperature',
     stationId,
-    ip: process.envIP,
+    ip: process.env.IP,
     pollRate: 300,
     hardwareName,
   };
@@ -18,7 +18,7 @@ const testSensor = (address, sensorId, stationId, hardwareName) => {
   );
 
   fetch(`http://${address}/sensorHealth${kwargString}`).then(res => {
-    console.info('test complete');
+    console.info('health check complete');
   });
 };
 

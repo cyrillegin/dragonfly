@@ -82,7 +82,7 @@ router.post('/', async (req, res) => {
 
   try {
     await Reading.create({ value, timestamp, sensorId, stationId });
-    console.info('new reading added');
+    console.info(`new reading added for sensor ${sensorId} with value ${value}`);
     res.status(200).send({ message: 'success' });
   } catch (error) {
     console.error('an error occured!');

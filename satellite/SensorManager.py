@@ -27,6 +27,7 @@ def query(sensor):
                 'sensorId': sensor['sensorId'],
                 'stationId': sensor['stationId']
             }
+            print('Sending value {} from {}'.format(values['value'], sensor['stationId']))
             resp = requests.post('http://{}/api/reading'.format(sensor['ip']), json=payload)
             time.sleep(int(sensor['pollRate']))
 
@@ -70,7 +71,6 @@ class SensorManager:
             poller = os.getenv('SENSOR_{}_POLLER'.format(sensor))
             module = importlib.import_module('pollers.{}'.format(poller))
             result = module.GetValues(sensor)
-            print(result)
             return result
 
     instance = None
