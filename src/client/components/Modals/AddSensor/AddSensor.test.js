@@ -19,14 +19,14 @@ describe('AddSensor', () => {
 
   it('should render a snap shot', async () => {
     await act(async () => {
-      const wrapper = mount(<AddSensor close={() => {}} stationIp="123.123.123.123" />);
+      const wrapper = mount(<AddSensor close={() => {}} address="123.123.123.123" port="80" />);
       expect(wrapper.html()).toMatchSnapshot();
     });
   });
 
   it('should test inputs', async () => {
     await act(async () => {
-      const wrapper = mount(<AddSensor close={() => {}} stationIp="123.123.123.123" />);
+      const wrapper = mount(<AddSensor close={() => {}} address="123.123.123.123" port="80" />);
       wrapper.find('input').forEach(input => {
         input.simulate('change', { value: 'test' });
       });
@@ -36,7 +36,7 @@ describe('AddSensor', () => {
 
   xit('should test sensor testing', async () => {
     await act(async () => {
-      const wrapper = mount(<AddSensor close={() => {}} stationIp="123.123.123.123" />);
+      const wrapper = mount(<AddSensor close={() => {}} address="123.123.123.123" port="80" />);
       wrapper.find('input').forEach(input => {
         input.simulate('change', { value: 'test' });
       });

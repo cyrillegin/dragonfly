@@ -11,17 +11,20 @@ const BulkAdd = ({ className, close, stations }) => {
 
   useEffect(() => {
     const cachedItems = localStorage.getItem(LOCAL_STORAGE_KEY);
-    const usedNames = cachedItems.split(':');
+    let usedNames = [];
+    if (cachedItems) {
+      usedNames = cachedItems.split(':');
 
-    setInput(
-      usedNames.reduce(
-        (acc, cur) => ({
-          ...acc,
-          [cur]: 0,
-        }),
-        {},
-      ),
-    );
+      setInput(
+        usedNames.reduce(
+          (acc, cur) => ({
+            ...acc,
+            [cur]: 0,
+          }),
+          {},
+        ),
+      );
+    }
 
     const sensors = stations.reduce(
       (acc, cur) => [

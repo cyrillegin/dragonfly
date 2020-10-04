@@ -75,10 +75,10 @@ describe('validators', () => {
     station.name = 'test';
     expect(validateStationParams(station).error).toEqual('Station ip required');
 
-    station.ipaddress = 'test';
+    station.address = 'test';
     expect(validateStationParams(station).error).toEqual('IP Address must be valid');
 
-    station.ipaddress = '123.123.123.123';
+    station.address = '123.123.123.123';
     expect(validateStationParams(station).error).toBeFalsy();
   });
 });
