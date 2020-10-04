@@ -13,7 +13,7 @@ const dbHost = process.env.DATABASE_HOST;
 
 const connectionString = `${dbType}://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`;
 
-const sequelize = new Sequelize(connectionString);
+const sequelize = new Sequelize(connectionString, { logging: false });
 
 buildStationSchema(sequelize);
 buildSensorSchema(sequelize);
