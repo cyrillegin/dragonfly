@@ -11,15 +11,15 @@ import {
 } from '../utilities/Window';
 
 const getReadings = (sensor, setReadings) => {
-  const { start, end } = searchToObject();
+  const search = searchToObject();
   const kwargs = {
-    sensorId: sensor.id,
+    sensorId: search.sensor.split('-')[1],
   };
-  if (start) {
-    kwargs.start = start;
+  if (search.start) {
+    kwargs.start = search.start;
   }
-  if (end) {
-    kwargs.end = end;
+  if (search.end) {
+    kwargs.end = search.end;
   }
 
   fetch(`/api/reading?${objectToString(kwargs)}`)
@@ -44,7 +44,7 @@ const Graph = ({ className, station, sensor }) => {
     windowEmitter.listen('change', () => {
       getReadings(sensor, setReadings);
     });
-  }, []);
+  }, [sensor]);
 
   if (readings.length > 0 && graphElement.current) {
     const margin = { top: 50, right: 50, bottom: 50, left: 50 };
