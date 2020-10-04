@@ -25,7 +25,6 @@ class Root(object):
             i = i + 1
         cherrypy.response.headers['Content-Type'] = "application/json"
         test = sensorManager.testSensor(i)
-        print(test)
         return json.dumps(test)
 
 

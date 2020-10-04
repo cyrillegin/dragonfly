@@ -1,4 +1,6 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   entry: ['./src/index.js'],
@@ -6,6 +8,11 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist/public'),
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
   module: {
     rules: [
@@ -18,5 +25,13 @@ module.exports = {
       },
     ],
   },
-  plugins: [],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Dragonfly',
+      filename: 'index.html',
+      template: 'src/server/public/index.html',
+      scriptLoading: 'defer',
+    }),
+    // new BundleAnalyzerPlugin(),
+  ],
 };

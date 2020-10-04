@@ -103,7 +103,6 @@ const styledTreeView = styled(TreeView)`
   padding-left: 32px;
   padding-top: 32px;
   box-sizing: border-box;
-  z-index: 1;
 
   .station {
     transition: 0.2s;

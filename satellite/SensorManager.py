@@ -19,7 +19,6 @@ def query(sensor):
         return
     while True:
         if sensor['type'] == 'temperature':
-            print(sensor)
             values = gpioPoller.GetValues(sensor['meta'])
             payload = {
                 'value': values['value'],
@@ -39,7 +38,6 @@ class SensorManager:
 
         def startSensor(self, sensor):
             i = 0
-            print(sensor)
             sensorMeta = -1
             while True:
                 envSensor = os.getenv('SENSOR_{}_HARDWARE_NAME'.format(i))

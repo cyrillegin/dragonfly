@@ -3,12 +3,15 @@ import 'regenerator-runtime/runtime';
 import path from 'path';
 import { fork } from 'child_process';
 import fetch from 'node-fetch';
+// import expressStaticGzip from 'express-static-gzip';
 import express from 'express';
 import bodyParser from 'body-parser';
 import api from './api';
 import './db';
 
 const app = express();
+
+// app.use('/', expressStaticGzip(path.join(__dirname, '/public/')));
 
 app.use(express.static(path.join(__dirname, '/public/')));
 app.use(bodyParser.json());
