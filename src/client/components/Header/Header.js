@@ -63,7 +63,7 @@ const styledHeader = styled(Header)`
   padding: 16px 32px;
   display: flex;
   align-items: center;
-  z-index: 1;
+  z-index: 2;
   background: white;
   position: fixed;
   width: 100%;

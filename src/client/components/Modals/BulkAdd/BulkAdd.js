@@ -195,7 +195,6 @@ const styledBulkAdd = styled(BulkAdd)`
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.75);
-  z-index: 2;
 
   .modal {
     width: 600px;
