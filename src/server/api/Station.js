@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
 import { Station, Sensor, Action, Reading } from '../db';
-import { validateStationParams, isIP } from '../utilities/Validators';
+import { validateStationParams } from '../utilities/Validators';
 
 const router = new Router();
 

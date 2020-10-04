@@ -3,11 +3,22 @@ import fetch from 'node-fetch';
 import { Station, Sensor, Action } from './db';
 
 const testSensor = (address, sensorId, stationId, hardwareName) => {
-  fetch(
-    `http://${address}/sensorHealth?sensorId=${sensorId}&type=temperature&stationId=${stationId}&ip=${process.env.IP}&pollRate=300&hardwareName=${hardwareName}`,
-  ).then(res => {
+  const kwargs = {
+    sensorId,
+    type: 'temperature',
+    stationId,
+    ip: process.envIP,
+    pollRate: 300,
+    hardwareName,
+  };
+
+  const kwargString = Object.entries(kwargs).reduce(
+    (acc, [key, value]) => `${acc}&${key}=${value}`,
+    '?',
+  );
+
+  fetch(`http://${address}/sensorHealth${kwargString}`).then(res => {
     console.info('test complete');
-    // console.log(res);
   });
 };
 
@@ -27,14 +38,13 @@ const runHealthCheck = async () => {
       if (sensor.dataValues.name.includes('FIXTURE')) {
         return;
       }
-      testSensor(station.address + ':' + station.port, sensor.id, station.id, sensor.hardwareName);
+      testSensor(`${station.address}:${station.port}`, sensor.id, station.id, sensor.hardwareName);
     });
   });
 };
 
 setTimeout(() => {
   setInterval(() => {
-    console.log('running check');
     runHealthCheck();
   }, process.env.HEALTH_CHECK_INTERVAL * 1000);
 }, 1000);
