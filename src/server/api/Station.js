@@ -34,7 +34,7 @@ const router = new Router();
  */
 router.get('/', async (req, res) => {
   console.info('GET request to station');
-  const stations = await Station.findAll({
+  let stations = await Station.findAll({
     include: [
       {
         model: Sensor,
@@ -42,7 +42,28 @@ router.get('/', async (req, res) => {
       },
     ],
   });
-  res.send(stations);
+
+  stations = stations.map(async station => ({
+    ...station.dataValues,
+    sensors: await Promise.all(
+      station.dataValues.sensors.map(async sensor => {
+        const lastReading = await Reading.findAll({
+          limit: 1,
+          where: {
+            sensorId: sensor.id,
+          },
+          order: [['createdAt', 'DESC']],
+        });
+        return {
+          ...sensor.dataValues,
+          lastReading: lastReading[0],
+          stationName: station.name,
+        };
+      }),
+    ),
+  }));
+
+  res.send(await Promise.all(stations));
 });
 
 /**
