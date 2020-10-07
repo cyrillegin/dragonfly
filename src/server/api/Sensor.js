@@ -58,15 +58,9 @@ router.post('/', async (req, res) => {
  */
 router.put('/', async (req, res) => {
   console.info('PUT request to sensor');
-  // General validation
-  const valid = validateSensorParams(req.body);
-  if (valid.error) {
-    res.status(400).send({ error: valid.error });
-    return;
-  }
 
   // PUT specific validation
-  const { name, type, description, coefficients, on, id } = req.body;
+  const { id } = req.body;
   if (!id) {
     res.status(400).send({ error: 'Sensor id required' });
     return;
@@ -77,15 +71,18 @@ router.put('/', async (req, res) => {
     res.status(400).send({ error: 'Sensor not found' });
     return;
   }
+  const updates = Object.entries(req.body).reduce((acc, [key, value]) => {
+    if (['name', 'description', 'coefficients'].includes(key)) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
 
   // Update sensor
   try {
-    await Sensor.update(
-      { name, type, description, coefficients, on },
-      {
-        where: { id },
-      },
-    );
+    await Sensor.update(updates, {
+      where: { id },
+    });
 
     console.info('sensor updated');
     res.status(200).send({ message: 'success' });

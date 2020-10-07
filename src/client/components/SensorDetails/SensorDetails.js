@@ -7,7 +7,8 @@ const SensorDetails = ({ className, sensor }) => {
   const [sensorDescription, updateSensorDescription] = useState('');
   const [sensorCoefs, updateSensorCoefs] = useState('');
 
-  console.log(sensor);
+  const [successMessage, updateSuccessMessage] = useState('');
+
   useEffect(() => {
     updateSensorName(sensor.name);
     if (sensor.description) {
@@ -17,6 +18,7 @@ const SensorDetails = ({ className, sensor }) => {
       updateSensorCoefs(sensor.coefficients);
     }
   }, [sensor]);
+
   const changeType = type => {
     // console.log('change');
   };
@@ -25,12 +27,33 @@ const SensorDetails = ({ className, sensor }) => {
     // console.log('editing');
   };
 
-  const handleTest = () => {
-    // console.log('test');
-  };
-
   const addAction = () => {
     // console.log('adding actions');
+  };
+
+  const handleSaveInput = () => {
+    console.log(sensorName);
+    if (sensorName === '') {
+      updateSuccessMessage('Name must be something');
+      return;
+    }
+    fetch('/api/sensor', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: sensor.id,
+        name: sensorName,
+        description: sensorDescription === '' ? null : sensorDescription,
+        coefficients: sensorCoefs === '' ? null : sensorCoefs,
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        updateSuccessMessage(res.message);
+        setTimeout(() => {
+          updateSuccessMessage('');
+        }, 5000);
+      });
   };
 
   const handleInputChange = event => {
@@ -87,7 +110,10 @@ const SensorDetails = ({ className, sensor }) => {
         </div>
 
         <div className="item">
-          <button>test</button>
+          <button type="button" onClick={handleSaveInput}>
+            save
+          </button>
+          {successMessage !== '' && <span>{successMessage}</span>}
         </div>
       </div>
 
