@@ -3,6 +3,8 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import SensorDetails from './SensorDetails';
 
+jest.useFakeTimers();
+
 describe('SensorDetails', () => {
   let fetch;
 
@@ -60,6 +62,7 @@ describe('SensorDetails', () => {
 
       wrapper.find('button').forEach(button => {
         button.simulate('click');
+        jest.runAllTimers();
         expect(wrapper.html()).toMatchSnapshot();
       });
     });
