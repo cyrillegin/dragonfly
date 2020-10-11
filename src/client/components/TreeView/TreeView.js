@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { addOrUpdateHash, removeFromHash, searchToObject } from '../../utilities/Window';
-import { AddStation, AddSensor } from '../Modals';
+import { AddStation, AddSensor, AddDashboard } from '../Modals';
 
-const TreeView = ({ className, stations }) => {
+const TreeView = ({ className, stations, dashboards }) => {
   const [stationSelected, setStation] = useState('');
   const [selection, setSelection] = useState('');
   const [modal, toggleModal] = useState('');
+
+  const [dashboardModal, toggleDashboardModal] = useState(false);
 
   useEffect(() => {
     const { station, sensor } = searchToObject();
@@ -47,11 +49,18 @@ const TreeView = ({ className, stations }) => {
           port={stations.filter(station => station.id === stationSelected)[0].port}
         />
       )}
+      {dashboardModal && (
+        <AddDashboard stations={stations} close={() => toggleDashboardModal(false)} />
+      )}
+      <div className="section">Stations</div>
       {stations.map(station => (
         <div key={station.id}>
           <div
             className={`station ${selection === `station-${station.id}` ? 'selected' : ''}`}
             onClick={() => handleSelection('station', station.id)}
+            onKeyDown={() => handleSelection('station', station.id)}
+            role="button"
+            tabIndex={0}
           >
             <div className={`${station.health}`} />
             <div className="station-title">{station.name}</div>
@@ -63,21 +72,41 @@ const TreeView = ({ className, stations }) => {
                   key={sensor.id}
                   className={`sensor ${selection === `sensor-${sensor.id}` ? 'selected' : ''}`}
                   onClick={() => handleSelection('sensor', sensor.id)}
+                  onKeyDown={() => handleSelection('sensor', sensor.id)}
+                  role="button"
+                  tabIndex={0}
                 >
                   <div className={`status ${sensor.health}`} />
                   <div className="sensor-title">{sensor.name}</div>
                 </div>
               ))}
-              <div className="sensor" onClick={() => handleAdd('AddSensor')}>
+              <div
+                className="sensor"
+                onClick={() => handleAdd('AddSensor')}
+                onKeyDown={() => handleAdd('AddSensor')}
+                role="button"
+                tabIndex={0}
+              >
                 <div className="sensor-title">+ Add Sensor</div>
               </div>
             </>
           )}
         </div>
       ))}
-      <div className="station" onClick={() => handleAdd('AddStation')}>
+      <div
+        className="station"
+        onClick={() => handleAdd('AddStation')}
+        onKeyDown={() => handleAdd('AddStation')}
+        role="button"
+        tabIndex={0}
+      >
         <div className="station-title">+ Add Station </div>
       </div>
+      <div className="section">Dashboards</div>
+      {dashboards.map(dashboard => (
+        <div>hi</div>
+      ))}
+      <div onClick={toggleDashboardModal}>+ New dashboard</div>
     </div>
   );
 };
@@ -98,6 +127,16 @@ TreeView.propTypes = {
       ),
     }),
   ),
+  dashboards: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      sensors: PropTypes.arrayOf(
+        PropTypes.shape({
+          name: PropTypes.string.isRequired,
+        }),
+      ),
+    }),
+  ).isRequired,
 };
 
 TreeView.defaultProps = {
@@ -115,6 +154,15 @@ const styledTreeView = styled(TreeView)`
   padding-top: 32px;
   box-sizing: border-box;
   z-index: 1;
+
+  .section {
+    font-weight: 900;
+    font-size: 1.7rem;
+
+    &:last-child {
+      margin-top: 1rem;
+    }
+  }
 
   .station {
     transition: 0.2s;
