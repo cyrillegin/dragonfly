@@ -30,7 +30,7 @@ describe('SensorDetails', () => {
             stationId: 1,
             stationName: 'test',
             lastReading: {
-              timestamp: '1234',
+              timestamp: '2020-10-04T20:59:30.176Z',
               value: 1,
             },
             actions: [{ condition: 'test', interval: 'test', action: 'test', id: 1 }],
@@ -52,7 +52,7 @@ describe('SensorDetails', () => {
             stationId: 1,
             stationName: 'test',
             lastReading: {
-              timestamp: '1234',
+              timestamp: '2020-10-04T20:59:30.176Z',
               value: 1,
             },
             actions: [{ condition: 'test', interval: 'test', action: 'test', id: 1 }],
