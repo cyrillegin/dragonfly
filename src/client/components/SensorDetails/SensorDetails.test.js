@@ -7,16 +7,34 @@ jest.useFakeTimers();
 
 describe('SensorDetails', () => {
   let fetch;
+  let date;
 
   beforeEach(() => {
     fetch = global.fetch;
     global.fetch = jest.fn(
       () => new Promise(res => res({ json: () => new Promise(inner => inner({})) })),
     );
+    date = global.Date;
+    global.Date = class {
+      getDate = () => '1';
+
+      getMonth = () => '1';
+
+      getFullYear = () => '1';
+
+      getHours = () => '1';
+
+      getMinutes = () => '1';
+
+      static now() {
+        return '1';
+      }
+    };
   });
 
   afterEach(() => {
     global.fetch = fetch;
+    global.Date = date;
   });
 
   it('should render a snap shot', () => {
