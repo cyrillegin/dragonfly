@@ -31,7 +31,6 @@ app.get('/list', (req, res) => {
 app.use(express.json({ type: ['application/*+json', 'application/json'] }));
 app.use(api);
 
-// TODO: Import error of db
 fork('./dist/health-check.js');
 
 app.listen(process.env.SERVER_PORT, () => {

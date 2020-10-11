@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
+import Store from '../../../utilities/Store';
 
 const LOCAL_STORAGE_KEY = 'bulk-add';
 
@@ -89,6 +90,8 @@ const BulkAdd = ({ className, close, stations }) => {
       body: JSON.stringify({
         readings,
       }),
+    }).then(() => {
+      Store.refreshFn();
     });
   };
 
