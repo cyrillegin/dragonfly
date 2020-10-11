@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { searchToObject, objectToString, addOrUpdateHash } from '../utilities/Window';
+import Store from '../utilities/Store';
 
 const getReadings = (sensor, setReadings) => {
   const search = searchToObject();
@@ -36,6 +37,9 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
 
   useEffect(() => {
     getReadings(sensor, setReadings);
+    Store.listen('refresh', () => {
+      getReadings(sensor, setReadings);
+    });
   }, [sensor, renderTrigger]);
 
   if (graphElement.current) {
