@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-import { addOrUpdateHash, removeFromHash } from '../../utilities/Window';
+import { addOrUpdateHash, removeFromHash, searchToObject } from '../../utilities/Window';
 import BulkAdd from '../Modals/BulkAdd';
 import Store from '../../utilities/Store';
 
 const Header = ({ className, stations }) => {
   const [addModalIsOpen, toggleAddModalIsOpen] = useState(false);
   const [refreshRate, setRefreshRate] = useState(60);
+  const [time, setTime] = useState({ start: '', end: '' });
+
+  useEffect(() => {
+    const { start, end } = searchToObject();
+    setTime({
+      start: start || '',
+      end: end || '',
+    });
+  }, []);
 
   const handleRefreshUpdate = event => {
     setRefreshRate(event.target.value);
@@ -20,6 +29,18 @@ const Header = ({ className, stations }) => {
 
   const toggleModal = (open = !addModalIsOpen) => {
     toggleAddModalIsOpen(open);
+  };
+
+  const updateTime = (setting, newTime) => {
+    if (newTime) {
+      addOrUpdateHash(setting, newTime);
+    } else {
+      removeFromHash(setting);
+    }
+    setTime({
+      ...time,
+      [setting]: newTime || '',
+    });
   };
 
   return (
@@ -38,14 +59,22 @@ const Header = ({ className, stations }) => {
         <input
           id="start-time"
           type="date"
-          onChange={event => addOrUpdateHash('start', event.target.value)}
+          value={time.start}
+          onChange={event => updateTime('start', event.target.value)}
         />
+        <button type="button" onClick={() => updateTime('start')}>
+          Clear
+        </button>
         <label htmlFor="end-time">End Date</label>
         <input
           id="end-time"
           type="date"
-          onChange={event => addOrUpdateHash('end', event.target.value)}
+          value={time.end}
+          onChange={event => updateTime('end', event.target.value)}
         />
+        <button type="button" onClick={() => updateTime('end')}>
+          Clear
+        </button>
         <label htmlFor="auto-refresh"> Auto Refresh</label>
         <select id="auto-refresh" value={refreshRate} onChange={handleRefreshUpdate}>
           <option value={5}>5s</option>
@@ -113,6 +142,10 @@ const styledHeader = styled(Header)`
     }
 
     input {
+      margin-left: 8px;
+    }
+
+    button {
       margin-left: 8px;
     }
 
