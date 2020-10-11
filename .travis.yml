@@ -6,15 +6,13 @@ cache:
   directories:
     - node_modules
 
-env:
-  - version=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json)
-
 jobs:
   include:
     - stage: release
       script:
         - npm run test || travis_terminate 1;
         - npm run build:server:prod || travis_terminate 1;
+        - export VERSION=(awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json)
 
       deploy:
         - provider: s3
@@ -24,6 +22,6 @@ jobs:
           acl: public_read
           skip_cleanup: true
           local_dir: dist
-          upload-dir: '$version'
+          upload-dir: '$VERSION'
           on:
             all_branches: true
