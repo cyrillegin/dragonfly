@@ -8,7 +8,25 @@ describe('BulkAdd', () => {
       getItem: () => 'test:test',
       setItem: () => {},
     };
-    const wrapper = mount(<BulkAdd close={() => {}} />);
+    const wrapper = mount(
+      <BulkAdd
+        close={() => {}}
+        stations={[
+          {
+            name: 'test',
+            health: 'healthy',
+            address: 'test',
+            port: 'test',
+            sensors: [
+              {
+                name: 'test',
+                health: 'healthy',
+              },
+            ],
+          },
+        ]}
+      />,
+    );
     expect(wrapper.html()).toMatchSnapshot();
   });
 });

@@ -4,7 +4,7 @@ import Station from './Station';
 
 jest.mock('../db', () => ({
   Station: {
-    findAll: () => {},
+    findAll: () => new Promise(res => res([])),
   },
 }));
 

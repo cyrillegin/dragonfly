@@ -9,6 +9,10 @@ const BulkAdd = ({ className, close, stations }) => {
   const [availableSensors, setAvaliableSensors] = useState([]);
   const [selectedNewSensor, setSelectedNewSensor] = useState('');
 
+  const handleSelectChange = event => {
+    setSelectedNewSensor(event.target.value);
+  };
+
   useEffect(() => {
     const cachedItems = localStorage.getItem(LOCAL_STORAGE_KEY);
     let usedNames = [];
@@ -53,10 +57,6 @@ const BulkAdd = ({ className, close, stations }) => {
       ...input,
       [selectedNewSensor]: { value: 0, date: new Date() },
     });
-  };
-
-  const handleSelectChange = event => {
-    setSelectedNewSensor(event.target.value);
   };
 
   const submitAdd = () => {

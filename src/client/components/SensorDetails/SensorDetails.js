@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
@@ -32,7 +33,6 @@ const SensorDetails = ({ className, sensor }) => {
   };
 
   const handleSaveInput = () => {
-    console.log(sensorName);
     if (sensorName === '') {
       updateSuccessMessage('Name must be something');
       return;
