@@ -13,12 +13,14 @@ describe('BulkAdd', () => {
         close={() => {}}
         stations={[
           {
+            it: 'test',
             name: 'test',
             health: 'healthy',
             address: 'test',
             port: 'test',
             sensors: [
               {
+                id: 'test',
                 name: 'test',
                 health: 'healthy',
               },

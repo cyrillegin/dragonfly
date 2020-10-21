@@ -4,7 +4,7 @@ import AddDashboard from './AddDashboard';
 
 describe('AddDashboard', () => {
   it('should render a snap shot', () => {
-    const wrapper = mount(<AddDashboard />);
+    const wrapper = mount(<AddDashboard close={() => {}} stations={[]} />);
     expect(wrapper.html()).toMatchSnapshot();
   });
 });

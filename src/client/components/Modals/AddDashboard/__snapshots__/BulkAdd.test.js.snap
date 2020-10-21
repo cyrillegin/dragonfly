@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`BulkAdd should render a snap shot 1`] = `"<div class=\\"css-6je0yf\\"><div class=\\"modal\\"><div class=\\"title\\">Bulk Add</div><div class=\\"body\\"><div class=\\"add-entry\\">Add new Sensor<select><option value=\\"test\\">test</option></select><button type=\\"button\\">+</button></div></div><div class=\\"footer\\"><button type=\\"button\\">Add</button></div></div></div>"`;
