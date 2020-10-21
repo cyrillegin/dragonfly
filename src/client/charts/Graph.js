@@ -5,8 +5,10 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { searchToObject, objectToString, addOrUpdateHash } from '../utilities/Window';
 import Store from '../utilities/Store';
+import Loader from '../components/Loader';
 
-const getReadings = (sensor, setReadings) => {
+const getReadings = (sensor, setReadings, setLoading) => {
+  setLoading(true);
   const search = searchToObject();
   const kwargs = {
     sensorId: sensor.id,
@@ -17,7 +19,6 @@ const getReadings = (sensor, setReadings) => {
   if (search.end) {
     kwargs.end = search.end;
   }
-
   fetch(`/api/reading?${objectToString(kwargs)}`)
     .then(res => res.json())
     .then(newReadings => {
@@ -28,17 +29,19 @@ const getReadings = (sensor, setReadings) => {
           // leaving here though just in case :)
           .sort((a, b) => a.timestamp - b.timestamp),
       );
+      setLoading(false);
     });
 };
 
 const Graph = ({ className, station, sensor, renderTrigger }) => {
   const graphElement = useRef(null);
   const [readings, setReadings] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getReadings(sensor, setReadings);
+    getReadings(sensor, setReadings, setLoading);
     Store.listen('refresh', () => {
-      getReadings(sensor, setReadings);
+      getReadings(sensor, setReadings, setLoading);
     });
   }, [sensor, renderTrigger]);
 
@@ -136,8 +139,11 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
         .attr('transform', `translate(${width / 2},${height / 2})`);
 
       return (
-        <div ref={graphElement} className={className}>
-          <div id="my-svg"> </div>
+        <div className={className}>
+          <div ref={graphElement} className="graph-container">
+            <div id="my-svg"> </div>
+          </div>
+          {loading && <Loader />}
         </div>
       );
     }
@@ -276,8 +282,11 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
   }
 
   return (
-    <div ref={graphElement} className={className}>
-      <div id="my-svg"> </div>
+    <div className={className}>
+      <div ref={graphElement} className="graph-container">
+        <div id="my-svg"> </div>
+      </div>
+      {loading && <Loader />}
     </div>
   );
 };
@@ -303,12 +312,17 @@ Graph.propTypes = {
 };
 
 const styledGraph = styled(Graph)`
-  width: 100%;
-  height: 100%;
+  position: relative;
+
   background: white;
 
+  .graph-container {
+    width: 100%;
+    height: 100%;
+  }
+
   .graph-title {
-    transform: translate(0px, -8px);
+    transform: translate(0, -8px);
   }
 
   .line {
@@ -331,6 +345,7 @@ const styledGraph = styled(Graph)`
       fill: none;
       stroke-width: 1;
     }
+
     text {
       stroke: #3f94ff;
     }
