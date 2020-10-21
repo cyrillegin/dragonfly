@@ -122,12 +122,18 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
     // Line graph
     svg.append('path').data([readings]).attr('class', 'line').attr('d', valueline);
 
+    // Title
+    let title = `${station.name} - ${sensor.name}`;
+    const titleElem = svg.append('text').attr('class', 'graph-title');
+    titleElem.text(title);
+
     if (readings.length === 0) {
       // No readings text
       svg
         .append('text')
         .text('No readings exist in this range :(')
-        .attr('transform', `translate(${width / 2 - 80},${height / 2})`);
+        .attr('text-anchor', 'middle')
+        .attr('transform', `translate(${width / 2},${height / 2})`);
 
       return (
         <div ref={graphElement} className={className}>
@@ -135,11 +141,6 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
         </div>
       );
     }
-
-    // Title
-    let title = `${station.name} - ${sensor.name}`;
-    const titleElem = svg.append('text').attr('class', 'graph-title');
-    titleElem.text(title);
 
     const tooltip = svg
       .append('g')
