@@ -20,7 +20,7 @@ const router = new Router();
  */
 router.post('/', async (req, res) => {
   console.info('POST request to action');
-  const { stationId, sensorId, condition, action, interval } = req.body;
+  const { stationId, sensorId, condition, action, interval, value } = req.body;
 
   const valid = validateActionParams(req.body);
   if (valid.error) {
@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    await Action.create({ stationId, sensorId, condition, action, interval });
+    await Action.create({ stationId, sensorId, condition, action, interval, value });
     console.info('new action added');
     res.status(200).send({ message: 'success' });
   } catch (error) {

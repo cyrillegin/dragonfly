@@ -36,6 +36,7 @@ const slackAction = {
   condition: '>',
   action: 'slack',
   interval: '5m',
+  value: 5,
 };
 
 const doPost = async (api, data) => {
