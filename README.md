@@ -82,7 +82,14 @@ This is for when dragonfly is already up and running.
 - `npm i` // Only needed if new deps have been added.
 - `npm run build:server:prod` // Only needed if there are server changes
 - `npm run build:client:prod` // Only needed if there are client changes
-  If you run the build:server:prod, you'll need to restart the server.
+
+If you run the build:server:prod, you'll need to restart the server.
+
+If there was a change to the database schema, there's a few handy commands included in the package.json file:
+
+- `npm run db:up` - runs all of the database migration scripts
+- `npm run db:down` - undos the migration scripts
+- `npm run db:status` - checks to see if you need to run any migrations
 
 ### Satellite updates
 
