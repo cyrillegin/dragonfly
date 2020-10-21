@@ -22,7 +22,7 @@
     "@babel/cli": "7.11.6",
     "@babel/core": "7.11.6",
     "@babel/node": "7.10.5",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-class-properties": "7.10.4",
     "@babel/plugin-syntax-dynamic-import": "7.8.3",
     "@babel/polyfill": "7.11.5",
     "@babel/preset-env": "7.11.5",
@@ -88,7 +88,8 @@
     "db:shell": "docker exec -it dragonfly_postgres_1 psql db -U user",
     "setup:server:prod": "npm i && cp .env-template .env",
     "setup:satellite:prod": "pip install -r satellite/requirements.txt && cp satellite/.env-template satellite/.env",
-    "build:server:prod": "babel src/server --out-dir dist/ --copy-files && webpack --progress --config webpack.prod.config.js src/client",
+    "build:server:prod": "babel src/server --out-dir dist/ --copy-files",
+    "build:client:prod": "webpack --progress --config webpack.prod.config.js src/client",
     "build:satellite:prod": "",
     "start:server:prod": "node dist/index.js",
     "start:satellite:prod": "python3 satellite/"

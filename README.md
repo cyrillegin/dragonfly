@@ -72,6 +72,25 @@ For deployment instructions, I will be assuming that this is being deployed on a
 - `sudo npm run start:prod` //TODO
   This will start the the server in production mode on the pi. To access it, navigate to the pis ip from any browser on the same network: `http://192.168.0.2`. If you run these commands as is, this will display all of the logs directly to the console that has sshd in. Generally speaking though, you don't care about the console. You can set up dragonfly as a system service (TODO: setup instructions for running as a service.) or as a semi-perminant solution, I like to run the server in `screen` (TODO: explain screen)
 
+### Server updates
+
+This is for when dragonfly is already up and running.
+
+- `ssh username@ip`
+- `cd path/to/dragonfly/folder`
+- `git pull`
+- `npm i` // Only needed if new deps have been added.
+- `npm run build:server:prod` // Only needed if there are server changes
+- `npm run build:client:prod` // Only needed if there are client changes
+  If you run the build:server:prod, you'll need to restart the server.
+
+### Satellite updates
+
+- `ssh username@ip`
+- `cd path/to/dragonfly/folder`
+- `git pull`
+  That should be it. The cherrypy server is setup up to auto restart on code changes. That said, make sure you check your log outputs because some changes could either not be picked up or stall out the server. To be extra sure, you can always restart.
+
 ## Satellite deployment
 
 Satellites can be deployed anywhere, including where the server is deployed, aws (TODO: prove), personal computers, or other raspberry pis. For these instructions, I will assume that this is a different raspberry pi being accessed via ssh from a personal computer.
