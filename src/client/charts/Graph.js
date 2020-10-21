@@ -71,9 +71,6 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Title
-    svg.append('text').text(`${station.name} - ${sensor.name}`).attr('class', 'graph-title');
-
     // Bottom axis
     svg
       .append('g')
@@ -138,10 +135,17 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
         </div>
       );
     }
+
+    // Title
+    let title = `${station.name} - ${sensor.name}`;
+    const titleElem = svg.append('text').attr('class', 'graph-title');
+    titleElem.text(title);
+
     const tooltip = svg
       .append('g')
       .attr('class', 'tooltip')
-      .attr('transform', `translate(${margin.left}, 0)`);
+      .attr('transform', `translate(${margin.left}, 0)`)
+      .attr('display', 'none');
 
     // Tooltip line
     tooltip.append('line').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', height);
@@ -161,6 +165,13 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
       if (i > readings.length - 1) {
         i = readings.length - 1;
       }
+
+      const ts = readings[i].timestamp;
+      const dateString = `${ts.getMonth()}/${ts.getDate()} - ${ts.getHours()}:${ts.getMinutes()}`;
+      title = `${station.name} - ${sensor.name} - ${dateString}`;
+      titleElem.text(title);
+
+      tooltip.attr('display', 'inline');
 
       tooltip
         .select('circle')
@@ -255,6 +266,12 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
         dragStartPos = xScale(readings[index].timestamp);
       })
       .call(drag);
+
+    d3.select('svg').on('mouseleave', () => {
+      title = `${station.name} - ${sensor.name}`;
+      titleElem.text(title);
+      tooltip.attr('display', 'none');
+    });
   }
 
   return (
