@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { searchToObject } from '../../../utilities/Window';
 
-/* eslint-disable prefer-destructuring */
 const AddSensor = ({ className, close, address, port }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
@@ -13,7 +12,7 @@ const AddSensor = ({ className, close, address, port }) => {
     fetch(`/list?ip=${address}:${port}`)
       .then(res => res.json())
       .then(res => {
-        setSensors([...res, 'self-entry']);
+        setSensors([...res, { name: 'self-entry' }]);
         setInput({ hardwareName: res[0] });
       });
   }, [address, port]);
@@ -34,6 +33,13 @@ const AddSensor = ({ className, close, address, port }) => {
     setInput({
       ...input,
       hardwareName: event.target.value,
+    });
+  };
+
+  const handleReadingTypeSelect = event => {
+    setInput({
+      ...input,
+      readingType: event.target.value,
     });
   };
 
@@ -103,13 +109,38 @@ const AddSensor = ({ className, close, address, port }) => {
             <div className="group">
               Hardware sensor:
               <select value={input.hardwareSensor} onChange={handleSelectChange}>
-                {availableSensors.map(sensor => (
-                  <option value={sensor} key={sensor}>
-                    {sensor}
-                  </option>
-                ))}
+                {availableSensors
+                  .reduce((acc, cur) => {
+                    if (acc.find(entry => entry.name === cur.name)) {
+                      return [...acc];
+                    }
+                    return [...acc, cur];
+                  }, [])
+                  .map(sensor => (
+                    <option value={sensor.name} key={`${sensor.name}-${sensor.readingType}`}>
+                      {sensor.name}
+                    </option>
+                  ))}
               </select>
             </div>
+            {(availableSensors.find(sensor => sensor.name === input.hardwareName) || {})
+              .readingType && (
+              <div className="group">
+                Reading Type
+                <select onChange={handleReadingTypeSelect} value={input.readingType}>
+                  {availableSensors
+                    .filter(sensor => sensor.name === input.hardwareName)
+                    .map(sensor => (
+                      <option
+                        value={sensor.readingType}
+                        key={`${sensor.name}-${sensor.readingType}`}
+                      >
+                        {sensor.readingType}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            )}
             <div className="group">
               Description:
               <input type="text" name="description" />

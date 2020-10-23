@@ -3,22 +3,37 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
+const actionProperties = ['value', 'condition', 'action', 'interval', 'metaData'];
+const actionConditions = ['gt', 'gte'];
+
 const SensorDetails = ({ className, sensor }) => {
-  const [sensorName, updateSensorName] = useState('');
-  const [sensorDescription, updateSensorDescription] = useState('');
-  const [sensorCoefs, updateSensorCoefs] = useState('');
-
+  const [sensorName, updateSensorName] = useState(sensor.name || '');
+  const [sensorDescription, updateSensorDescription] = useState(sensor.description || '');
+  const [sensorCoefs, updateSensorCoefs] = useState(sensor.coefficients || '');
+  const [sensorActions, updateSensorActions] = useState(sensor.actions);
   const [successMessage, updateSuccessMessage] = useState('');
+  const [actions, setActions] = useState(
+    sensor.actions.reduce(
+      (acc, cur) => ({
+        ...acc,
+        ...actionProperties.reduce(
+          (innerAcc, innerCur) => ({
+            ...innerAcc,
+            [`${cur.id}-${innerCur}`]: cur[innerCur] || '',
+          }),
+          {},
+        ),
+      }),
+      {},
+    ),
+  );
 
-  useEffect(() => {
-    updateSensorName(sensor.name);
-    if (sensor.description) {
-      updateSensorDescription(sensor.description);
-    }
-    if (sensor.coefficients) {
-      updateSensorCoefs(sensor.coefficients);
-    }
-  }, [sensor]);
+  const handleActionUpdate = (id, field, value) => {
+    setActions({
+      ...actions,
+      [`${id}-${field}`]: value,
+    });
+  };
 
   const changeType = type => {
     // console.log('change');
@@ -76,6 +91,8 @@ const SensorDetails = ({ className, sensor }) => {
     date.getMonth() + 1
   }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
 
+  console.log(actions);
+
   return (
     <div className={className}>
       <div className="grid">
@@ -119,11 +136,36 @@ const SensorDetails = ({ className, sensor }) => {
 
       <div className="actions-title">Actions</div>
       <div className="actions-grid">
-        <div className="actions-item">Value</div>
-        <div className="actions-item">Condition</div>
-        <div className="actions-item">action</div>
-        <div className="actions-item">interval</div>
-        <div className="actions-item">meta?</div>
+        {actionProperties.map(prop => (
+          <div className="actions-item" key={prop}>
+            {prop}
+          </div>
+        ))}
+
+        {sensorActions.map(action => (
+          <React.Fragment key={action.id}>
+            <input
+              type="number"
+              value={actions[`${action.id}-value`]}
+              onChange={event => handleActionUpdate(action.id, 'value', event.target.value)}
+              className="actions-item"
+            />
+            <div className="actions-item">{action.condition}</div>
+            <div className="actions-item">{action.action}</div>
+            <input
+              type="text"
+              value={actions[`${action.id}-interval`]}
+              onChange={event => handleActionUpdate(action.id, 'interval', event.target.value)}
+              className="actions-item"
+            />
+            <input
+              type="text"
+              value={actions[`${action.id}-metaData`]}
+              onChange={event => handleActionUpdate(action.id, 'metaData', event.target.value)}
+              className="actions-item"
+            />
+          </React.Fragment>
+        ))}
       </div>
     </div>
   );
