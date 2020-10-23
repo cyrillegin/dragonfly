@@ -64,7 +64,10 @@ class BMP180(object):
         LSB = self._bus.read_byte_data(self._address,cmd+1)
         return (MSB << 8) + LSB
 
-    def _read_s16(self,cmd): result = self._read_u16(cmd) if result > 32767:result -= 65536
+    def _read_s16(self,cmd):
+        result = self._read_u16(cmd) 
+        if result > 32767:
+            result -= 65536
         return result
 
     def _write_byte(self,cmd,val):
@@ -113,9 +116,10 @@ class BMP180(object):
     def read_temperature(self):
         """Gets the compensated temperature in degrees celsius."""
         UT = self.read_raw_temp()
-
         X1 = ((UT - self.cal_AC6) * self.cal_AC5) >> 15
-        X2 = (self.cal_MC << 11) / (X1 + self.cal_MD) B5 = X1 + X2 temp = ((B5 + 8) >> 4) / 10.0
+        X2 = (self.cal_MC << 11) / (X1 + self.cal_MD)
+        B5 = X1 + X2
+        temp = (int(B5 + 8) >> 4) / 10.0
         return temp
 
     def read_pressure(self):
@@ -125,16 +129,24 @@ class BMP180(object):
 
 
         X1 = ((UT - self.cal_AC6) * self.cal_AC5) >> 15
-        X2 = (self.cal_MC << 11) / (X1 + self.cal_MD) B5 = X1 + X2 # Pressure Calculations B6 = B5 - 4000 X1 = (self.cal_B2 * (B6 * B6) >> 12) >> 11
+        X2 = (self.cal_MC << 11) / (X1 + self.cal_MD)
+        B5 = X1 + X2 # Pressure Calculations
+        B6 = B5 - 4000
+        X1 = (self.cal_B2 * (B6 * B6) >> 12) >> 11
         X2 = (self.cal_AC2 * B6) >> 11
         X3 = X1 + X2
-        B3 = (((self.cal_AC1 * 4 + X3) << self._mode) + 2) / 4 X1 = (self.cal_AC3 * B6) >> 13
+        B3 = (((self.cal_AC1 * 4 + X3) << self._mode) + 2) / 4
+        X1 = (self.cal_AC3 * B6) >> 13
         X2 = (self.cal_B1 * ((B6 * B6) >> 12)) >> 16
         X3 = ((X1 + X2) + 2) >> 2
         B4 = (self.cal_AC4 * (X3 + 32768)) >> 15
         B7 = (UP - B3) * (50000 >> self._mode)
 
-        if B7 < 0x80000000: p = (B7 * 2) / B4 else: p = (B7 / B4) * 2 X1 = (p >> 8) * (p >> 8)
+        if B7 < 0x80000000:
+            p = (B7 * 2) / B4
+        else:
+            p = (B7 / B4) * 2
+        X1 = (p >> 8) * (p >> 8)
         X1 = (X1 * 3038) >> 16
         X2 = (-7357 * p) >> 16
 
@@ -165,21 +177,21 @@ class BMP180(object):
 # bmp = BMP085(0x77, 2)  # HIRES Mode
 # bmp = BMP085(0x77, 3)  # ULTRAHIRES Mode
 # while True:
-temp = bmp.read_temperature()
+#temp = bmp.read_temperature()
 
 # Read the current barometric pressure level
-pressure = bmp.read_pressure()
+#pressure = bmp.read_pressure()
 
 # To calculate altitude based on an estimated mean sea level pressure
 # (1013.25 hPa) call the function as follows, but this won't be very accurate
-altitude = bmp.read_altitude()
+#altitude = bmp.read_altitude()
 
 # To specify a more accurate altitude, enter the correct mean sea level
 # pressure level.  For example, if the current pressure level is 1023.50 hPa
 # enter 102350 since we include two decimal places in the integer value
 # altitude = bmp.readAltitude(102350)
 
-print "Temperature: %.2f C" % temp
-print "Pressure:    %.2f hPa" % (pressure / 100.0)
-print "Altitude:     %.2f\n" % altitude
+#print "Temperature: %.2f C" % temp
+#print "Pressure:    %.2f hPa" % (pressure / 100.0)
+#print "Altitude:     %.2f\n" % altitude
 # time.sleep(2)
