@@ -2,75 +2,52 @@ import time
 import os
 import smbus
 
-def readTemperature(deviceLocation):
-    f = open(deviceLocation, 'r')
-    lines = f.readlines()
-    f.close()
-    return lines
-
-
 def GetValues(sensor):
+
     device = os.getenv('SENSOR_{}_META'.format(sensor))
     if device == 'fake':
         return {
             'timestamp': time.time() * 1000,
             'value': 1.0
         }
-    deviceLocation = "/sys/bus/w1/devices/{}/w1_slave".format(device)
-
-    lines = readTemperature(deviceLocation)
-    while lines[0].strip()[-3:] != 'YES':
-        time.sleep(0.2)
-        lines = readTemperature(deviceLocation)
-
-    temp_output = lines[1].find('t=')
-
-    if temp_output != -1:
-        temp_string = lines[1].strip()[temp_output + 2:]
-        temp_c = float(temp_string) / 1000.0
-        temp_f = temp_c * 9.0 / 5.0 + 32.0
-
-        print('Temperature is currently: {}'.format(temp_f))
-        newReading = {
-            'timestamp': time.time() * 1000,
-            'value': temp_f,
-        }
-        return newReading
-
-
-
+    bmp = BMP180()
+    temp_c = bmp.read_temperature()
+    print('Temperature is currently: {}'.format(temp_c))
+    newReading = {
+        'timestamp': time.time() * 1000,
+        'value': temp_c,
+    }
+    return newReading
 
 
 # BMP085 default address.
-BMP180_I2CADDR           = 0x77
+BMP180_I2CADDR = 0x77
 
 # Operating Modes
-BMP180_ULTRALOWPOWER     = 0
-BMP180_STANDARD          = 1
-BMP180_HIGHRES           = 2
-BMP180_ULTRAHIGHRES      = 3
+BMP180_ULTRALOWPOWER = 0
+BMP180_STANDARD = 1
+BMP180_HIGHRES = 2
+BMP180_ULTRAHIGHRES = 3
 
 # BMP085 Registers
-BMP180_CAL_AC1           = 0xAA  # R   Calibration data (16 bits)
-BMP180_CAL_AC2           = 0xAC  # R   Calibration data (16 bits)
-BMP180_CAL_AC3           = 0xAE  # R   Calibration data (16 bits)
-BMP180_CAL_AC4           = 0xB0  # R   Calibration data (16 bits)
-BMP180_CAL_AC5           = 0xB2  # R   Calibration data (16 bits)
-BMP180_CAL_AC6           = 0xB4  # R   Calibration data (16 bits)
-BMP180_CAL_B1            = 0xB6  # R   Calibration data (16 bits)
-BMP180_CAL_B2            = 0xB8  # R   Calibration data (16 bits)
-BMP180_CAL_MB            = 0xBA  # R   Calibration data (16 bits)
-BMP180_CAL_MC            = 0xBC  # R   Calibration data (16 bits)
-BMP180_CAL_MD            = 0xBE  # R   Calibration data (16 bits)
-BMP180_CONTROL           = 0xF4
-BMP180_TEMPDATA          = 0xF6
-BMP180_PRESSUREDATA      = 0xF6
+BMP180_CAL_AC1 = 0xAA
+BMP180_CAL_AC2 = 0xAC
+BMP180_CAL_AC3 = 0xAE
+BMP180_CAL_AC4 = 0xB0
+BMP180_CAL_AC5 = 0xB2
+BMP180_CAL_AC6 = 0xB4
+BMP180_CAL_B1 = 0xB6
+BMP180_CAL_B2 = 0xB8
+BMP180_CAL_MB = 0xBA
+BMP180_CAL_MC = 0xBC
+BMP180_CAL_MD = 0xBE
+BMP180_CONTROL = 0xF4
+BMP180_TEMPDATA = 0xF6
+BMP180_PRESSUREDATA = 0xF6
 
 # Commands
-BMP180_READTEMPCMD       = 0x2E
+BMP180_READTEMPCMD = 0x2E
 BMP180_READPRESSURECMD   = 0x34
-
-
 
 class BMP180(object):
     def __init__(self, address=BMP180_I2CADDR, mode=BMP180_STANDARD):
@@ -85,7 +62,9 @@ class BMP180(object):
     def _read_u16(self,cmd):
         MSB = self._bus.read_byte_data(self._address,cmd)
         LSB = self._bus.read_byte_data(self._address,cmd+1)
-        return (MSB << 8) + LSB def _read_s16(self,cmd): result = self._read_u16(cmd) if result > 32767:result -= 65536
+        return (MSB << 8) + LSB
+
+    def _read_s16(self,cmd): result = self._read_u16(cmd) if result > 32767:result -= 65536
         return result
 
     def _write_byte(self,cmd,val):
@@ -176,35 +155,31 @@ class BMP180(object):
         p0 = pressure / pow(1.0 - altitude_m/44330.0, 5.255)
         return p0
 
-
-import time
-from BMP180 import BMP180
-
 # Initialise the BMP085 and use STANDARD mode (default value)
 # bmp = BMP085(0x77, debug=True)
-bmp = BMP180()
+
 
 # To specify a different operating mode, uncomment one of the following:
 # bmp = BMP085(0x77, 0)  # ULTRALOWPOWER Mode
 # bmp = BMP085(0x77, 1)  # STANDARD Mode
 # bmp = BMP085(0x77, 2)  # HIRES Mode
 # bmp = BMP085(0x77, 3)  # ULTRAHIRES Mode
-while True:
-    temp = bmp.read_temperature()
+# while True:
+temp = bmp.read_temperature()
 
 # Read the current barometric pressure level
-    pressure = bmp.read_pressure()
+pressure = bmp.read_pressure()
 
 # To calculate altitude based on an estimated mean sea level pressure
 # (1013.25 hPa) call the function as follows, but this won't be very accurate
-    altitude = bmp.read_altitude()
+altitude = bmp.read_altitude()
 
 # To specify a more accurate altitude, enter the correct mean sea level
 # pressure level.  For example, if the current pressure level is 1023.50 hPa
 # enter 102350 since we include two decimal places in the integer value
 # altitude = bmp.readAltitude(102350)
 
-    print "Temperature: %.2f C" % temp
-    print "Pressure:    %.2f hPa" % (pressure / 100.0)
-    print "Altitude:     %.2f\n" % altitude
-time.sleep(2)
+print "Temperature: %.2f C" % temp
+print "Pressure:    %.2f hPa" % (pressure / 100.0)
+print "Altitude:     %.2f\n" % altitude
+# time.sleep(2)
