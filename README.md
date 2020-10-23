@@ -25,8 +25,11 @@ The 'sensor' view is a single graph detailing the particular sensor that is sele
 
 #### Quickstart
 
+Run each command in a separate terminal tab
+
 - `docker-compose up`
 - `npm run start`
+- `npm run start:satellite`
 - `npm run generate:fixtures`
 
 #### Setup
@@ -41,6 +44,9 @@ To setup postgres, ensure that docker is installed and run `docker-compose up`. 
 ###### Raspberry Pi basic setup
 
 Get the latest pi image from the raspberry pi website and flash it to an ssd.
+In terminal connected to the pi, run the following commands:
+
+- `sudo ./utility/setupPi.sh`
 
 #### Development
 
@@ -85,18 +91,13 @@ This is for when dragonfly is already up and running.
 
 If you run the build:server:prod, you'll need to restart the server.
 
+### Database migrations
+
 If there was a change to the database schema, there's a few handy commands included in the package.json file:
 
 - `npm run db:up` - runs all of the database migration scripts
 - `npm run db:down` - undos the migration scripts
 - `npm run db:status` - checks to see if you need to run any migrations
-
-### Satellite updates
-
-- `ssh username@ip`
-- `cd path/to/dragonfly/folder`
-- `git pull`
-  That should be it. The cherrypy server is setup up to auto restart on code changes. That said, make sure you check your log outputs because some changes could either not be picked up or stall out the server. To be extra sure, you can always restart.
 
 ## Satellite deployment
 
@@ -109,6 +110,13 @@ Satellites can be deployed anywhere, including where the server is deployed, aws
 - `python __main__.py`
   This will start the python server and print out logs to the console. Like the server above, I suggest running this as a service or in screen.
   There are some sensors that require additional setup, this will be detailed in the Sensors section.
+
+### Satellite updates
+
+- `ssh username@ip`
+- `cd path/to/dragonfly/folder`
+- `git pull`
+  That should be it. The cherrypy server is setup up to auto restart on code changes. That said, make sure you check your log outputs because some changes could either not be picked up or stall out the server. To be extra sure, you can always restart.
 
 ## Sensors
 
