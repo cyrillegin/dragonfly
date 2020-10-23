@@ -1,9 +1,30 @@
 import fetch from 'node-fetch';
 
-const kitchenStation = {
-  name: 'FIXTURE - kitchen station',
+const balconyStation = {
+  name: 'FIXTURE - balcony station',
   address: '127.0.0.1',
   port: '3001',
+};
+
+const balconyBMPTemp = {
+  name: 'FIXTURE - temperature',
+  hardwareName: 'temperature_balcony',
+  hardwareType: 'bmp',
+  readingType: 'temperature',
+};
+
+const balconyBMPPres = {
+  name: 'FIXTURE - pressure',
+  hardwareName: 'pressure_balcony',
+  hardwareType: 'bmp',
+  readingType: 'pressure',
+};
+
+const balconyBMPAlt = {
+  name: 'FIXTURE - altitude',
+  hardwareName: 'altitude_balcony',
+  hardwareType: 'bmp',
+  readingType: 'altitude',
 };
 
 const fishStation = {
@@ -12,24 +33,18 @@ const fishStation = {
   port: '3001',
 };
 
-const ovenSensor = {
-  name: 'FIXTURE - Oven',
-  hardwareName: 'temperature',
-};
-
-const fridgeSensor = {
-  name: 'FIXTURE - Fridge',
-  hardwareName: 'temperature',
-};
-
 const tankSensor = {
   name: 'FIXTURE - Fish tank',
-  hardwareName: 'temperature',
+  hardwareName: 'temperature_fish',
+  hardwareType: 'gpio',
+  readingType: 'temperature',
 };
 
 const lightSwitch = {
   name: 'FIXTURE - Fish lights',
-  hardwareName: 'switch',
+  hardwareName: 'switch_fist',
+  hardwareType: 'unknown',
+  readingType: 'unknown',
 };
 
 const slackAction = {
@@ -60,26 +75,26 @@ const doGet = async api => {
   return json;
 };
 
-const doPut = async (api, updates) => {
-  const res = await fetch(`http://localhost:3000/api/${api}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updates),
-  });
-
-  const json = await res.json();
-  if (json.error) {
-    console.info('got error');
-    console.info(json.error);
-    process.exit(1);
-  } else {
-    console.error(`${api} updated successfully`);
-  }
-};
+// const doPut = async (api, updates) => {
+//   const res = await fetch(`http://localhost:3000/api/${api}`, {
+//     method: 'PUT',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(updates),
+//   });
+//
+//   const json = await res.json();
+//   if (json.error) {
+//     console.info('got error');
+//     console.info(json.error);
+//     process.exit(1);
+//   } else {
+//     console.error(`${api} updated successfully`);
+//   }
+// };
 
 const setupFixtures = async () => {
   // create kitchenStation
-  await doPost('station', kitchenStation);
+  await doPost('station', balconyStation);
 
   // create fish station
   await doPost('station', fishStation);
@@ -87,13 +102,17 @@ const setupFixtures = async () => {
   // Get stations
   let stations = await doGet('station');
 
-  // create oven sensor
-  ovenSensor.stationId = stations[0].id;
-  await doPost('sensor', ovenSensor);
+  // create temp sensor
+  balconyBMPTemp.stationId = stations[0].id;
+  await doPost('sensor', balconyBMPTemp);
 
-  // create fridge sensor
-  fridgeSensor.stationId = stations[0].id;
-  await doPost('sensor', fridgeSensor);
+  // create pressure sensor
+  balconyBMPPres.stationId = stations[0].id;
+  await doPost('sensor', balconyBMPPres);
+
+  // create alt sensor
+  balconyBMPAlt.stationId = stations[0].id;
+  await doPost('sensor', balconyBMPAlt);
 
   // create tank sensor
   tankSensor.stationId = stations[1].id;

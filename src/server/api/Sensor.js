@@ -13,6 +13,7 @@ const router = new Router();
  *   name: 'sensor name',
  *   description: 'sensor description',
  *   coeffecients: '9/5, 32',
+ *   hardwareName: 'gpio'
  *   type: 'temperature'
  * }
  *
@@ -22,9 +23,23 @@ const router = new Router();
 router.post('/', async (req, res) => {
   console.info('POST request to sensor');
 
-  const { stationId, hardwareName, name, description, coefficients } = req.body;
+  const {
+    stationId,
+    hardwareName,
+    hardwareType,
+    readingType,
+    name,
+    description,
+    coefficients,
+  } = req.body;
 
-  const isValid = validateSensorParams({ name, stationId, hardwareName });
+  const isValid = validateSensorParams({
+    name,
+    stationId,
+    hardwareName,
+    hardwareType,
+    readingType,
+  });
   if (isValid.error) {
     res.status(400).send({ error: isValid.error });
     return;
@@ -32,7 +47,15 @@ router.post('/', async (req, res) => {
 
   // Create the new Sensor
   try {
-    await Sensor.create({ name, stationId, hardwareName, description, coefficients });
+    await Sensor.create({
+      name,
+      stationId,
+      hardwareName,
+      hardwareType,
+      readingType,
+      description,
+      coefficients,
+    });
     console.info('new sensor added');
     res.status(200).send({ message: 'success' });
   } catch (error) {
@@ -135,12 +158,12 @@ router.delete('/', async (req, res) => {
 router.post('/test', async (req, res) => {
   console.info('TEST request to sensor');
 
-  const { stationId, hardwareName } = req.body;
+  const { stationId, hardwareName, readingType } = req.body;
 
   const station = await Station.findAll({ where: { id: stationId } });
   const ipaddress = `${station[0].address}:${station[0].port}`;
 
-  fetch(`http://${ipaddress}/sensorCheck?hardwareSensor=${hardwareName}`)
+  fetch(`http://${ipaddress}/sensorCheck?hardwareSensor=${hardwareName}&readingType=${readingType}`)
     .then(result => result.json())
     .then(result => {
       if (result === 'unhealthy') {

@@ -58,7 +58,9 @@ class Root(object):
             sensor = os.getenv('SENSOR_{}_HARDWARE_NAME'.format(i))
             if sensor is None:
                 break
-            sensors.append(sensor)
+
+            readingType = os.getenv('SENSOR_{}_READING_TYPE'.format(i))
+            sensors.append({"name": sensor, 'readingType': readingType})
             i += 1
 
         cherrypy.response.headers['Content-Type'] = "application/json"

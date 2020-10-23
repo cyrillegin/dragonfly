@@ -25,6 +25,7 @@ if [ "$dryRun" == false ]; then
   sudo apt full-upgrade -y
   sudo apt-get update
   sudo apt-get dist-upgrade -y
+  sudo apt autoremove
   echo "Apt successfully installed."
 fi
 
@@ -34,9 +35,12 @@ if [ "$installNode" == true ]; then
   echo "Installing node"
   curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
   sudo apt-get install -y nodejs
-  npm i
   echo "Node successfully installed:"
   node -v
+  echo "Setting up Node server"
+  npm i
+  cp .env-template .env
+  echo "Node setup successful, make sure to update your .env file."
 fi
 
 # Install python
@@ -45,7 +49,8 @@ if [ "$installPython" == true ]; then
   python3 -V
   python3 -m pip install --upgrade pip
   pip3 install -r satellite/requirements.txt
-  echo "Python successfully installed:"
+  cp satellite/.env-template satellite/.env
+  echo "Python setup successful, make sure to update your satellite/.env file."
 fi
 
 echo "All set, have fun!"

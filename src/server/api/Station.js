@@ -22,7 +22,8 @@ const router = new Router();
  *       health: 'healthy',
  *       state: 'on, off, null',
  *       coefficients: '9/5, 32',
- *       type: 'temperature',
+ *       hardwareSensor: 'GPIO',
+ *       type: 'temperature'
  *       actions: [{
  *         condition: 'condition',
  *         action: 'action',

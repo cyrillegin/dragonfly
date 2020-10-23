@@ -10,6 +10,8 @@ function buildSensorSchema(sequelize) {
       coefficients: { type: DataTypes.STRING, allowNull: true },
       description: { type: DataTypes.STRING, allowNull: true },
       hardwareName: { type: DataTypes.STRING, allowNull: false },
+      hardwareType: { type: DataTypes.STRING, allowNull: false },
+      readingType: { type: DataTypes.STRING, allowNull: true },
     },
     { sequelize, modelName: 'sensor' },
   );

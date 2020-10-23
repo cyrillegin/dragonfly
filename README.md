@@ -46,7 +46,7 @@ To setup postgres, ensure that docker is installed and run `docker-compose up`. 
 Get the latest pi image from the raspberry pi website and flash it to an ssd.
 In terminal connected to the pi, run the following commands:
 
-- `sudo ./utility/setupPi.sh`
+- `sudo ./utility/setupPi.sh python node`
 
 #### Development
 
@@ -129,3 +129,10 @@ You should see listed devices that look like `28-0416a47a0aff`. These will be ad
 Method 2:
 Ensure `dtoverlay=w1-gpio` is in your `/boot/config.txt`. Restart the pi with `sudo reboot now`.
 Enter: `sudo modprobe w1-gpio` and `sudo modprobe w1-therm`. Now when you `ls /sys/bus/w1/devices/`, your device id should appear.
+
+##### BMP 180
+
+For this sensor, we'll need to update the boot/config.txt.
+
+- `sudo vim /boot/config.txt`
+- find the line with `dtparam=i2c_arm` and make sure that it isn't commented out. (This may require a reboot)

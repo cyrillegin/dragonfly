@@ -47,6 +47,12 @@ const validateSensorParams = params => {
   if (!params.hardwareName) {
     return { error: 'Hardware name required' };
   }
+  if (!params.hardwareType) {
+    return { error: 'Hardware type required' };
+  }
+  if (!params.readingType) {
+    return { error: 'Reading type required' };
+  }
 
   return {};
 };

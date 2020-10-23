@@ -12,13 +12,14 @@ from pollers import gpioPoller
 #     stationId - number
 #     pollRate - number
 #     ip - adress to send readings to
-#     type - enum (so far just temperature
+#     hardwareName - enum (so far just gpio)
+#     type - TBD with the BMP180
 # }
 def query(sensor):
-    if sensor['type'] != 'temperature':
+    if sensor['type'] != 'gpio':
         return
     while True:
-        if sensor['type'] == 'temperature':
+        if sensor['type'] == 'gpio':
             values = gpioPoller.GetValues(sensor['meta'])
             payload = {
                 'value': values['value'],
