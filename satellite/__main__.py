@@ -60,6 +60,8 @@ class Root(object):
                 break
 
             readingType = os.getenv('SENSOR_{}_READING_TYPE'.format(i))
+            print('reading type')
+            print(readingType)
             sensorType = os.getenv('SENSOR_{}_POLLER'.format(i))
             sensors.append({"name": sensor, 'readingType': readingType, 'sensorType': sensorType})
             i += 1

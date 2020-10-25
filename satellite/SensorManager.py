@@ -17,10 +17,10 @@ from pollers import gpioPoller, bmp180Poller
 # }
 
 def query(sensor):
-    if sensor['hardwareType'] != 'gpio' and sensor['hardwareType'] != 'bmp180Poller':
+    if sensor['hardwareType'] != 'gpioPoller' and sensor['hardwareType'] != 'bmp180Poller':
         return
     while True:
-        if sensor['hardwareType'] == 'gpio':
+        if sensor['hardwareType'] == 'gpioPoller':
             values = gpioPoller.GetValues(sensor['meta'])
             payload = {
                 'value': values['value'],
