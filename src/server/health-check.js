@@ -2,14 +2,15 @@ import 'regenerator-runtime/runtime';
 import fetch from 'node-fetch';
 import { Station, Sensor, Action } from './db';
 
-const testSensor = (address, sensorId, stationId, hardwareName, type) => {
+const testSensor = (address, sensorId, stationId, hardwareName, hardwareType, readingType) => {
   const kwargs = {
     sensorId,
     stationId,
     ip: process.env.IP,
-    pollRate: 300,
+    pollRate: 30,
     hardwareName,
-    type,
+    hardwareType,
+    readingType,
   };
 
   const kwargString = Object.entries(kwargs).reduce(
@@ -48,7 +49,8 @@ const runHealthCheck = async () => {
         sensor.id,
         station.id,
         sensor.hardwareName,
-        type,
+        sensor.hardwareType,
+        sensor.readingType,
       );
     });
   });

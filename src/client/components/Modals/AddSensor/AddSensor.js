@@ -73,7 +73,12 @@ const AddSensor = ({ className, close, address, port }) => {
       ...input,
     };
 
+    console.log(input);
+    console.log(availableSensors);
     params.stationId = parseInt(searchToObject().station.split('-')[1], 10);
+    params.hardwareType = availableSensors.find(
+      sensor => sensor.name === input.hardwareName && sensor.readingType === input.readingType,
+    ).sensorType;
 
     fetch('/api/sensor/', {
       method: 'POST',
@@ -89,6 +94,7 @@ const AddSensor = ({ className, close, address, port }) => {
     event.stopPropagation();
   };
 
+  console.log(availableSensors);
   return (
     <div className={className} onClick={close}>
       <div className="modal" onClick={preventClose}>

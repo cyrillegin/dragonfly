@@ -2,12 +2,12 @@
 
 echo "Setting up new dragonfly satellite..."
 
-dryRun=false
+noApt=false
 installNode=false
 installPython=false
 
-if [ "$1" == "dryRun" ] || [ "$2" == "dryRun" ] || [ "$3" == "dryRun" ]; then
-  dryRun=true
+if [ "$1" == "noApt" ] || [ "$2" == "noApt" ] || [ "$3" == "noApt" ]; then
+  noApt=true
 fi
 
 if [ "$1" == "node" ] || [ "$2" == "node" ] || [ "$3" == "node" ]; then
@@ -19,12 +19,13 @@ if  [ "$1" == "python" ] || [ "$2" == "python" ] || [ "$3" == "python" ]; then
 fi
 
 # Install Apt updates
-if [ "$dryRun" == false ]; then
+if [ "$noApt" == false ]; then
   echo "updating apt"
   sudo apt update
   sudo apt full-upgrade -y
   sudo apt-get update
   sudo apt-get dist-upgrade -y
+  sudo apt-get install screen -y
   sudo apt autoremove
   echo "Apt successfully installed."
 fi
