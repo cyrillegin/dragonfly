@@ -10,12 +10,24 @@ def GetValues(sensor):
             'timestamp': time.time() * 1000,
             'value': 1.0
         }
+    print(sensor)
     bmp = BMP180()
-    temp_c = bmp.read_temperature()
-    print('Temperature is currently: {}'.format(temp_c))
+    value = 0
+    if sensor == 'temperature':
+        temp_c = bmp.read_temperature()
+        value = temp_c / 5 * 9 + 32
+        print('Temperature is currently: {}'.format(value))
+    if sensor == 'pressure':
+        pres = bmp.read_pressure()
+        value = pres / 3386
+        print('Pressure is currently: {}'.format(value))
+    if sensor == 'altitude':
+        meters = bmp.read_altitude()
+        value = meters * 3.281
+        print('Altitude is currently: {}'.format(value))
     newReading = {
         'timestamp': time.time() * 1000,
-        'value': temp_c,
+        'value': value,
     }
     return newReading
 
@@ -132,20 +144,20 @@ class BMP180(object):
         X2 = (self.cal_MC << 11) / (X1 + self.cal_MD)
         B5 = X1 + X2 # Pressure Calculations
         B6 = B5 - 4000
-        X1 = (self.cal_B2 * (B6 * B6) >> 12) >> 11
-        X2 = (self.cal_AC2 * B6) >> 11
+        X1 = (int(self.cal_B2 * (B6 * B6)) >> 12) >> 11
+        X2 = int(self.cal_AC2 * B6) >> 11
         X3 = X1 + X2
-        B3 = (((self.cal_AC1 * 4 + X3) << self._mode) + 2) / 4
-        X1 = (self.cal_AC3 * B6) >> 13
-        X2 = (self.cal_B1 * ((B6 * B6) >> 12)) >> 16
-        X3 = ((X1 + X2) + 2) >> 2
-        B4 = (self.cal_AC4 * (X3 + 32768)) >> 15
+        B3 = ((int(self.cal_AC1 * 4 + X3) << self._mode) + 2) / 4
+        X1 = int(self.cal_AC3 * B6) >> 13
+        X2 = (self.cal_B1 * (int(B6 * B6) >> 12)) >> 16
+        X3 = int((X1 + X2) + 2) >> 2
+        B4 = int(self.cal_AC4 * (X3 + 32768)) >> 15
         B7 = (UP - B3) * (50000 >> self._mode)
 
         if B7 < 0x80000000:
-            p = (B7 * 2) / B4
+            p = int((B7 * 2) / B4)
         else:
-            p = (B7 / B4) * 2
+            p = int(B7 / B4) * 2
         X1 = (p >> 8) * (p >> 8)
         X1 = (X1 * 3038) >> 16
         X2 = (-7357 * p) >> 16
