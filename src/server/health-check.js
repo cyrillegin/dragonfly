@@ -7,7 +7,7 @@ const testSensor = (address, sensorId, stationId, hardwareName, hardwareType, re
     sensorId,
     stationId,
     ip: process.env.IP,
-    pollRate: 30,
+    pollRate: 300,
     hardwareName,
     hardwareType,
     readingType,
@@ -18,9 +18,7 @@ const testSensor = (address, sensorId, stationId, hardwareName, hardwareType, re
     '?',
   );
 
-  fetch(`http://${address}/sensorHealth${kwargString}`).then(res => {
-    console.info('health check complete');
-  });
+  fetch(`http://${address}/sensorHealth${kwargString}`);
 };
 
 const runHealthCheck = async () => {
@@ -43,7 +41,9 @@ const runHealthCheck = async () => {
       if (sensor.hardwareName === 'self-entry') {
         return;
       }
-      console.info(`sending check to ${sensor.hardwareName} at station ${station.id}`);
+      console.info(
+        `sending check to ${sensor.hardwareName} - ${sensor.readingType} at station ${station.id}`,
+      );
       testSensor(
         `${station.address}:${station.port}`,
         sensor.id,

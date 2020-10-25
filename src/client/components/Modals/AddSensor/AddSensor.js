@@ -30,9 +30,13 @@ const AddSensor = ({ className, close, address, port }) => {
     } else {
       setSuccess(false);
     }
+    console.log(availableSensors);
+    console.log(event.target.value);
+    console.log(availableSensors.find(sensor => sensor.name === event.target.value).readingType);
     setInput({
       ...input,
       hardwareName: event.target.value,
+      readingType: availableSensors.find(sensor => sensor.name === event.target.value).readingType,
     });
   };
 
@@ -73,11 +77,11 @@ const AddSensor = ({ className, close, address, port }) => {
       ...input,
     };
 
-    console.log(input);
-    console.log(availableSensors);
     params.stationId = parseInt(searchToObject().station.split('-')[1], 10);
-    params.hardwareType = availableSensors.find(
-      sensor => sensor.name === input.hardwareName && sensor.readingType === input.readingType,
+    params.hardwareType = (
+      availableSensors.find(
+        sensor => sensor.name === input.hardwareName && sensor.readingType === input.readingType,
+      ) || {}
     ).sensorType;
 
     fetch('/api/sensor/', {
@@ -94,7 +98,6 @@ const AddSensor = ({ className, close, address, port }) => {
     event.stopPropagation();
   };
 
-  console.log(availableSensors);
   return (
     <div className={className} onClick={close}>
       <div className="modal" onClick={preventClose}>
