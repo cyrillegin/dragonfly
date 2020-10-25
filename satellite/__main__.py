@@ -24,7 +24,7 @@ class Root(object):
                 break
             i = i + 1
         cherrypy.response.headers['Content-Type'] = "application/json"
-        test = sensorManager.testSensor(i)
+        test = sensorManager.testSensor(i, kwargs['readingType'])
         return json.dumps(test)
 
 
@@ -60,7 +60,8 @@ class Root(object):
                 break
 
             readingType = os.getenv('SENSOR_{}_READING_TYPE'.format(i))
-            sensors.append({"name": sensor, 'readingType': readingType})
+            sensorType = os.getenv('SENSOR_{}_POLLER'.format(i))
+            sensors.append({"name": sensor, 'readingType': readingType, 'sensorType': sensorType})
             i += 1
 
         cherrypy.response.headers['Content-Type'] = "application/json"

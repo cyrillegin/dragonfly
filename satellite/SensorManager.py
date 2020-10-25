@@ -4,7 +4,7 @@ import time
 import requests
 import json
 import importlib
-from pollers import gpioPoller
+from pollers import gpioPoller, bmp180Poller
 
 
 # {
@@ -15,11 +15,12 @@ from pollers import gpioPoller
 #     hardwareName - enum (so far just gpio)
 #     type - TBD with the BMP180
 # }
+
 def query(sensor):
-    if sensor['type'] != 'gpio':
+    if sensor['hardwareType'] != 'gpio' and sensor['hardwareType'] != 'bmp180Poller':
         return
     while True:
-        if sensor['type'] == 'gpio':
+        if sensor['hardwareType'] == 'gpio':
             values = gpioPoller.GetValues(sensor['meta'])
             payload = {
                 'value': values['value'],
@@ -29,7 +30,17 @@ def query(sensor):
             }
             print('Sending value {} from {}'.format(values['value'], sensor['stationId']))
             resp = requests.post('http://{}/api/reading'.format(sensor['ip']), json=payload)
-            time.sleep(int(sensor['pollRate']))
+
+        if sensor['hardwareType'] == 'bmp180Poller':
+            values = bmp180Poller.GetValues(sensor['readingType'])
+            payload = {
+                'value': values['value'],
+                'timestamp': values['timestamp'],
+                'sensorId': sensor['sensorId'],
+                'stationId': sensor['stationId']
+            }
+            resp = requests.post('http://{}/api/reading'.format(sensor['ip']), json=payload)
+        time.sleep(int(sensor['pollRate']))
 
 
 class SensorManager:
@@ -66,10 +77,17 @@ class SensorManager:
             print('sensor is unhealthy')
             return ' unhealthy'
 
-        def testSensor(self, sensor):
+        def testSensor(self, sensor, readingType):
+
+            print('testing sensor')
+            print(sensor)
             poller = os.getenv('SENSOR_{}_POLLER'.format(sensor))
             module = importlib.import_module('pollers.{}'.format(poller))
-            result = module.GetValues(sensor)
+            result = 'fail'
+            if poller == 'bmp180Poller':
+                result = module.GetValues(readingType)
+            else:
+                result = module.GetValues(sensor)
             return result
 
     instance = None
