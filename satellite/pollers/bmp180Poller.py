@@ -2,15 +2,18 @@ import time
 import os
 import smbus
 
-def GetValues(sensor):
+# "Temperature: %.2f C" % temp
+# "Pressure:    %.2f hPa" % (pressure / 100.0)
+# "Altitude:     %.2f\n" % altitude
 
+def GetValues(sensor):
     device = os.getenv('SENSOR_{}_META'.format(sensor))
     if device == 'fake':
         return {
             'timestamp': time.time() * 1000,
             'value': 1.0
         }
-    print(sensor)
+
     bmp = BMP180()
     value = 0
     if sensor == 'temperature':
@@ -77,7 +80,7 @@ class BMP180(object):
         return (MSB << 8) + LSB
 
     def _read_s16(self,cmd):
-        result = self._read_u16(cmd) 
+        result = self._read_u16(cmd)
         if result > 32767:
             result -= 65536
         return result
@@ -178,32 +181,3 @@ class BMP180(object):
         pressure = float(self.read_pressure())
         p0 = pressure / pow(1.0 - altitude_m/44330.0, 5.255)
         return p0
-
-# Initialise the BMP085 and use STANDARD mode (default value)
-# bmp = BMP085(0x77, debug=True)
-
-
-# To specify a different operating mode, uncomment one of the following:
-# bmp = BMP085(0x77, 0)  # ULTRALOWPOWER Mode
-# bmp = BMP085(0x77, 1)  # STANDARD Mode
-# bmp = BMP085(0x77, 2)  # HIRES Mode
-# bmp = BMP085(0x77, 3)  # ULTRAHIRES Mode
-# while True:
-#temp = bmp.read_temperature()
-
-# Read the current barometric pressure level
-#pressure = bmp.read_pressure()
-
-# To calculate altitude based on an estimated mean sea level pressure
-# (1013.25 hPa) call the function as follows, but this won't be very accurate
-#altitude = bmp.read_altitude()
-
-# To specify a more accurate altitude, enter the correct mean sea level
-# pressure level.  For example, if the current pressure level is 1023.50 hPa
-# enter 102350 since we include two decimal places in the integer value
-# altitude = bmp.readAltitude(102350)
-
-#print "Temperature: %.2f C" % temp
-#print "Pressure:    %.2f hPa" % (pressure / 100.0)
-#print "Altitude:     %.2f\n" % altitude
-# time.sleep(2)

@@ -6,40 +6,25 @@ import json
 import importlib
 from pollers import gpioPoller, bmp180Poller
 
-
-# {
-#     sensorId - number
-#     stationId - number
-#     pollRate - number
-#     ip - adress to send readings to
-#     hardwareName - enum (so far just gpio)
-#     type - TBD with the BMP180
-# }
+availablePollers = ['gpioPoller', 'bmp180Poller']
 
 def query(sensor):
-    if sensor['hardwareType'] != 'gpioPoller' and sensor['hardwareType'] != 'bmp180Poller':
+    if sensor['hardwareType'] not in availablePollers:
         return
     while True:
         if sensor['hardwareType'] == 'gpioPoller':
             values = gpioPoller.GetValues(sensor['meta'])
-            payload = {
-                'value': values['value'],
-                'timestamp': values['timestamp'],
-                'sensorId': sensor['sensorId'],
-                'stationId': sensor['stationId']
-            }
-            print('Sending value {} from {}'.format(values['value'], sensor['stationId']))
-            resp = requests.post('http://{}/api/reading'.format(sensor['ip']), json=payload)
 
         if sensor['hardwareType'] == 'bmp180Poller':
             values = bmp180Poller.GetValues(sensor['readingType'])
-            payload = {
-                'value': values['value'],
-                'timestamp': values['timestamp'],
-                'sensorId': sensor['sensorId'],
-                'stationId': sensor['stationId']
-            }
-            resp = requests.post('http://{}/api/reading'.format(sensor['ip']), json=payload)
+
+        payload = {
+            'value': values['value'],
+            'timestamp': values['timestamp'],
+            'sensorId': sensor['sensorId'],
+            'stationId': sensor['stationId']
+        }
+        resp = requests.post('http://{}/api/reading'.format(sensor['ip']), json=payload)
         time.sleep(int(sensor['pollRate']))
 
 
@@ -78,15 +63,12 @@ class SensorManager:
             return ' unhealthy'
 
         def testSensor(self, sensor, readingType):
-
-            print('testing sensor')
-            print(sensor)
             poller = os.getenv('SENSOR_{}_POLLER'.format(sensor))
             module = importlib.import_module('pollers.{}'.format(poller))
             result = 'fail'
             if poller == 'bmp180Poller':
                 result = module.GetValues(readingType)
-            else:
+            if poller == 'gpioPoller':
                 result = module.GetValues(sensor)
             return result
 
@@ -98,8 +80,3 @@ class SensorManager:
 
     def __getattr__(self, name):
         return getattr(self.instance, name)
-
-
-SensorMap = {
-
-}

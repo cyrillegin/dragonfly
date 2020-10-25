@@ -58,10 +58,7 @@ class Root(object):
             sensor = os.getenv('SENSOR_{}_HARDWARE_NAME'.format(i))
             if sensor is None:
                 break
-
             readingType = os.getenv('SENSOR_{}_READING_TYPE'.format(i))
-            print('reading type')
-            print(readingType)
             sensorType = os.getenv('SENSOR_{}_POLLER'.format(i))
             sensors.append({"name": sensor, 'readingType': readingType, 'sensorType': sensorType})
             i += 1

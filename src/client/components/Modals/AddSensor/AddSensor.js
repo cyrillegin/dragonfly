@@ -30,9 +30,7 @@ const AddSensor = ({ className, close, address, port }) => {
     } else {
       setSuccess(false);
     }
-    console.log(availableSensors);
-    console.log(event.target.value);
-    console.log(availableSensors.find(sensor => sensor.name === event.target.value).readingType);
+
     setInput({
       ...input,
       hardwareName: event.target.value,
