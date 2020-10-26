@@ -4,9 +4,9 @@ import time
 import requests
 import json
 import importlib
-from pollers import gpioPoller, bmp180Poller
+from pollers import gpioPoller, bmp180Poller, dht11Poller
 
-availablePollers = ['gpioPoller', 'bmp180Poller']
+availablePollers = ['gpioPoller', 'bmp180Poller', 'dht11Poller']
 
 def query(sensor):
     if sensor['hardwareType'] not in availablePollers:
@@ -17,6 +17,9 @@ def query(sensor):
 
         if sensor['hardwareType'] == 'bmp180Poller':
             values = bmp180Poller.GetValues(sensor['readingType'])
+
+        if sensor['hardwareType'] == 'dht11Poller':
+            values = dht11Poller.GetValues(sensor['readingType'])
 
         payload = {
             'value': values['value'],
@@ -56,7 +59,7 @@ class SensorManager:
 
         def checkSensor(self, sensor):
             if sensor['sensorId'] in self.sensorsBeingPolled and self.sensorsBeingPolled[sensor['sensorId']].is_alive():
-                print('sensor already exists and is healthy')
+                #print('sensor already exists and is healthy')
                 return 'healthy'
             self.startSensor(sensor)
             print('sensor is unhealthy')
@@ -70,6 +73,8 @@ class SensorManager:
                 result = module.GetValues(readingType)
             if poller == 'gpioPoller':
                 result = module.GetValues(sensor)
+            if poller == 'dht11Poller':
+                result == module.GetValues(readingType)
             return result
 
     instance = None

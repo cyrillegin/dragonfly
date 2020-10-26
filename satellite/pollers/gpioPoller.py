@@ -8,6 +8,7 @@ def readTemperature(deviceLocation):
 
 
 def GetValues(sensor):
+    print('gpio: Getting values for {}'.format(sensor))
     device = os.getenv('SENSOR_{}_META'.format(sensor))
     if device == 'fake':
         return {
@@ -28,7 +29,7 @@ def GetValues(sensor):
         temp_c = float(temp_string) / 1000.0
         temp_f = temp_c * 9.0 / 5.0 + 32.0
 
-        print('Temperature is currently: {}'.format(temp_f))
+        print('GPIOPoller: Temperature is currently: {}'.format(temp_f))
         newReading = {
             'timestamp': time.time() * 1000,
             'value': temp_f,
