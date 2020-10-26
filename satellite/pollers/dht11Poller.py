@@ -104,23 +104,19 @@ def read_dht11_dat():
 
     return the_bytes[0], the_bytes[2]
 
+def retryWrapper():
+    values = read_dht11_dat()
+    if values is False:
+        time.sleep(0.2)
+        return retryWrapper()
+    return values
 
 def GetValues(sensor):
-    print('dht: getting values for {}'.format(sensor))
-    tries = 0
-    while True:
-        if tries > 5:
-            print('failing')
-            raise Exception('Max tries')
-        print('trying dht')
-        values = read_dht11_dat()
-        if values is not False:
-            humidity, temperature = values
-            break
-        else:
-            time.sleep(1)
-        tries = tries + 1
+    values = retryWrapper()
+    if values is False:
+        raise Exception('Could not read, closing process')
     value = 0
+    humidity, temperature = values
     if sensor == 'humidity':
         value = humidity
     if sensor == 'temperature':
