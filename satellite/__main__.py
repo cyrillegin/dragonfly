@@ -6,6 +6,7 @@ import cherrypy
 from cherrypy.lib.static import serve_file
 from SensorManager import SensorManager
 
+cherrypy.config.update({'log.screen': False})
 
 class Root(object):
 

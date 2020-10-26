@@ -9,6 +9,7 @@ except:
 # "Altitude:     %.2f\n" % altitude
 
 def GetValues(sensor):
+    print('bmp: getting values for '.format(sensor))
     device = os.getenv('SENSOR_{}_META'.format(sensor))
     if device == 'fake':
         return {
@@ -21,15 +22,15 @@ def GetValues(sensor):
     if sensor == 'temperature':
         temp_c = bmp.read_temperature()
         value = temp_c / 5 * 9 + 32
-        print('Temperature is currently: {}'.format(value))
+        print('BMP180Poller: Temperature is currently: {}'.format(value))
     if sensor == 'pressure':
         pres = bmp.read_pressure()
         value = pres / 3386
-        print('Pressure is currently: {}'.format(value))
+        print('BMP180Poller: Pressure is currently: {}'.format(value))
     if sensor == 'altitude':
         meters = bmp.read_altitude()
         value = meters * 3.281
-        print('Altitude is currently: {}'.format(value))
+        print('BMP180Poller: Altitude is currently: {}'.format(value))
     newReading = {
         'timestamp': time.time() * 1000,
         'value': value,
