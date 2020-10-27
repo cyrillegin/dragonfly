@@ -136,3 +136,7 @@ For this sensor, we'll need to update the boot/config.txt.
 
 - `sudo vim /boot/config.txt`
 - find the line with `dtparam=i2c_arm` and make sure that it isn't commented out. (This may require a reboot)
+
+##### DHT 11
+
+No setup required other than wiring
