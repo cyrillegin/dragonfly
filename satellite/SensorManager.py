@@ -5,6 +5,7 @@ import requests
 import json
 import importlib
 from pollers import gpioPoller, bmp180Poller, dht11Poller
+import random
 
 availablePollers = ['gpioPoller', 'bmp180Poller', 'dht11Poller']
 
@@ -49,6 +50,9 @@ class SensorManager:
                 i = i + 1
             if sensorMeta == -1:
                 return
+            delay = random.randint(0,10)
+            print('delay: {}'.format(delay))
+            time.sleep(delay)
             sensor['meta'] = sensorMeta
             p = Process(target=query, args=(sensor, ))
             p.start()
