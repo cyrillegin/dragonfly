@@ -26,7 +26,7 @@ if [ "$noApt" == false ]; then
   sudo apt-get update
   sudo apt-get dist-upgrade -y
   sudo apt-get install screen -y
-  sudo apt autoremove
+  sudo apt autoremove -y
   echo "Apt successfully installed."
 fi
 

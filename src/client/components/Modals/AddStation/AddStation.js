@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
-/* eslint-disable prefer-destructuring */
 const AddStation = ({ className, close }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
@@ -12,7 +11,7 @@ const AddStation = ({ className, close }) => {
     setSuccess(false);
     setInput({
       ...input,
-      [event.currentTarget.name]: event.currentTarget.value,
+      [event.target.name]: event.target.value,
     });
   };
 

@@ -64,6 +64,12 @@ describe('validators', () => {
     expect(validateSensorParams(sensor).error).toEqual('Hardware name required');
 
     sensor.hardwareName = 'test';
+    expect(validateSensorParams(sensor).error).toEqual('Hardware type required');
+
+    sensor.hardwareType = 'test';
+    expect(validateSensorParams(sensor).error).toEqual('Reading type required');
+
+    sensor.readingType = 'test';
     expect(validateSensorParams(sensor).error).toBeFalsy();
   });
 

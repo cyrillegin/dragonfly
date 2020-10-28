@@ -40,6 +40,7 @@ router.post('/', async (req, res) => {
     hardwareType,
     readingType,
   });
+
   if (isValid.error) {
     res.status(400).send({ error: isValid.error });
     return;

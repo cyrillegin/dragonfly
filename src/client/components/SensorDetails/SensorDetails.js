@@ -91,8 +91,6 @@ const SensorDetails = ({ className, sensor }) => {
     date.getMonth() + 1
   }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
 
-  console.log(actions);
-
   return (
     <div className={className}>
       <div className="grid">

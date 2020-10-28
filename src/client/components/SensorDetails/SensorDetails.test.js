@@ -37,8 +37,8 @@ describe('SensorDetails', () => {
     global.Date = date;
   });
 
-  it('should render a snap shot', () => {
-    act(() => {
+  it('should render a snap shot', async () => {
+    await act(async () => {
       const wrapper = mount(
         <SensorDetails
           sensor={{
@@ -59,8 +59,8 @@ describe('SensorDetails', () => {
     });
   });
 
-  it('should test functionality', () => {
-    act(() => {
+  it('should test functionality', async () => {
+    await act(async () => {
       const wrapper = mount(
         <SensorDetails
           sensor={{

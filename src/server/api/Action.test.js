@@ -1,23 +1,44 @@
 import request from 'supertest';
 import express from 'express';
+import bodyParser from 'body-parser';
 import Action from './Action';
 
 jest.mock('../db', () => ({
   Action: {
     findAll: () => {},
+    create: () => {},
+    destroy: () => {},
   },
 }));
 
 describe('Action api', () => {
-  it.skip('should test post', done => {
+  it('should test post', done => {
     const app = express();
+    app.use(bodyParser.json());
     app.use(Action);
-    request(app).post('/').expect(200, done);
+
+    Promise.all([
+      request(app).post('/').send({}).expect(400),
+      request(app)
+        .post('/')
+        .send({
+          stationId: 'test',
+          sensorId: 'test',
+          condition: 'test',
+          action: 'test',
+          interval: 'test',
+          value: 'test',
+        })
+        .expect(200),
+    ]).then(() => done());
   });
 
-  it.skip('should test delete', done => {
+  it('should test delete', done => {
     const app = express();
     app.use(Action);
-    request(app).delete('/').expect(200, done);
+    Promise.all([
+      request(app).delete('/').expect(400),
+      request(app).delete('/?id=1').expect(200),
+    ]).then(() => done());
   });
 });

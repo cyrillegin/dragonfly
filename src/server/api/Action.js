@@ -20,6 +20,7 @@ const router = new Router();
  */
 router.post('/', async (req, res) => {
   console.info('POST request to action');
+
   const { stationId, sensorId, condition, action, interval, value } = req.body;
 
   const valid = validateActionParams(req.body);
