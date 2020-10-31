@@ -58,8 +58,8 @@ const styledLoader = styled(Loader)`
     }
 
     100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+      -webkit-transform: rotate(-360deg);
+      transform: rotate(-360deg);
     }
   }
 
@@ -70,8 +70,8 @@ const styledLoader = styled(Loader)`
     }
 
     100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+      -webkit-transform: rotate(-360deg);
+      transform: rotate(-360deg);
     }
   }
 
@@ -82,8 +82,8 @@ const styledLoader = styled(Loader)`
     }
 
     100% {
-      -webkit-transform: rotate(-360deg);
-      transform: rotate(-360deg);
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
     }
   }
 
@@ -94,8 +94,8 @@ const styledLoader = styled(Loader)`
     }
 
     100% {
-      -webkit-transform: rotate(-360deg);
-      transform: rotate(-360deg);
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
     }
   }
 `;

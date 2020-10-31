@@ -58,7 +58,7 @@ const validateSensorParams = params => {
 
 const validateSensorPollRate = pollRate => {
   const [, time, unit] = pollRate.split(/(\d+)/);
-  if (isNaN(parseInt(time, 10))) {
+  if (Number.isNaN(parseInt(time, 10))) {
     return { error: 'Time value not found in pollRate' };
   }
   if (!unit) {

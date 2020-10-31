@@ -26,8 +26,6 @@ const testSensor = (
     '?',
   );
 
-  console.log(kwargString);
-
   fetch(`http://${address}/sensorHealth${kwargString}`);
 };
 
