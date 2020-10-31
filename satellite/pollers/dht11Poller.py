@@ -1,10 +1,13 @@
-import RPi.GPIO as GPIO
+
 import time
+try:
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
+except:
+    print('could not import RPi, DHT11Poller will not be available.')
 
 #DHT11 connect to BCM_GPIO14
 DHTPIN = 14
-
-GPIO.setmode(GPIO.BCM)
 
 MAX_UNCHANGE_COUNT = 100
 
@@ -127,8 +130,3 @@ def GetValues(sensor):
     }
     print('DHT180Poller: {} is {}'.format(sensor, value))
     return newReading
-
-
-
-
-

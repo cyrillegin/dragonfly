@@ -9,15 +9,16 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageThreshold: {
     global: {
-      branches: 20,
-      functions: 20,
-      lines: 20,
-      statements: 20,
+      branches: 40,
+      functions: 40,
+      lines: 40,
+      statements: 40,
     },
   },
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   reporters: ['default', 'jest-junit'],
   setupFilesAfterEnv: ['<rootDir>utility/setupTests.js'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   verbose: false,
 };

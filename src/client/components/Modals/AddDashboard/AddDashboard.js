@@ -58,7 +58,7 @@ const AddDashboard = ({ className, close, stations }) => {
   };
 
   const handleAddDashboard = () => {
-    console.log('add');
+    console.info('add');
   };
 
   return (

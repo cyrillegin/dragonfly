@@ -3,7 +3,7 @@ import os
 try:
     import smbus
 except:
-    print('could not import smbus, BMP180Poller will not be able to be used.')
+    print('could not import smbus, BMP180Poller will not be available.')
 # "Temperature: %.2f C" % temp
 # "Pressure:    %.2f hPa" % (pressure / 100.0)
 # "Altitude:     %.2f\n" % altitude
