@@ -22,10 +22,16 @@ def GetValues(sensor):
     if sensor == 'temperature':
         temp_c = bmp.read_temperature()
         value = temp_c / 5 * 9 + 32
+        if value > 120 or value < -20:
+            print('Dirty reading for temperature, trying again.')
+            return GetValues(sensor)
         print('BMP180Poller: Temperature is currently: {}'.format(value))
     if sensor == 'pressure':
         pres = bmp.read_pressure()
         value = pres / 3386
+        if value > 26 or value < 20:
+            print('Dirty reading for pressure, trying again.')
+            return GetValues(sensor)
         print('BMP180Poller: Pressure is currently: {}'.format(value))
     if sensor == 'altitude':
         meters = bmp.read_altitude()
