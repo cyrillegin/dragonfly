@@ -82,6 +82,10 @@ const AddSensor = ({ className, close, address, port }) => {
       ) || {}
     ).sensorType;
 
+    if (params.name === 'fake') {
+      params.readingType = 'fake';
+    }
+
     fetch('/api/sensor/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -89,8 +93,12 @@ const AddSensor = ({ className, close, address, port }) => {
     })
       .then(res => res.json())
       .then(res => {
-        windowEmitter.emit('station-refresh');
-        close();
+        if (res.error) {
+          // add messaging
+        } else {
+          windowEmitter.emit('station-refresh');
+          close();
+        }
       });
   };
 

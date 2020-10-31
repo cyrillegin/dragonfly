@@ -89,13 +89,14 @@ const SensorDetails = ({ className, sensor }) => {
         break;
     }
   };
+  let datestring = 'No readings';
+  if (sensor.lastReading) {
+    const date = new Date(sensor.lastReading.timestamp);
 
-  const date = new Date(sensor.lastReading.timestamp);
-
-  const datestring = `${date.getDate()}-${
-    date.getMonth() + 1
-  }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
-
+    datestring = `${date.getDate()}-${
+      date.getMonth() + 1
+    }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+  }
   return (
     <div className={className}>
       <div className="grid">

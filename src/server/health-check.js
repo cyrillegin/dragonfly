@@ -26,6 +26,8 @@ const testSensor = (
     '?',
   );
 
+  console.log(kwargString);
+
   fetch(`http://${address}/sensorHealth${kwargString}`);
 };
 
@@ -55,7 +57,7 @@ const runHealthCheck = async () => {
 
       let pollRate = 300;
       if (sensor.poll_rate) {
-        const [, time, unit] = pollRate.split(/(\d+)/);
+        const [, time, unit] = sensor.poll_rate.split(/(\d+)/);
         switch (unit) {
           case 's':
             pollRate = parseInt(time, 10);
@@ -79,7 +81,7 @@ const runHealthCheck = async () => {
         sensor.hardwareName,
         sensor.hardwareType,
         sensor.readingType,
-        sensor.poll_rate,
+        pollRate,
       );
     });
   });
