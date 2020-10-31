@@ -187,7 +187,7 @@ router.post('/test', async (req, res) => {
   const { address, port, error } = validateStationParams(req.body);
 
   if (error) {
-    res.status(400).send(error);
+    res.status(400).send({ error });
     return;
   }
 

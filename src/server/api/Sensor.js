@@ -23,7 +23,7 @@ const router = new Router();
 router.post('/', async (req, res) => {
   console.info('POST request to sensor');
 
-  const {
+  let {
     stationId,
     hardwareName,
     hardwareType,
@@ -33,6 +33,11 @@ router.post('/', async (req, res) => {
     coefficients,
   } = req.body;
 
+  if (hardwareName === 'self-entry') {
+    readingType = 'unknown';
+    hardwareType = 'unknown';
+  }
+
   const isValid = validateSensorParams({
     name,
     stationId,
@@ -41,7 +46,7 @@ router.post('/', async (req, res) => {
     readingType,
   });
 
-  if (isValid.error) {
+  if (isValid.error && hardwareName !== 'self-entry') {
     res.status(400).send({ error: isValid.error });
     return;
   }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
-const AddDashboard = ({ className, close, stations }) => {
+const AddDashboard = ({ className, close, stations, updateTree }) => {
   const [sensors, setSensors] = useState([]);
   const [selection, setSelection] = useState('');
   const [availableSensors, setAvailableSensors] = useState([]);
@@ -59,6 +59,8 @@ const AddDashboard = ({ className, close, stations }) => {
 
   const handleAddDashboard = () => {
     console.info('add');
+    updateTree({}, 'dashboard');
+    close();
   };
 
   return (
@@ -126,6 +128,7 @@ AddDashboard.propTypes = {
       ).isRequired,
     }),
   ).isRequired,
+  updateTree: PropTypes.func.isRequired,
 };
 
 const styledAddDashboard = styled(AddDashboard)`

@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { searchToObject } from '../../../utilities/Window';
 
-const AddSensor = ({ className, close, address, port }) => {
+const AddSensor = ({ className, close, address, port, updateTree }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
   const [availableSensors, setSensors] = useState([]);
@@ -88,7 +88,10 @@ const AddSensor = ({ className, close, address, port }) => {
       body: JSON.stringify(params),
     })
       .then(res => res.json())
-      .then(res => {});
+      .then(res => {
+        updateTree(params, 'sensor');
+        close();
+      });
   };
 
   const preventClose = event => {
@@ -176,6 +179,7 @@ AddSensor.propTypes = {
   close: PropTypes.func.isRequired,
   address: PropTypes.string.isRequired,
   port: PropTypes.string.isRequired,
+  updateTree: PropTypes.func.isRequired,
 };
 
 const styledAddSensor = styled(AddSensor)`

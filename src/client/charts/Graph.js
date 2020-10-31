@@ -131,12 +131,14 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
     titleElem.text(title);
 
     if (readings.length === 0) {
-      // No readings text
-      svg
-        .append('text')
-        .text('No readings exist in this range :(')
-        .attr('text-anchor', 'middle')
-        .attr('transform', `translate(${width / 2},${height / 2})`);
+      if (!loading) {
+        // No readings text
+        svg
+          .append('text')
+          .text('No readings exist in this range :(')
+          .attr('text-anchor', 'middle')
+          .attr('transform', `translate(${width / 2},${height / 2})`);
+      }
 
       return (
         <div className={className}>

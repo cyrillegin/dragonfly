@@ -8,6 +8,11 @@ const TreeView = ({ className, stations, dashboards }) => {
   const [stationSelected, setStation] = useState('');
   const [selection, setSelection] = useState('');
   const [modal, toggleModal] = useState('');
+  const [availableStations, setAvailableStations] = useState([]);
+
+  useEffect(() => {
+    setAvailableStations(stations);
+  }, [stations]);
 
   const [dashboardModal, toggleDashboardModal] = useState(false);
 
@@ -39,21 +44,47 @@ const TreeView = ({ className, stations, dashboards }) => {
     toggleModal(type);
   };
 
+  const updateTree = (element, type) => {
+    if (type === 'station') {
+      setAvailableStations([element, ...availableStations]);
+    } else if (type === 'sensor') {
+      setAvailableStations([
+        ...availableStations.map(station => {
+          const sensors = [...station.sensors];
+          if (station.id === element.stationId) {
+            sensors.push(element);
+          }
+          return {
+            ...station,
+            sensors: [sensors],
+          };
+        }),
+      ]);
+    }
+  };
+
   return (
     <div className={className}>
-      {modal === 'AddStation' && <AddStation close={() => toggleModal('')} />}
+      {modal === 'AddStation' && (
+        <AddStation close={() => toggleModal('')} updateTree={updateTree} />
+      )}
       {modal === 'AddSensor' && (
         <AddSensor
           close={() => toggleModal('')}
-          address={stations.filter(station => station.id === stationSelected)[0].address}
-          port={stations.filter(station => station.id === stationSelected)[0].port}
+          address={availableStations.filter(station => station.id === stationSelected)[0].address}
+          port={availableStations.filter(station => station.id === stationSelected)[0].port}
+          updateTree={updateTree}
         />
       )}
       {dashboardModal && (
-        <AddDashboard stations={stations} close={() => toggleDashboardModal(false)} />
+        <AddDashboard
+          stations={availableStations}
+          close={() => toggleDashboardModal(false)}
+          updateTree={updateTree}
+        />
       )}
       <div className="section">Stations</div>
-      {stations.map(station => (
+      {availableStations.map(station => (
         <div key={station.id}>
           <div
             className={`station ${selection === `station-${station.id}` ? 'selected' : ''}`}
