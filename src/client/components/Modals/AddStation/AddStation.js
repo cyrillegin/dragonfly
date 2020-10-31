@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
+import { windowEmitter } from '../../../utilities/Window';
 
-const AddStation = ({ className, close, updateTree }) => {
+const AddStation = ({ className, close }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
   const [errorMessage, setError] = useState('');
@@ -67,7 +68,8 @@ const AddStation = ({ className, close, updateTree }) => {
       .then(res => {
         if (res.message === 'success') {
           setError('Station Added!');
-          updateTree(params, 'station');
+          windowEmitter.emit('station-refresh');
+          close();
         } else if (res.error) {
           setError(res.error);
         } else {
@@ -129,7 +131,6 @@ const AddStation = ({ className, close, updateTree }) => {
 AddStation.propTypes = {
   className: PropTypes.string.isRequired,
   close: PropTypes.func.isRequired,
-  updateTree: PropTypes.func.isRequired,
 };
 
 const styledAddStation = styled(AddStation)`

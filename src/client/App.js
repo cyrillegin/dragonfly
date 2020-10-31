@@ -4,10 +4,12 @@ import PropTypes from 'prop-types';
 import Header from './components/Header';
 import TreeView from './components/TreeView';
 import Dashboard from './components/Dashboard';
+import { windowEmitter } from './utilities/Window';
 
 const App = ({ className }) => {
   const [stations, setStations] = useState([]);
   const [dashboards, setDashboards] = useState([]);
+
   useEffect(() => {
     fetch('/api/station')
       .then(res => res.json())
@@ -20,6 +22,14 @@ const App = ({ className }) => {
       .then(res => {
         setDashboards(res);
       });
+
+    windowEmitter.listen('station-refresh', () => {
+      fetch('/api/station')
+        .then(res => res.json())
+        .then(res => {
+          setStations(res);
+        });
+    });
   }, []);
 
   return (

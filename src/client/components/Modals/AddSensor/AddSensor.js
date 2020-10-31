@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-import { searchToObject } from '../../../utilities/Window';
+import { searchToObject, windowEmitter } from '../../../utilities/Window';
 
-const AddSensor = ({ className, close, address, port, updateTree }) => {
+const AddSensor = ({ className, close, address, port }) => {
   const [input, setInput] = useState({});
   const [testSuccessfull, setSuccess] = useState(false);
   const [availableSensors, setSensors] = useState([]);
@@ -89,7 +89,7 @@ const AddSensor = ({ className, close, address, port, updateTree }) => {
     })
       .then(res => res.json())
       .then(res => {
-        updateTree(params, 'sensor');
+        windowEmitter.emit('station-refresh');
         close();
       });
   };
@@ -179,7 +179,6 @@ AddSensor.propTypes = {
   close: PropTypes.func.isRequired,
   address: PropTypes.string.isRequired,
   port: PropTypes.string.isRequired,
-  updateTree: PropTypes.func.isRequired,
 };
 
 const styledAddSensor = styled(AddSensor)`
