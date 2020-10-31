@@ -19,12 +19,15 @@ const BulkAdd = ({ className, close, stations }) => {
     let usedNames = [];
     if (cachedItems) {
       usedNames = cachedItems.split(':');
-
+      const date = new Date();
       setInput(
         usedNames.reduce(
           (acc, cur) => ({
             ...acc,
-            [cur]: { value: 0, date: new Date() },
+            [cur]: {
+              value: 0,
+              date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+            },
           }),
           {},
         ),
@@ -54,9 +57,13 @@ const BulkAdd = ({ className, close, stations }) => {
 
   const handleNewField = () => {
     setAvaliableSensors(availableSensors.filter(sensor => sensor.name !== selectedNewSensor));
+    const date = new Date();
     setInput({
       ...input,
-      [selectedNewSensor]: { value: 0, date: new Date() },
+      [selectedNewSensor]: {
+        value: 0,
+        date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      },
     });
   };
 
@@ -92,6 +99,7 @@ const BulkAdd = ({ className, close, stations }) => {
       }),
     }).then(() => {
       Store.refreshFn();
+      close();
     });
   };
 
@@ -129,6 +137,7 @@ const BulkAdd = ({ className, close, stations }) => {
     });
   };
 
+  console.log(input);
   return (
     <div className={className} onClick={close}>
       <div className="modal" onClick={preventClose}>
