@@ -137,7 +137,6 @@ const BulkAdd = ({ className, close, stations }) => {
     });
   };
 
-  console.log(input);
   return (
     <div className={className} onClick={close}>
       <div className="modal" onClick={preventClose}>

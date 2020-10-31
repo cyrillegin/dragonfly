@@ -2,12 +2,20 @@ import 'regenerator-runtime/runtime';
 import fetch from 'node-fetch';
 import { Station, Sensor, Action } from './db';
 
-const testSensor = (address, sensorId, stationId, hardwareName, hardwareType, readingType) => {
+const testSensor = (
+  address,
+  sensorId,
+  stationId,
+  hardwareName,
+  hardwareType,
+  readingType,
+  pollRate,
+) => {
   const kwargs = {
     sensorId,
     stationId,
     ip: process.env.IP,
-    pollRate: 300,
+    pollRate,
     hardwareName,
     hardwareType,
     readingType,
@@ -44,6 +52,26 @@ const runHealthCheck = async () => {
       console.info(
         `sending check to ${sensor.hardwareName} - ${sensor.readingType} at station ${station.id}`,
       );
+
+      let pollRate = 300;
+      if (sensor.poll_rate) {
+        const [, time, unit] = pollRate.split(/(\d+)/);
+        switch (unit) {
+          case 's':
+            pollRate = parseInt(time, 10);
+            break;
+          case 'm':
+            pollRate = time * 60;
+            break;
+          case 'h':
+            pollRate = time * 60 * 60;
+            break;
+          case 'd':
+            pollRate = time * 60 * 60 * 24;
+            break;
+        }
+      }
+
       testSensor(
         `${station.address}:${station.port}`,
         sensor.id,
@@ -51,6 +79,7 @@ const runHealthCheck = async () => {
         sensor.hardwareName,
         sensor.hardwareType,
         sensor.readingType,
+        sensor.poll_rate,
       );
     });
   });

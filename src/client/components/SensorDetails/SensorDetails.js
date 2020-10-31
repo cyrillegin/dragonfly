@@ -10,6 +10,7 @@ const SensorDetails = ({ className, sensor }) => {
   const [sensorName, updateSensorName] = useState(sensor.name || '');
   const [sensorDescription, updateSensorDescription] = useState(sensor.description || '');
   const [sensorCoefs, updateSensorCoefs] = useState(sensor.coefficients || '');
+  const [sensorPollRate, updateSensorPollRate] = useState(sensor.coefficients || '');
   const [sensorActions, updateSensorActions] = useState(sensor.actions);
   const [successMessage, updateSuccessMessage] = useState('');
   const [actions, setActions] = useState(
@@ -60,14 +61,15 @@ const SensorDetails = ({ className, sensor }) => {
         name: sensorName,
         description: sensorDescription === '' ? null : sensorDescription,
         coefficients: sensorCoefs === '' ? null : sensorCoefs,
+        pollRate: sensorPollRate === '' ? null : sensorPollRate,
       }),
     })
       .then(res => res.json())
       .then(res => {
-        updateSuccessMessage(res.message);
+        updateSuccessMessage(res.message || res.error);
         setTimeout(() => {
           updateSuccessMessage('');
-        }, 5000);
+        }, 15000);
       });
   };
 
@@ -81,6 +83,9 @@ const SensorDetails = ({ className, sensor }) => {
         break;
       case 'sensorCoefs':
         updateSensorCoefs(event.target.value);
+        break;
+      case 'sensorPollRate':
+        updateSensorPollRate(event.target.value);
         break;
     }
   };
@@ -122,6 +127,10 @@ const SensorDetails = ({ className, sensor }) => {
         <div className="item">
           Coefs:
           <input value={sensorCoefs} name="sensorCoefs" onChange={handleInputChange} />
+        </div>
+        <div className="item">
+          Poll rate:
+          <input value={sensorPollRate} name="sensorPollRate" onChange={handleInputChange} />
         </div>
 
         <div className="item">

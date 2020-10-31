@@ -53,8 +53,21 @@ const validateSensorParams = params => {
   if (!params.readingType) {
     return { error: 'Reading type required' };
   }
-
   return {};
+};
+
+const validateSensorPollRate = pollRate => {
+  const [, time, unit] = pollRate.split(/(\d+)/);
+  if (isNaN(parseInt(time, 10))) {
+    return { error: 'Time value not found in pollRate' };
+  }
+  if (!unit) {
+    return { error: 'Time unit not found in pollRate' };
+  }
+  if (!['s', 'm', 'h', 'd'].includes(unit)) {
+    return { error: 'Incorrect time unit, available units include: "s", "m", "h", "d"' };
+  }
+  return { success: 'success' };
 };
 
 const validateStationParams = params => {
@@ -81,5 +94,6 @@ export {
   validateActionParams,
   validateSensorParams,
   validateStationParams,
+  validateSensorPollRate,
   isIP,
 };

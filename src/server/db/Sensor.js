@@ -12,6 +12,7 @@ function buildSensorSchema(sequelize) {
       hardwareName: { type: DataTypes.STRING, allowNull: false },
       hardwareType: { type: DataTypes.STRING, allowNull: false },
       readingType: { type: DataTypes.STRING, allowNull: true },
+      poll_rate: { type: DataTypes.STRING, allowNull: true },
     },
     { sequelize, modelName: 'sensor' },
   );

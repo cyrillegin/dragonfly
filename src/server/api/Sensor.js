@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
 import { Sensor, Station, Action, Reading } from '../db';
-import { validateSensorParams } from '../utilities/Validators';
+import { validateSensorParams, validateSensorPollRate } from '../utilities/Validators';
 
 const router = new Router();
 /**
@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
     name,
     description,
     coefficients,
+    pollRate,
   } = req.body;
 
   if (hardwareName === 'self-entry') {
@@ -44,6 +45,7 @@ router.post('/', async (req, res) => {
     hardwareName,
     hardwareType,
     readingType,
+    pollRate,
   });
 
   if (isValid.error && hardwareName !== 'self-entry') {
@@ -61,6 +63,7 @@ router.post('/', async (req, res) => {
       readingType,
       description,
       coefficients,
+      pollRate,
     });
     console.info('new sensor added');
     res.status(200).send({ message: 'success' });
@@ -89,7 +92,7 @@ router.put('/', async (req, res) => {
   console.info('PUT request to sensor');
 
   // PUT specific validation
-  const { id } = req.body;
+  const { id, pollRate } = req.body;
   if (!id) {
     res.status(400).send({ error: 'Sensor id required' });
     return;
@@ -100,9 +103,21 @@ router.put('/', async (req, res) => {
     res.status(400).send({ error: 'Sensor not found' });
     return;
   }
+
+  if (pollRate) {
+    const pollValidation = validateSensorPollRate(pollRate);
+    if (pollValidation.error) {
+      res.status(400).send({ error: pollValidation.error });
+      return;
+    }
+  }
+
   const updates = Object.entries(req.body).reduce((acc, [key, value]) => {
     if (['name', 'description', 'coefficients'].includes(key)) {
       acc[key] = value;
+    }
+    if (key === 'pollRate') {
+      acc.poll_rate = value;
     }
     return acc;
   }, {});
