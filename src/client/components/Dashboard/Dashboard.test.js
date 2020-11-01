@@ -35,6 +35,18 @@ describe('dashboard', () => {
             ],
           },
         ]}
+        dashboards={[
+          {
+            name: 'test',
+            sensors: [
+              {
+                sensorId: 1,
+                stationId: 1,
+                position: 1,
+              },
+            ],
+          },
+        ]}
       />,
     );
     expect(wrapper).toMatchSnapshot();

@@ -166,7 +166,7 @@ TreeView.propTypes = {
       name: PropTypes.string.isRequired,
       sensors: PropTypes.arrayOf(
         PropTypes.shape({
-          sensorId: PropTypes.number.isRequired,
+          id: PropTypes.number.isRequired,
           stationId: PropTypes.number.isRequired,
           position: PropTypes.number.isRequired,
         }),

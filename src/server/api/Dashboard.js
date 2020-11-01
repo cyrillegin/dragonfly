@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { v4 as uuid } from 'uuid';
-import { Dashboard } from '../db';
+import { Dashboard, Sensor } from '../db';
 import { validateDashboardParams } from '../utilities/Validators';
 
 const router = new Router();
@@ -11,19 +11,30 @@ const router = new Router();
  *
  * returns {
  *   dashboards: [{
- *     id: 123
+ *     id: 123,
  *     dashboardId: "123-sdfg",
- *     stationId: 123
- *     sensorId: 123,
- *     position: 123
- *   }]
+ *     name: 'asdf',
+ *     sensors: [{
+ *       stationId: 123,
+ *       id: 123,
+ *       position: 123,
+ *       name: 'asdf',
+ *    }],
+ *  }]
  * }
  */
 router.get('/', async (req, res) => {
   console.info('GET request to dashboard');
-  const dashboards = await Dashboard.findAll();
+  const dashboards = await Dashboard.findAll({
+    include: [
+      {
+        model: Sensor,
+      },
+    ],
+  });
+
   let payload = {};
-  dashboards.forEach(dashboard => {
+  dashboards.forEach(async dashboard => {
     const id = dashboard.dashboard_id;
     if (!(id in payload)) {
       payload[id] = {
@@ -35,6 +46,7 @@ router.get('/', async (req, res) => {
       id: dashboard.sensor_id,
       stationId: dashboard.station_id,
       position: dashboard.position,
+      name: dashboard.sensors[0].name,
     });
   });
   payload = Object.entries(payload).map(([key, value]) => ({

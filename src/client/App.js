@@ -20,7 +20,6 @@ const App = ({ className }) => {
     fetch('/api/dashboard')
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         setDashboards(res);
       });
 

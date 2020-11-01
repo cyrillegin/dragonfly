@@ -38,8 +38,6 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
   const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  console.log(sensor);
-
   useEffect(() => {
     getReadings(sensor, setReadings, setLoading);
     Store.listen('refresh', () => {

@@ -75,10 +75,13 @@ const AddDashboard = ({ className, close, stations }) => {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
+        if (res.error) {
+          // setMessage
+          return;
+        }
+        windowEmitter.emit('station-refresh');
+        close();
       });
-    // windowEmitter.emit('station-refresh');
-    // close();
   };
 
   return (

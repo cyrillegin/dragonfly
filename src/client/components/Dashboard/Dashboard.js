@@ -25,9 +25,6 @@ const Dashboard = ({ className, stations, dashboards }) => {
         const curSensor = currentStation.sensors.find(sen => sen.id === sensorId);
         changeSensor(curSensor);
       } else {
-        console.log(dashboards);
-        console.log(dashboard);
-        console.log(stations);
         changeDashboard(dashboards.find(dash => dash.dashboardId === dashboard));
       }
     };
@@ -97,7 +94,7 @@ Dashboard.propTypes = {
       name: PropTypes.string.isRequired,
       sensors: PropTypes.arrayOf(
         PropTypes.shape({
-          sensorId: PropTypes.number.isRequired,
+          id: PropTypes.number.isRequired,
           stationId: PropTypes.number.isRequired,
           position: PropTypes.number.isRequired,
         }),
