@@ -3,6 +3,7 @@ import { buildStationSchema, Station } from './Station';
 import { buildSensorSchema, Sensor } from './Sensor';
 import { buildReadingSchema, Reading } from './Reading';
 import { buildActionSchema, Action } from './Action';
+import { buildDashboardSchema, Dashboard } from './Dashboard';
 
 const dbType = process.env.DATABASE_TYPE;
 const dbName = process.env.DATABASE_NAME;
@@ -19,6 +20,7 @@ buildStationSchema(sequelize);
 buildSensorSchema(sequelize);
 buildReadingSchema(sequelize);
 buildActionSchema(sequelize);
+buildDashboardSchema(sequelize);
 
 Station.hasMany(Sensor, { foreignKey: 'stationId', sourceKey: 'id' });
 Sensor.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
@@ -37,4 +39,4 @@ Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
 sequelize.sync();
 
-export { Sensor, Action, Reading, Station };
+export { Sensor, Action, Reading, Station, Dashboard };

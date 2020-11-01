@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
+import { windowEmitter } from '../../../utilities/Window';
 
-const AddDashboard = ({ className, close, stations, updateTree }) => {
+const AddDashboard = ({ className, close, stations }) => {
   const [sensors, setSensors] = useState([]);
   const [selection, setSelection] = useState('');
   const [availableSensors, setAvailableSensors] = useState([]);
@@ -58,9 +59,26 @@ const AddDashboard = ({ className, close, stations, updateTree }) => {
   };
 
   const handleAddDashboard = () => {
-    console.info('add');
-    updateTree({}, 'dashboard');
-    close();
+    const payload = {
+      name: dashboardName,
+      sensors: sensors.map((sensor, index) => ({
+        id: sensor.id,
+        stationId: sensor.stationId,
+        position: index,
+      })),
+    };
+
+    fetch('/api/dashboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+      });
+    // windowEmitter.emit('station-refresh');
+    // close();
   };
 
   return (
@@ -128,7 +146,6 @@ AddDashboard.propTypes = {
       ).isRequired,
     }),
   ).isRequired,
-  updateTree: PropTypes.func.isRequired,
 };
 
 const styledAddDashboard = styled(AddDashboard)`

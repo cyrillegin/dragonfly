@@ -8,30 +8,51 @@ const TreeView = ({ className, stations, dashboards }) => {
   const [stationSelected, setStation] = useState('');
   const [selection, setSelection] = useState('');
   const [modal, toggleModal] = useState('');
+  const [dashboardSelected, setDashboard] = useState('');
 
   const [dashboardModal, toggleDashboardModal] = useState(false);
 
   useEffect(() => {
-    const { station, sensor } = searchToObject();
+    const { station, sensor, dashboard } = searchToObject();
     if (station) {
-      setStation(parseInt(station.split('-')[1], 10));
-      setSelection(station);
+      const select = parseInt(station, 10);
+      setStation(select);
+      setSelection(select);
     }
     if (sensor) {
-      setSelection(sensor);
+      const select = parseInt(sensor, 10);
+      setSelection(select);
+      stations.forEach(sta => {
+        if (sta.sensors.find(sen => sen.id === select)) {
+          setStation(sta.id);
+        }
+      });
     }
-  }, [setStation, setSelection]);
+    if (dashboard) {
+      setDashboard(dashboard);
+    }
+  }, [setStation, setSelection, stations]);
 
   const handleSelection = (type, id) => {
     const select = `${type}-${id}`;
     setSelection(select);
 
+    removeFromHash('station');
+    removeFromHash('sensor');
+    removeFromHash('dashboard');
+
     if (type === 'station') {
       setStation(id);
-      removeFromHash('sensor');
-      addOrUpdateHash('station', select);
+      setSelection(id);
+      addOrUpdateHash('station', id);
+    } else if (type === 'sensor') {
+      setSelection(id);
+      addOrUpdateHash('sensor', id);
     } else {
-      addOrUpdateHash('sensor', select);
+      addOrUpdateHash('dashboard', id);
+      setStation('');
+      setSelection('');
+      setDashboard(id);
     }
   };
 
@@ -56,7 +77,7 @@ const TreeView = ({ className, stations, dashboards }) => {
       {stations.map(station => (
         <div key={station.id}>
           <div
-            className={`station ${selection === `station-${station.id}` ? 'selected' : ''}`}
+            className={`station ${selection === station.id ? 'selected' : ''}`}
             onClick={() => handleSelection('station', station.id)}
             onKeyDown={() => handleSelection('station', station.id)}
             role="button"
@@ -70,7 +91,11 @@ const TreeView = ({ className, stations, dashboards }) => {
               {station.sensors.map(sensor => (
                 <div
                   key={sensor.id}
-                  className={`sensor ${selection === `sensor-${sensor.id}` ? 'selected' : ''}`}
+                  className={`sensor ${
+                    window.location.search.includes('sensor') && selection === sensor.id
+                      ? 'selected'
+                      : ''
+                  }`}
                   onClick={() => handleSelection('sensor', sensor.id)}
                   onKeyDown={() => handleSelection('sensor', sensor.id)}
                   role="button"
@@ -104,7 +129,16 @@ const TreeView = ({ className, stations, dashboards }) => {
       </div>
       <div className="section">Dashboards</div>
       {dashboards.map(dashboard => (
-        <div>hi</div>
+        <div
+          key={dashboard.dashboardId}
+          className={`station${dashboard.dashboardId === dashboardSelected ? ' selected' : ''}`}
+          onClick={() => handleSelection('dashboard', dashboard.dashboardId)}
+          onKeyDown={() => handleSelection('dashbaord', dashboard.dashboardId)}
+          role="button"
+          tabIndex={0}
+        >
+          {dashboard.name}
+        </div>
       ))}
       <div onClick={toggleDashboardModal}>+ New dashboard</div>
     </div>
@@ -126,21 +160,19 @@ TreeView.propTypes = {
         }),
       ),
     }),
-  ),
+  ).isRequired,
   dashboards: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       sensors: PropTypes.arrayOf(
         PropTypes.shape({
-          name: PropTypes.string.isRequired,
+          sensorId: PropTypes.number.isRequired,
+          stationId: PropTypes.number.isRequired,
+          position: PropTypes.number.isRequired,
         }),
       ),
     }),
   ).isRequired,
-};
-
-TreeView.defaultProps = {
-  stations: [],
 };
 
 const styledTreeView = styled(TreeView)`

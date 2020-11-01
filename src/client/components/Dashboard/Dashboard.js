@@ -5,26 +5,30 @@ import Graph from '../../charts/Graph';
 import { windowEmitter, searchToObject } from '../../utilities/Window';
 import SensorDetails from '../SensorDetails';
 
-const Dashboard = ({ className, stations }) => {
+const Dashboard = ({ className, stations, dashboards }) => {
   const [currentStations, changeStations] = useState([]);
   const [currentSensor, changeSensor] = useState({});
+  const [currentDashboard, changeDashboard] = useState({});
 
   useEffect(() => {
     const setStations = () => {
-      const current = searchToObject();
-      if (current.station) {
-        const stationId = parseInt(current.station.replace('station-', ''), 10);
-        const currentStation = stations.filter(station => station.id === stationId)[0];
+      const { station, sensor, dashboard } = searchToObject();
+      if (station) {
+        const stationId = parseInt(station, 10);
+        const currentStation = stations.filter(sta => sta.id === stationId)[0];
         changeStations([currentStation]);
-        if (current.sensor) {
-          const sensorId = parseInt(current.sensor.replace('sensor-', ''), 10);
-          changeSensor(currentStation.sensors.filter(sensor => sensor.id === sensorId)[0]);
-        } else {
-          changeSensor({});
-        }
+      } else if (sensor) {
+        const sensorId = parseInt(sensor, 10);
+        const currentStation = stations.find(sta => sta.sensors.find(sen => sen.id === sensorId));
+        // console.log(currentStation);
+        changeStations([currentStation]);
+        const curSensor = currentStation.sensors.find(sen => sen.id === sensorId);
+        changeSensor(curSensor);
       } else {
-        changeSensor({});
-        changeStations(stations);
+        console.log(dashboards);
+        console.log(dashboard);
+        console.log(stations);
+        changeDashboard(dashboards.find(dash => dash.dashboardId === dashboard));
       }
     };
 
@@ -49,7 +53,7 @@ const Dashboard = ({ className, stations }) => {
             <div className="station" key={station.id}>
               {station.sensors.map(sensor => (
                 <div className="sensor" key={sensor.id}>
-                  <Graph station={station} sensor={sensor} renderTrigger={new Date()} />
+                  <Graph station={station.name} sensor={sensor} renderTrigger={new Date()} />
                 </div>
               ))}
             </div>
@@ -57,7 +61,17 @@ const Dashboard = ({ className, stations }) => {
         </>
       )}
 
-      {!currentSensor.id && !currentStations.length && <>Loading...</>}
+      {currentDashboard && currentDashboard.sensors && (
+        <div className="station">
+          {currentDashboard.sensors.map(sensor => (
+            <div className="sensor" key={sensor.id}>
+              <Graph name={currentDashboard.name} sensor={sensor} renderTrigger={new Date()} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!currentDashboard.sensors && !currentSensor.id && !currentStations.length && <>Loading...</>}
     </div>
   );
 };
@@ -74,6 +88,18 @@ Dashboard.propTypes = {
           id: PropTypes.number.isRequired,
           name: PropTypes.string.isRequired,
           health: PropTypes.oneOf(['healthy', 'unhealthy']),
+        }),
+      ),
+    }),
+  ).isRequired,
+  dashboards: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      sensors: PropTypes.arrayOf(
+        PropTypes.shape({
+          sensorId: PropTypes.number.isRequired,
+          stationId: PropTypes.number.isRequired,
+          position: PropTypes.number.isRequired,
         }),
       ),
     }),

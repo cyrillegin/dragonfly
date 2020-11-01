@@ -20,6 +20,7 @@ const App = ({ className }) => {
     fetch('/api/dashboard')
       .then(res => res.json())
       .then(res => {
+        console.log(res);
         setDashboards(res);
       });
 
@@ -38,7 +39,7 @@ const App = ({ className }) => {
       {stations.length && (
         <div className="main-container">
           <TreeView stations={stations} dashboards={dashboards} />
-          <Dashboard stations={stations} />
+          <Dashboard stations={stations} dashboards={dashboards} />
         </div>
       )}
     </div>

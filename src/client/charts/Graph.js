@@ -33,10 +33,12 @@ const getReadings = (sensor, setReadings, setLoading) => {
     });
 };
 
-const Graph = ({ className, station, sensor, renderTrigger }) => {
+const Graph = ({ className, name, sensor, renderTrigger }) => {
   const graphElement = useRef(null);
   const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  console.log(sensor);
 
   useEffect(() => {
     getReadings(sensor, setReadings, setLoading);
@@ -126,7 +128,7 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
     svg.append('path').data([readings]).attr('class', 'line').attr('d', valueline);
 
     // Title
-    let title = `${station.name} - ${sensor.name}`;
+    let title = `${name} - ${sensor.name}`;
     const titleElem = svg.append('text').attr('class', 'graph-title');
     titleElem.text(title);
 
@@ -177,7 +179,7 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
 
       const ts = readings[i].timestamp;
       const dateString = `${ts.getMonth()}/${ts.getDate()} - ${ts.getHours()}:${ts.getMinutes()}`;
-      title = `${station.name} - ${sensor.name} - ${dateString}`;
+      title = `${name} - ${sensor.name} - ${dateString}`;
       titleElem.text(title);
 
       tooltip.attr('display', 'inline');
@@ -277,7 +279,7 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
       .call(drag);
 
     d3.select('svg').on('mouseleave', () => {
-      title = `${station.name} - ${sensor.name}`;
+      title = `${name} - ${sensor.name}`;
       titleElem.text(title);
       tooltip.attr('display', 'none');
     });
@@ -295,10 +297,7 @@ const Graph = ({ className, station, sensor, renderTrigger }) => {
 
 Graph.propTypes = {
   className: PropTypes.string.isRequired,
-  station: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired,
+  name: PropTypes.string.isRequired,
   sensor: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
