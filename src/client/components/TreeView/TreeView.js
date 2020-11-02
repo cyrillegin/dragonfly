@@ -9,7 +9,6 @@ const TreeView = ({ className, stations, dashboards }) => {
   const [selection, setSelection] = useState('');
   const [modal, toggleModal] = useState('');
   const [dashboardSelected, setDashboard] = useState('');
-
   const [dashboardModal, toggleDashboardModal] = useState(false);
 
   useEffect(() => {
@@ -18,8 +17,10 @@ const TreeView = ({ className, stations, dashboards }) => {
       const select = parseInt(station, 10);
       setStation(select);
       setSelection(select);
+      setDashboard('');
     }
     if (sensor) {
+      setDashboard('');
       const select = parseInt(sensor, 10);
       setSelection(select);
       stations.forEach(sta => {
@@ -44,10 +45,12 @@ const TreeView = ({ className, stations, dashboards }) => {
     if (type === 'station') {
       setStation(id);
       setSelection(id);
+      setDashboard('');
       addOrUpdateHash('station', id);
     } else if (type === 'sensor') {
       setSelection(id);
       addOrUpdateHash('sensor', id);
+      setDashboard('');
     } else {
       addOrUpdateHash('dashboard', id);
       setStation('');
