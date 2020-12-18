@@ -13,7 +13,7 @@
       "jsx": true
     }
   },
-  "plugins": ["react", "import", "jest", "filenames", "emotion", "react-hooks"],
+  "plugins": ["react", "import", "jest", "filenames", "@emotion", "react-hooks"],
   "env": {
     "shared-node-browser": true,
     "es6": true,
@@ -201,10 +201,10 @@
     "react/jsx-curly-brace-presence": "error",
     "react/jsx-boolean-value": "error",
     "import/no-extraneous-dependencies": "off",
-    "emotion/jsx-import": "error",
-    "emotion/no-vanilla": "error",
-    "emotion/import-from-emotion": "error",
-    "emotion/styled-import": "error",
+    "@emotion/jsx-import": "error",
+    "@emotion/no-vanilla": "error",
+    "@emotion/import-from-emotion": "error",
+    "@emotion/styled-import": "error",
     "id-length": 2
   }
 }
