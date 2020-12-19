@@ -12,3 +12,6 @@ coverage/
 
 # Python
 *.pyc
+
+# Update secrets
+.secrets
