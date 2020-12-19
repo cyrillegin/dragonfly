@@ -1,15 +1,15 @@
 const path = require('path');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
-const HtmlWebpackChangeAssetsExtensionPlugin = require('html-webpack-change-assets-extension-plugin');
+// const CompressionPlugin = require('compression-webpack-plugin');
+// const HtmlWebpackChangeAssetsExtensionPlugin = require('html-webpack-change-assets-extension-plugin');
 
 module.exports = {
-  entry: ['./src/index.js'],
+  entry: ['./src/client/index'],
   mode: 'production',
-  devtool: 'source-map',
+  devtool: false,
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist/public'),
   },
   optimization: {
@@ -17,6 +17,12 @@ module.exports = {
       chunks: 'all',
     },
   },
+  performance: {
+    hints: 'warning',
+    maxAssetSize: 200000,
+    maxEntrypointSize: 400000,
+  },
+  stats: 'errors-warnings',
   module: {
     rules: [
       {

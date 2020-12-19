@@ -3,10 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
-  entry: ['./src/index.js'],
+  entry: ['./src/client/index.js'],
   mode: 'development',
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist/public'),
   },
   optimization: {
@@ -14,6 +14,7 @@ module.exports = {
       chunks: 'all',
     },
   },
+  stats: 'errors-warnings',
   module: {
     rules: [
       {
