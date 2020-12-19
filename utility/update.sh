@@ -4,14 +4,14 @@ curl -X POST -H 'Content-type: application/json' --data '{"text":"Backup and upd
 
 # Declare backup vars
 currentDate=$(date +'%m-%d-%Y')
-backupFile=backup-"$currentDate".sql
+backupFile=backup-"$currentDate".XXXXXXX
 backupPath=$(mktemp /tmp/$backupFile)
 
 # Generate the backup file
 exec 3>"$backupPath"
-docker exec -it dragonfly_postgres_1 pg_dump db -U user > "${backupPath}"
+pg_dump db > "${backupPath}"
 
-# Send to S3
+#Send to S3
 aws s3api put-object --bucket cyrille-dragonfly --key backups/$backupFile --body $backupPath
 # Remove temp file
 rm $backupPath
@@ -33,11 +33,11 @@ git pull
 # update npm
 npm i
 
+# rebuild server
+npm run build:server:prod
+
 # rebuild front end in prod
 npm run build:client:prod
-
-# rebuild back end in prod
-npm run build:server:prod
 
 # restart server
 screen -X -S "server" quit
