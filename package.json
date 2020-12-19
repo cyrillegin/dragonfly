@@ -4,7 +4,7 @@
     "@emotion/core": "11.0.0",
     "@emotion/react": "11.1.2",
     "@emotion/styled": "11.0.0",
-    "d3": "5.16.0",
+    "d3": "6.3.1",
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "express-static-gzip": "2.1.0",

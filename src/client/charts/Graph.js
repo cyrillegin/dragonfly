@@ -167,8 +167,8 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
 
     // Handle tooltip movement
     // non arrow function required here for 'this' scope
-    d3.select('svg').on('mousemove', function () {
-      const x0 = xScale.invert(d3.mouse(this)[0] - margin.left);
+    d3.select('svg').on('mousemove', event => {
+      const x0 = xScale.invert(d3.pointer(event)[0] - margin.left);
       let i = d3.bisector(d => d.timestamp).right(readings, x0, 1);
       // Prevents out of bounds exception
       if (i > readings.length - 1) {
@@ -221,13 +221,9 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
     let dragEnd = 0;
     const drag = d3
       .drag()
-      .on('drag', function (d, i) {
-        const x0 = xScale.invert(d3.mouse(this)[0]);
-        let index = d3.bisector(datum => datum.timestamp).right(readings, x0, 1);
-        // Prevents out of bounds exception
-        if (i > readings.length - 1) {
-          index = readings.length - 1;
-        }
+      .on('drag', (event, d) => {
+        const x0 = xScale.invert(d3.pointer(event)[0]);
+        const index = d3.bisector(datum => datum.timestamp).right(readings, x0, 1);
 
         if (xScale(readings[index].timestamp) - margin.left > dragStartPos + margin.right) {
           selectionBox.attr(
@@ -245,8 +241,8 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
           );
         }
       })
-      .on('end', function (d, i) {
-        dragEnd = d3.mouse(this)[0] - margin.right;
+      .on('end', (event, d) => {
+        dragEnd = d3.pointer(event)[0] - margin.right;
         if (Math.abs(dragStart - dragEnd) < 10) return;
 
         const x0 = xScale.invert(dragStart);
@@ -260,9 +256,9 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
       });
 
     d3.select('svg')
-      .on('mousedown', function () {
+      .on('mousedown', (event, d) => {
         selectionBox.attr('fill', '#b7ff64');
-        dragStart = d3.mouse(this)[0] - margin.right;
+        dragStart = d3.pointer(event)[0] - margin.right;
 
         let index = d3
           .bisector(datum => datum.timestamp)
