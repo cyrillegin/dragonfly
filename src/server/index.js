@@ -32,6 +32,7 @@ app.use(express.json({ type: ['application/*+json', 'application/json'] }));
 app.use(api);
 
 fork('./dist/health-check.js');
+fork('./dist/actions/actions.js');
 
 app.listen(process.env.SERVER_PORT, () => {
   console.info(`App started on port ${process.env.SERVER_PORT}`);
