@@ -1,55 +1,75 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
+import { AddAction } from '../Modals';
 
 const actionProperties = ['value', 'condition', 'action', 'interval', 'metaData'];
-const actionConditions = ['gt', 'gte'];
+const actionConditions = ['gt', 'gte', 'eq', 'lt', 'lte'];
 
 const SensorDetails = ({ className, sensor }) => {
-  const [sensorName, updateSensorName] = useState(sensor.name || '');
-  const [sensorDescription, updateSensorDescription] = useState(sensor.description || '');
-  const [sensorCoefs, updateSensorCoefs] = useState(sensor.coefficients || '');
-  const [sensorPollRate, updateSensorPollRate] = useState(sensor.coefficients || '');
-  const [sensorActions, updateSensorActions] = useState(sensor.actions);
-  const [successMessage, updateSuccessMessage] = useState('');
-  const [actions, setActions] = useState(
-    sensor.actions.reduce(
-      (acc, cur) => ({
-        ...acc,
-        ...actionProperties.reduce(
-          (innerAcc, innerCur) => ({
-            ...innerAcc,
-            [`${cur.id}-${innerCur}`]: cur[innerCur] || '',
-          }),
-          {},
-        ),
-      }),
-      {},
-    ),
-  );
+  const [sensorDetails, setSensorDetails] = useState({
+    name: sensor.name || '',
+    description: sensor.description || '',
+    coefficients: sensor.coefficients || '',
+    pollRate: sensor.pollRate || '',
+  });
 
-  const handleActionUpdate = (id, field, value) => {
-    setActions({
-      ...actions,
-      [`${id}-${field}`]: value,
+  const [successMessage, updateSuccessMessage] = useState('');
+  const [actionModal, updateActionModal] = useState({});
+  const [actionMessage, setActionMessage] = useState('');
+
+  const addAction = action => {
+    updateActionModal({ id: -1 });
+  };
+
+  const editAction = action => {
+    updateActionModal(action);
+  };
+
+  const deleteAction = action => {
+    fetch(`/api/action/${action.id}`, {
+      method: 'DELETE',
+    }).then(() => {
+      // refresh
     });
   };
 
-  const changeType = type => {
-    // console.log('change');
+  const saveAction = action => {
+    const body = {
+      stationId: sensor.stationId,
+      sensorId: sensor.id,
+      ...action,
+    };
+    let method = '';
+    if (action.id === -1) {
+      method = 'POST';
+      delete body.id;
+    } else {
+      method = 'PUT';
+    }
+
+    fetch('/api/action', {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (res.error) {
+          setActionMessage(res.error);
+        } else {
+          updateActionModal({});
+          // refresh
+        }
+      });
   };
 
-  const editAction = id => {
-    // console.log('editing');
-  };
-
-  const addAction = () => {
-    // console.log('adding actions');
+  const cancelAction = () => {
+    updateActionModal({});
   };
 
   const handleSaveInput = () => {
-    if (sensorName === '') {
+    if (sensorDetails.name === '') {
       updateSuccessMessage('Name must be something');
       return;
     }
@@ -58,10 +78,10 @@ const SensorDetails = ({ className, sensor }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         id: sensor.id,
-        name: sensorName,
-        description: sensorDescription === '' ? null : sensorDescription,
-        coefficients: sensorCoefs === '' ? null : sensorCoefs,
-        pollRate: sensorPollRate === '' ? null : sensorPollRate,
+        name: sensorDetails.name,
+        description: sensorDetails.description === '' ? null : sensorDetails.description,
+        coefficients: sensorDetails.Coefs === '' ? null : sensorDetails.coefficients,
+        pollRate: sensorDetails.pollRate === '' ? null : sensorDetails.pollRate,
       }),
     })
       .then(res => res.json())
@@ -74,20 +94,7 @@ const SensorDetails = ({ className, sensor }) => {
   };
 
   const handleInputChange = event => {
-    switch (event.target.name) {
-      case 'sensorName':
-        updateSensorName(event.target.value);
-        break;
-      case 'sensorDescription':
-        updateSensorDescription(event.target.value);
-        break;
-      case 'sensorCoefs':
-        updateSensorCoefs(event.target.value);
-        break;
-      case 'sensorPollRate':
-        updateSensorPollRate(event.target.value);
-        break;
-    }
+    setSensorDetails({ ...sensorDetails, [event.target.name]: event.target.value });
   };
   let datestring = 'No readings';
   if (sensor.lastReading) {
@@ -99,6 +106,16 @@ const SensorDetails = ({ className, sensor }) => {
   }
   return (
     <div className={className}>
+      {actionModal.id && (
+        <AddAction
+          action={actionModal}
+          actionConditions={actionConditions}
+          message={actionMessage}
+          save={saveAction}
+          cancel={cancelAction}
+        />
+      )}
+      <div className="title">Sensor Details</div>
       <div className="grid">
         <div className="item">
           Station:
@@ -118,20 +135,28 @@ const SensorDetails = ({ className, sensor }) => {
         </div>
 
         <div className="item">
-          Update name:
-          <input value={sensorName} name="sensorName" onChange={handleInputChange} />
+          Name:
+          <input value={sensorDetails.name} name="name" onChange={handleInputChange} />
         </div>
         <div className="item">
           Description
-          <input value={sensorDescription} name="sensorDescription" onChange={handleInputChange} />
+          <input
+            value={sensorDetails.description}
+            name="description"
+            onChange={handleInputChange}
+          />
         </div>
         <div className="item">
-          Coefs:
-          <input value={sensorCoefs} name="sensorCoefs" onChange={handleInputChange} />
+          Coefficients:
+          <input
+            value={sensorDetails.coefficients}
+            name="coefficients"
+            onChange={handleInputChange}
+          />
         </div>
         <div className="item">
           Poll rate:
-          <input value={sensorPollRate} name="sensorPollRate" onChange={handleInputChange} />
+          <input value={sensorDetails.pollRate} name="pollRate" onChange={handleInputChange} />
         </div>
 
         <div className="item">
@@ -142,38 +167,37 @@ const SensorDetails = ({ className, sensor }) => {
         </div>
       </div>
 
-      <div className="actions-title">Actions</div>
-      <div className="actions-grid">
-        {actionProperties.map(prop => (
-          <div className="actions-item" key={prop}>
-            {prop}
-          </div>
-        ))}
+      <div className="title">Actions</div>
 
-        {sensorActions.map(action => (
-          <React.Fragment key={action.id}>
-            <input
-              type="number"
-              value={actions[`${action.id}-value`]}
-              onChange={event => handleActionUpdate(action.id, 'value', event.target.value)}
-              className="actions-item"
-            />
+      <div className="actions-grid">
+        <div className="action-row">
+          {actionProperties.map(prop => (
+            <div className="actions-item" key={prop}>
+              {prop}
+            </div>
+          ))}
+          <div />
+          <div />
+        </div>
+
+        {sensor.actions.map(action => (
+          <div className="action-row" key={action.id}>
+            <div className="actions-item">{action.value}</div>
             <div className="actions-item">{action.condition}</div>
             <div className="actions-item">{action.action}</div>
-            <input
-              type="text"
-              value={actions[`${action.id}-interval`]}
-              onChange={event => handleActionUpdate(action.id, 'interval', event.target.value)}
-              className="actions-item"
-            />
-            <input
-              type="text"
-              value={actions[`${action.id}-metaData`]}
-              onChange={event => handleActionUpdate(action.id, 'metaData', event.target.value)}
-              className="actions-item"
-            />
-          </React.Fragment>
+            <div className="actions-item">{action.interval}</div>
+            <div className="actions-item">{action.metaData}</div>
+            <button type="button" onClick={() => editAction(action)}>
+              Edit
+            </button>
+            <button type="button" onClick={() => deleteAction(action)}>
+              Delete
+            </button>
+          </div>
         ))}
+        <button className="add-button" type="button" onClick={addAction}>
+          +
+        </button>
       </div>
     </div>
   );
@@ -189,6 +213,7 @@ SensorDetails.propTypes = {
     health: PropTypes.oneOf(['healthy', 'unhealthy']),
     stationId: PropTypes.number.isRequired,
     stationName: PropTypes.string.isRequired,
+    pollRate: PropTypes.number,
     lastReading: PropTypes.shape({
       timestamp: PropTypes.string.isRequired,
       value: PropTypes.number.isRequired,
@@ -226,14 +251,27 @@ const styledSensorDetails = styled(SensorDetails)`
     }
   }
 
-  .actions-title {
+  .title {
+    font-size: 24px;
   }
 
   .actions-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    margin-bottom: 36px;
 
-    .actions-item {
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      height: 40px;
+
+      &:first-of-type {
+        background: #c8ffc8;
+      }
+    }
+
+    .add-button {
+      width: 24px;
+      margin-bottom: 10rem;
     }
   }
 `;
