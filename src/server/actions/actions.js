@@ -1,5 +1,6 @@
 import 'regenerator-runtime/runtime';
-import { Action, Reading } from '../db';
+import { Action, Reading, Sensor } from '../db';
+import sendSlack from './slack';
 
 const processes = {};
 
@@ -17,9 +18,48 @@ const makeCheck = async action => {
       sensorId: action.sensorId,
     },
   });
+  let alert = null;
   lastReadings.forEach(reading => {
-    console.log(reading.value);
+    switch (action.condition) {
+      case 'gt':
+        if (parseFloat(reading.value) > parseFloat(action.value)) {
+          alert = reading;
+        }
+        break;
+      case 'gte':
+        if (parseFloat(reading.value) >= parseFloat(action.value)) {
+          alert = reading;
+        }
+        break;
+      case 'eq':
+        if (parseFloat(reading.value) === parseFloat(action.value)) {
+          alert = reading;
+        }
+        break;
+      case 'lt':
+        if (parseFloat(reading.value) < parseFloat(action.value)) {
+          alert = reading;
+        }
+        break;
+      case 'lte':
+        if (parseFloat(reading.value) <= parseFloat(action.value)) {
+          alert = reading;
+        }
+        break;
+    }
   });
+  if (alert) {
+    const details = {
+      action: { ...action.dataValues },
+      reading: alert,
+      sensor: (await Sensor.findAll({ where: { id: action.sensorId } }))[0],
+    };
+    console.log('alert');
+    switch (action.action) {
+      case 'slack':
+        sendSlack(details);
+    }
+  }
 };
 
 const manageProcess = async () => {
