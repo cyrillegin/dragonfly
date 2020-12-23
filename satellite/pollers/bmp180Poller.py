@@ -36,6 +36,9 @@ def GetValues(sensor):
     if sensor == 'altitude':
         meters = bmp.read_altitude()
         value = meters * 3.281
+        if value > 10000 or value < 5000:
+            print('Dirty reading for pressure, trying again.')
+            return GetValues(sensor)
         print('BMP180Poller: Altitude is currently: {}'.format(value))
     newReading = {
         'timestamp': time.time() * 1000,

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Op } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 import { Reading } from '../db';
 import { validateReadingParams } from '../utilities/Validators';
 
@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
     start = tempDate;
   }
 
-  const readings = await Reading.findAll({
+  let readings = await Reading.findAll({
     where: {
       sensorId,
       timestamp: {
@@ -55,6 +55,9 @@ router.get('/', async (req, res) => {
     },
     order: [['timestamp', 'ASC']],
   });
+
+  // do better
+  readings = readings.filter((reading, index) => index % 10 === 0);
   res.send(readings);
 });
 
