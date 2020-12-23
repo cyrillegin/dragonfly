@@ -53,7 +53,7 @@ const AddSensor = ({ className, close, address, port }) => {
       ...input,
     };
 
-    params.stationId = parseInt(searchToObject().station.split('-')[1], 10);
+    params.stationId = parseInt(searchToObject().station, 10);
 
     fetch('/api/sensor/test', {
       method: 'POST',
@@ -75,7 +75,7 @@ const AddSensor = ({ className, close, address, port }) => {
       ...input,
     };
 
-    params.stationId = parseInt(searchToObject().station.split('-')[1], 10);
+    params.stationId = parseInt(searchToObject().station, 10);
     params.hardwareType = (
       availableSensors.find(
         sensor => sensor.name === input.hardwareName && sensor.readingType === input.readingType,

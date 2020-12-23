@@ -16,6 +16,7 @@ class Root(object):
     def sensorCheck(self, *args, **kwargs):
         print('checking sensor')
         i = 0
+
         while True:
             sensor = os.getenv('SENSOR_{}_HARDWARE_NAME'.format(i))
             if sensor is None:
@@ -63,6 +64,7 @@ class Root(object):
             sensorType = os.getenv('SENSOR_{}_POLLER'.format(i))
             sensors.append({"name": sensor, 'readingType': readingType, 'sensorType': sensorType})
             i += 1
+
 
         cherrypy.response.headers['Content-Type'] = "application/json"
         return json.dumps(sensors)
