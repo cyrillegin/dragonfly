@@ -75,4 +75,4 @@ const manageProcess = async () => {
 };
 
 // Check every hour for any updates
-setInterval(manageProcess, 1000); // 1000 * 60 * 60);
+setInterval(manageProcess, 1000 * 60 * 60);

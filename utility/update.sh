@@ -19,7 +19,8 @@ rm $backupPath
 curl -X POST -H 'Content-type: application/json' --data '{"text":"Backup complete."}' $SLACK_URL
 
 # check if master has changes
-if [[ -z $(git status -s) ]]
+git remote update
+if [[ -z $(git status -uno) ]]
 then
   echo "No new updates in master"
   curl -X POST -H 'Content-type: application/json' --data '{"text":"No new updates found."}' $SLACK_URL
