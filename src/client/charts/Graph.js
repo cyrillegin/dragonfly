@@ -119,6 +119,17 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
       .call(g => g.selectAll('.tick line').attr('x2', width).attr('class', 'tick-line'))
       .call(g => g.selectAll('.tick text').attr('x', -4));
 
+    // Left axis title
+    if (sensor.unit) {
+      svg
+        .append('text')
+        .attr('text-anchor', 'end')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', -margin.left + 20)
+        .attr('x', -height / 2)
+        .text(sensor.unit);
+    }
+
     // Right axis
     svg
       .append('line')
@@ -212,7 +223,7 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
 
       tooltip
         .select('text')
-        .text(readings[i].value.toFixed(2))
+        .text(`${readings[i].value.toFixed(2)} ${sensor.unit}`)
         .attr(
           'transform',
           `translate(${xScale(readings[i].timestamp) - margin.right + 10}, ${yScale(
@@ -310,6 +321,7 @@ Graph.propTypes = {
   sensor: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
+    unit: PropTypes.string,
   }).isRequired,
   /* This is used for the dashboard component to cause a
    * re-fetching of readings. Possible reasons are:

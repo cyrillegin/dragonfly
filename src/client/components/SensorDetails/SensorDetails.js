@@ -12,6 +12,7 @@ const SensorDetails = ({ className, sensor }) => {
     description: sensor.description || '',
     coefficients: sensor.coefficients || '',
     pollRate: sensor.pollRate || '',
+    unit: sensor.unit || '',
   });
 
   const [successMessage, updateSuccessMessage] = useState('');
@@ -82,6 +83,7 @@ const SensorDetails = ({ className, sensor }) => {
         description: sensorDetails.description === '' ? null : sensorDetails.description,
         coefficients: sensorDetails.Coefs === '' ? null : sensorDetails.coefficients,
         pollRate: sensorDetails.pollRate === '' ? null : sensorDetails.pollRate,
+        unit: sensorDetails.unit === '' ? null : sensorDetails.unit,
       }),
     })
       .then(res => res.json())
@@ -153,6 +155,10 @@ const SensorDetails = ({ className, sensor }) => {
             name="coefficients"
             onChange={handleInputChange}
           />
+        </div>
+        <div className="item">
+          Unit:
+          <input value={sensorDetails.unit} name="unit" onChange={handleInputChange} />
         </div>
         <div className="item">
           Poll rate:

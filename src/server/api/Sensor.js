@@ -32,6 +32,7 @@ router.post('/', async (req, res) => {
     description,
     coefficients,
     pollRate,
+    unit,
   } = req.body;
 
   if (hardwareName === 'self-entry') {
@@ -46,6 +47,7 @@ router.post('/', async (req, res) => {
     hardwareType,
     readingType,
     pollRate,
+    unit,
   });
 
   if (isValid.error && hardwareName !== 'self-entry') {
@@ -64,6 +66,7 @@ router.post('/', async (req, res) => {
       description,
       coefficients,
       pollRate,
+      unit,
     });
     console.info('new sensor added');
     res.status(200).send({ message: 'success' });
@@ -113,7 +116,7 @@ router.put('/', async (req, res) => {
   }
 
   const updates = Object.entries(req.body).reduce((acc, [key, value]) => {
-    if (['name', 'description', 'coefficients'].includes(key)) {
+    if (['name', 'description', 'coefficients', 'unit'].includes(key)) {
       acc[key] = value;
     }
     if (key === 'pollRate') {
