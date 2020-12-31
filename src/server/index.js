@@ -7,9 +7,11 @@ import fetch from 'node-fetch';
 import express from 'express';
 import bodyParser from 'body-parser';
 import api from './api';
-import './db';
+import { buildSchema } from './db';
 
 const app = express();
+
+buildSchema();
 
 // app.use('/', expressStaticGzip(path.join(__dirname, '/public/')));
 

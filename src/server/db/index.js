@@ -16,29 +16,39 @@ const connectionString = `${dbType}://${dbUser}:${dbPassword}@${dbHost}:${dbPort
 
 const sequelize = new Sequelize(connectionString, { logging: false });
 
-buildStationSchema(sequelize);
-buildSensorSchema(sequelize);
-buildReadingSchema(sequelize);
-buildActionSchema(sequelize);
-buildDashboardSchema(sequelize);
+const addRelationships = async () => {
+  await Station.hasMany(Sensor, { foreignKey: 'stationId', sourceKey: 'id' });
+  await Sensor.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
-Station.hasMany(Sensor, { foreignKey: 'stationId', sourceKey: 'id' });
-Sensor.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
+  await Sensor.hasMany(Action, { foreignKey: 'sensorId', sourceKey: 'id' });
+  await Action.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
 
-Sensor.hasMany(Action, { foreignKey: 'sensorId', sourceKey: 'id' });
-Action.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
+  await Sensor.hasMany(Reading, { foreignKey: 'sensorId', sourceKey: 'id' });
+  await Reading.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
 
-Sensor.hasMany(Reading, { foreignKey: 'sensorId', sourceKey: 'id' });
-Reading.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
+  await Station.hasMany(Reading, { foreignKey: 'stationId', sourceKey: 'id' });
+  await Reading.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
-Station.hasMany(Reading, { foreignKey: 'stationId', sourceKey: 'id' });
-Reading.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
+  await Station.hasMany(Action, { foreignKey: 'stationId', sourceKey: 'id' });
+  await Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
-Station.hasMany(Action, { foreignKey: 'stationId', sourceKey: 'id' });
-Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
+  await Dashboard.hasMany(Sensor, { foreignKey: 'id', sourceKey: 'sensor_id' });
 
-Dashboard.hasMany(Sensor, { foreignKey: 'id', sourceKey: 'sensor_id' });
+  sequelize.sync();
+};
 
-sequelize.sync();
+const buildSchema = async () => {
+  await buildStationSchema(sequelize);
+  await buildSensorSchema(sequelize);
+  await buildReadingSchema(sequelize);
+  await buildActionSchema(sequelize);
+  await buildDashboardSchema(sequelize);
 
-export { Sensor, Action, Reading, Station, Dashboard };
+  sequelize.sync();
+
+  return setTimeout(() => {
+    addRelationships();
+  });
+};
+
+export { Sensor, Action, Reading, Station, Dashboard, buildSchema };
