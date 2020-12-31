@@ -7,7 +7,7 @@ import Store from '../../utilities/Store';
 
 const Header = ({ className, stations }) => {
   const [addModalIsOpen, toggleAddModalIsOpen] = useState(false);
-  const [refreshRate, setRefreshRate] = useState(60);
+  const [refreshRate, setRefreshRate] = useState(60 * 20);
   const [time, setTime] = useState({ start: '', end: '' });
 
   useEffect(() => {
