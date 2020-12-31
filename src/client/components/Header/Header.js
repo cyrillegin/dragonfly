@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-import { addOrUpdateHash, removeFromHash, searchToObject } from '../../utilities/Window';
+import {
+  addOrUpdateHash,
+  removeFromHash,
+  searchToObject,
+  windowEmitter,
+} from '../../utilities/Window';
 import BulkAdd from '../Modals/BulkAdd';
 import Store from '../../utilities/Store';
 
@@ -41,6 +46,10 @@ const Header = ({ className, stations }) => {
       ...time,
       [setting]: newTime || '',
     });
+  };
+
+  const handleRefresh = () => {
+    windowEmitter.emit('station-refresh');
   };
 
   return (
@@ -83,6 +92,9 @@ const Header = ({ className, stations }) => {
           <option value={60 * 5}>5m</option>
           <option value={60 * 20}>20m</option>
         </select>
+        <button type="button" onClick={handleRefresh}>
+          Refresh now
+        </button>
       </div>
     </div>
   );
