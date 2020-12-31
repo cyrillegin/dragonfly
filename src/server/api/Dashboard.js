@@ -42,11 +42,14 @@ router.get('/', async (req, res) => {
         sensors: [],
       };
     }
+
     payload[id].sensors.push({
       id: dashboard.sensor_id,
       stationId: dashboard.station_id,
       position: dashboard.position,
       name: dashboard.sensors[0].name,
+      unit: dashboard.sensors[0].unit,
+      coefficients: dashboard.sensors[0].coefficients,
     });
   });
   payload = Object.entries(payload).map(([key, value]) => ({

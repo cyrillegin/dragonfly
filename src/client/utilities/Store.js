@@ -1,5 +1,5 @@
 class Store {
-  refreshRate = 60;
+  refreshRate = 60 * 20;
 
   constructor() {
     this.refreshInterval = setInterval(this.refreshFn, this.refreshRate * 1000);
