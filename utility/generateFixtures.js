@@ -54,6 +54,13 @@ const slackAction = {
   value: 5,
 };
 
+const diskSpace = {
+  name: 'FIXTURE - Disk space',
+  hardwareName: 'cpu',
+  hardwareType: 'cpuPoller',
+  readingType: 'temperatures',
+};
+
 const doPost = async (api, data) => {
   const res = await fetch(`http://localhost:3000/api/${api}`, {
     method: 'POST',
@@ -122,6 +129,10 @@ const setupFixtures = async () => {
   lightSwitch.stationId = stations[1].id;
   await doPost('sensor', lightSwitch);
 
+  // create cpu poller
+  diskSpace.stationId = stations[1].id;
+  await doPost('sensor', diskSpace);
+
   stations = await doGet('station');
 
   // add actions
@@ -182,6 +193,11 @@ const setupFixtures = async () => {
     // light sensor
     reading.sensorId = stations[1].sensors[1].id;
     reading.value = Math.sin(seed * 10) * 100 > 0 ? 1 : 0;
+    await doPost('reading', reading);
+
+    // cpu sensor
+    reading.sensorId = stations[1].sensors[2].id;
+    reading.value = Math.sin(seed) * 50 ** 8;
     await doPost('reading', reading);
 
     if (index % 100 === 0) {

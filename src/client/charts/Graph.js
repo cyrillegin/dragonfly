@@ -7,6 +7,12 @@ import { searchToObject, objectToString, addOrUpdateHash } from '../utilities/Wi
 import Store from '../utilities/Store';
 import Loader from '../components/Loader';
 
+const coefOrder = [
+  (value, coef) => value + coef,
+  (value, coef) => value * coef,
+  (value, coef) => value ** coef,
+];
+
 const getReadings = (sensor, setReadings, setLoading) => {
   setLoading(true);
   const search = searchToObject();
@@ -19,12 +25,21 @@ const getReadings = (sensor, setReadings, setLoading) => {
   if (search.end) {
     kwargs.end = search.end;
   }
+
+  const coefParts = (sensor.coefficients || '0').split(',').map(e => parseFloat(e));
+
   fetch(`/api/reading?${objectToString(kwargs)}`)
     .then(res => res.json())
     .then(newReadings => {
       setReadings(
         newReadings
-          .map(reading => ({ ...reading, timestamp: new Date(reading.timestamp) }))
+          .map(reading => ({
+            value: coefParts.reduce(
+              (cur, acc, index) => Math.round(coefOrder[index](cur, coefParts[index])),
+              reading.value,
+            ),
+            timestamp: new Date(reading.timestamp),
+          }))
           // Sorting is redundant as it takes place in the db,
           // leaving here though just in case :)
           .sort((a, b) => a.timestamp - b.timestamp),
