@@ -41,6 +41,7 @@ const TreeView = ({ className, stations, dashboards }) => {
     removeFromHash('station');
     removeFromHash('sensor');
     removeFromHash('dashboard');
+    removeFromHash('actions');
 
     if (type === 'station') {
       setStation(id);
@@ -51,6 +52,8 @@ const TreeView = ({ className, stations, dashboards }) => {
       setSelection(id);
       addOrUpdateHash('sensor', id);
       setDashboard('');
+    } else if (type === 'actions') {
+      addOrUpdateHash('actions', 'all');
     } else {
       addOrUpdateHash('dashboard', id);
       setStation('');
@@ -144,6 +147,10 @@ const TreeView = ({ className, stations, dashboards }) => {
         </div>
       ))}
       <div onClick={toggleDashboardModal}>+ New dashboard</div>
+
+      <div className="section" onClick={() => handleSelection('actions')}>
+        Actions
+      </div>
     </div>
   );
 };

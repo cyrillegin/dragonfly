@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { AddAction } from '../Modals';
-
-const actionProperties = ['value', 'condition', 'action', 'interval', 'metaData'];
-const actionConditions = ['gt', 'gte', 'eq', 'lt', 'lte'];
+import { actionConditions, actionProperties } from '../../utilities/constants';
+import { windowEmitter } from '../../utilities/Window';
 
 const SensorDetails = ({ className, sensor }) => {
   const [sensorDetails, setSensorDetails] = useState({
@@ -31,7 +30,7 @@ const SensorDetails = ({ className, sensor }) => {
     fetch(`/api/action/${action.id}`, {
       method: 'DELETE',
     }).then(() => {
-      // refresh
+      windowEmitter.emit('station-refresh');
     });
   };
 
@@ -60,7 +59,7 @@ const SensorDetails = ({ className, sensor }) => {
           setActionMessage(res.error);
         } else {
           updateActionModal({});
-          // refresh
+          windowEmitter.emit('station-refresh');
         }
       });
   };

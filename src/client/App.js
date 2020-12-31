@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import Header from './components/Header';
 import TreeView from './components/TreeView';
 import Dashboard from './components/Dashboard';
-import { windowEmitter } from './utilities/Window';
+import { windowEmitter, searchToObject } from './utilities/Window';
+import Actions from './components/Actions';
 
 const App = ({ className }) => {
   const [stations, setStations] = useState([]);
   const [dashboards, setDashboards] = useState([]);
+  const [, setDate] = useState(null);
 
   useEffect(() => {
     fetch('/api/station')
@@ -30,6 +32,10 @@ const App = ({ className }) => {
           setStations(res);
         });
     });
+
+    windowEmitter.listen('change', () => {
+      setDate(new Date());
+    });
   }, []);
 
   return (
@@ -38,7 +44,11 @@ const App = ({ className }) => {
       {stations.length && (
         <div className="main-container">
           <TreeView stations={stations} dashboards={dashboards} />
-          <Dashboard stations={stations} dashboards={dashboards} />
+          {'actions' in searchToObject() ? (
+            <Actions stations={stations} />
+          ) : (
+            <Dashboard stations={stations} dashboards={dashboards} />
+          )}
         </div>
       )}
     </div>
