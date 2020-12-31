@@ -6,7 +6,6 @@ except:
     print('could not import gpiozero, cpu temperature sensor will not be available.')
 
 def GetValues(readingType):
-    print(readingType)
 
     # disk space available
     result = 'fail'
@@ -40,7 +39,7 @@ def GetValues(readingType):
     # network ins and outs - TODO
 
     # temperatures
-    if readingType == 'temperature':
+    if readingType == 'temperatures':
         result = {
             'timestamp': time.time() * 1000,
             'value': CPUTemperature().temperature
