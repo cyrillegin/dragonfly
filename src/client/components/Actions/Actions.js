@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import { AddAction } from '../Modals';
 import { actionConditions } from '../../utilities/constants';
 import { windowEmitter } from '../../utilities/Window';
+import Store from '../../utilities/Store';
 
 const Actions = ({ className, stations }) => {
   const [actions, setActions] = useState([]);
   const [actionModal, updateActionModal] = useState({});
   const [actionMessage, setActionMessage] = useState('');
+  const [collapsed, setCollapsed] = useState(false);
+
   useEffect(() => {
     const acts = [];
     stations.forEach(station => {
@@ -26,6 +29,12 @@ const Actions = ({ className, stations }) => {
     });
     setActions(acts);
   }, [stations]);
+
+  useEffect(() => {
+    Store.listen('collapse', () => {
+      setCollapsed(!collapsed);
+    });
+  }, [collapsed]);
 
   const handleEdit = action => {
     updateActionModal(action);
@@ -73,7 +82,7 @@ const Actions = ({ className, stations }) => {
     updateActionModal({});
   };
   return (
-    <div className={className}>
+    <div className={`${className} ${collapsed ? 'collapse' : ''}`}>
       {actionModal.id && (
         <AddAction
           action={actionModal}
@@ -146,11 +155,17 @@ const styledActions = styled(Actions)`
   width: calc(100% - 458px);
   margin-top: 7rem;
   margin-left: 2rem;
+  transition: 0.6s;
+
+  &.collapse {
+    transform: translateX(-400px);
+    width: calc(100% - 58px);
+  }
 
   .table {
     .row {
       display: flex;
-      padding: 1rem 0;
+      padding: 1rem;
 
       &:nth-child(even) {
         background: #f8f6ff;
@@ -163,6 +178,7 @@ const styledActions = styled(Actions)`
 
       .col {
         flex: 1;
+        padding: 0 2rem;
       }
     }
   }

@@ -52,6 +52,7 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
   const graphElement = useRef(null);
   const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [, setDate] = useState(null);
 
   useEffect(() => {
     getReadings(sensor, setReadings, setLoading);
@@ -59,6 +60,14 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
       getReadings(sensor, setReadings, setLoading);
     });
   }, [sensor, renderTrigger]);
+
+  useEffect(() => {
+    Store.listen('collapse', () => {
+      setTimeout(() => {
+        setDate(new Date());
+      }, 600);
+    });
+  });
 
   if (graphElement.current) {
     const margin = { top: 50, right: 50, bottom: 50, left: 50 };

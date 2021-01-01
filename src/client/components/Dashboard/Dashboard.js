@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import Graph from '../../charts/Graph';
 import { windowEmitter, searchToObject } from '../../utilities/Window';
 import SensorDetails from '../SensorDetails';
+import Store from '../../utilities/Store';
 
 const Dashboard = ({ className, stations, dashboards }) => {
   const [currentStations, changeStations] = useState([]);
   const [currentSensor, changeSensor] = useState({});
   const [currentDashboard, changeDashboard] = useState({});
+  const [collapsed, setCollapsed] = useState(false);
 
   const setStations = useCallback(() => {
     const { station, sensor, dashboard } = searchToObject();
@@ -42,8 +44,13 @@ const Dashboard = ({ className, stations, dashboards }) => {
     });
   }, [setStations]);
 
+  useEffect(() => {
+    Store.listen('collapse', () => {
+      setCollapsed(!collapsed);
+    });
+  }, [collapsed]);
   return (
-    <div className={className}>
+    <div className={`${className} ${collapsed ? 'collapse' : ''}`}>
       {currentSensor.id && (
         <div className="sensor tall">
           <Graph name={currentStations[0].name} sensor={currentSensor} renderTrigger={new Date()} />
@@ -117,6 +124,12 @@ const styledDashboard = styled(Dashboard)`
   width: calc(100% - 408px);
   margin-top: 5rem;
   margin-left: 8px;
+  transition: 0.6s;
+
+  &.collapse {
+    transform: translateX(-380px);
+    width: calc(100% - 28px);
+  }
 
   .station {
     width: 100%;
@@ -125,6 +138,7 @@ const styledDashboard = styled(Dashboard)`
     grid-template-columns: 1fr 1fr 1fr;
     margin: 2rem 0;
   }
+
   .sensor {
     width: 100%;
     height: 300px;

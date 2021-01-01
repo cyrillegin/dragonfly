@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { addOrUpdateHash, removeFromHash, searchToObject } from '../../utilities/Window';
 import { AddStation, AddSensor, AddDashboard } from '../Modals';
+import Store from '../../utilities/Store';
 
 const TreeView = ({ className, stations, dashboards }) => {
   const [stationSelected, setStation] = useState('');
@@ -10,6 +11,7 @@ const TreeView = ({ className, stations, dashboards }) => {
   const [modal, toggleModal] = useState('');
   const [dashboardSelected, setDashboard] = useState('');
   const [dashboardModal, toggleDashboardModal] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     const { station, sensor, dashboard } = searchToObject();
@@ -66,8 +68,13 @@ const TreeView = ({ className, stations, dashboards }) => {
     toggleModal(type);
   };
 
+  const handleCollapse = () => {
+    setCollapsed(!collapsed);
+    Store.emit('collapse');
+  };
+
   return (
-    <div className={className}>
+    <div className={`${className} ${collapsed ? 'collapse' : ''}`}>
       {modal === 'AddStation' && <AddStation close={() => toggleModal('')} />}
       {modal === 'AddSensor' && (
         <AddSensor
@@ -151,6 +158,10 @@ const TreeView = ({ className, stations, dashboards }) => {
       <div className="section" onClick={() => handleSelection('actions')}>
         Actions
       </div>
+
+      <div className="collapse-button" onClick={handleCollapse}>
+        {collapsed ? '>' : '<'}
+      </div>
     </div>
   );
 };
@@ -195,7 +206,12 @@ const styledTreeView = styled(TreeView)`
   padding-left: 32px;
   padding-top: 32px;
   box-sizing: border-box;
+  transition: 0.6s;
   z-index: 1;
+
+  &.collapse {
+    transform: translateX(-377px);
+  }
 
   .section {
     font-weight: 900;
@@ -275,6 +291,19 @@ const styledTreeView = styled(TreeView)`
       margin-left: 16px;
       display: inline-block;
     }
+  }
+
+  .collapse-button {
+    position: absolute;
+    left: 377px;
+    background: #bee1ff;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 3rem;
+    cursor: pointer;
+    padding-top: 2px;
+    padding-left: 12px;
+    font-size: 2rem;
   }
 `;
 
