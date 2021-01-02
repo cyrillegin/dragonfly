@@ -69,7 +69,7 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
           </div>
           <div>
             <span>Metadata:</span>
-            <input value={details.metadata} onChange={updateDetails} name="metadata" type="text" />
+            <input value={details.metaData} onChange={updateDetails} name="metaData" type="text" />
           </div>
         </div>
         <div className="error-message">{message}</div>

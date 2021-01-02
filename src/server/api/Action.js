@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
 router.put('/', async (req, res) => {
   console.info('PUT request to action');
 
-  const { id, condition, action, interval, value, valueType } = req.body;
+  const { id, condition, action, interval, value, valueType, metaData } = req.body;
 
   const valid = validateActionParams(req.body);
   if (valid.error) {
@@ -73,7 +73,7 @@ router.put('/', async (req, res) => {
   }
 
   try {
-    await Action.update({ condition, action, interval, value, valueType }, { where: { id } });
+    await Action.update({ condition, action, interval, value, valueType, metaData }, { where: { id } });
     console.info('action updated');
     res.status(200).send({ message: 'success' });
   } catch (error) {

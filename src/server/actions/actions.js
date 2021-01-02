@@ -17,6 +17,7 @@ const checkAgainstValue = (action, reading) => {
   let alert;
   switch (action.condition) {
     case 'gt':
+      console.log(reading.value, action.value)
       if (parseFloat(reading.value) > parseFloat(action.value)) {
         alert = reading;
       }
@@ -51,6 +52,7 @@ const checkAgainstTime = action => {
   const timeInMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
   const parts = action.value.split(':');
   const value = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+  console.log(timeInMinutes, value);
   return checkAgainstValue({ ...action.dataValues, value }, { value: timeInMinutes });
 };
 
@@ -59,6 +61,7 @@ const checkAgainstTimestamp = () => {};
 
 const makeCheck = async action => {
   let alert;
+  console.log('checking ', action);
   if (action.valueType === 'time') {
     alert = checkAgainstTime(action);
   } else {
@@ -78,6 +81,8 @@ const makeCheck = async action => {
       }
     });
   }
+  console.log(alert)
+  console.log(action)
   if (alert) {
     switch (action.action) {
       case 'slack':
@@ -96,6 +101,7 @@ const makeCheck = async action => {
 };
 
 const manageProcess = async () => {
+  console.info('Checking actions.');
   const actions = await Action.findAll();
   actions.forEach(action => {
     if (!(action.id in processes)) {
@@ -107,4 +113,4 @@ const manageProcess = async () => {
 };
 
 // Check every hour for any updates
-setInterval(manageProcess, 1000 * 60 * 60);
+setInterval(manageProcess, 1000 * 5);//60 * 60);
