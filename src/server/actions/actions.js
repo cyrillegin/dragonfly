@@ -1,6 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { Action, Reading, Sensor } from '../db';
 import sendSlack from './slack';
+import toggleWemo from './wemo';
 
 const processes = {};
 
@@ -78,14 +79,18 @@ const makeCheck = async action => {
     });
   }
   if (alert) {
-    const details = {
-      action: { ...action.dataValues },
-      reading: alert,
-      sensor: (await Sensor.findAll({ where: { id: action.sensorId } }))[0],
-    };
     switch (action.action) {
       case 'slack':
+        const details = {
+          action: { ...action.dataValues },
+          reading: alert,
+          sensor: (await Sensor.findAll({ where: { id: action.sensorId } }))[0],
+        };
         sendSlack(details);
+        break;
+      case 'wemo':
+        toggleWemo(action);
+        break;
     }
   }
 };

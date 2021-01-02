@@ -60,6 +60,7 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
             <span> Action:</span>
             <select value={details.action} onChange={updateDetails} name="action">
               <option value="slack">slack</option>
+              <option value="wemo">wemo</option>
             </select>
           </div>
           <div>
