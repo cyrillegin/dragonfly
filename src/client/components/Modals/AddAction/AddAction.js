@@ -39,6 +39,14 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
             <input value={details.value} onChange={updateDetails} name="value" type="number" />
           </div>
           <div>
+            <span>Value Type:</span>
+            <select value={details.valueType} onChange={updateDetails} name="valueType">
+              <option value="value">value</option>
+              <option value="timestamp">timestamp</option>
+              <option value="time">time</option>
+            </select>
+          </div>
+          <div>
             <span> Condition:</span>
             <select value={details.condition} onChange={updateDetails} name="condition">
               {actionConditions.map(condition => (

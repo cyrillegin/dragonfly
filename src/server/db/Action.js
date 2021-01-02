@@ -12,6 +12,13 @@ function buildActionSchema(sequelize) {
       value: { type: DataTypes.STRING, allowNull: false },
       metaData: { type: DataTypes.STRING },
       interval: { type: DataTypes.STRING, allowNull: false },
+      // Can be one of: 'value', 'timestamp', 'time'
+      valueType: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'value',
+        field: 'value_type',
+      },
     },
     { sequelize, modelName: 'action' },
   );

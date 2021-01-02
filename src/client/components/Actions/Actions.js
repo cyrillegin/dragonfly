@@ -97,6 +97,7 @@ const Actions = ({ className, stations }) => {
           <div className="col">Station</div>
           <div className="col">Sensor</div>
           <div className="col">Value</div>
+          <div className="col">Value Type</div>
           <div className="col">Condition</div>
           <div className="col">Action</div>
           <div className="col">Interval</div>
@@ -109,6 +110,7 @@ const Actions = ({ className, stations }) => {
             <div className="col">{action.stationName}</div>
             <div className="col">{action.sensorName}</div>
             <div className="col">{action.value}</div>
+            <div className="col">{action.valueType}</div>
             <div className="col">{action.condition}</div>
             <div className="col">{action.action}</div>
             <div className="col">{action.interval}</div>

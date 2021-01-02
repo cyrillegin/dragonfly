@@ -188,6 +188,7 @@ const SensorDetails = ({ className, sensor }) => {
         {sensor.actions.map(action => (
           <div className="action-row" key={action.id}>
             <div className="actions-item">{action.value}</div>
+            <div className="actions-item">{action.valueType}</div>
             <div className="actions-item">{action.condition}</div>
             <div className="actions-item">{action.action}</div>
             <div className="actions-item">{action.interval}</div>
@@ -266,7 +267,7 @@ const styledSensorDetails = styled(SensorDetails)`
 
     .action-row {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(8, 1fr);
       height: 40px;
 
       &:first-of-type {
