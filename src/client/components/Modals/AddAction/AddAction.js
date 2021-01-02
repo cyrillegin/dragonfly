@@ -36,7 +36,7 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
         <div className="body">
           <div>
             <span>Value:</span>
-            <input value={details.value} onChange={updateDetails} name="value" type="number" />
+            <input value={details.value} onChange={updateDetails} name="value" />
           </div>
           <div>
             <span>Value Type:</span>

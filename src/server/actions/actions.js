@@ -50,8 +50,7 @@ const checkAgainstTime = action => {
   const timeInMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
   const parts = action.value.split(':');
   const value = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
-  console.log(timeInMinutes, value);
-  return checkAgainstValue({ ...action, value }, { value: timeInMinutes });
+  return checkAgainstValue({ ...action.dataValues, value }, { value: timeInMinutes });
 };
 
 // Makes checks against timestamps - if last reading was more than an hour ago, do something
