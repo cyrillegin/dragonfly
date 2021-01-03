@@ -5,11 +5,7 @@ class Action extends Model {}
 function buildActionSchema(sequelize) {
   Action.init(
     {
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-      paranoid: true,
-      underscored: true,
-      stationId: { type: DataTypes.INTEGER, allowNull: false, field: 'stations_id' },
+      stationId: { type: DataTypes.INTEGER, allowNull: false, field: 'station_id' },
       sensorId: { type: DataTypes.INTEGER, allowNull: false, field: 'sensor_id' },
       condition: { type: DataTypes.STRING, allowNull: false },
       action: { type: DataTypes.STRING, allowNull: false },
@@ -24,7 +20,14 @@ function buildActionSchema(sequelize) {
         field: 'value_type',
       },
     },
-    { sequelize, modelName: 'action' },
+    {
+      sequelize,
+      modelName: 'action',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      paranoid: true,
+      underscored: true,
+    },
   );
 }
 

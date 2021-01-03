@@ -5,10 +5,6 @@ class Sensor extends Model {}
 function buildSensorSchema(sequelize) {
   Sensor.init(
     {
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-      paranoid: true,
-      underscored: true,
       name: { type: DataTypes.STRING, allowNull: false },
       stationId: { type: DataTypes.INTEGER, allowNull: false, field: 'station_id' },
       coefficients: { type: DataTypes.STRING, allowNull: true },
@@ -19,7 +15,14 @@ function buildSensorSchema(sequelize) {
       poll_rate: { type: DataTypes.STRING, allowNull: true },
       unit: { type: DataTypes.STRING, allowNull: true },
     },
-    { sequelize, modelName: 'sensor' },
+    {
+      sequelize,
+      modelName: 'sensor',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      paranoid: true,
+      underscored: true,
+    },
   );
 }
 
