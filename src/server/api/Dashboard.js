@@ -25,6 +25,7 @@ const router = new Router();
  */
 router.get('/', async (req, res) => {
   console.info('GET request to dashboard');
+	return [];
   const dashboards = await Dashboard.findAll({
     include: [
       {

@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
           where: {
             sensorId: sensor.id,
           },
-          order: [['createdAt', 'DESC']],
+          order: [['created_at', 'DESC']],
         });
         return {
           ...sensor.dataValues,
