@@ -7,12 +7,14 @@ setupDb();
 
 const processes = {};
 
+/* eslint-disable id-length */
 const units = {
   s: 1000,
   m: 1000 * 60,
   h: 1000 * 60 * 60,
   d: 1000 * 60 * 60 * 24,
 };
+/* eslint-enable id-length */
 
 // Makes checks against values - if value is > 50, do something.
 const checkAgainstValue = (action, reading) => {
@@ -64,7 +66,7 @@ const checkAgainstLastTimestamp = async action => {
       order: [['createdAt', 'DESC']],
     },
   });
-  console.log(lastReading);
+  console.warn(lastReading);
   // if last curent time - reading.timestamp > 1 day, alert..
   return true;
 };
@@ -81,7 +83,6 @@ const checkAgainstLastValue = async action => {
 
 const makeCheck = async actionId => {
   const action = await Action.findOne({ where: { id: actionId } });
-  console.log(action);
   let alert;
   switch (action.valueType) {
     case 'time':

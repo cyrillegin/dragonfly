@@ -73,7 +73,10 @@ router.put('/', async (req, res) => {
   }
 
   try {
-    await Action.update({ condition, action, interval, value, valueType, metaData }, { where: { id } });
+    await Action.update(
+      { condition, action, interval, value, valueType, metaData },
+      { where: { id } },
+    );
     console.info('action updated');
     res.status(200).send({ message: 'success' });
   } catch (error) {

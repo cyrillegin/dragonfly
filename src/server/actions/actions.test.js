@@ -1,5 +1,3 @@
-import { checkAgainstValue } from './actions';
-
 jest.mock('../db');
 
 describe('actions', () => {
@@ -26,6 +24,7 @@ describe('actions', () => {
     xit(`should test ${expression
       .replace(/value/g, value)
       .replace(/reading/g, reading)} is ${result}`, () => {
+      let checkAgainstValue;
       expect(checkAgainstValue(expression, value, reading)).toBe(result);
     });
   });

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import sequelize, { Op } from 'sequelize';
+import { Op } from 'sequelize';
 import { Reading } from '../db';
 import { validateReadingParams } from '../utilities/Validators';
 
