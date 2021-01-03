@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`slack action should test the function 1`] = `"{\\"attachments\\":[{\\"title\\":\\"test\\",\\"text\\":\\"Sensor is undefined undefined and is out of bounds, value is currently 1\\",\\"color\\":\\"#FF0000\\"}]}"`;

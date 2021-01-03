@@ -144,8 +144,13 @@ Actions.propTypes = {
         PropTypes.shape({
           name: PropTypes.string.isRequired,
           health: PropTypes.oneOf(['healthy', 'unhealthy']),
+          actions: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.string.isRequired,
+            }),
+          ),
         }),
-      ),
+      ).isRequired,
     }),
   ).isRequired,
 };
@@ -169,11 +174,11 @@ const styledActions = styled(Actions)`
       display: flex;
       padding: 1rem;
 
-      &:nth-child(even) {
+      &:nth-of-type(even) {
         background: #f8f6ff;
       }
 
-      &:first-child {
+      &:first-of-type {
         background: #bee1ff;
         font-weight: bold;
       }

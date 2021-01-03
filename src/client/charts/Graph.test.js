@@ -1,9 +1,10 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import Graph from './Graph';
 
 describe('dashboard', () => {
-  it.skip('should render a snap shot', () => {
+  it('should render a snap shot', async () => {
     global.fetch = jest.fn(
       () =>
         new Promise(res =>
@@ -11,9 +12,12 @@ describe('dashboard', () => {
         ),
     );
 
-    const wrapper = mount(
-      <Graph station={{ id: 1, name: 'test' }} sensor={{ id: 1, name: 'test' }} />,
-    );
-    expect(wrapper).toMatchSnapshot();
+    let wrapper;
+    await act(async () => {
+      wrapper = await mount(
+        <Graph name="test" sensor={{ id: 1, name: 'test' }} renderTrigger={new Date()} />,
+      );
+    });
+    expect(wrapper.html()).toMatchSnapshot();
   });
 });

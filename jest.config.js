@@ -4,7 +4,9 @@ module.exports = {
     '!**/__snapshots__/**',
     '!**/dist/**',
     '!**/node_modules/**',
+
     'src/**/*.js',
+    '!src/server/db/migrations/*.js',
   ],
   coverageDirectory: 'coverage',
   coverageThreshold: {
