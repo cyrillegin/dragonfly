@@ -62,6 +62,7 @@ const checkAgainstLastTimestamp = async action => {
       order: [['createdAt', 'DESC']],
     },
   });
+  console.log(lastReading);
   // if last curent time - reading.timestamp > 1 day, alert..
   return true;
 };
@@ -76,7 +77,9 @@ const checkAgainstLastValue = async action => {
   return checkAgainstValue(lastReading);
 };
 
-const makeCheck = async action => {
+const makeCheck = async actionId => {
+  const action = await Action.findOne({ where: { id: actionId } });
+  console.log(action);
   let alert;
   switch (action.valueType) {
     case 'time':
@@ -116,10 +119,12 @@ const manageProcess = async () => {
     if (!(action.id in processes)) {
       const unit = action.interval[action.interval.length - 1];
       const time = action.interval.slice(0, -1);
-      processes[action.id] = setInterval(() => makeCheck(action), parseInt(time, 10) * units[unit]);
+      processes[action.id] = setInterval(
+        () => makeCheck(action.id),
+        parseInt(time, 10) * units[unit],
+      );
     }
   });
 };
 
-// Check every hour for any updates
-setInterval(manageProcess, 1000 * 60 * 60);
+setInterval(manageProcess, 1000 * process.env.ACTION_INTERVAL || 60);

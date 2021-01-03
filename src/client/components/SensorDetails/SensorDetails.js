@@ -105,6 +105,7 @@ const SensorDetails = ({ className, sensor }) => {
       date.getMonth() + 1
     }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
   }
+  console.log(sensor.lastReading);
   return (
     <div className={className}>
       {actionModal.id && (
@@ -132,7 +133,7 @@ const SensorDetails = ({ className, sensor }) => {
         </div>
         <div className="item">
           Last Reading Value:
-          <span>{sensor.lastReading.value}</span>
+          <span>{sensor.lastReading ? sensor.lastReading.value : 'null'}</span>
         </div>
 
         <div className="item">
