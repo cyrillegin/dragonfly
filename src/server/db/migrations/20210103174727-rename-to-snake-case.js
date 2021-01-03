@@ -1,6 +1,6 @@
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await Promise.all([
+  up: async (queryInterface, Sequelize) =>
+    Promise.all([
       // Actions
       queryInterface.renameColumn('actions', 'stationId', 'station_id'),
       queryInterface.renameColumn('actions', 'sensorId', 'sensor_id'),
@@ -25,11 +25,10 @@ module.exports = {
       // Station
       queryInterface.renameColumn('stations', 'createdAt', 'created_at'),
       queryInterface.renameColumn('stations', 'updatedAt', 'updated_at'),
-    ]);
-  },
+    ]),
 
-  down: async (queryInterface, Sequelize) => {
-    await Promise.all([
+  down: async (queryInterface, Sequelize) =>
+    Promise.all([
       // Actions
       queryInterface.renameColumn('actions', 'station_id', 'stationId'),
       queryInterface.renameColumn('actions', 'sensor_id', 'sensorId'),
@@ -54,6 +53,5 @@ module.exports = {
       // Station
       queryInterface.renameColumn('stations', 'created_at', 'createdAt'),
       queryInterface.renameColumn('stations', 'updated_at', 'updatedAt'),
-    ]);
-  },
+    ]),
 };
