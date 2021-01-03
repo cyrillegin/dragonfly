@@ -14,7 +14,6 @@ const Dashboard = ({ className, stations, dashboards }) => {
 
   const setStations = useCallback(() => {
     const { station, sensor, dashboard } = searchToObject();
-
     if (station) {
       const stationId = parseInt(station, 10);
       const currentStation = stations.filter(sta => sta.id === stationId)[0];
@@ -49,6 +48,7 @@ const Dashboard = ({ className, stations, dashboards }) => {
       setCollapsed(!collapsed);
     });
   }, [collapsed]);
+
   return (
     <div className={`${className} ${collapsed ? 'collapse' : ''}`}>
       {currentSensor.id && (

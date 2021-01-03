@@ -105,7 +105,7 @@ const SensorDetails = ({ className, sensor }) => {
       date.getMonth() + 1
     }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
   }
-  console.log(sensor.lastReading);
+
   return (
     <div className={className}>
       {actionModal.id && (
@@ -221,6 +221,7 @@ SensorDetails.propTypes = {
     stationId: PropTypes.number.isRequired,
     stationName: PropTypes.string.isRequired,
     pollRate: PropTypes.number,
+    unit: PropTypes.string,
     lastReading: PropTypes.shape({
       timestamp: PropTypes.string.isRequired,
       value: PropTypes.number.isRequired,

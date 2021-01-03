@@ -1,7 +1,9 @@
 import 'regenerator-runtime/runtime';
-import { Action, Reading, Sensor } from '../db';
+import { Action, Reading, Sensor, setupDb } from '../db';
 import sendSlack from './slack';
 import toggleWemo from './wemo';
+
+setupDb();
 
 const processes = {};
 

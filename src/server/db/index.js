@@ -14,29 +14,31 @@ const dbHost = process.env.DATABASE_HOST;
 
 const connectionString = `${dbType}://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`;
 
-const sequelize = new Sequelize(connectionString, { logging: false });
+const setupDb = () => {
+  const sequelize = new Sequelize(connectionString, { logging: false });
 
-buildStationSchema(sequelize);
-buildSensorSchema(sequelize);
-buildReadingSchema(sequelize);
-buildActionSchema(sequelize);
-buildDashboardSchema(sequelize);
+  buildStationSchema(sequelize);
+  buildSensorSchema(sequelize);
+  buildReadingSchema(sequelize);
+  buildActionSchema(sequelize);
+  buildDashboardSchema(sequelize);
 
-Station.hasMany(Sensor, { foreignKey: 'stationId', sourceKey: 'id' });
-Sensor.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
+  Station.hasMany(Sensor, { foreignKey: 'stationId', sourceKey: 'id' });
+  Sensor.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
-Sensor.hasMany(Action, { foreignKey: 'sensorId', sourceKey: 'id' });
-Action.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
+  Sensor.hasMany(Action, { foreignKey: 'sensorId', sourceKey: 'id' });
+  Action.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
 
-Sensor.hasMany(Reading, { foreignKey: 'sensorId', sourceKey: 'id' });
-Reading.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
+  Sensor.hasMany(Reading, { foreignKey: 'sensorId', sourceKey: 'id' });
+  Reading.belongsTo(Sensor, { foreignKey: 'sensorId', sourceKey: 'sensorId' });
 
-Station.hasMany(Reading, { foreignKey: 'stationId', sourceKey: 'id' });
-Reading.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
+  Station.hasMany(Reading, { foreignKey: 'stationId', sourceKey: 'id' });
+  Reading.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
-Station.hasMany(Action, { foreignKey: 'stationId', sourceKey: 'id' });
-Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
+  Station.hasMany(Action, { foreignKey: 'stationId', sourceKey: 'id' });
+  Action.belongsTo(Station, { foreignKey: 'stationId', sourceKey: 'stationId' });
 
-sequelize.sync();
+  sequelize.sync();
+};
 
-export { Sensor, Action, Reading, Station, Dashboard };
+export { Sensor, Action, Reading, Station, Dashboard, setupDb };

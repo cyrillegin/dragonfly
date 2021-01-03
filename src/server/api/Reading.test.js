@@ -4,7 +4,7 @@ import Reading from './Reading';
 
 jest.mock('../db', () => ({
   Reading: {
-    findAll: () => {},
+    findAll: () => new Promise(res => res([])),
   },
 }));
 

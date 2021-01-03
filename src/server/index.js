@@ -7,9 +7,11 @@ import fetch from 'node-fetch';
 import express from 'express';
 import bodyParser from 'body-parser';
 import api from './api';
-import './db';
+import { setupDb } from './db';
 
 const app = express();
+
+setupDb();
 
 // app.use('/', expressStaticGzip(path.join(__dirname, '/public/')));
 

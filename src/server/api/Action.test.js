@@ -37,8 +37,8 @@ describe('Action api', () => {
     const app = express();
     app.use(Action);
     Promise.all([
-      request(app).delete('/').expect(400),
-      request(app).delete('/?id=1').expect(200),
+      request(app).delete('/').expect(404),
+      request(app).delete('/id=1').expect(200),
     ]).then(() => done());
   });
 });
