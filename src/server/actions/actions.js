@@ -17,7 +17,6 @@ const checkAgainstValue = (action, reading) => {
   let alert;
   switch (action.condition) {
     case 'gt':
-      console.log(reading.value, action.value)
       if (parseFloat(reading.value) > parseFloat(action.value)) {
         alert = reading;
       }
@@ -52,44 +51,54 @@ const checkAgainstTime = action => {
   const timeInMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
   const parts = action.value.split(':');
   const value = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
-  console.log(timeInMinutes, value);
   return checkAgainstValue({ ...action.dataValues, value }, { value: timeInMinutes });
 };
 
 // Makes checks against timestamps - if last reading was more than an hour ago, do something
-const checkAgainstTimestamp = () => {};
+const checkAgainstLastTimestamp = async action => {
+  const lastReading = await Reading.findOne({
+    where: {
+      sensorId: action.sensorId,
+      order: [['createdAt', 'DESC']],
+    },
+  });
+  // if last curent time - reading.timestamp > 1 day, alert..
+  return true;
+};
+
+const checkAgainstLastValue = async action => {
+  const lastReading = await Reading.findOne({
+    where: {
+      sensorId: action.sensorId,
+      order: [['createdAt', 'DESC']],
+    },
+  });
+  return checkAgainstValue(lastReading);
+};
 
 const makeCheck = async action => {
   let alert;
-  console.log('checking ', action);
-  if (action.valueType === 'time') {
-    alert = checkAgainstTime(action);
-  } else {
-    const lastReadings = await Reading.findAll({
-      limit: 20,
-      where: {
-        sensorId: action.sensorId,
-      },
-    });
-    lastReadings.forEach(reading => {
-      if (action.valueType === 'value') {
-        alert = checkAgainstValue(reading);
-      } else if (action.valueType === 'timestamp') {
-        alert = checkAgainstTimestamp(reading);
-      } else {
-        // this should never occur
-      }
-    });
+  switch (action.valueType) {
+    case 'time':
+      alert = checkAgainstTime(action);
+      break;
+    case 'value':
+      alert = checkAgainstLastValue(action);
+      break;
+    case 'timestamp':
+      alert = checkAgainstLastTimestamp(action);
+      break;
+    default:
+      console.error('Error: Did not understand action valueType');
   }
-  console.log(alert)
-  console.log(action)
+
   if (alert) {
     switch (action.action) {
       case 'slack':
         const details = {
           action: { ...action.dataValues },
           reading: alert,
-          sensor: (await Sensor.findAll({ where: { id: action.sensorId } }))[0],
+          sensor: await Sensor.findOne({ where: { id: action.sensorId } }),
         };
         sendSlack(details);
         break;
@@ -113,4 +122,4 @@ const manageProcess = async () => {
 };
 
 // Check every hour for any updates
-setInterval(manageProcess, 1000 * 5);//60 * 60);
+setInterval(manageProcess, 1000 * 60 * 60);
