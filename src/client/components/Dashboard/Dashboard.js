@@ -58,9 +58,10 @@ const Dashboard = ({ className, stations, dashboards }) => {
   const closeModal = () => {
     setAddGraphModal(false);
   };
+
   return (
     <div className={`${className} ${collapsed ? 'collapse' : ''}`}>
-      {addGraphModal && <AddGraph close={closeModal} dashboardId={currentDashboard.id} />}
+      {addGraphModal && <AddGraph close={closeModal} />}
       {currentSensor.id && (
         <div className="sensor tall">
           <Graph name={currentStations[0].name} sensor={currentSensor} renderTrigger={new Date()} />
