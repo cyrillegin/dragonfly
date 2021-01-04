@@ -41,23 +41,8 @@ const validateDashboardParams = params => {
   if (!params.name) {
     return { error: 'Dashboard name required' };
   }
-  if (!params.sensors) {
-    return { error: 'Sensors required' };
-  }
-  const result = {};
-  params.sensors.forEach(sensor => {
-    if (!sensor.id) {
-      result.error = 'Sensor id required';
-    }
-    if (!sensor.stationId) {
-      result.error = 'Station id required';
-    }
-    if (sensor.position === undefined || sensor.position === null) {
-      result.error = 'Position required';
-    }
-  });
 
-  return result;
+  return {};
 };
 
 const validateSensorParams = params => {

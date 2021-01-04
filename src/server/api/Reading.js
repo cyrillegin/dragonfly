@@ -57,7 +57,7 @@ router.get('/', async (req, res) => {
   });
 
   // do better
-  readings = readings.filter((reading, index) => index % 10 === 0);
+  readings = readings.filter((reading, index) => index % `${readings.length}`.length === 0);
   res.send(readings);
 });
 

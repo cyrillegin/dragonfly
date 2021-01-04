@@ -5,12 +5,14 @@ import Graph from '../../charts/Graph';
 import { windowEmitter, searchToObject } from '../../utilities/Window';
 import SensorDetails from '../SensorDetails';
 import Store from '../../utilities/Store';
+import { AddGraph } from '../Modals';
 
 const Dashboard = ({ className, stations, dashboards }) => {
   const [currentStations, changeStations] = useState([]);
   const [currentSensor, changeSensor] = useState({});
   const [currentDashboard, changeDashboard] = useState({});
   const [collapsed, setCollapsed] = useState(false);
+  const [addGraphModal, setAddGraphModal] = useState(false);
 
   const setStations = useCallback(() => {
     const { station, sensor, dashboard } = searchToObject();
@@ -28,7 +30,7 @@ const Dashboard = ({ className, stations, dashboards }) => {
       changeSensor(curSensor);
       changeDashboard({});
     } else if (dashboard) {
-      changeDashboard(dashboards.find(dash => dash.dashboardId === dashboard));
+      changeDashboard(dashboards.find(dash => dash.id === parseInt(dashboard, 10)));
       changeSensor({});
       changeStations([]);
     } else {
@@ -49,8 +51,16 @@ const Dashboard = ({ className, stations, dashboards }) => {
     });
   }, [collapsed]);
 
+  const handleAddGraph = () => {
+    setAddGraphModal(true);
+  };
+
+  const closeModal = () => {
+    setAddGraphModal(false);
+  };
   return (
     <div className={`${className} ${collapsed ? 'collapse' : ''}`}>
+      {addGraphModal && <AddGraph close={closeModal} dashboardId={currentDashboard.id} />}
       {currentSensor.id && (
         <div className="sensor tall">
           <Graph name={currentStations[0].name} sensor={currentSensor} renderTrigger={new Date()} />
@@ -72,17 +82,16 @@ const Dashboard = ({ className, stations, dashboards }) => {
         </>
       )}
 
-      {currentDashboard.sensors && (
+      {currentDashboard.id && (
         <div className="station">
-          {currentDashboard.sensors.map(sensor => (
-            <div className="sensor" key={sensor.id}>
-              <Graph name={currentDashboard.name} sensor={sensor} renderTrigger={new Date()} />
-            </div>
-          ))}
+          <div className="add-graph" onClick={handleAddGraph}>
+            <div>+</div>
+            <div>Add</div>
+          </div>
         </div>
       )}
 
-      {!currentDashboard.sensors && !currentSensor.id && !currentStations.length && <>Loading...</>}
+      {!currentDashboard.id && !currentSensor.id && !currentStations.length && <>Loading...</>}
     </div>
   );
 };
@@ -106,13 +115,6 @@ Dashboard.propTypes = {
   dashboards: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
-      sensors: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.number.isRequired,
-          stationId: PropTypes.number.isRequired,
-          position: PropTypes.number.isRequired,
-        }),
-      ),
     }),
   ).isRequired,
 };
@@ -137,6 +139,24 @@ const styledDashboard = styled(Dashboard)`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     margin: 2rem 0;
+
+    .add-graph {
+      width: 100%;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #989898;
+      transition: 0.3s;
+
+      div {
+        font-size: 2rem;
+      }
+
+      &:hover {
+        background: #daeeff;
+      }
+    }
   }
 
   .sensor {

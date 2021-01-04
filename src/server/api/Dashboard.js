@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { v4 as uuid } from 'uuid';
-import { Dashboard, Sensor } from '../db';
+import { Dashboard, DashboardGraph, DashboardSource } from '../db';
 import { validateDashboardParams } from '../utilities/Validators';
 
 const router = new Router();
@@ -12,52 +12,30 @@ const router = new Router();
  * returns {
  *   dashboards: [{
  *     id: 123,
- *     dashboardId: "123-sdfg",
  *     name: 'asdf',
- *     sensors: [{
- *       stationId: 123,
+ *     dashboardGraph: [{
+ *       dashboardId: 123,
  *       id: 123,
+ *       width: 123,
  *       position: 123,
- *       name: 'asdf',
+ *       type: 'asdf',
+ *       title: 'asdf'
  *    }],
  *  }]
  * }
  */
 router.get('/', async (req, res) => {
   console.info('GET request to dashboard');
-	return [];
   const dashboards = await Dashboard.findAll({
     include: [
       {
-        model: Sensor,
+        model: DashboardGraph,
+        include: [DashboardSource],
       },
     ],
   });
 
-  let payload = {};
-  dashboards.forEach(async dashboard => {
-    const id = dashboard.dashboard_id;
-    if (!(id in payload)) {
-      payload[id] = {
-        name: dashboard.name,
-        sensors: [],
-      };
-    }
-
-    payload[id].sensors.push({
-      id: dashboard.sensor_id,
-      stationId: dashboard.station_id,
-      position: dashboard.position,
-      name: dashboard.sensors[0].name,
-      unit: dashboard.sensors[0].unit,
-      coefficients: dashboard.sensors[0].coefficients,
-    });
-  });
-  payload = Object.entries(payload).map(([key, value]) => ({
-    dashboardId: key,
-    ...value,
-  }));
-  res.send(payload);
+  res.send(dashboards);
 });
 
 /**
@@ -65,19 +43,14 @@ router.get('/', async (req, res) => {
  * Creates a new dashboard
  *
  * params: {
- *   name: 'station name',
- *   sensors: [{
- *   sensorId: 123,
- *   stationId: 123,
- *   position: 1
- }]
+ *   name: 'station name'
  * }
  *
  * returns: 200 success, 400 if validation fails
  */
 router.post('/', async (req, res) => {
   console.info('POST request to dashboard');
-  const { name, sensors } = req.body;
+  const { name } = req.body;
 
   const valid = validateDashboardParams(req.body);
   if (valid.error) {
@@ -86,21 +59,8 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const dashboardId = uuid();
-
-    await Promise.all(
-      sensors.map(sensor =>
-        Dashboard.create({
-          name,
-          dashboard_id: dashboardId,
-          sensor_id: sensor.id,
-          station_id: sensor.stationId,
-          position: sensor.position,
-        }),
-      ),
-    );
-
-    console.info(`new dashboard created with guid${dashboardId}.`);
+    Dashboard.create({ name });
+    console.info('new dashboard created.');
     res.status(200).send({ message: 'success' });
   } catch (error) {
     console.error('an error occured!');
