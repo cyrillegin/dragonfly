@@ -5,14 +5,15 @@ import adafruit_ahtx0
 # Create the sensor object using I2C
 sensor = adafruit_ahtx0.AHTx0(board.I2C())
 
-def GetValues():
-    humidity = sensor.relative_humidity
-    print('aht20Poller: Humidity is currently: {}'.format(humidity))
+def GetValues(sensor):
+    if sensor == "temperature":
+        value = sensor.relative_humidity
+        print('aht20Poller: Humidity is currently: {}'.format(value))
+    if sensor == "humidity":
+        value = sensor.temperature
+        print('aht20Poller: Temperature is currently: {}'.format(value))
     newReading = {
         'timestamp': time.time() * 1000,
-         'value': humidity,
+         'value': value,
     }
-    print(newReading)
     return newReading
-
-GetValues()

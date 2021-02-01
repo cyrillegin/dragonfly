@@ -4,7 +4,7 @@ import time
 import requests
 import json
 import importlib
-from pollers import gpioPoller, bmp180Poller, dht11Poller, cpuPoller
+from pollers import gpioPoller, bmp180Poller, dht11Poller, cpuPoller, aht20Poller
 import random
 
 availablePollers = ['gpioPoller', 'bmp180Poller', 'dht11Poller', 'cpuPoller']
@@ -24,6 +24,9 @@ def query(sensor):
 
         if sensor['hardwareType'] == 'cpuPoller':
             values = cpuPoller.GetValues(sensor['readingType'])
+
+        if sensor['hardwareType'] == 'aht20Poller':
+            values = aht20Poller.GetValues(sensor['readingType'])
 
         payload = {
             'value': values['value'],
