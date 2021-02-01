@@ -9,7 +9,14 @@ function buildStationSchema(sequelize) {
       address: { type: DataTypes.STRING, allowNull: false },
       port: { type: DataTypes.STRING, allowNull: false },
     },
-    { sequelize, modelName: 'station' },
+    {
+      sequelize,
+      modelName: 'station',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      paranoid: true,
+      underscored: true,
+    },
   );
 }
 

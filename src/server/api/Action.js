@@ -21,7 +21,7 @@ const router = new Router();
 router.post('/', async (req, res) => {
   console.info('POST request to action');
 
-  const { stationId, sensorId, condition, action, interval, value } = req.body;
+  const { stationId, sensorId, condition, action, interval, value, valueType } = req.body;
 
   const valid = validateActionParams(req.body);
   if (valid.error) {
@@ -30,7 +30,15 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    await Action.create({ stationId, sensorId, condition, action, interval, value });
+    await Action.create({
+      stationId,
+      sensorId,
+      condition,
+      action,
+      interval,
+      value,
+      value_type: valueType,
+    });
     console.info('new action added');
     res.status(200).send({ message: 'success' });
   } catch (error) {
@@ -56,7 +64,7 @@ router.post('/', async (req, res) => {
 router.put('/', async (req, res) => {
   console.info('PUT request to action');
 
-  const { id, condition, action, interval, value } = req.body;
+  const { id, condition, action, interval, value, valueType, metaData } = req.body;
 
   const valid = validateActionParams(req.body);
   if (valid.error) {
@@ -65,7 +73,10 @@ router.put('/', async (req, res) => {
   }
 
   try {
-    await Action.update({ condition, action, interval, value }, { where: { id } });
+    await Action.update(
+      { condition, action, interval, value, valueType, metaData },
+      { where: { id } },
+    );
     console.info('action updated');
     res.status(200).send({ message: 'success' });
   } catch (error) {

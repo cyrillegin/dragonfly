@@ -36,7 +36,15 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
         <div className="body">
           <div>
             <span>Value:</span>
-            <input value={details.value} onChange={updateDetails} name="value" type="number" />
+            <input value={details.value} onChange={updateDetails} name="value" />
+          </div>
+          <div>
+            <span>Value Type:</span>
+            <select value={details.valueType} onChange={updateDetails} name="valueType">
+              <option value="value">value</option>
+              <option value="timestamp">timestamp</option>
+              <option value="time">time</option>
+            </select>
           </div>
           <div>
             <span> Condition:</span>
@@ -52,6 +60,7 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
             <span> Action:</span>
             <select value={details.action} onChange={updateDetails} name="action">
               <option value="slack">slack</option>
+              <option value="wemo">wemo</option>
             </select>
           </div>
           <div>
@@ -60,7 +69,7 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
           </div>
           <div>
             <span>Metadata:</span>
-            <input value={details.metadata} onChange={updateDetails} name="metadata" type="text" />
+            <input value={details.metaData} onChange={updateDetails} name="metaData" type="text" />
           </div>
         </div>
         <div className="error-message">{message}</div>

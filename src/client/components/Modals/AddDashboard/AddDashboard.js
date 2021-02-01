@@ -1,71 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { windowEmitter } from '../../../utilities/Window';
 
 const AddDashboard = ({ className, close, stations }) => {
-  const [sensors, setSensors] = useState([]);
-  const [selection, setSelection] = useState('');
-  const [availableSensors, setAvailableSensors] = useState([]);
   const [dashboardName, updateDashBoardName] = useState('');
-
-  useEffect(() => {
-    setAvailableSensors(stations);
-  }, [stations]);
 
   const preventClose = event => {
     event.stopPropagation();
   };
 
-  const handleChange = event => {
-    setSelection(parseInt(event.target.value, 10));
-  };
-
-  const handleAdd = () => {
-    let sensorToAdd;
-    stations.forEach(station => {
-      station.sensors.forEach(sensor => {
-        if (sensor.id === selection) {
-          sensorToAdd = sensor;
-        }
-      });
-    });
-
-    setSensors([...sensors, sensorToAdd]);
-    setAvailableSensors(
-      availableSensors.map(station => ({
-        ...station,
-        sensors: station.sensors.reduce((acc, cur) => {
-          if (cur.id === sensorToAdd.id) {
-            return acc;
-          }
-          return [...acc, cur];
-        }, []),
-      })),
-    );
-  };
-
-  const handleRemove = sensorToRemove => {
-    sensors.splice(
-      sensors.findIndex(sensor => sensor.id === sensorToRemove.id),
-      1,
-    );
-    setSensors([...sensors]);
-
-    availableSensors
-      .find(station => station.id === sensorToRemove.stationId)
-      .sensors.push(sensorToRemove);
-    setAvailableSensors([...availableSensors]);
-  };
-
-  const handleAddDashboard = () => {
+  const handleSave = () => {
     const payload = {
       name: dashboardName,
-      sensors: sensors.map((sensor, index) => ({
-        id: sensor.id,
-        stationId: sensor.stationId,
-        position: index,
-      })),
     };
 
     fetch('/api/dashboard', {
@@ -95,37 +42,14 @@ const AddDashboard = ({ className, close, stations }) => {
       >
         <div className="title">Dashboard creator</div>
         <div className="body">
-          {sensors.map(sensor => (
-            <div key={sensor.id}>
-              {sensor.name}
-              <button type="button" onClick={() => handleRemove(sensor)}>
-                -
-              </button>
-            </div>
-          ))}
-
-          <select onChange={handleChange} value={selection}>
-            {availableSensors.map(station => (
-              <optgroup label={station.name} key={station.id}>
-                {station.sensors.map(sensor => (
-                  <option value={sensor.id} key={sensor.id}>
-                    {sensor.name}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-          <button type="button" onClick={handleAdd}>
-            Add
-          </button>
-        </div>
-        <div className="footer">
           Dashboard Name:
           <input
             value={dashboardName}
             onChange={event => updateDashBoardName(event.target.value)}
           />
-          <button type="button" onClick={handleAddDashboard}>
+        </div>
+        <div className="footer">
+          <button type="button" onClick={handleSave}>
             Create
           </button>
         </div>

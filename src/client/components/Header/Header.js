@@ -30,6 +30,8 @@ const Header = ({ className, stations }) => {
   const goHome = () => {
     removeFromHash('station');
     removeFromHash('sensor');
+    removeFromHash('dashboard');
+    removeFromHash('actions');
   };
 
   const toggleModal = (open = !addModalIsOpen) => {

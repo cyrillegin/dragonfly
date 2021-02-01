@@ -97,6 +97,7 @@ const Actions = ({ className, stations }) => {
           <div className="col">Station</div>
           <div className="col">Sensor</div>
           <div className="col">Value</div>
+          <div className="col">Value Type</div>
           <div className="col">Condition</div>
           <div className="col">Action</div>
           <div className="col">Interval</div>
@@ -109,6 +110,7 @@ const Actions = ({ className, stations }) => {
             <div className="col">{action.stationName}</div>
             <div className="col">{action.sensorName}</div>
             <div className="col">{action.value}</div>
+            <div className="col">{action.valueType}</div>
             <div className="col">{action.condition}</div>
             <div className="col">{action.action}</div>
             <div className="col">{action.interval}</div>
@@ -142,8 +144,13 @@ Actions.propTypes = {
         PropTypes.shape({
           name: PropTypes.string.isRequired,
           health: PropTypes.oneOf(['healthy', 'unhealthy']),
+          actions: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.string.isRequired,
+            }),
+          ),
         }),
-      ),
+      ).isRequired,
     }),
   ).isRequired,
 };
@@ -167,11 +174,11 @@ const styledActions = styled(Actions)`
       display: flex;
       padding: 1rem;
 
-      &:nth-child(even) {
+      &:nth-of-type(even) {
         background: #f8f6ff;
       }
 
-      &:first-child {
+      &:first-of-type {
         background: #bee1ff;
         font-weight: bold;
       }

@@ -1,7 +1,7 @@
 import '@babel/polyfill';
 import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import * as emotion from '@emotion/core';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import * as emotion from '@emotion/react';
 import { createSerializer } from '@emotion/jest';
 
 configure({ adapter: new Adapter() });

@@ -3,8 +3,9 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import TreeView from './TreeView';
 
-xdescribe('TreeView', () => {
+describe('TreeView', () => {
   let originalFetch;
+
   beforeAll(() => {
     originalFetch = global.fetch;
     global.fetch = jest.fn(
@@ -25,12 +26,25 @@ xdescribe('TreeView', () => {
               id: 1,
               name: 'test',
               health: 'healthy',
-              ip: '123.123.123.123',
+              address: '123.123.123.123',
+              port: 'test',
               sensors: [
                 {
                   id: 1,
                   name: 'test',
                   health: 'healthy',
+                },
+              ],
+            },
+          ]}
+          dashboards={[
+            {
+              name: 'test',
+              sensors: [
+                {
+                  id: 1,
+                  stationId: 1,
+                  position: 1,
                 },
               ],
             },
@@ -41,7 +55,7 @@ xdescribe('TreeView', () => {
     });
   });
 
-  it('should test functionality', () => {
+  xit('should test functionality', () => {
     const wrapper = mount(
       <TreeView
         stations={[

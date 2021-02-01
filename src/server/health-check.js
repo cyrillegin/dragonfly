@@ -1,6 +1,8 @@
 import 'regenerator-runtime/runtime';
 import fetch from 'node-fetch';
-import { Station, Sensor, Action } from './db';
+import { Station, Sensor, Action, setupDb } from './db';
+
+setupDb();
 
 const testSensor = (
   address,

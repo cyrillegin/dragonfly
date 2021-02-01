@@ -48,16 +48,16 @@ router.get('/', async (req, res) => {
     ...station.dataValues,
     sensors: await Promise.all(
       station.dataValues.sensors.map(async sensor => {
-        const lastReading = await Reading.findAll({
+        const lastReading = await Reading.findOne({
           limit: 1,
           where: {
             sensorId: sensor.id,
           },
-          order: [['createdAt', 'DESC']],
+          order: [['created_at', 'DESC']],
         });
         return {
           ...sensor.dataValues,
-          lastReading: lastReading[0],
+          lastReading,
           stationName: station.name,
         };
       }),

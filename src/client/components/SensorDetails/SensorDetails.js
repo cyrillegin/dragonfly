@@ -105,6 +105,7 @@ const SensorDetails = ({ className, sensor }) => {
       date.getMonth() + 1
     }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
   }
+
   return (
     <div className={className}>
       {actionModal.id && (
@@ -132,7 +133,7 @@ const SensorDetails = ({ className, sensor }) => {
         </div>
         <div className="item">
           Last Reading Value:
-          <span>{sensor.lastReading.value}</span>
+          <span>{sensor.lastReading ? sensor.lastReading.value : 'null'}</span>
         </div>
 
         <div className="item">
@@ -188,6 +189,7 @@ const SensorDetails = ({ className, sensor }) => {
         {sensor.actions.map(action => (
           <div className="action-row" key={action.id}>
             <div className="actions-item">{action.value}</div>
+            <div className="actions-item">{action.valueType}</div>
             <div className="actions-item">{action.condition}</div>
             <div className="actions-item">{action.action}</div>
             <div className="actions-item">{action.interval}</div>
@@ -219,6 +221,7 @@ SensorDetails.propTypes = {
     stationId: PropTypes.number.isRequired,
     stationName: PropTypes.string.isRequired,
     pollRate: PropTypes.number,
+    unit: PropTypes.string,
     lastReading: PropTypes.shape({
       timestamp: PropTypes.string.isRequired,
       value: PropTypes.number.isRequired,
@@ -266,7 +269,7 @@ const styledSensorDetails = styled(SensorDetails)`
 
     .action-row {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(8, 1fr);
       height: 40px;
 
       &:first-of-type {

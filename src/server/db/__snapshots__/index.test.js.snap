@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`database should take a snapshot of the schema 1`] = `
+Array [
+  "name",
+  "address",
+  "port",
+]
+`;
+
+exports[`database should take a snapshot of the schema 2`] = `
+Array [
+  "name",
+  "stationId",
+  "coefficients",
+  "description",
+  "hardwareName",
+  "hardwareType",
+  "readingType",
+  "poll_rate",
+  "unit",
+]
+`;
+
+exports[`database should take a snapshot of the schema 3`] = `
+Array [
+  "sensorId",
+  "stationId",
+  "value",
+  "timestamp",
+]
+`;
+
+exports[`database should take a snapshot of the schema 4`] = `
+Array [
+  "stationId",
+  "sensorId",
+  "condition",
+  "action",
+  "value",
+  "metaData",
+  "interval",
+  "valueType",
+]
+`;
+
+exports[`database should take a snapshot of the schema 5`] = `
+Array [
+  "name",
+  "dashboard_id",
+  "sensor_id",
+  "station_id",
+  "position",
+]
+`;
