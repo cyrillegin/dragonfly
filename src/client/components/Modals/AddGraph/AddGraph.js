@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-import { windowEmitter } from '../../../utilities/Window';
+import { windowEmitter, searchToObject } from '../../../utilities/Window';
 
-const AddDashboard = ({ className, close, stations }) => {
-  const [dashboardName, updateDashBoardName] = useState('');
-
+const AddGraph = ({ className, close }) => {
+  const dashboardId = parseInt(searchToObject().dashboard);
+  console.log(dashboardId);
   const preventClose = event => {
     event.stopPropagation();
   };
 
   const handleSave = () => {
-    const payload = {
-      name: dashboardName,
-    };
-
+    return; // nope
     fetch('/api/dashboard', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -40,17 +37,11 @@ const AddDashboard = ({ className, close, stations }) => {
         onClick={preventClose}
         onKeyDown={preventClose}
       >
-        <div className="title">Dashboard creator</div>
-        <div className="body">
-          Dashboard Name:
-          <input
-            value={dashboardName}
-            onChange={event => updateDashBoardName(event.target.value)}
-          />
-        </div>
+        <div className="title">Add Graph</div>
+        <div className="body" />
         <div className="footer">
           <button type="button" onClick={handleSave}>
-            Create
+            Add
           </button>
         </div>
       </div>
@@ -58,24 +49,12 @@ const AddDashboard = ({ className, close, stations }) => {
   );
 };
 
-AddDashboard.propTypes = {
+AddGraph.propTypes = {
   className: PropTypes.string.isRequired,
   close: PropTypes.func.isRequired,
-  stations: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      id: PropTypes.number.isRequired,
-      sensors: PropTypes.arrayOf(
-        PropTypes.shape({
-          name: PropTypes.string.isRequired,
-          id: PropTypes.number.isRequired,
-        }),
-      ).isRequired,
-    }),
-  ).isRequired,
 };
 
-const styledAddDashboard = styled(AddDashboard)`
+const styledAddGraph = styled(AddGraph)`
   position: fixed;
   width: 100%;
   height: 100%;
@@ -94,4 +73,4 @@ const styledAddDashboard = styled(AddDashboard)`
   }
 `;
 
-export default styledAddDashboard;
+export default styledAddGraph;

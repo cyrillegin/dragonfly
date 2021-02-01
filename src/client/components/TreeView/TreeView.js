@@ -143,10 +143,10 @@ const TreeView = ({ className, stations, dashboards }) => {
       <div className="section">Dashboards</div>
       {dashboards.map(dashboard => (
         <div
-          key={dashboard.dashboardId}
-          className={`station${dashboard.dashboardId === dashboardSelected ? ' selected' : ''}`}
-          onClick={() => handleSelection('dashboard', dashboard.dashboardId)}
-          onKeyDown={() => handleSelection('dashbaord', dashboard.dashboardId)}
+          key={dashboard.id}
+          className={`station${dashboard.id === dashboardSelected ? ' selected' : ''}`}
+          onClick={() => handleSelection('dashboard', dashboard.id)}
+          onKeyDown={() => handleSelection('dashbaord', dashboard.id)}
           role="button"
           tabIndex={0}
         >
