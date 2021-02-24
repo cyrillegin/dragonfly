@@ -35,7 +35,7 @@ const getReadings = (sensor, setReadings, setLoading) => {
         newReadings
           .map(reading => ({
             value: coefParts.reduce(
-              (cur, acc, index) => Math.round(coefOrder[index](cur, coefParts[index])),
+              (cur, acc, index) => Number.parseFloat(coefOrder[index](cur, coefParts[index])).toPrecision(4),
               reading.value,
             ),
             timestamp: new Date(reading.timestamp),
