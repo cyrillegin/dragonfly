@@ -4,10 +4,10 @@ import time
 import requests
 import json
 import importlib
-from pollers import gpioPoller, bmp180Poller, dht11Poller, cpuPoller
+from pollers import gpioPoller, bmp180Poller, dht11Poller, cpuPoller, aht20Poller
 import random
 
-availablePollers = ['gpioPoller', 'bmp180Poller', 'dht11Poller', 'cpuPoller']
+availablePollers = ['gpioPoller', 'bmp180Poller', 'dht11Poller', 'cpuPoller', 'aht20Poller']
 
 def query(sensor):
     if sensor['hardwareType'] not in availablePollers:
@@ -24,6 +24,9 @@ def query(sensor):
 
         if sensor['hardwareType'] == 'cpuPoller':
             values = cpuPoller.GetValues(sensor['readingType'])
+
+        if sensor['hardwareType'] == 'aht20Poller':
+            values = aht20Poller.GetValues(sensor['readingType'])
 
         payload = {
             'value': values['value'],
@@ -84,6 +87,9 @@ class SensorManager:
                 result = module.GetValues(readingType)
             if poller == 'cpuPoller':
                 result = module.GetValues(readingType)
+            if poller == 'aht20Poller':
+                result = module.GetValues(readingType)
+
             return result
 
     instance = None
