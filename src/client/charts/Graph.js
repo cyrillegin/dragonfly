@@ -35,7 +35,8 @@ const getReadings = (sensor, setReadings, setLoading) => {
         newReadings
           .map(reading => ({
             value: coefParts.reduce(
-              (cur, acc, index) => Number.parseFloat(coefOrder[index](cur, coefParts[index])).toPrecision(4),
+              (cur, acc, index) =>
+                Number.parseFloat(coefOrder[index](cur, coefParts[index])).toPrecision(4),
               reading.value,
             ),
             timestamp: new Date(reading.timestamp),
@@ -44,6 +45,7 @@ const getReadings = (sensor, setReadings, setLoading) => {
           // leaving here though just in case :)
           .sort((a, b) => a.timestamp - b.timestamp),
       );
+      console.log(newReadings);
       setLoading(false);
     });
 };
@@ -79,10 +81,12 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
       .range([0, width])
       .domain(d3.extent(readings, d => d.timestamp));
 
+    console.log(d3.extent(readings, d => +d.value));
+
     const yScale = d3
       .scaleLinear()
       .range([height, 0])
-      .domain([d3.min(readings, d => d.value), d3.max(readings, d => d.value)]);
+      .domain(d3.extent(readings, d => +d.value));
 
     const valueline = d3
       .line()
