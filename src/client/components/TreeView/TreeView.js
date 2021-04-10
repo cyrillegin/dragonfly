@@ -73,6 +73,14 @@ const TreeView = ({ className, stations, dashboards }) => {
     Store.emit('collapse');
   };
 
+  const isHealthy = lastHealthTimestamp => {
+    const minutesSince = (new Date() - new Date(stations[0].lastHealthTimestamp)) / 1000 / 60;
+    if (minutesSince > 60) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <div className={`${className} ${collapsed ? 'collapse' : ''}`}>
       {modal === 'AddStation' && <AddStation close={() => toggleModal('')} />}
@@ -90,7 +98,9 @@ const TreeView = ({ className, stations, dashboards }) => {
       {stations.map(station => (
         <div key={station.id}>
           <div
-            className={`station ${selection === station.id ? 'selected' : ''}`}
+            className={`station ${selection === station.id ? 'selected' : ''} ${
+              isHealthy(station.lastHealthTimestamp) ? '' : 'offline'
+            }`}
             onClick={() => handleSelection('station', station.id)}
             onKeyDown={() => handleSelection('station', station.id)}
             role="button"
@@ -108,7 +118,7 @@ const TreeView = ({ className, stations, dashboards }) => {
                     window.location.search.includes('sensor') && selection === sensor.id
                       ? 'selected'
                       : ''
-                  }`}
+                  } ${isHealthy(sensor.lastHealthTimestamp) ? '' : 'offline'}`}
                   onClick={() => handleSelection('sensor', sensor.id)}
                   onKeyDown={() => handleSelection('sensor', sensor.id)}
                   role="button"
@@ -171,13 +181,13 @@ TreeView.propTypes = {
   stations: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
-      health: PropTypes.oneOf(['healthy', 'unhealthy']),
       address: PropTypes.string.isRequired,
       port: PropTypes.string.isRequired,
+      lastHealthTimestamp: PropTypes.string.isRequired,
       sensors: PropTypes.arrayOf(
         PropTypes.shape({
           name: PropTypes.string.isRequired,
-          health: PropTypes.oneOf(['healthy', 'unhealthy']),
+          lastHealthTimestamp: PropTypes.string.isRequired,
         }),
       ),
     }),
@@ -234,20 +244,8 @@ const styledTreeView = styled(TreeView)`
       background: #d6f4ff;
     }
 
-    .healthy {
-      width: 15px;
-      height: 15px;
-      background: green;
-      border-radius: 10px;
-      display: inline-block;
-    }
-
-    .unhealthy {
-      width: 15px;
-      height: 15px;
-      background: red;
-      border-radius: 10px;
-      display: inline-block;
+    &.offline {
+      background: #ffd6d6;
     }
 
     .station-title {
@@ -270,20 +268,8 @@ const styledTreeView = styled(TreeView)`
       background: #d6f4ff;
     }
 
-    .healthy {
-      width: 15px;
-      height: 15px;
-      background: green;
-      border-radius: 10px;
-      display: inline-block;
-    }
-
-    .unhealthy {
-      width: 15px;
-      height: 15px;
-      background: red;
-      border-radius: 10px;
-      display: inline-block;
+    &.offline {
+      background: #ffd6d6;
     }
 
     .sensor-title {
