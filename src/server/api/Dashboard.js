@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { v4 as uuid } from 'uuid';
 import { Dashboard, DashboardGraph, DashboardSource } from '../db';
 import { validateDashboardParams } from '../utilities/Validators';
 

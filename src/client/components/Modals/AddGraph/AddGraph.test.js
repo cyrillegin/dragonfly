@@ -1,10 +1,10 @@
 import { mount } from 'enzyme';
 import React from 'react';
-import AddDashboard from './AddDashboard';
+import AddGraph from './AddGraph';
 
-describe('AddDashboard', () => {
+describe('AddGraph', () => {
   it('should render a snap shot', () => {
-    const wrapper = mount(<AddDashboard close={() => {}} stations={[]} />);
+    const wrapper = mount(<AddGraph close={() => {}} stations={[]} />);
     expect(wrapper.html()).toMatchSnapshot();
   });
 });
