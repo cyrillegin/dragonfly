@@ -45,7 +45,6 @@ const getReadings = (sensor, setReadings, setLoading) => {
           // leaving here though just in case :)
           .sort((a, b) => a.timestamp - b.timestamp),
       );
-      console.log(newReadings);
       setLoading(false);
     });
 };
@@ -80,8 +79,6 @@ const Graph = ({ className, name, sensor, renderTrigger }) => {
       .scaleTime()
       .range([0, width])
       .domain(d3.extent(readings, d => d.timestamp));
-
-    console.log(d3.extent(readings, d => +d.value));
 
     const yScale = d3
       .scaleLinear()
