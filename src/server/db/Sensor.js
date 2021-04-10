@@ -14,6 +14,11 @@ function buildSensorSchema(sequelize) {
       readingType: { type: DataTypes.STRING, allowNull: true, field: 'reading_type' },
       poll_rate: { type: DataTypes.STRING, allowNull: true },
       unit: { type: DataTypes.STRING, allowNull: true },
+      lastHealthTimestamp: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: 'last_health_timestamp',
+      },
     },
     {
       sequelize,

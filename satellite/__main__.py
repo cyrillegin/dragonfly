@@ -38,8 +38,10 @@ class Root(object):
     # Check if sensor is currently running
     @cherrypy.expose
     def sensorHealth(self, *args, **kwargs):
-        sensorManager.checkSensor(kwargs)
-
+        result = sensorManager.checkSensor(kwargs)
+        if result == 'unhealthy':
+            cherrypy.response.status = 500
+        return result
     # Start a sensor
     @cherrypy.expose
     def startSensor(self, *args, **kwargs):

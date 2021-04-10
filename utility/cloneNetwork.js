@@ -11,7 +11,7 @@ const dummyStations = [
 
 /* eslint-disable no-await-in-loop */
 const cloneNetwork = async () => {
-  console.info('begining clone');
+  console.info('beginning clone');
   const stations = await fetch('http://192.168.1.132:3000/api/station').then(res => res.json());
   const sensorArray = [];
   for (const station of [...dummyStations, stations].flat()) {

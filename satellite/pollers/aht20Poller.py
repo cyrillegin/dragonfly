@@ -1,9 +1,14 @@
 import time
-import board
-import adafruit_ahtx0
+try:
+    import board
+    import adafruit_ahtx0
+
+    sensor = adafruit_ahtx0.AHTx0(board.I2C())
+except:
+    print('could not import board or adafruit_ahtx0, aht sensor will not be available.')
 
 # Create the sensor object using I2C
-sensor = adafruit_ahtx0.AHTx0(board.I2C())
+
 
 def GetValues(sensorDetails):
     if sensorDetails == "humidity":

@@ -12,6 +12,7 @@ const testSensor = (
   hardwareType,
   readingType,
   pollRate,
+  name,
 ) => {
   const kwargs = {
     sensorId,
@@ -27,8 +28,33 @@ const testSensor = (
     (acc, [key, value]) => `${acc}&${key}=${value}`,
     '?',
   );
+  // console.log(kwargString);
 
-  fetch(`http://${address}/sensorHealth${kwargString}`);
+  fetch(`http://${address}/sensorHealth${kwargString}`)
+    .then(async res => {
+      if (res.status === 500) {
+        throw new Error(await res.text());
+      }
+      await Sensor.update(
+        {
+          lastHealthTimestamp: new Date(),
+        },
+        {
+          where: { id: sensorId },
+        },
+      );
+      await Station.update(
+        {
+          lastHealthTimestamp: new Date(),
+        },
+        {
+          where: { id: sensorId },
+        },
+      );
+    })
+    .catch(async err => {
+      console.error(`${name} is reporting ${err}.`);
+    });
 };
 
 const runHealthCheck = async () => {
@@ -82,6 +108,7 @@ const runHealthCheck = async () => {
         sensor.hardwareType,
         sensor.readingType,
         pollRate,
+        sensor.name,
       );
     });
   });
