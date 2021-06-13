@@ -26,7 +26,9 @@ const BulkAdd = ({ className, close, stations }) => {
             ...acc,
             [cur]: {
               value: 0,
-              date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+              date: `${date.getFullYear()}-${(date.getMonth() + 1)
+                .toString()
+                .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`,
             },
           }),
           {},
@@ -136,6 +138,8 @@ const BulkAdd = ({ className, close, stations }) => {
       },
     });
   };
+
+  console.log(input);
 
   return (
     <div className={className} onClick={close}>
