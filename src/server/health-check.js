@@ -34,8 +34,8 @@ const testSensor = (
       if (res.status === 500) {
         throw new Error(await res.text());
       }
-      const dateString = (new Date()).toLocaleString();
-	    console.log(dateString)
+      const dateString = new Date().toLocaleString();
+
       await Sensor.update(
         {
           lastHealthTimestamp: dateString,
