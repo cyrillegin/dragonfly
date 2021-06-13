@@ -28,7 +28,6 @@ const testSensor = (
     (acc, [key, value]) => `${acc}&${key}=${value}`,
     '?',
   );
-  // console.log(kwargString);
 
   fetch(`http://${address}/sensorHealth${kwargString}`)
     .then(async res => {
@@ -48,7 +47,7 @@ const testSensor = (
           lastHealthTimestamp: new Date(),
         },
         {
-          where: { id: sensorId },
+          where: { id: stationId },
         },
       );
     })
