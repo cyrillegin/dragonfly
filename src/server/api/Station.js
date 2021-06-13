@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
       },
     ],
   });
-
+console.log(stations[1].lastHealthTimestamp)
   stations = stations.map(async station => ({
     ...station.dataValues,
     sensors: await Promise.all(

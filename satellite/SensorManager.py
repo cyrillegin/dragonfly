@@ -69,18 +69,15 @@ class SensorManager:
 
         def checkSensor(self, sensor):
             if sensor['sensorId'] in self.sensorsBeingPolled and self.sensorsBeingPolled[sensor['sensorId']].is_alive():
-                #print('sensor already exists and is healthy')
+                print('sensor already exists and is healthy')
                 return 'healthy'
-            try:
-                self.testSensor(sensor['hardwareName'], sensor['readingType'])
-            except:
-                print('sensor is unhealthy')
-                return 'unhealthy'
             self.startSensor(sensor)
-            return 'starting'
+            return 'unhealthy'
 
 
         def testSensor(self, sensor, readingType):
+            print(sensor)
+            print(readingType)
             poller = os.getenv('SENSOR_{}_POLLER'.format(sensor))
             module = importlib.import_module('pollers.{}'.format(poller))
             result = 'fail'
