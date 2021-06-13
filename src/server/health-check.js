@@ -34,9 +34,11 @@ const testSensor = (
       if (res.status === 500) {
         throw new Error(await res.text());
       }
+      const dateString = (new Date()).toLocaleString();
+	    console.log(dateString)
       await Sensor.update(
         {
-          lastHealthTimestamp: new Date(),
+          lastHealthTimestamp: dateString,
         },
         {
           where: { id: sensorId },
@@ -44,7 +46,7 @@ const testSensor = (
       );
       await Station.update(
         {
-          lastHealthTimestamp: new Date(),
+          lastHealthTimestamp: dateString,
         },
         {
           where: { id: stationId },
