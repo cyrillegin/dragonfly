@@ -26,6 +26,8 @@ const sendSlack = details => {
     return;
   }
 
+  console.info(body.attachments[0]);
+
   fetch(process.env.SLACK_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

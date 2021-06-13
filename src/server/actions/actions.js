@@ -75,9 +75,10 @@ const checkAgainstLastValue = async action => {
   const lastReading = await Reading.findOne({
     where: {
       sensorId: action.sensorId,
-      order: [['createdAt', 'DESC']],
     },
+    order: [['created_at', 'DESC']],
   });
+
   return checkAgainstValue(lastReading);
 };
 
@@ -99,6 +100,9 @@ const makeCheck = async actionId => {
   }
 
   if (alert) {
+    console.info(
+      `${action.action} action triggered by sensor ${action.sensorId} on station ${action.stationId}`,
+    );
     switch (action.action) {
       case 'slack':
         const details = {
