@@ -19,7 +19,7 @@ const router = new Router();
  * returns: 200 success, 400 if validation fails
  */
 router.post('/', async (req, res) => {
-  console.info('POST request to action');
+  console.debug('POST request to action');
 
   const { stationId, sensorId, condition, action, interval, value, valueType } = req.body;
 

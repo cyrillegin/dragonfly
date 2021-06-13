@@ -21,7 +21,7 @@ const router = new Router();
  */
 
 router.post('/', async (req, res) => {
-  console.info('POST request to sensor');
+  console.debug('POST request to sensor');
 
   let {
     stationId,
@@ -93,7 +93,7 @@ router.post('/', async (req, res) => {
  * returns: 200 success, 400 if validation fails
  */
 router.put('/', async (req, res) => {
-  console.info('PUT request to sensor');
+  console.debug('PUT request to sensor');
 
   // PUT specific validation
   const { id, pollRate } = req.body;
@@ -132,7 +132,7 @@ router.put('/', async (req, res) => {
       where: { id },
     });
 
-    console.info('sensor updated');
+    console.debug('sensor updated');
     res.status(200).send({ message: 'success' });
   } catch (error) {
     console.error('an error occured!');
@@ -152,7 +152,7 @@ router.put('/', async (req, res) => {
  */
 
 router.delete('/', async (req, res) => {
-  console.info('DELETE request to sensor');
+  console.debug('DELETE request to sensor');
   if (!req.query.id) {
     res
       .status(400)
@@ -181,7 +181,7 @@ router.delete('/', async (req, res) => {
 });
 
 router.post('/test', async (req, res) => {
-  console.info('TEST request to sensor');
+  console.debug('TEST request to sensor');
 
   const { stationId, hardwareName, readingType } = req.body;
 
@@ -192,11 +192,11 @@ router.post('/test', async (req, res) => {
     .then(result => result.json())
     .then(result => {
       if (result === 'unhealthy') {
-        console.info('Sensor test failed!');
+        console.debug('Sensor test failed!');
         res.send({ error: 'Sensor failed' });
         return;
       }
-      console.info('Sensor test successful!');
+      console.debug('Sensor test successful!');
       res.send({ message: result });
     })
     .catch(error => {

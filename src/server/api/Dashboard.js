@@ -24,7 +24,7 @@ const router = new Router();
  * }
  */
 router.get('/', async (req, res) => {
-  console.info('GET request to dashboard');
+  console.debug('GET request to dashboard');
   const dashboards = await Dashboard.findAll({
     include: [
       {
@@ -48,7 +48,7 @@ router.get('/', async (req, res) => {
  * returns: 200 success, 400 if validation fails
  */
 router.post('/', async (req, res) => {
-  console.info('POST request to dashboard');
+  console.debug('POST request to dashboard');
   const { name } = req.body;
 
   const valid = validateDashboardParams(req.body);
@@ -59,7 +59,7 @@ router.post('/', async (req, res) => {
 
   try {
     Dashboard.create({ name });
-    console.info('new dashboard created.');
+    console.debug('new dashboard created.');
     res.status(200).send({ message: 'success' });
   } catch (error) {
     console.error('an error occured!');

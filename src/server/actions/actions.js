@@ -66,7 +66,6 @@ const checkAgainstLastTimestamp = async action => {
       order: [['createdAt', 'DESC']],
     },
   });
-  console.warn(lastReading);
   // if last curent time - reading.timestamp > 1 day, alert..
   return true;
 };
@@ -79,21 +78,22 @@ const checkAgainstLastValue = async action => {
     order: [['created_at', 'DESC']],
   });
 
-  return checkAgainstValue(lastReading);
+  return checkAgainstValue(action, lastReading);
 };
 
 const makeCheck = async actionId => {
   const action = await Action.findOne({ where: { id: actionId } });
+
   let alert;
   switch (action.valueType) {
     case 'time':
-      alert = checkAgainstTime(action);
+      alert = await checkAgainstTime(action);
       break;
     case 'value':
-      alert = checkAgainstLastValue(action);
+      alert = await checkAgainstLastValue(action);
       break;
     case 'timestamp':
-      alert = checkAgainstLastTimestamp(action);
+      alert = await checkAgainstLastTimestamp(action);
       break;
     default:
       console.error('Error: Did not understand action valueType');
@@ -103,6 +103,7 @@ const makeCheck = async actionId => {
     console.info(
       `${action.action} action triggered by sensor ${action.sensorId} on station ${action.stationId}`,
     );
+
     switch (action.action) {
       case 'slack':
         const details = {

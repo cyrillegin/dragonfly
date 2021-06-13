@@ -33,7 +33,7 @@
   },
   "reportUnusedDisableDirectives": true,
   "rules": {
-    "no-console": ["error", { "allow": ["warn", "info", "error"] }],
+    "no-console": ["error", { "allow": ["warn", "info", "error", "debug"] }],
     "max-len": ["error", { "code": 100 }],
     "semi": "error",
     "semi-spacing": "error",

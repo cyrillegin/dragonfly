@@ -21,7 +21,7 @@ const router = new Router();
  * }
  */
 router.get('/', async (req, res) => {
-  console.info('GET request to reading');
+  console.debug('GET request to reading');
   let { sensorId, start, end } = req.query;
   if (!sensorId) {
     res.status(400).send({ error: 'You must provide a sensor id' });
@@ -75,7 +75,7 @@ router.get('/', async (req, res) => {
  * returns: 200 success, 400 if validation fails
  */
 router.post('/', async (req, res) => {
-  console.info('POST request to reading');
+  console.debug('POST request to reading');
   const { value, timestamp, sensorId, stationId } = req.body;
 
   const valid = validateReadingParams(req.body);
@@ -96,7 +96,7 @@ router.post('/', async (req, res) => {
 });
 
 router.post('/bulk', async (req, res) => {
-  console.info('POST request to bulk reading');
+  console.debug('POST request to bulk reading');
 
   try {
     req.body.readings.forEach(async reading => {

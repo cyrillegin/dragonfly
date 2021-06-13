@@ -34,7 +34,7 @@ const router = new Router();
  * }
  */
 router.get('/', async (req, res) => {
-  console.info('GET request to station');
+  console.debug('GET request to station');
   let stations = await Station.findAll({
     include: [
       {
@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
       },
     ],
   });
-console.log(stations[1].lastHealthTimestamp)
+
   stations = stations.map(async station => ({
     ...station.dataValues,
     sensors: await Promise.all(
@@ -79,7 +79,7 @@ console.log(stations[1].lastHealthTimestamp)
  * returns: 200 success, 400 if validation fails
  */
 router.post('/', async (req, res) => {
-  console.info('POST request to station');
+  console.debug('POST request to station');
   const { name, address, port, error } = validateStationParams(req.body);
   if (error) {
     console.error('POST Failed - Invalid IP');
@@ -94,7 +94,7 @@ router.post('/', async (req, res) => {
       port,
       lastHealthTimestamp: new Date(),
     });
-    console.info('POST Successfull - New station added');
+    console.debug('POST Successfull - New station added');
     res.status(200).send(JSON.stringify({ message: 'success' }));
   } catch (err) {
     console.error('POST Failed - An error occured!');
@@ -115,7 +115,7 @@ router.post('/', async (req, res) => {
  * returns: 200 success, 400 if validation fails
  */
 router.put('/', async (req, res) => {
-  console.info('PUT request to station');
+  console.debug('PUT request to station');
   const valid = validateStationParams(req.body);
   if (valid.error) {
     res.status(400).send({ error: valid.error });
@@ -131,7 +131,7 @@ router.put('/', async (req, res) => {
         where: { id: req.body.id },
       },
     );
-    console.info('station updated');
+    console.debug('station updated');
     res.status(200).send({ message: 'success' });
   } catch (error) {
     console.error('an error occured!');
@@ -150,7 +150,7 @@ router.put('/', async (req, res) => {
  *          400 if id doesn't exist
  */
 router.delete('/', async (req, res) => {
-  console.info('DELETE request to station');
+  console.debug('DELETE request to station');
   if (!req.query.id) {
     res
       .status(400)
@@ -183,7 +183,7 @@ router.delete('/', async (req, res) => {
 });
 
 router.post('/test', async (req, res) => {
-  console.info('TEST request to station');
+  console.debug('TEST request to station');
 
   const { address, port, error } = validateStationParams(req.body);
 
