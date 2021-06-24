@@ -1,7 +1,9 @@
+import '../env';
 import 'regenerator-runtime/runtime';
-import { Action, Reading, Sensor, setupDb } from '../db';
+import { Action, Reading, Sensor, Station, setupDb } from '../db';
 import sendSlack from './slack';
 import toggleWemo from './wemo';
+import requestAndUploadImage from './camera';
 
 setupDb();
 
@@ -63,8 +65,8 @@ const checkAgainstLastTimestamp = async action => {
   const lastReading = await Reading.findOne({
     where: {
       sensorId: action.sensorId,
-      order: [['createdAt', 'DESC']],
     },
+    order: [['createdAt', 'DESC']],
   });
   // if last curent time - reading.timestamp > 1 day, alert..
   return true;
@@ -95,6 +97,9 @@ const makeCheck = async actionId => {
     case 'timestamp':
       alert = await checkAgainstLastTimestamp(action);
       break;
+    case 'interval':
+      alert = true;
+      break;
     default:
       console.error('Error: Did not understand action valueType');
   }
@@ -115,6 +120,12 @@ const makeCheck = async actionId => {
         break;
       case 'wemo':
         toggleWemo(action);
+        break;
+      case 'camera':
+        requestAndUploadImage({
+          action,
+          station: await Station.findOne({ where: { id: action.stationId } }),
+        });
         break;
     }
   }

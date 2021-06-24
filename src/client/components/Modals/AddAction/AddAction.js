@@ -44,6 +44,7 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
               <option value="value">value</option>
               <option value="timestamp">timestamp</option>
               <option value="time">time</option>
+              <option value="interval">interval</option>
             </select>
           </div>
           <div>
@@ -61,6 +62,7 @@ const AddAction = ({ className, action, actionConditions, message, save, cancel 
             <select value={details.action} onChange={updateDetails} name="action">
               <option value="slack">slack</option>
               <option value="wemo">wemo</option>
+              <option value="camera">camera</option>
             </select>
           </div>
           <div>
