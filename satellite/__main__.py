@@ -10,7 +10,7 @@ cherrypy.config.update({'log.screen': False})
 
 class Root(object):
 
-     @cherrypy.expose
+    @cherrypy.expose
     def requestImage(self, *args, **kwargs):
         print('image request made')
         try:
