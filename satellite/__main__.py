@@ -10,6 +10,18 @@ cherrypy.config.update({'log.screen': False})
 
 class Root(object):
 
+     @cherrypy.expose
+    def requestImage(self, *args, **kwargs):
+        print('image request made')
+        try:
+            call(["fswebcam","-r", "1280x720", "--no-banner", "image.png"])
+            cherrypy.response.headers['Content-type'] = 'image/png'
+            f = open('image.png', 'rb')
+            return f.read()
+        except Exception as e:
+            print('Error creating image')
+            print(e)
+
     # Check if sensor can be created
     @cherrypy.expose
     @cherrypy.tools.json_out()
