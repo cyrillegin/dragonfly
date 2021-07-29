@@ -33,6 +33,7 @@ const requestAndUploadImage = async details => {
     Bucket: 'cyrille-dragonfly',
     Key: key,
     Body: buffer,
+    ACL: 'public-read',
   };
   s3Client.upload(params, (err, data) => {
     if (err) {

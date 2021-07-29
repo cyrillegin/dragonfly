@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import cherrypy
 from cherrypy.lib.static import serve_file
 from SensorManager import SensorManager
+from subprocess import call
 
 cherrypy.config.update({'log.screen': False})
 
