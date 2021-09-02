@@ -12,6 +12,20 @@ jest.mock('../db', () => ({
 }));
 
 describe('Action api', () => {
+  let console;
+
+  beforeEach(() => {
+    console = global.console;
+    global.console = {
+      info: jest.fn(),
+      debug: jest.fn(),
+    };
+  });
+
+  afterEach(() => {
+    global.console = console;
+  });
+
   it('should test post', done => {
     const app = express();
     app.use(bodyParser.json());

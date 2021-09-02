@@ -28,11 +28,13 @@ describe('TreeView', () => {
               health: 'healthy',
               address: '123.123.123.123',
               port: 'test',
+              lastHealthTimestamp: '1234',
               sensors: [
                 {
                   id: 1,
                   name: 'test',
                   health: 'healthy',
+                  lastHealthTimestamp: '1234',
                 },
               ],
             },
@@ -40,6 +42,7 @@ describe('TreeView', () => {
           dashboards={[
             {
               name: 'test',
+              id: 1,
               sensors: [
                 {
                   id: 1,
@@ -69,6 +72,7 @@ describe('TreeView', () => {
                 id: 1,
                 name: 'test',
                 health: 'healthy',
+                lastHealthTimestamp: '1234',
               },
             ],
           },

@@ -5,7 +5,7 @@ import { windowEmitter, searchToObject } from '../../../utilities/Window';
 
 const AddGraph = ({ className, close }) => {
   const dashboardId = parseInt(searchToObject().dashboard);
-  console.log(dashboardId);
+  // console.log(dashboardId);
   const preventClose = event => {
     event.stopPropagation();
   };

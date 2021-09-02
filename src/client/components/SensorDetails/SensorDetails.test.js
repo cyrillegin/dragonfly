@@ -5,15 +5,15 @@ import SensorDetails from './SensorDetails';
 
 jest.useFakeTimers();
 
+jest.mock('../../Api', () => ({
+  updateSensor: () => new Promise(res => res([])),
+  deleteAction: () => new Promise(res => res()),
+}));
+
 describe('SensorDetails', () => {
-  let fetch;
   let date;
 
   beforeEach(() => {
-    fetch = global.fetch;
-    global.fetch = jest.fn(
-      () => new Promise(res => res({ json: () => new Promise(inner => inner({})) })),
-    );
     date = global.Date;
     global.Date = class {
       getDate = () => '1';
@@ -33,13 +33,13 @@ describe('SensorDetails', () => {
   });
 
   afterEach(() => {
-    global.fetch = fetch;
     global.Date = date;
   });
 
   it('should render a snap shot', async () => {
+    let wrapper;
     await act(async () => {
-      const wrapper = mount(
+      wrapper = mount(
         <SensorDetails
           sensor={{
             id: 1,
@@ -55,13 +55,14 @@ describe('SensorDetails', () => {
           }}
         />,
       );
-      expect(wrapper).toMatchSnapshot();
     });
+    expect(wrapper).toMatchSnapshot();
   });
 
   it('should test functionality', async () => {
+    let wrapper;
     await act(async () => {
-      const wrapper = mount(
+      wrapper = mount(
         <SensorDetails
           sensor={{
             id: 1,
@@ -77,12 +78,11 @@ describe('SensorDetails', () => {
           }}
         />,
       );
-
       wrapper.find('button').forEach(button => {
         button.simulate('click');
         jest.runAllTimers();
-        expect(wrapper.html()).toMatchSnapshot();
       });
     });
+    expect(wrapper.html()).toMatchSnapshot();
   });
 });

@@ -1,4 +1,4 @@
-import { objectToString } from '../utilities/Window';
+import { objectToString } from './utilities/Window';
 
 class Api {
   readings = {};
@@ -98,7 +98,7 @@ class Api {
   }
 
   async getReadings(kwargs) {
-    const stringifiedKwargs = JSON.strinify(kwargs);
+    const stringifiedKwargs = JSON.stringify(kwargs);
     if (this.readings[stringifiedKwargs]) {
       return this.readings[stringifiedKwargs];
     }

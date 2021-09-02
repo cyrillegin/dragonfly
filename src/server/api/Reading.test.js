@@ -9,6 +9,19 @@ jest.mock('../db', () => ({
 }));
 
 describe('Reading api', () => {
+  let console;
+
+  beforeEach(() => {
+    console = global.console;
+    global.console = {
+      debug: jest.fn(),
+    };
+  });
+
+  afterEach(() => {
+    global.console = console;
+  });
+
   it('should test get', done => {
     const app = express();
     app.use(Reading);

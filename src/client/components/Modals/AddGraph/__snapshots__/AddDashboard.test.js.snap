@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`AddDashboard should render a snap shot 1`] = `"<div class=\\"css-6je0yf\\" role=\\"button\\" tabindex=\\"0\\"><div class=\\"modal\\" role=\\"button\\" tabindex=\\"0\\"><div class=\\"title\\">Dashboard creator</div><div class=\\"body\\"><select></select><button type=\\"button\\">Add</button></div><div class=\\"footer\\">Dashboard Name:<input value=\\"\\"><button type=\\"button\\">Create</button></div></div></div>"`;

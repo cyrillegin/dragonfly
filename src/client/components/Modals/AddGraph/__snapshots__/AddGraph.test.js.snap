@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddGraph should render a snap shot 1`] = `"<div class=\\"css-6je0yf\\" role=\\"button\\" tabindex=\\"0\\"><div class=\\"modal\\" role=\\"button\\" tabindex=\\"0\\"><div class=\\"title\\">Add Graph</div><div class=\\"body\\"></div><div class=\\"footer\\"><button type=\\"button\\">Add</button></div></div></div>"`;
