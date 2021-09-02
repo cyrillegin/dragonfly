@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { searchToObject, windowEmitter } from '../../../utilities/Window';
+import Api from '../../../Api';
 
 const AddSensor = ({ className, close, address, port }) => {
   const [input, setInput] = useState({});
@@ -9,12 +10,10 @@ const AddSensor = ({ className, close, address, port }) => {
   const [availableSensors, setSensors] = useState([]);
 
   useEffect(() => {
-    fetch(`/list?ip=${address}:${port}`)
-      .then(res => res.json())
-      .then(res => {
-        setSensors([...res, { name: 'self-entry' }]);
-        setInput({ hardwareName: res[0] });
-      });
+    Api.listSensors(address, port).then(res => {
+      setSensors([...res, { name: 'self-entry' }]);
+      setInput({ hardwareName: res[0] });
+    });
   }, [address, port]);
 
   const handleInputChange = event => {
@@ -55,19 +54,13 @@ const AddSensor = ({ className, close, address, port }) => {
 
     params.stationId = parseInt(searchToObject().station, 10);
 
-    fetch('/api/sensor/test', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (res.error) {
-          setSuccess(false);
-        } else {
-          setSuccess(true);
-        }
-      });
+    Api.testSensor(params).then(res => {
+      if (res.error) {
+        setSuccess(false);
+      } else {
+        setSuccess(true);
+      }
+    });
   };
 
   const handleAdd = () => {
@@ -86,20 +79,14 @@ const AddSensor = ({ className, close, address, port }) => {
       params.readingType = 'fake';
     }
 
-    fetch('/api/sensor/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (res.error) {
-          // add messaging
-        } else {
-          windowEmitter.emit('station-refresh');
-          close();
-        }
-      });
+    Api.addSensor(params).then(res => {
+      if (res.error) {
+        // add messaging
+      } else {
+        windowEmitter.emit('station-refresh');
+        close();
+      }
+    });
   };
 
   const preventClose = event => {

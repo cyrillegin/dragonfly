@@ -6,6 +6,7 @@ import TreeView from './components/TreeView';
 import Dashboard from './components/Dashboard';
 import { windowEmitter, searchToObject } from './utilities/Window';
 import Actions from './components/Actions';
+import Api from './Api';
 
 const App = ({ className }) => {
   const [stations, setStations] = useState([]);
@@ -13,24 +14,18 @@ const App = ({ className }) => {
   const [, setDate] = useState(null);
 
   useEffect(() => {
-    fetch('/api/station')
-      .then(res => res.json())
-      .then(res => {
-        setStations(res);
-      });
+    Api.getStations().then(res => {
+      setStations(res);
+    });
 
-    fetch('/api/dashboard')
-      .then(res => res.json())
-      .then(res => {
-        setDashboards(res);
-      });
+    Api.getDashboards().then(res => {
+      setDashboards(res);
+    });
 
     windowEmitter.listen('station-refresh', () => {
-      fetch('/api/station')
-        .then(res => res.json())
-        .then(res => {
-          setStations(res);
-        });
+      Api.getStations().then(res => {
+        setStations(res);
+      });
     });
 
     windowEmitter.listen('change', () => {
