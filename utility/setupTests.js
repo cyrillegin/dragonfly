@@ -1,4 +1,5 @@
 import '@babel/polyfill';
+import 'jsdom-global/register';
 import { configure } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import * as emotion from '@emotion/react';
