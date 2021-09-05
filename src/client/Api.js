@@ -7,7 +7,7 @@ class Api {
     if (this.stations) {
       return this.stations;
     }
-    const stations = await fetch('/api/stations').then(res => res.json());
+    const stations = await fetch('/api/station').then(res => res.json());
     this.stations = stations;
     return stations;
   }
