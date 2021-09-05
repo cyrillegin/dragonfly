@@ -39,32 +39,28 @@ router.get('/', async (req, res) => {
     include: [
       {
         model: Sensor,
-        include: [Action],
+        include: [
+          Action,
+          {
+            model: Reading,
+            order: [['created_at', 'DESC']],
+            limit: 1,
+          },
+        ],
       },
     ],
   });
 
-  stations = stations.map(async station => ({
+  stations = stations.map(station => ({
     ...station.dataValues,
-    sensors: await Promise.all(
-      station.dataValues.sensors.map(async sensor => {
-        const lastReading = await Reading.findOne({
-          limit: 1,
-          where: {
-            sensorId: sensor.id,
-          },
-          order: [['created_at', 'DESC']],
-        });
-        return {
-          ...sensor.dataValues,
-          lastReading,
-          stationName: station.name,
-        };
-      }),
-    ),
+    sensors: station.dataValues.sensors.map(sensor => ({
+      ...sensor.dataValues,
+      lastReading: sensor.dataValues.readings[0],
+      stationName: station.name,
+    })),
   }));
 
-  res.send(await Promise.all(stations));
+  res.send(stations);
 });
 
 /**
