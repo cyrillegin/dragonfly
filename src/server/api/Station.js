@@ -23,7 +23,9 @@ const router = new Router();
  *       state: 'on, off, null',
  *       coefficients: '9/5, 32',
  *       hardwareSensor: 'GPIO',
- *       type: 'temperature'
+ *       type: 'temperature',
+ *       stationName: 'name',
+ *       lastReading: 'date',
  *       actions: [{
  *         condition: 'condition',
  *         action: 'action',
