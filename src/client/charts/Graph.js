@@ -3,9 +3,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import { searchToObject, objectToString, addOrUpdateHash } from '../utilities/Window';
+import { searchToObject, addOrUpdateHash } from '../utilities/Window';
 import Store from '../utilities/Store';
 import Loader from '../components/Loader';
+import Api from '../Api';
 
 const coefOrder = [
   (value, coef) => value + coef,
@@ -28,25 +29,23 @@ const getReadings = (sensor, setReadings, setLoading) => {
 
   const coefParts = (sensor.coefficients || '0').split(',').map(e => parseFloat(e));
 
-  fetch(`/api/reading?${objectToString(kwargs)}`)
-    .then(res => res.json())
-    .then(newReadings => {
-      setReadings(
-        newReadings
-          .map(reading => ({
-            value: coefParts.reduce(
-              (cur, acc, index) =>
-                Number.parseFloat(coefOrder[index](cur, coefParts[index])).toPrecision(4),
-              reading.value,
-            ),
-            timestamp: new Date(reading.timestamp),
-          }))
-          // Sorting is redundant as it takes place in the db,
-          // leaving here though just in case :)
-          .sort((a, b) => a.timestamp - b.timestamp),
-      );
-      setLoading(false);
-    });
+  Api.getReadings(kwargs).then(newReadings => {
+    setReadings(
+      newReadings
+        .map(reading => ({
+          value: coefParts.reduce(
+            (cur, acc, index) =>
+              Number.parseFloat(coefOrder[index](cur, coefParts[index])).toPrecision(4),
+            reading.value,
+          ),
+          timestamp: new Date(reading.timestamp),
+        }))
+        // Sorting is redundant as it takes place in the db,
+        // leaving here though just in case :)
+        .sort((a, b) => a.timestamp - b.timestamp),
+    );
+    setLoading(false);
+  });
 };
 
 const Graph = ({ className, name, sensor, renderTrigger }) => {

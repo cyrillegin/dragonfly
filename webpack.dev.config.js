@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
-  entry: ['./src/client/index.js'],
+  entry: ['@babel/polyfill', './src/client/index.js'],
   mode: 'development',
   output: {
     filename: '[name].bundle.js',

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import Store from '../../../utilities/Store';
+import Api from '../../../Api';
 
 const LOCAL_STORAGE_KEY = 'bulk-add';
 
@@ -48,9 +49,10 @@ const BulkAdd = ({ className, close, stations }) => {
       ],
       [],
     );
+
     setAvaliableSensors(sensors);
     // Mock initial select option.
-    handleSelectChange({ target: { value: sensors[0].name } });
+    handleSelectChange({ target: { value: (sensors[0] || {}).name } });
   }, [stations]);
 
   const preventClose = event => {
@@ -91,15 +93,7 @@ const BulkAdd = ({ className, close, stations }) => {
       };
     });
 
-    fetch('/api/reading/bulk', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        readings,
-      }),
-    }).then(() => {
+    Api.addBulkReadings(readings).then(() => {
       Store.refreshFn();
       close();
     });
@@ -138,8 +132,6 @@ const BulkAdd = ({ className, close, stations }) => {
       },
     });
   };
-
-  console.log(input);
 
   return (
     <div className={className} onClick={close}>

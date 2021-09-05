@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { windowEmitter } from '../../../utilities/Window';
+import Api from '../../../Api';
 
 const AddStation = ({ className, close }) => {
   const [input, setInput] = useState({});
@@ -32,26 +33,20 @@ const AddStation = ({ className, close }) => {
     }
     setError('Testing...');
 
-    fetch('/api/station/test', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (res.error) {
-          setSuccess(false);
-          setError(res.error);
-          return;
-        }
-        if (res.message === 'success') {
-          setSuccess(true);
-          setError('');
-        } else {
-          setError('An unknown error occured.');
-          setSuccess(false);
-        }
-      });
+    Api.testStation(params).then(res => {
+      if (res.error) {
+        setSuccess(false);
+        setError(res.error);
+        return;
+      }
+      if (res.message === 'success') {
+        setSuccess(true);
+        setError('');
+      } else {
+        setError('An unknown error occured.');
+        setSuccess(false);
+      }
+    });
   };
 
   const handleAdd = () => {
@@ -59,23 +54,17 @@ const AddStation = ({ className, close }) => {
       ...input,
     };
     setError('Adding...');
-    fetch('/api/station/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (res.message === 'success') {
-          setError('Station Added!');
-          windowEmitter.emit('station-refresh');
-          close();
-        } else if (res.error) {
-          setError(res.error);
-        } else {
-          setError('An unknow error occured.');
-        }
-      });
+    Api.addStation(params).then(res => {
+      if (res.message === 'success') {
+        setError('Station Added!');
+        windowEmitter.emit('station-refresh');
+        close();
+      } else if (res.error) {
+        setError(res.error);
+      } else {
+        setError('An unknow error occured.');
+      }
+    });
   };
 
   const preventClose = event => {

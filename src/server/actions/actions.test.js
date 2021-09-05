@@ -1,4 +1,9 @@
+import { checkAgainstValue } from './actions';
+
 jest.mock('../db');
+jest.mock('./slack');
+jest.mock('./wemo');
+jest.mock('./camera');
 
 describe('actions', () => {
   [
@@ -21,10 +26,9 @@ describe('actions', () => {
     ['value === reading && reading > 10', 5, 7, false],
     ['value !== reading && value > 5', 5, 7, false],
   ].forEach(([expression, value, reading, result]) => {
-    xit(`should test ${expression
+    it(`should test ${expression
       .replace(/value/g, value)
       .replace(/reading/g, reading)} is ${result}`, () => {
-      let checkAgainstValue;
       expect(checkAgainstValue(expression, value, reading)).toBe(result);
     });
   });

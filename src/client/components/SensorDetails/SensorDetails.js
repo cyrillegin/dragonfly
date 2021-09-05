@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { AddAction } from '../Modals';
 import { actionConditions, actionProperties } from '../../utilities/constants';
 import { windowEmitter } from '../../utilities/Window';
+import Api from '../../Api';
 
 const SensorDetails = ({ className, sensor }) => {
   const [sensorDetails, setSensorDetails] = useState({
@@ -27,9 +28,7 @@ const SensorDetails = ({ className, sensor }) => {
   };
 
   const deleteAction = action => {
-    fetch(`/api/action/${action.id}`, {
-      method: 'DELETE',
-    }).then(() => {
+    Api.deleteAction(action.id).then(() => {
       windowEmitter.emit('station-refresh');
     });
   };
@@ -40,28 +39,22 @@ const SensorDetails = ({ className, sensor }) => {
       sensorId: sensor.id,
       ...action,
     };
-    let method = '';
+    let promise;
     if (action.id === -1) {
-      method = 'POST';
       delete body.id;
+      promise = Api.createAction(body);
     } else {
-      method = 'PUT';
+      promise = Api.updateAction(body);
     }
 
-    fetch('/api/action', {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (res.error) {
-          setActionMessage(res.error);
-        } else {
-          updateActionModal({});
-          windowEmitter.emit('station-refresh');
-        }
-      });
+    promise.then(res => {
+      if (res.error) {
+        setActionMessage(res.error);
+      } else {
+        updateActionModal({});
+        windowEmitter.emit('station-refresh');
+      }
+    });
   };
 
   const cancelAction = () => {
@@ -73,25 +66,21 @@ const SensorDetails = ({ className, sensor }) => {
       updateSuccessMessage('Name must be something');
       return;
     }
-    fetch('/api/sensor', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: sensor.id,
-        name: sensorDetails.name,
-        description: sensorDetails.description === '' ? null : sensorDetails.description,
-        coefficients: sensorDetails.Coefs === '' ? null : sensorDetails.coefficients,
-        pollRate: sensorDetails.pollRate === '' ? null : sensorDetails.pollRate,
-        unit: sensorDetails.unit === '' ? null : sensorDetails.unit,
-      }),
-    })
-      .then(res => res.json())
-      .then(res => {
-        updateSuccessMessage(res.message || res.error);
-        setTimeout(() => {
-          updateSuccessMessage('');
-        }, 15000);
-      });
+
+    const body = {
+      id: sensor.id,
+      name: sensorDetails.name,
+      description: sensorDetails.description === '' ? null : sensorDetails.description,
+      coefficients: sensorDetails.Coefs === '' ? null : sensorDetails.coefficients,
+      pollRate: sensorDetails.pollRate === '' ? null : sensorDetails.pollRate,
+      unit: sensorDetails.unit === '' ? null : sensorDetails.unit,
+    };
+    Api.updateSensor(body).then(res => {
+      updateSuccessMessage(res.message || res.error);
+      setTimeout(() => {
+        updateSuccessMessage('');
+      }, 15000);
+    });
   };
 
   const handleInputChange = event => {

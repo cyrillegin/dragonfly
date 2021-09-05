@@ -5,6 +5,7 @@ import { AddAction } from '../Modals';
 import { actionConditions } from '../../utilities/constants';
 import { windowEmitter } from '../../utilities/Window';
 import Store from '../../utilities/Store';
+import Api from '../../Api';
 
 const Actions = ({ className, stations }) => {
   const [actions, setActions] = useState([]);
@@ -41,9 +42,7 @@ const Actions = ({ className, stations }) => {
   };
 
   const handleDelete = action => {
-    fetch(`/api/action/${action.id}`, {
-      method: 'DELETE',
-    }).then(() => {
+    Api.deleteAction(action.id).then(() => {
       windowEmitter.emit('station-refresh');
     });
   };
@@ -54,28 +53,22 @@ const Actions = ({ className, stations }) => {
       sensorId: action.sensorId,
       ...action,
     };
-    let method = '';
+    let promise;
     if (action.id === -1) {
-      method = 'POST';
       delete body.id;
+      promise = Api.createAction(body);
     } else {
-      method = 'PUT';
+      promise = Api.updateAction(body);
     }
 
-    fetch('/api/action', {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (res.error) {
-          setActionMessage(res.error);
-        } else {
-          updateActionModal({});
-          windowEmitter.emit('station-refresh');
-        }
-      });
+    promise.then(res => {
+      if (res.error) {
+        setActionMessage(res.error);
+      } else {
+        updateActionModal({});
+        windowEmitter.emit('station-refresh');
+      }
+    });
   };
 
   const cancelAction = () => {

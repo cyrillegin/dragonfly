@@ -3,13 +3,17 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import AddStation from './AddStation';
 
+jest.mock('../../../Api', () => ({
+  testStation: () => new Promise(res => res([])),
+}));
+
 describe('AddStation', () => {
   it('should render a snap shot', () => {
     const wrapper = mount(<AddStation close={() => {}} />);
     expect(wrapper.html()).toMatchSnapshot();
   });
 
-  xit('should check form input', async () => {
+  it('should check form input', async () => {
     const wrapper = mount(<AddStation close={() => {}} />);
     wrapper.find('input').forEach(input => {
       input.simulate('change', {
@@ -23,10 +27,6 @@ describe('AddStation', () => {
   });
 
   it('should test handleTest', async () => {
-    const spy = jest.fn(
-      () => new Promise(res => res({ json: () => new Promise(inner => inner({})) })),
-    );
-    global.fetch = spy;
     const wrapper = mount(<AddStation close={() => {}} />);
 
     // fill out no input, shows name error
@@ -65,7 +65,5 @@ describe('AddStation', () => {
       wrapper.find('button').simulate('click');
     });
     expect(wrapper.html()).toMatchSnapshot();
-
-    expect(spy).toHaveBeenCalledTimes(1);
   });
 });

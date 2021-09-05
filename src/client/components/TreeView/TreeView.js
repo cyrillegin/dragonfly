@@ -75,8 +75,7 @@ const TreeView = ({ className, stations, dashboards }) => {
 
   const isHealthy = lastHealthTimestamp => {
     const minutesSince = (new Date() - new Date(lastHealthTimestamp)) / 1000 / 60;
-    console.log(minutesSince)
-	  if (minutesSince > 60) {
+    if (minutesSince > 60) {
       return false;
     }
     return true;
@@ -195,6 +194,7 @@ TreeView.propTypes = {
   ).isRequired,
   dashboards: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       sensors: PropTypes.arrayOf(
         PropTypes.shape({

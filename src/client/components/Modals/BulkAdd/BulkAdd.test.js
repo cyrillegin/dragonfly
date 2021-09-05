@@ -13,7 +13,7 @@ describe('BulkAdd', () => {
         close={() => {}}
         stations={[
           {
-            it: 'test',
+            id: 'test',
             name: 'test',
             health: 'healthy',
             address: 'test',
