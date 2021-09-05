@@ -49,9 +49,10 @@ const BulkAdd = ({ className, close, stations }) => {
       ],
       [],
     );
+
     setAvaliableSensors(sensors);
     // Mock initial select option.
-    handleSelectChange({ target: { value: sensors[0].name } });
+    handleSelectChange({ target: { value: (sensors[0] || {}).name } });
   }, [stations]);
 
   const preventClose = event => {

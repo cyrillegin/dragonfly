@@ -4,6 +4,7 @@ import Header from './Header';
 
 jest.mock('../../utilities/Window', () => ({
   searchToObject: () => ({}),
+  removeFromHash: () => ({}),
 }));
 
 describe('Header', () => {
@@ -12,7 +13,7 @@ describe('Header', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  xit('should test functionality', () => {
+  it('should test functionality', () => {
     const wrapper = mount(<Header />);
 
     wrapper.find('.title').simulate('click');

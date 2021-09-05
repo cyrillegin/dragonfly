@@ -147,3 +147,5 @@ const manageProcess = async () => {
 };
 
 setInterval(manageProcess, 1000 * process.env.ACTION_INTERVAL || 60);
+
+export { checkAgainstValue, checkAgainstLastValue, checkAgainstLastTimestamp, checkAgainstTime };

@@ -2,7 +2,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 import BulkAdd from './BulkAdd';
 
-xdescribe('BulkAdd', () => {
+describe('BulkAdd', () => {
   it('should render a snap shot', () => {
     global.localStorage = {
       getItem: () => 'test:test',
@@ -13,7 +13,7 @@ xdescribe('BulkAdd', () => {
         close={() => {}}
         stations={[
           {
-            it: 'test',
+            id: 'test',
             name: 'test',
             health: 'healthy',
             address: 'test',

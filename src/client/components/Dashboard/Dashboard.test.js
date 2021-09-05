@@ -18,8 +18,8 @@ global.fetch = jest.fn(
   () => new Promise(res => res({ json: () => new Promise(inner => inner({})) })),
 );
 
-describe('dashboard', () => {
-  xit('should render a snap shot', () => {
+xdescribe('dashboard', () => {
+  it('should render a snap shot', () => {
     const wrapper = mount(
       <Dashboard
         stations={[

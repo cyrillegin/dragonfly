@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import Graph from '../../charts/Graph';
@@ -72,13 +72,13 @@ const Dashboard = ({ className, stations, dashboards }) => {
       {!currentSensor.id && currentStations.length && (
         <>
           {currentStations.map(station => (
-            <>
+            <Fragment key={station.id}>
               {station.sensors.map(sensor => (
                 <div className="sensor" key={sensor.id}>
                   <Graph name={station.name} sensor={sensor} renderTrigger={new Date()} />
                 </div>
               ))}
-            </>
+            </Fragment>
           ))}
         </>
       )}
