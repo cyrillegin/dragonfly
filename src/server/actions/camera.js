@@ -3,6 +3,12 @@ import fetch from 'node-fetch';
 import { Reading } from '../db';
 
 const requestAndUploadImage = async details => {
+  const currentDate = new Date();
+  const currentHour = currentDate.getHours();
+  if (currentHour < 6 || currentHour > 7) {
+    console.info('Its probably dark out, skipping image upload');
+    return;
+  }
   console.info('requesting new image');
   // send request to pi
   const result = await fetch(
