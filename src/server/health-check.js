@@ -37,9 +37,27 @@ const testSensor = (
       }
       const dateString = new Date().toLocaleString();
 
+      if (currentHealth !== 'healthy') {
+        const body = {
+          attachments: [
+            {
+              title: name,
+              text: `Sensor ${name} at ${address} has recovered and is now working normally.`,
+              color: '#00FF00',
+            },
+          ],
+        };
+        fetch(process.env.SLACK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+      }
+
       await Sensor.update(
         {
           lastHealthTimestamp: dateString,
+          health: 'healthy',
         },
         {
           where: { id: sensorId },
@@ -48,6 +66,7 @@ const testSensor = (
       await Station.update(
         {
           lastHealthTimestamp: dateString,
+          health: 'healthy',
         },
         {
           where: { id: stationId },
