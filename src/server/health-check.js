@@ -13,6 +13,7 @@ const testSensor = (
   readingType,
   pollRate,
   name,
+  currentHealth,
 ) => {
   const kwargs = {
     sensorId,
@@ -55,6 +56,40 @@ const testSensor = (
     })
     .catch(async err => {
       console.error(`${name} is reporting ${err}.`);
+      if (currentHealth === 'online') {
+        const body = {
+          attachments: [
+            {
+              title: name,
+              text: `Station ${name} has errored out during its health check and is most likely offline.`,
+              color: '#FF0000',
+            },
+          ],
+        };
+        fetch(process.env.SLACK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        await Station.update(
+          {
+            health: 'alerting',
+          },
+          {
+            where: { id: stationId },
+          },
+        );
+        // slack
+      } else if (currentHealth === 'alerting') {
+        await Station.update(
+          {
+            health: 'offline',
+          },
+          {
+            where: { id: stationId },
+          },
+        );
+      }
     });
 };
 
@@ -110,6 +145,7 @@ const runHealthCheck = async () => {
         sensor.readingType,
         pollRate,
         sensor.name,
+        station.health,
       );
     });
   });

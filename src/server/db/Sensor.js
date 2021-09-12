@@ -19,6 +19,8 @@ function buildSensorSchema(sequelize) {
         allowNull: false,
         field: 'last_health_timestamp',
       },
+      // can be on of 'offline', 'alerting', 'online'
+      health: { type: DataTypes.STRING, allowNull: false },
     },
     {
       sequelize,
