@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const HtmlWebpackChangeAssetsExtensionPlugin = require('html-webpack-change-assets-extension-plugin');
 
 module.exports = {
-  entry: ['./src/client/index'],
+  entry: ['@babel/polyfill', './src/client/index'],
   mode: 'production',
   devtool: false,
   output: {
