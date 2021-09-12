@@ -105,7 +105,8 @@ router.post('/bulk', async (req, res) => {
   } catch (error) {
     console.error('Error bulk adding entries');
     console.error(error);
-    res.statues(400).send({ error });
+    res.status(400).send({ error });
+    return;
   }
 
   res.status(200).send({ message: 'success' });

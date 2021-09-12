@@ -10,6 +10,7 @@ const BulkAdd = ({ className, close, stations }) => {
   const [input, setInput] = useState({});
   const [availableSensors, setAvaliableSensors] = useState([]);
   const [selectedNewSensor, setSelectedNewSensor] = useState('');
+  const [error, setError] = useState(null);
 
   const handleSelectChange = event => {
     setSelectedNewSensor(event.target.value);
@@ -60,6 +61,7 @@ const BulkAdd = ({ className, close, stations }) => {
   };
 
   const handleNewField = () => {
+    setError(null);
     setAvaliableSensors(availableSensors.filter(sensor => sensor.name !== selectedNewSensor));
     const date = new Date();
     setInput({
@@ -72,6 +74,7 @@ const BulkAdd = ({ className, close, stations }) => {
   };
 
   const submitAdd = () => {
+    setError(null);
     localStorage.setItem(
       LOCAL_STORAGE_KEY,
       Object.keys(input).reduce((acc, cur) => `${acc}:${cur}`),
@@ -93,13 +96,19 @@ const BulkAdd = ({ className, close, stations }) => {
       };
     });
 
-    addBulkReadings(readings).then(() => {
+    addBulkReadings(readings).then(res => {
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+
       Store.refreshFn();
       close();
     });
   };
 
   const handleRemove = event => {
+    setError(null);
     const { name } = event.target;
 
     const { id } = stations
@@ -115,6 +124,7 @@ const BulkAdd = ({ className, close, stations }) => {
   };
 
   const handleInputChange = event => {
+    setError(null);
     setInput({
       ...input,
       [event.target.name]: {
@@ -123,7 +133,9 @@ const BulkAdd = ({ className, close, stations }) => {
       },
     });
   };
+
   const handleDateChange = event => {
+    setError(null);
     setInput({
       ...input,
       [event.target.name]: {
@@ -163,6 +175,7 @@ const BulkAdd = ({ className, close, stations }) => {
           </div>
         </div>
         <div className="footer">
+          {error && <div className="error">{error}</div>}
           <button type="button" onClick={submitAdd}>
             Add
           </button>
@@ -211,6 +224,10 @@ const styledBulkAdd = styled(BulkAdd)`
     border-radius: 0.5rem;
     padding: 1rem;
     box-sizing: border-box;
+  }
+
+  .error {
+    color: red;
   }
 `;
 

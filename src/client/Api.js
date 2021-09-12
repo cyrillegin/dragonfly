@@ -47,16 +47,17 @@ const addStation = body =>
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   }).then(res => res.json());
-const addBulkReadings = body =>
+
+const addBulkReadings = readings =>
   fetch('/api/reading/bulk', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      body,
+      readings,
     }),
-  });
+  }).then(res => res.json());
 
 const addDashboard = body =>
   fetch('/api/dashboard', {
