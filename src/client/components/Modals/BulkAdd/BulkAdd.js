@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import Store from '../../../utilities/Store';
-import Api from '../../../Api';
+import { addBulkReadings } from '../../../Api';
 
 const LOCAL_STORAGE_KEY = 'bulk-add';
 
@@ -93,7 +93,7 @@ const BulkAdd = ({ className, close, stations }) => {
       };
     });
 
-    Api.addBulkReadings(readings).then(() => {
+    addBulkReadings(readings).then(() => {
       Store.refreshFn();
       close();
     });

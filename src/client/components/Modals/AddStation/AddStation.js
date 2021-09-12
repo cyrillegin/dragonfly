@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { windowEmitter } from '../../../utilities/Window';
-import Api from '../../../Api';
+import { testStation, addStation } from '../../../Api';
 
 const AddStation = ({ className, close }) => {
   const [input, setInput] = useState({});
@@ -33,7 +33,7 @@ const AddStation = ({ className, close }) => {
     }
     setError('Testing...');
 
-    Api.testStation(params).then(res => {
+    testStation(params).then(res => {
       if (res.error) {
         setSuccess(false);
         setError(res.error);
@@ -54,7 +54,7 @@ const AddStation = ({ className, close }) => {
       ...input,
     };
     setError('Adding...');
-    Api.addStation(params).then(res => {
+    addStation(params).then(res => {
       if (res.message === 'success') {
         setError('Station Added!');
         windowEmitter.emit('station-refresh');

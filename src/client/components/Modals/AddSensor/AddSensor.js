@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { searchToObject, windowEmitter } from '../../../utilities/Window';
-import Api from '../../../Api';
+import { listSensors, testSensor, addSensor } from '../../../Api';
 
 const AddSensor = ({ className, close, address, port }) => {
   const [input, setInput] = useState({});
@@ -10,7 +10,7 @@ const AddSensor = ({ className, close, address, port }) => {
   const [availableSensors, setSensors] = useState([]);
 
   useEffect(() => {
-    Api.listSensors(address, port).then(res => {
+    listSensors(address, port).then(res => {
       setSensors([...res, { name: 'self-entry' }]);
       setInput({ hardwareName: res[0] });
     });
@@ -54,7 +54,7 @@ const AddSensor = ({ className, close, address, port }) => {
 
     params.stationId = parseInt(searchToObject().station, 10);
 
-    Api.testSensor(params).then(res => {
+    testSensor(params).then(res => {
       if (res.error) {
         setSuccess(false);
       } else {
@@ -79,7 +79,7 @@ const AddSensor = ({ className, close, address, port }) => {
       params.readingType = 'fake';
     }
 
-    Api.addSensor(params).then(res => {
+    addSensor(params).then(res => {
       if (res.error) {
         // add messaging
       } else {

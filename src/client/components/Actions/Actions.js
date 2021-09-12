@@ -5,7 +5,7 @@ import { AddAction } from '../Modals';
 import { actionConditions } from '../../utilities/constants';
 import { windowEmitter } from '../../utilities/Window';
 import Store from '../../utilities/Store';
-import Api from '../../Api';
+import { deleteAction, createAction, updateAction } from '../../Api';
 
 const Actions = ({ className, stations }) => {
   const [actions, setActions] = useState([]);
@@ -42,7 +42,7 @@ const Actions = ({ className, stations }) => {
   };
 
   const handleDelete = action => {
-    Api.deleteAction(action.id).then(() => {
+    deleteAction(action.id).then(() => {
       windowEmitter.emit('station-refresh');
     });
   };
@@ -56,9 +56,9 @@ const Actions = ({ className, stations }) => {
     let promise;
     if (action.id === -1) {
       delete body.id;
-      promise = Api.createAction(body);
+      promise = createAction(body);
     } else {
-      promise = Api.updateAction(body);
+      promise = updateAction(body);
     }
 
     promise.then(res => {

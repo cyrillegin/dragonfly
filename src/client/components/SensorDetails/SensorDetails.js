@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { AddAction } from '../Modals';
 import { actionConditions, actionProperties } from '../../utilities/constants';
 import { windowEmitter } from '../../utilities/Window';
-import Api from '../../Api';
+import { deleteAction, createAction, updateAction, updateSensor } from '../../Api';
 
 const SensorDetails = ({ className, sensor }) => {
   const [sensorDetails, setSensorDetails] = useState({
@@ -27,8 +27,8 @@ const SensorDetails = ({ className, sensor }) => {
     updateActionModal(action);
   };
 
-  const deleteAction = action => {
-    Api.deleteAction(action.id).then(() => {
+  const handleDeleteAction = action => {
+    deleteAction(action.id).then(() => {
       windowEmitter.emit('station-refresh');
     });
   };
@@ -42,9 +42,9 @@ const SensorDetails = ({ className, sensor }) => {
     let promise;
     if (action.id === -1) {
       delete body.id;
-      promise = Api.createAction(body);
+      promise = createAction(body);
     } else {
-      promise = Api.updateAction(body);
+      promise = updateAction(body);
     }
 
     promise.then(res => {
@@ -75,7 +75,7 @@ const SensorDetails = ({ className, sensor }) => {
       pollRate: sensorDetails.pollRate === '' ? null : sensorDetails.pollRate,
       unit: sensorDetails.unit === '' ? null : sensorDetails.unit,
     };
-    Api.updateSensor(body).then(res => {
+    updateSensor(body).then(res => {
       updateSuccessMessage(res.message || res.error);
       setTimeout(() => {
         updateSuccessMessage('');
@@ -186,7 +186,7 @@ const SensorDetails = ({ className, sensor }) => {
             <button type="button" onClick={() => editAction(action)}>
               Edit
             </button>
-            <button type="button" onClick={() => deleteAction(action)}>
+            <button type="button" onClick={() => handleDeleteAction(action)}>
               Delete
             </button>
           </div>

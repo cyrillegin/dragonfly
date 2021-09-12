@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { windowEmitter } from '../../../utilities/Window';
-import Api from '../../../Api';
+import { addDashboard } from '../../../Api';
 
 const AddDashboard = ({ className, close, stations }) => {
   const [dashboardName, updateDashBoardName] = useState('');
@@ -16,7 +16,7 @@ const AddDashboard = ({ className, close, stations }) => {
       name: dashboardName,
     };
 
-    Api.addDashboard(payload).then(res => {
+    addDashboard(payload).then(res => {
       if (res.error) {
         // setMessage
         return;
