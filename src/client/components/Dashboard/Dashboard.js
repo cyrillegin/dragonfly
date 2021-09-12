@@ -72,13 +72,14 @@ const Dashboard = ({ className, stations, dashboards }) => {
       {!currentSensor.id && currentStations.length && (
         <>
           {currentStations.map(station => (
-            <Fragment key={station.id}>
+            <div key={station.id} className="station-section">
+              <div className="station-header">{`${station.name} - ${station.address}`}</div>
               {station.sensors.map(sensor => (
                 <div className="sensor" key={sensor.id}>
                   <Graph name={station.name} sensor={sensor} renderTrigger={new Date()} />
                 </div>
               ))}
-            </Fragment>
+            </div>
           ))}
         </>
       )}
@@ -129,13 +130,24 @@ const styledDashboard = styled(Dashboard)`
   margin-left: 8px;
   transition: 0.6s;
 
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-  grid-gap: 1rem;
-
   &.collapse {
     transform: translateX(-380px);
     width: calc(100% - 28px);
+  }
+
+  .station-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    grid-gap: 1rem;
+
+    .station-header {
+      grid-column-start: 1;
+      grid-column-end: 4;
+      width: 100%;
+      border-top: 1px solid #d2d2d2;
+      padding-top: 12px;
+      font-size: 22px;
+    }
   }
 
   .station {
