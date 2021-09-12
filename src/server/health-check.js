@@ -61,7 +61,7 @@ const testSensor = (
           attachments: [
             {
               title: name,
-              text: `Station ${name} has errored out during its health check and is most likely offline.`,
+              text: `Sensor ${name} at ${address} has errored out during its health check and is most likely offline.`,
               color: '#FF0000',
             },
           ],
