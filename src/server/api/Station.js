@@ -91,6 +91,7 @@ router.post('/', async (req, res) => {
       address,
       port,
       lastHealthTimestamp: new Date(),
+      health: 'healthy',
     });
     console.debug('POST Successfull - New station added');
     res.status(200).send(JSON.stringify({ message: 'success' }));

@@ -68,6 +68,7 @@ router.post('/', async (req, res) => {
       pollRate,
       unit,
       lastHealthTimestamp: new Date(),
+      health: 'healthy',
     });
     console.info('new sensor added');
     res.status(200).send({ message: 'success' });
