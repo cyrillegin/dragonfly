@@ -9,6 +9,7 @@ import {
 } from '../../utilities/Window';
 import BulkAdd from '../Modals/BulkAdd';
 import Store from '../../utilities/Store';
+import Api from '../../Api';
 
 const Header = ({ className, stations }) => {
   const [addModalIsOpen, toggleAddModalIsOpen] = useState(false);
@@ -39,6 +40,7 @@ const Header = ({ className, stations }) => {
   };
 
   const updateTime = (setting, newTime) => {
+    Api.clearFetchQueue();
     if (newTime) {
       addOrUpdateHash(setting, newTime);
     } else {

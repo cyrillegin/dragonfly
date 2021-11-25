@@ -59,10 +59,7 @@ router.get('/', async (req, res) => {
 
   // do better
   readings = readings.filter((reading, index) => index % `${readings.length}`.length === 0);
-  setTimeout(() => {
-    console.log('respond');
-    res.send(readings);
-  }, Math.random(0, 10) * 4000);
+  res.send(readings);
 });
 
 /**
