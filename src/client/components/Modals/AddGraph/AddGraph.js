@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-import { windowEmitter, searchToObject } from '../../../utilities/Window';
+// import { windowEmitter, searchToObject } from '../../../utilities/Window';
 
 const AddGraph = ({ className, close }) => {
-  const dashboardId = parseInt(searchToObject().dashboard);
+  // const dashboardId = parseInt(searchToObject().dashboard, 10);
   // console.log(dashboardId);
   const preventClose = event => {
     event.stopPropagation();
   };
 
   const handleSave = () => {
-    return; // nope
-    fetch('/api/dashboard', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-      .then(res => res.json())
-      .then(res => {
-        if (res.error) {
-          // setMessage
-          return;
-        }
-        windowEmitter.emit('station-refresh');
-        close();
-      });
+    //   return; // nope
+    //   fetch('/api/dashboard', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(payload),
+    //   })
+    //     .then(res => res.json())
+    //     .then(res => {
+    //       if (res.error) {
+    //         // setMessage
+    //         return;
+    //       }
+    //       windowEmitter.emit('station-refresh');
+    //       close();
+    //     });
   };
 
   return (

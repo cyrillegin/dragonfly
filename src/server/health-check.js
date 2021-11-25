@@ -80,6 +80,7 @@ const testSensor = (
           attachments: [
             {
               title: name,
+              /* eslint-disable-next-line max-len */
               text: `Sensor ${name} at ${address} has errored out during its health check and is most likely offline.`,
               color: '#FF0000',
             },

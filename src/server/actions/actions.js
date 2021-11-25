@@ -62,6 +62,7 @@ const checkAgainstTime = action => {
 
 // Makes checks against timestamps - if last reading was more than an hour ago, do something
 const checkAgainstLastTimestamp = async action => {
+  /* eslint-disable-next-line no-unused-vars */
   const lastReading = await Reading.findOne({
     where: {
       sensorId: action.sensorId,
@@ -106,6 +107,7 @@ const makeCheck = async actionId => {
 
   if (alert) {
     console.info(
+      /* eslint-disable-next-line max-len */
       `${action.action} action triggered by sensor ${action.sensorId} on station ${action.stationId}`,
     );
 
