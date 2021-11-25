@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { addOrUpdateHash, removeFromHash, searchToObject } from '../../utilities/Window';
 import { AddStation, AddSensor, AddDashboard } from '../Modals';
 import Store from '../../utilities/Store';
+import Api from '../../Api';
 
 const TreeView = ({ className, stations, dashboards }) => {
   const [stationSelected, setStation] = useState('');
@@ -39,6 +40,8 @@ const TreeView = ({ className, stations, dashboards }) => {
   const handleSelection = (type, id) => {
     const select = `${type}-${id}`;
     setSelection(select);
+
+    Api.clearFetchQueue();
 
     removeFromHash('station');
     removeFromHash('sensor');

@@ -5,6 +5,8 @@ import { objectToString } from './utilities/Window';
 class Api {
   readings = {};
 
+  fetchMap = {};
+
   async getStations() {
     if (this.stations) {
       return this.stations;
@@ -23,14 +25,21 @@ class Api {
     return dashboards;
   }
 
-  async getReadings(kwargs) {
-    const stringifiedKwargs = JSON.stringify(kwargs);
-    if (this.readings[stringifiedKwargs]) {
-      return this.readings[stringifiedKwargs];
-    }
-    const readings = await fetch(`/api/reading?${objectToString(kwargs)}`).then(res => res.json());
-    this.readings[stringifiedKwargs] = readings;
+  getReadings(kwargs) {
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const readings = fetch(`/api/reading?${objectToString(kwargs)}`, { signal }).then(res => {
+      delete this.fetchMap[JSON.stringify(kwargs)];
+      return res.json();
+    });
+
+    this.fetchMap[JSON.stringify(kwargs)] = controller;
     return readings;
+  }
+
+  clearFetchQueue() {
+    Object.keys(this.fetchMap).forEach(key => this.fetchMap[key].abort());
   }
 }
 

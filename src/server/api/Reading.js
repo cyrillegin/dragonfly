@@ -22,6 +22,7 @@ const router = new Router();
  */
 router.get('/', async (req, res) => {
   console.debug('GET request to reading');
+
   let { sensorId, start, end } = req.query;
   if (!sensorId) {
     res.status(400).send({ error: 'You must provide a sensor id' });
@@ -58,7 +59,10 @@ router.get('/', async (req, res) => {
 
   // do better
   readings = readings.filter((reading, index) => index % `${readings.length}`.length === 0);
-  res.send(readings);
+  setTimeout(() => {
+    console.log('respond');
+    res.send(readings);
+  }, Math.random(0, 10) * 4000);
 });
 
 /**

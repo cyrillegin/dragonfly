@@ -29,7 +29,7 @@ const getReadings = (sensor, setReadings, setLoading) => {
 
   const coefParts = (sensor.coefficients || '0').split(',').map(e => parseFloat(e));
 
-  Api.getReadings(kwargs).then(newReadings => {
+  return Api.getReadings(kwargs).then(newReadings => {
     setReadings(
       newReadings
         .map(reading => ({
