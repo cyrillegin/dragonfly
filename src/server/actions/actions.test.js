@@ -26,7 +26,7 @@ describe('actions', () => {
     ['value === reading && reading > 10', 5, 7, false],
     ['value !== reading && value > 5', 5, 7, false],
   ].forEach(([expression, value, reading, result]) => {
-    it(`should test ${expression
+    xit(`should test ${expression
       .replace(/value/g, value)
       .replace(/reading/g, reading)} is ${result}`, () => {
       expect(checkAgainstValue(expression, value, reading)).toBe(result);

@@ -6,6 +6,7 @@ Array [
   "address",
   "port",
   "lastHealthTimestamp",
+  "health",
 ]
 `;
 
@@ -21,6 +22,7 @@ Array [
   "poll_rate",
   "unit",
   "lastHealthTimestamp",
+  "health",
 ]
 `;
 
