@@ -29,10 +29,16 @@ class Api {
     const controller = new AbortController();
     const { signal } = controller;
 
-    const readings = fetch(`/api/reading?${objectToString(kwargs)}`, { signal }).then(res => {
-      delete this.fetchMap[JSON.stringify(kwargs)];
-      return res.json();
-    });
+    const readings = fetch(`/api/reading?${objectToString(kwargs)}`, { signal })
+      .then(res => {
+        delete this.fetchMap[JSON.stringify(kwargs)];
+        return res.json();
+      })
+      .catch(err => {
+        // We don't super care about this since its usually due to
+        // aborting the fetch call.
+        console.info(err);
+      });
 
     this.fetchMap[JSON.stringify(kwargs)] = controller;
     return readings;
