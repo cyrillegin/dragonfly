@@ -41,14 +41,7 @@ router.get('/', async (req, res) => {
     include: [
       {
         model: Sensor,
-        include: [
-          Action,
-          {
-            model: Reading,
-            order: [['created_at', 'DESC']],
-            limit: 1,
-          },
-        ],
+        include: [Action],
       },
     ],
   });
@@ -57,7 +50,6 @@ router.get('/', async (req, res) => {
     ...station.dataValues,
     sensors: station.dataValues.sensors.map(sensor => ({
       ...sensor.dataValues,
-      lastReading: sensor.dataValues.readings[0],
       stationName: station.name,
     })),
   }));

@@ -118,9 +118,12 @@ Dashboard.propTypes = {
     PropTypes.shape({
       name: PropTypes.string.isRequired,
     }),
-  ).isRequired,
+  ),
 };
 
+Dashboard.defaultProps = {
+  dashboards: [],
+};
 const styledDashboard = styled(Dashboard)`
   position: absolute;
   left: 400px;

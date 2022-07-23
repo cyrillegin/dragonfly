@@ -10,16 +10,11 @@ import Api from './Api';
 
 const App = ({ className }) => {
   const [stations, setStations] = useState([]);
-  const [dashboards, setDashboards] = useState([]);
   const [, setDate] = useState(null);
 
   useEffect(() => {
     Api.getStations().then(res => {
       setStations(res);
-    });
-
-    Api.getDashboards().then(res => {
-      setDashboards(res);
     });
 
     windowEmitter.listen('station-refresh', () => {
@@ -38,11 +33,11 @@ const App = ({ className }) => {
       <Header stations={stations} />
       {stations.length && (
         <div className="main-container">
-          <TreeView stations={stations} dashboards={dashboards} />
+          <TreeView stations={stations} />
           {'actions' in searchToObject() ? (
             <Actions stations={stations} />
           ) : (
-            <Dashboard stations={stations} dashboards={dashboards} />
+            <Dashboard stations={stations} />
           )}
         </div>
       )}

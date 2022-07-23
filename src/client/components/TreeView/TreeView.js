@@ -207,7 +207,11 @@ TreeView.propTypes = {
         }),
       ),
     }),
-  ).isRequired,
+  ),
+};
+
+TreeView.defaultProps = {
+  dashboards: [],
 };
 
 const styledTreeView = styled(TreeView)`
